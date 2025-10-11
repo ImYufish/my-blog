@@ -1,0 +1,873 @@
+---
+import { Icon } from "astro-icon/components";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+let { headings = [] } = Astro.props;
+
+let minDepth = 10;
+for (const heading of headings) {
+  minDepth = Math.min(minDepth, heading.depth);
+}
+---
+
+<!-- 悬浮TOC按钮 -->
+<div class="floating-toc-wrapper hidden lg:block">
+  <div
+    id="floating-toc-btn"
+    class="floating-toc-btn flex items-center rounded-2xl overflow-hidden transition"
+    onclick="toggleFloatingTOC()"
+  >
+    <button
+      aria-label="Table of Contents"
+      class="h-[3.75rem] w-[3.75rem] rounded-2xl"
+    >
+      <Icon name="material-symbols:format-list-bulleted" class="mx-auto" />
+    </button>
+  </div>
+</div>
+
+<!-- 悬浮TOC面板 -->
+<div
+  id="floating-toc-panel"
+  class="floating-toc-panel hide fixed w-80 max-h-[24rem] overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 bg-white/90 dark:border-white/10 z-50"
+  style="background-color: var(--card-bg); bottom: calc(15rem + 6rem); right: 2rem;"
+>
+  <div
+    class="p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 backdrop-blur-sm z-10"
+    style="background-color: var(--card-bg);"
+  >
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-bold text-[var(--primary)]">目录</h3>
+      <button
+        onclick="toggleFloatingTOC()"
+        aria-label="Close TOC"
+        class="btn-plain rounded-lg h-8 w-8 active:scale-90"
+      >
+        <Icon name="material-symbols:close" class="text-lg" />
+      </button>
+    </div>
+  </div>
+
+  <div class="p-4" style="overflow: hidden;">
+    <div
+      class="toc-content"
+      id="floating-toc-content"
+      style="width: 100%; max-width: 100%; overflow: hidden;"
+    >
+      <!-- TOC内容将由JavaScript动态生成 -->
+    </div>
+  </div>
+</div>
+
+<style lang="stylus">
+.floating-toc-wrapper
+	width: 3.75rem
+	height: 3.75rem
+	position: absolute
+	right: 0
+	top: 0
+	pointer-events: none
+
+.floating-toc-btn
+	color: var(--primary)
+	font-size: 2.25rem
+	font-weight: bold
+	border: none
+	position: fixed
+	bottom: 15rem
+	right: 2rem
+	opacity: 1
+	cursor: pointer
+	pointer-events: auto
+	z-index: 1000
+	transition: all 0.3s ease
+	border-radius: 1rem
+	backdrop-filter: blur(12px)
+	background-color: var(--card-bg)
+	border: 1px solid rgba(0, 0, 0, 0.1)
+	
+	&.hide
+		transform: scale(0.9)
+		opacity: 0
+		pointer-events: none
+		
+	&:active
+		transform: scale(0.9)
+		
+	&:hover
+		transform: scale(1.05)
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+		background-color: rgba(255, 255, 255, 0.95)
+		border-color: rgba(0, 0, 0, 0.2)
+
+/* 暗色主题样式 */
+:global(.dark) .floating-toc-btn
+	background-color: var(--card-bg)
+	border: 1px solid rgba(255, 255, 255, 0.15)
+	color: var(--primary, #60a5fa)
+	
+	&:hover
+		background-color: var(--card-bg)
+		border-color: rgba(255, 255, 255, 0.3)
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
+
+.floating-toc-panel
+	transition: all 0.3s ease
+	transform: translateY(20px)
+	opacity: 0
+	pointer-events: none
+	overflow: hidden
+	box-sizing: border-box
+	
+	&.show
+		transform: translateY(0)
+		opacity: 1
+		pointer-events: auto
+		
+	&.hide
+		transform: translateY(20px)
+		opacity: 0
+		pointer-events: none
+
+.toc-content
+	display: flex
+	flex-direction: column
+	gap: 2px
+	position: relative
+	overflow: hidden
+	width: 100%
+	max-width: 100%
+	box-sizing: border-box
+	contain: layout
+	align-items: flex-start
+
+/* 使用与旧版TOC相同的样式 */
+.toc-content a
+	display: flex
+	align-items: center
+	text-decoration: none
+	color: inherit
+	border-radius: 0.75rem
+	transition: all 0.2s ease
+	width: 100%
+	min-width: 0
+	flex-shrink: 0
+	max-width: 100%
+	overflow: hidden
+	box-sizing: border-box
+	position: relative
+	
+	&:hover
+		background: var(--toc-btn-hover)
+		
+	&.visible
+		background: var(--toc-btn-active)
+
+/* 确保文本内容不会溢出 */
+.toc-content a div:last-child
+	overflow: hidden
+	text-overflow: ellipsis
+	white-space: nowrap
+	min-width: 0
+	flex: 1
+	max-width: calc(100% - 2rem)
+	box-sizing: border-box
+
+/* 徽章容器固定宽度 */
+.toc-content a div:first-child
+	flex-shrink: 0
+	width: 1.25rem
+	height: 1.25rem
+
+/* 活动指示器样式 */
+#floating-active-indicator
+	position: absolute
+	left: 0
+	right: 0
+	background: var(--toc-btn-hover)
+	border-radius: 0.75rem
+	transition: all 0.2s ease
+	z-index: -1
+
+/* 响应式调整 */
+@media (max-width: 1024px)
+	.floating-toc-btn
+		right: 1rem
+		bottom: 12rem
+		
+	.floating-toc-panel
+		right: 1rem !important
+		bottom: calc(12rem + 4rem) !important
+		width: calc(100vw - 2rem)
+		max-width: 20rem
+		max-height: 20rem
+
+@media (max-width: 768px)
+	.floating-toc-btn
+		right: 0.75rem
+		bottom: 10rem
+		width: 3rem
+		height: 3rem
+		font-size: 1.5rem
+		border-radius: 0.75rem
+		
+	.floating-toc-panel
+		right: 0.75rem !important
+		bottom: calc(10rem + 4rem) !important
+		width: calc(100vw - 1.5rem)
+		max-width: 18rem
+		max-height: 18rem
+
+@media (max-width: 480px)
+	.floating-toc-btn
+		right: 0.5rem
+		bottom: 8rem
+		width: 2.5rem
+		height: 2.5rem
+		font-size: 1.25rem
+		border-radius: 0.5rem
+		
+	.floating-toc-panel
+		right: 0.5rem !important
+		bottom: calc(8rem + 4rem) !important
+		width: calc(100vw - 1rem)
+		max-width: 16rem
+		max-height: 16rem
+
+/* 高缩放比例适配 */
+@media (min-resolution: 2dppx)
+	.floating-toc-btn
+		right: max(0.5rem, 2rem - 2vw)
+		bottom: max(11rem, 17rem - 5vh)
+		
+	.floating-toc-panel
+		right: max(0.5rem, 2rem - 2vw) !important
+		bottom: calc(max(11rem, 17rem - 5vh) + 6rem) !important
+
+/* 超小屏幕适配 */
+@media (max-width: 360px)
+	.floating-toc-btn
+		right: 0.25rem
+		bottom: 7rem
+		width: 2rem
+		height: 2rem
+		font-size: 1rem
+		border-radius: 0.375rem
+		
+	.floating-toc-panel
+		right: 0.25rem !important
+		bottom: calc(6rem + 4rem) !important
+		width: calc(100vw - 0.5rem)
+		max-width: 14rem
+		max-height: 12rem
+
+/* 横屏模式适配 */
+@media (orientation: landscape) and (max-height: 500px)
+	.floating-toc-btn
+		bottom: 4rem
+		right: 0.5rem
+		
+	.floating-toc-panel
+		bottom: calc(4rem + 4rem) !important
+		right: 0.5rem !important
+		max-height: 12rem
+
+/* 确保按钮始终在可视区域内 */
+.floating-toc-btn
+	min-width: 2rem
+	min-height: 2rem
+	padding: 0.25rem
+	max-width: 4rem
+	max-height: 4rem
+	border-radius: 1rem !important
+
+/* 高DPI屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+	.floating-toc-btn
+		image-rendering: -webkit-optimize-contrast
+		image-rendering: crisp-edges
+
+/* 极低分辨率适配 */
+@media (max-width: 320px)
+	.floating-toc-btn
+		right: 0.125rem
+		bottom: 4rem
+		width: 1.75rem
+		height: 1.75rem
+		font-size: 0.875rem
+		border-radius: 0.25rem
+		
+	.floating-toc-panel
+		right: 0.125rem !important
+		bottom: calc(4rem + 4rem) !important
+		width: calc(100vw - 0.25rem)
+		max-width: 12rem
+		max-height: 14rem
+
+/* 确保按钮在容器内正确显示 */
+.floating-toc-wrapper
+	overflow: visible
+	z-index: 999
+
+/* 按钮激活状态 */
+.floating-toc-btn:active
+	transform: scale(0.95)
+
+/* 滚动条样式 */
+.floating-toc-panel::-webkit-scrollbar
+	width: 6px
+
+.floating-toc-panel::-webkit-scrollbar-track
+	background: transparent
+	border-radius: 3px
+
+.floating-toc-panel::-webkit-scrollbar-thumb
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%)
+	border-radius: 3px
+	border: 1px solid rgba(255, 255, 255, 0.1)
+	transition: all 0.2s ease
+
+.floating-toc-panel::-webkit-scrollbar-thumb:hover
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%)
+	border-color: rgba(255, 255, 255, 0.2)
+	transform: scaleX(1.2)
+
+.floating-toc-panel::-webkit-scrollbar-thumb:active
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)
+
+/* 暗色主题滚动条 */
+:global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%)
+	border: 1px solid rgba(0, 0, 0, 0.1)
+
+:global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb:hover
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.3) 100%)
+	border-color: rgba(0, 0, 0, 0.2)
+
+:global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb:active
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.4) 100%)
+
+/* Firefox 滚动条样式 */
+.floating-toc-panel
+	scrollbar-width: thin
+	scrollbar-color: rgba(0, 0, 0, 0.2) transparent
+
+:global(.dark) .floating-toc-panel
+	scrollbar-color: rgba(255, 255, 255, 0.2) transparent
+</style>
+
+<script is:raw is:inline>
+  if (typeof window.floatingTOCBtn === "undefined") {
+    window.floatingTOCBtn = null;
+    window.floatingTOCPanel = null;
+    window.tocItems = [];
+    window.activeHeadingId = "";
+    window.observer = null;
+    window.minDepth = 10;
+    window.maxLevel = 3; // 默认显示3级标题
+    window.scrollTimeout = null; // 滚动节流定时器
+  }
+
+  // 使用全局变量，避免重复声明
+  floatingTOCBtn = window.floatingTOCBtn;
+  floatingTOCPanel = window.floatingTOCPanel;
+  tocItems = window.tocItems;
+  activeHeadingId = window.activeHeadingId;
+  observer = window.observer;
+  minDepth = window.minDepth;
+  maxLevel = window.maxLevel;
+  scrollTimeout = window.scrollTimeout;
+
+  if (typeof window.toggleFloatingTOC === "undefined") {
+    window.toggleFloatingTOC = function () {
+      if (!floatingTOCBtn || !floatingTOCPanel) {
+        return;
+      }
+
+      const isHidden = floatingTOCPanel.classList.contains("hide");
+
+      if (isHidden) {
+        floatingTOCPanel.classList.remove("hide");
+        floatingTOCPanel.classList.add("show");
+      } else {
+        floatingTOCPanel.classList.remove("show");
+        floatingTOCPanel.classList.add("hide");
+      }
+    };
+
+    function updateActiveHeading() {
+      // 只在文章内容容器内查找标题
+      const contentContainer =
+        document.querySelector(".custom-md") ||
+        document.querySelector(".prose") ||
+        document.querySelector(".markdown-content");
+
+      if (!contentContainer) return;
+
+      const headings = contentContainer.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6"
+      );
+      const scrollTop = window.scrollY;
+      const offset = 100;
+
+      let currentActiveId = "";
+      headings.forEach((heading) => {
+        if (heading.id) {
+          const elementTop = heading.offsetTop - offset;
+          if (scrollTop >= elementTop) {
+            currentActiveId = heading.id;
+          }
+        }
+      });
+
+      if (currentActiveId !== activeHeadingId) {
+        activeHeadingId = currentActiveId;
+        window.activeHeadingId = activeHeadingId;
+        updateTOCActiveState();
+      }
+    }
+
+    function updateTOCActiveState() {
+      if (!tocItems) return;
+
+      // 移除所有活动状态
+      tocItems.forEach((item) => {
+        item.classList.remove("visible");
+      });
+
+      // 找到当前活动的标题
+      const activeItems = tocItems.filter((item) => {
+        const headingId = item.dataset.headingId;
+        return headingId === activeHeadingId;
+      });
+
+      // 添加活动状态
+      activeItems.forEach((item) => {
+        item.classList.add("visible");
+      });
+
+      // 更新活动指示器
+      updateActiveIndicator(activeItems);
+    }
+
+    function updateActiveIndicator(activeItems) {
+      const indicator = document.getElementById("floating-active-indicator");
+      if (!indicator || !tocItems.length) return;
+
+      if (activeItems.length === 0) {
+        indicator.style.opacity = "0";
+        return;
+      }
+
+      // 计算活动项的位置
+      const firstActive = activeItems[0];
+      const lastActive = activeItems[activeItems.length - 1];
+      const tocContent = document.getElementById("floating-toc-content");
+      const tocPanel = document.getElementById("floating-toc-panel");
+
+      if (!tocContent || !tocPanel) return;
+
+      const contentRect = tocContent.getBoundingClientRect();
+      const firstRect = firstActive.getBoundingClientRect();
+      const lastRect = lastActive.getBoundingClientRect();
+
+      const top = firstRect.top - contentRect.top;
+      const height = lastRect.bottom - firstRect.top;
+
+      indicator.style.top = `${top}px`;
+      indicator.style.height = `${height}px`;
+      indicator.style.opacity = "1";
+
+      // 自动滚动到活动项
+      scrollToActiveItem(firstActive, tocContent, tocPanel);
+    }
+
+    function scrollToActiveItem(activeItem, tocContent, tocPanel) {
+      if (!activeItem || !tocContent) return;
+
+      // 清除之前的定时器
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+
+      // 使用节流机制，避免滚动过于频繁
+      scrollTimeout = setTimeout(() => {
+        // 使用scrollIntoView方法，更简单可靠
+        activeItem.scrollIntoView({
+          behavior: "smooth",
+          block: "center", // 将活动项滚动到可视区域中心
+          inline: "nearest",
+        });
+      }, 100); // 100ms延迟
+    }
+
+    function setupIntersectionObserver() {
+      // 只在文章内容容器内查找标题
+      const contentContainer =
+        document.querySelector(".custom-md") ||
+        document.querySelector(".prose") ||
+        document.querySelector(".markdown-content");
+
+      if (!contentContainer) return;
+
+      const headings = contentContainer.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6"
+      );
+
+      if (observer) {
+        observer.disconnect();
+      }
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              activeHeadingId = entry.target.id;
+              updateTOCActiveState();
+            }
+          });
+        },
+        {
+          rootMargin: "-80px 0px -80% 0px",
+          threshold: 0,
+        }
+      );
+
+      headings.forEach((heading) => {
+        if (heading.id) {
+          observer.observe(heading);
+        }
+      });
+    }
+
+    function isPostPage() {
+      return (
+        window.location.pathname.includes("/posts/") ||
+        document.querySelector(".custom-md, .markdown-content") !== null
+      );
+    }
+
+    function generateTOCContent() {
+      const tocContent = document.getElementById("floating-toc-content");
+      if (!tocContent) return;
+
+      // 检查是否为文章页面
+      if (!isPostPage()) {
+        // 如果不是文章页面，隐藏TOC
+        tocContent.innerHTML = "";
+        return;
+      }
+
+      // 只在文章内容容器内查找标题
+      const contentContainer =
+        document.querySelector(".custom-md") ||
+        document.querySelector(".prose") ||
+        document.querySelector(".markdown-content");
+
+      if (!contentContainer) {
+        tocContent.innerHTML = "";
+        return;
+      }
+
+      const headings = contentContainer.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6"
+      );
+
+      // 计算最小深度
+      let currentMinDepth = 10;
+      headings.forEach((heading) => {
+        const depth = parseInt(heading.tagName.charAt(1));
+        currentMinDepth = Math.min(currentMinDepth, depth);
+      });
+      minDepth = currentMinDepth;
+      window.minDepth = minDepth;
+
+      const filteredHeadings = Array.from(headings).filter((heading) => {
+        const depth = parseInt(heading.tagName.charAt(1));
+        return depth < minDepth + maxLevel;
+      });
+
+      if (filteredHeadings.length === 0) {
+        tocContent.innerHTML =
+          '<div class="text-center py-8 text-gray-500 dark:text-gray-400"><p>当前页面没有目录</p></div>';
+        return;
+      }
+
+      let tocHTML = "";
+      let heading1Count = 1;
+      filteredHeadings.forEach((heading) => {
+        const depth = parseInt(heading.tagName.charAt(1));
+        const depthClass =
+          depth === minDepth ? "" : depth === minDepth + 1 ? "pl-4" : "pl-8";
+        const levelClass = `level-${depth}`;
+
+        // 使用与旧版TOC相同的徽章样式
+        const badgeContent =
+          depth === minDepth
+            ? heading1Count++
+            : depth === minDepth + 1
+              ? '<div class="transition w-2 h-2 rounded-[0.1875rem] bg-[var(--toc-badge-bg)]"></div>'
+              : '<div class="transition w-1.5 h-1.5 rounded-sm bg-black/5 dark:bg-white/10"></div>';
+
+        tocHTML += `
+         <a 
+           href="#${heading.id}" 
+           class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl hover:bg-[var(--toc-btn-hover)] active:bg-[var(--toc-btn-active)] py-2 ${depthClass}"
+           data-heading-id="${heading.id}"
+           style="width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box; contain: layout;"
+         >
+           <div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold ${depth === minDepth ? "bg-[var(--toc-badge-bg)] text-[var(--btn-content)]" : ""}" style="flex-shrink: 0; width: 1.25rem; height: 1.25rem; min-width: 1.25rem;">
+             ${badgeContent}
+           </div>
+           <div class="transition text-sm ${depth <= minDepth + 1 ? "text-50" : "text-30"} flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" style="width: 0; flex: 1; max-width: calc(100% - 1.25rem - 0.5rem); box-sizing: border-box; contain: layout;">${(heading.textContent || "").replace(/#+\s*$/, "")}</div>
+         </a>
+       `;
+      });
+
+      tocContent.innerHTML =
+        tocHTML +
+        '<div id="floating-active-indicator" style="opacity: 0" class="-z-10 absolute bg-[var(--toc-btn-hover)] left-0 right-0 rounded-xl transition-all group-hover:bg-transparent border-2 border-[var(--toc-btn-hover)] group-hover:border-[var(--toc-btn-active)] border-dashed"></div>';
+      tocItems = Array.from(
+        document.querySelectorAll("#floating-toc-content a")
+      );
+      window.tocItems = tocItems;
+    }
+
+    function updateTOCVisibility() {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+
+      // 检查是否为文章页面
+      if (!isPostPage()) {
+        floatingTOCBtn.classList.add("hide");
+        return;
+      }
+
+      // 当滚动超过200px时显示按钮
+      if (scrollTop > 200) {
+        floatingTOCBtn.classList.remove("hide");
+      } else {
+        floatingTOCBtn.classList.add("hide");
+      }
+    }
+
+    function handleTOCClick(event) {
+      const anchor = event.target.closest('a[href^="#"]');
+      if (!anchor) return;
+
+      event.preventDefault();
+
+      const id = decodeURIComponent(anchor.hash?.substring(1));
+      const targetElement = document.getElementById(id);
+
+      if (targetElement) {
+        // 计算目标位置，与移动端保持一致
+        const navbarHeight = 80; // 导航栏高度
+        const targetTop =
+          targetElement.getBoundingClientRect().top +
+          window.pageYOffset -
+          navbarHeight;
+
+        // 使用与移动端相同的滚动方式
+        window.scrollTo({
+          top: targetTop,
+          behavior: "smooth",
+        });
+      }
+    }
+
+    function initFloatingTOC() {
+      floatingTOCBtn = document.getElementById("floating-toc-btn");
+      floatingTOCPanel = document.getElementById("floating-toc-panel");
+
+      // 更新全局变量
+      window.floatingTOCBtn = floatingTOCBtn;
+      window.floatingTOCPanel = floatingTOCPanel;
+
+      if (!floatingTOCBtn || !floatingTOCPanel) {
+        return;
+      }
+
+      // 检查是否为文章页面
+      if (!isPostPage()) {
+        floatingTOCBtn.classList.add("hide");
+        return;
+      }
+
+      // 生成TOC内容
+      generateTOCContent();
+
+      // 设置点击监听
+      const tocContent = document.getElementById("floating-toc-content");
+      if (tocContent) {
+        tocContent.addEventListener("click", handleTOCClick);
+      }
+
+      // 设置滚动监听
+      window.addEventListener("scroll", updateActiveHeading);
+      window.addEventListener("scroll", updateTOCVisibility);
+
+      // 设置交叉观察器
+      setupIntersectionObserver();
+
+      // 初始化活动状态
+      updateActiveHeading();
+      updateTOCVisibility();
+
+      // 设置自动关闭功能
+      setupAutoClose();
+    }
+
+    // 页面离开时自动关闭TOC
+    function setupAutoClose() {
+      // 关闭TOC的通用函数
+      function closeTOC() {
+        if (floatingTOCPanel && !floatingTOCPanel.classList.contains("hide")) {
+          floatingTOCPanel.classList.add("hide");
+          floatingTOCPanel.classList.remove("show");
+          console.log("TOC自动关闭");
+        }
+      }
+
+      // 监听页面卸载
+      window.addEventListener("beforeunload", closeTOC);
+
+      // 监听页面隐藏（移动端）
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          closeTOC();
+        }
+      });
+
+      // 监听路由变化（如果使用SPA）
+      window.addEventListener("popstate", closeTOC);
+
+      // 监听Swup页面切换（如果使用Swup）
+      try {
+        if (
+          typeof window.swup !== "undefined" &&
+          window.swup &&
+          typeof window.swup.on === "function"
+        ) {
+          window.swup.on("pageView", closeTOC);
+          window.swup.on("contentReplaced", closeTOC);
+        }
+      } catch (e) {
+        console.log("Swup not available or not properly initialized");
+      }
+
+      // 监听Turbo页面切换（如果使用Turbo）
+      if (typeof window.Turbo !== "undefined" && window.Turbo) {
+        document.addEventListener("turbo:visit", closeTOC);
+        document.addEventListener("turbo:load", closeTOC);
+      }
+
+      // 监听Astro页面切换
+      document.addEventListener("astro:page-load", closeTOC);
+      document.addEventListener("astro:before-preparation", closeTOC);
+
+      // 监听链接点击（通用方法）
+      document.addEventListener("click", (e) => {
+        const link = e.target.closest("a");
+        if (link && link.href && !link.href.startsWith("#")) {
+          console.log("检测到链接点击，准备关闭TOC");
+          // 立即关闭，不延迟
+          closeTOC();
+        }
+      });
+
+      // 监听表单提交
+      document.addEventListener("submit", (e) => {
+        const form = e.target;
+        if (form.action) {
+          console.log("检测到表单提交，准备关闭TOC");
+          closeTOC();
+        }
+      });
+
+      // 监听页面开始卸载
+      window.addEventListener("pagehide", closeTOC);
+
+      // 监听页面可见性变化（更可靠）
+      document.addEventListener("visibilitychange", () => {
+        console.log("页面可见性变化:", document.hidden ? "隐藏" : "显示");
+        if (document.hidden) {
+          closeTOC();
+        }
+      });
+
+      // 监听页面卸载前
+      window.addEventListener("unload", closeTOC);
+
+      // 监听所有可能的导航事件
+      window.addEventListener("hashchange", closeTOC);
+
+      // 监听pushState和replaceState（手动路由变化）
+      const originalPushState = history.pushState;
+      const originalReplaceState = history.replaceState;
+
+      history.pushState = function (...args) {
+        console.log("检测到pushState，准备关闭TOC");
+        closeTOC();
+        return originalPushState.apply(this, args);
+      };
+
+      history.replaceState = function (...args) {
+        console.log("检测到replaceState，准备关闭TOC");
+        closeTOC();
+        return originalReplaceState.apply(this, args);
+      };
+
+      // 监听URL变化（最可靠的方法）
+      let currentUrl = window.location.href;
+      const checkUrlChange = () => {
+        if (window.location.href !== currentUrl) {
+          console.log("检测到URL变化，准备关闭TOC");
+          currentUrl = window.location.href;
+          closeTOC();
+        }
+      };
+
+      // 定期检查URL变化
+      setInterval(checkUrlChange, 100);
+
+      // 监听页面焦点变化
+      window.addEventListener("blur", closeTOC);
+
+      // 监听页面失去焦点
+      document.addEventListener("focusout", closeTOC);
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener("DOMContentLoaded", initFloatingTOC);
+
+    // 如果页面已经加载完成，立即初始化
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initFloatingTOC);
+    } else {
+      initFloatingTOC();
+    }
+
+    // 监听页面切换（Swup）
+    if (typeof window !== "undefined" && window.swup) {
+      window.swup.hooks.on("visit:end", () => {
+        setTimeout(() => {
+          initFloatingTOC();
+        }, 100);
+      });
+    } else if (typeof window !== "undefined") {
+      document.addEventListener("swup:enable", () => {
+        window.swup.hooks.on("visit:end", () => {
+          setTimeout(() => {
+            initFloatingTOC();
+          }, 100);
+        });
+      });
+    }
+  }
+</script>

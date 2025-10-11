@@ -12,6 +12,7 @@ import IconifyLoader from "../components/misc/IconifyLoader.astro";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import TypewriterText from "../components/TypewriterText.astro";
 import TOC from "../components/widget/TOC.astro";
+import FloatingTOC from "../components/widget/FloatingTOC.astro";
 import { siteConfig } from "../config";
 import { sidebarLayoutConfig } from "../config/sidebarConfig";
 import { live2dModelConfig } from "../config/pioConfig";
@@ -401,25 +402,11 @@ const transparentClass = shouldEnableTransparency
     </div>
 </div>
 
-<!-- The things that should be under the banner, only the TOC for now -->
-<div class="absolute w-full z-0 hidden xl:block">
-    <div class="relative max-w-[var(--page-width)] mx-auto">
-        <!-- TOC component -->
-        {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["hidden lg:block transition absolute top-0 w-[var(--toc-width)] items-center",
-            sidebarLayoutConfig.position === "right" ? "-left-[var(--toc-width)]" : "-right-[var(--toc-width)]",
-            {"toc-hide": isBannerMode && isBackgroundEnabled}]}
-        >
-            <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
-                <div id="toc" class="w-full h-full transition-swup-fade ">       
-                    <TOC headings={headings}></TOC>
-                </div>
-            </div>
-        </div>}
+<!-- 悬浮TOC组件 -->
+{siteConfig.toc.enable && <FloatingTOC headings={headings}></FloatingTOC>}
 
-        <!-- #toc needs to exist for Swup to work normally -->
-        {!siteConfig.toc.enable && <div id="toc"></div>}
-    </div>
-</div>
+<!-- #toc needs to exist for Swup to work normally -->
+{!siteConfig.toc.enable && <div id="toc"></div>}
 </Layout>
 
 <style>

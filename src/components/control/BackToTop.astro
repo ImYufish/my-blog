@@ -31,16 +31,18 @@ import { Icon } from "astro-icon/components";
     color: var(--primary)
     font-size: 2.25rem
     font-weight: bold
-    border: none
     position: fixed
-    bottom: 10rem
+    bottom: 8rem
     right: 2rem
     opacity: 1
     cursor: pointer
     pointer-events: auto
     z-index: 1000
     transition: all 0.3s ease
-    border-radius: 1rem /* 确保圆角样式 */
+    border-radius: 1rem
+    backdrop-filter: blur(12px)
+    background-color: var(--card-bg)
+    border: 1px solid rgba(0, 0, 0, 0.1)
     i
         font-size: 1.75rem
     &.hide
@@ -49,17 +51,33 @@ import { Icon } from "astro-icon/components";
         pointer-events: none
     &:active
       transform: scale(0.9)
+    &:hover
+        transform: scale(1.05)
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+        background-color: rgba(255, 255, 255, 0.95)
+        border-color: rgba(0, 0, 0, 0.2)
+
+/* 暗色主题样式 */
+:global(.dark) .back-to-top-btn
+    background-color: var(--card-bg)
+    border: 1px solid rgba(255, 255, 255, 0.15)
+    color: var(--primary, #60a5fa)
+    
+    &:hover
+        background-color: var(--card-bg)
+        border-color: rgba(255, 255, 255, 0.3)
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
 
 /* 响应式调整 */
 @media (max-width: 1024px)
     .back-to-top-btn
         right: 1rem
-        bottom: 8rem
+        bottom: 6rem
 
 @media (max-width: 768px)
     .back-to-top-btn
         right: 0.75rem
-        bottom: 6rem
+        bottom: 4rem
         width: 3rem
         height: 3rem
         font-size: 1.5rem
@@ -82,7 +100,7 @@ import { Icon } from "astro-icon/components";
 @media (min-resolution: 2dppx)
     .back-to-top-btn
         right: max(0.5rem, 2rem - 2vw)
-        bottom: max(4rem, 10rem - 5vh)
+        bottom: max(4rem, 8rem - 5vh)
 
 /* 超小屏幕适配 */
 @media (max-width: 360px)
@@ -145,36 +163,6 @@ import { Icon } from "astro-icon/components";
 .back-to-top-btn:active
     transform: scale(0.95)
 
-/* 按钮基础样式 */
-.back-to-top-btn
-    backdrop-filter: blur(12px)
-    transition: all 0.3s ease
-
-/* 浅色主题样式 */
-.back-to-top-btn.light-theme
-    background-color: rgba(255, 255, 255, 0.9)
-    border: 1px solid rgba(0, 0, 0, 0.1)
-    color: var(--primary, #3b82f6)
-
-/* 暗色主题样式 */
-.back-to-top-btn.dark-theme
-    background-color: rgba(255, 255, 255, 0.08)
-    border: 1px solid rgba(255, 255, 255, 0.15)
-    color: var(--primary, #60a5fa)
-
-/* 悬停效果 */
-.back-to-top-btn:hover
-    transform: scale(1.05)
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-
-.back-to-top-btn.light-theme:hover
-    background-color: rgba(255, 255, 255, 0.95)
-    border-color: rgba(0, 0, 0, 0.2)
-
-.back-to-top-btn.dark-theme:hover
-    background-color: rgba(255, 255, 255, 0.15)
-    border-color: rgba(255, 255, 255, 0.3)
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
 
 </style>
 
@@ -185,124 +173,79 @@ import { Icon } from "astro-icon/components";
   }
 
   // 响应式返回顶部按钮管理器
-  class BackToTopManager {
-    constructor() {
-      this.button = document.getElementById("back-to-top-btn");
-      this.wrapper = document.querySelector(".back-to-top-wrapper");
-      this.init();
-    }
+  if (typeof window.BackToTopManager === "undefined") {
+    window.BackToTopManager = class BackToTopManager {
+      constructor() {
+        this.button = document.getElementById("back-to-top-btn");
+        this.wrapper = document.querySelector(".back-to-top-wrapper");
+        this.init();
+      }
 
-    init() {
-      if (!this.button || !this.wrapper) return;
+      init() {
+        if (!this.button || !this.wrapper) return;
 
-      this.setupScrollListener();
-      this.setupResizeListener();
-      this.setupThemeListener();
-      this.updatePosition();
-    }
+        this.setupScrollListener();
+        this.setupResizeListener();
+        this.updatePosition();
+      }
 
-    setupScrollListener() {
-      let ticking = false;
+      setupScrollListener() {
+        const updateVisibility = () => {
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
 
-      const updateVisibility = () => {
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-
-        // 当滚动超过200px时显示按钮
-        if (scrollTop > 200) {
-          this.button.classList.remove("hide");
-        } else {
-          this.button.classList.add("hide");
-        }
-
-        ticking = false;
-      };
-
-      const requestTick = () => {
-        if (!ticking) {
-          requestAnimationFrame(updateVisibility);
-          ticking = true;
-        }
-      };
-
-      window.addEventListener("scroll", requestTick, { passive: true });
-    }
-
-    setupResizeListener() {
-      let resizeTimeout;
-
-      const handleResize = () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          this.updatePosition();
-        }, 100);
-      };
-
-      window.addEventListener("resize", handleResize);
-    }
-
-    setupThemeListener() {
-      // 监听DOM变化，检测dark类的添加/移除
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (
-            mutation.type === "attributes" &&
-            mutation.attributeName === "class"
-          ) {
-            this.updateTheme();
+          // 当滚动超过200px时显示按钮
+          if (scrollTop > 200) {
+            this.button.classList.remove("hide");
+          } else {
+            this.button.classList.add("hide");
           }
-        });
-      });
+        };
 
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-    }
-
-    updateTheme() {
-      if (!this.button) return;
-
-      const isDark = document.documentElement.classList.contains("dark");
-
-      // 强制应用主题样式
-      if (isDark) {
-        this.button.classList.add("dark-theme");
-        this.button.classList.remove("light-theme");
-      } else {
-        this.button.classList.add("light-theme");
-        this.button.classList.remove("dark-theme");
-      }
-    }
-
-    updatePosition() {
-      if (!this.button) return;
-
-      const windowWidth = window.innerWidth;
-
-      // 根据屏幕宽度调整位置
-      let rightPosition = 2;
-      let bottomPosition = 10;
-
-      if (windowWidth < 360) {
-        rightPosition = 0.25;
-        bottomPosition = 3;
-      } else if (windowWidth < 480) {
-        rightPosition = 0.5;
-        bottomPosition = 4;
-      } else if (windowWidth < 768) {
-        rightPosition = 0.75;
-        bottomPosition = 6;
-      } else if (windowWidth < 1024) {
-        rightPosition = 1;
-        bottomPosition = 8;
+        window.addEventListener("scroll", updateVisibility, { passive: true });
       }
 
-      // 应用位置
-      this.button.style.right = `${rightPosition}rem`;
-      this.button.style.bottom = `${bottomPosition}rem`;
-    }
+      setupResizeListener() {
+        let resizeTimeout;
+
+        const handleResize = () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            this.updatePosition();
+          }, 100);
+        };
+
+        window.addEventListener("resize", handleResize);
+      }
+
+      updatePosition() {
+        if (!this.button) return;
+
+        const windowWidth = window.innerWidth;
+
+        // 根据屏幕宽度调整位置
+        let rightPosition = 2;
+        let bottomPosition = 10;
+
+        if (windowWidth < 360) {
+          rightPosition = 0.25;
+          bottomPosition = 3;
+        } else if (windowWidth < 480) {
+          rightPosition = 0.5;
+          bottomPosition = 4;
+        } else if (windowWidth < 768) {
+          rightPosition = 0.75;
+          bottomPosition = 6;
+        } else if (windowWidth < 1024) {
+          rightPosition = 1;
+          bottomPosition = 8;
+        }
+
+        // 应用位置
+        this.button.style.right = `${rightPosition}rem`;
+        this.button.style.bottom = `${bottomPosition}rem`;
+      }
+    };
   }
 
   // 页面加载完成后初始化
