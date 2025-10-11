@@ -2,6 +2,8 @@
 # Firefly 是一款清新简约的 Astro 博客主题模板
 
 
+[**🖥️在线预览（Netlify）**](https://demo-firefly.netlify.app/)  
+
 [**📝使用文档**](https://docs-firefly.cuteleaf.cn/)
 
 ⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
