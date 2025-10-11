@@ -4,11 +4,18 @@ import { Icon } from "astro-icon/components";
 
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
 <div class="back-to-top-wrapper hidden lg:block">
-    <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition" onclick="backToTop()">
-        <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem]">
-            <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto"></Icon>
-        </button>
-    </div>
+  <div
+    id="back-to-top-btn"
+    class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition"
+    onclick="backToTop()"
+  >
+    <button
+      aria-label="Back to Top"
+      class="h-[3.75rem] w-[3.75rem] rounded-2xl"
+    >
+      <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto" />
+    </button>
+  </div>
 </div>
 
 <style lang="stylus">
@@ -27,24 +34,288 @@ import { Icon } from "astro-icon/components";
     border: none
     position: fixed
     bottom: 10rem
+    right: 2rem
     opacity: 1
     cursor: pointer
-    transform: translateX(5rem)
     pointer-events: auto
+    z-index: 1000
+    transition: all 0.3s ease
+    border-radius: 1rem /* 确保圆角样式 */
     i
         font-size: 1.75rem
     &.hide
-        transform: translateX(5rem) scale(0.9)
+        transform: scale(0.9)
         opacity: 0
         pointer-events: none
     &:active
-      transform: translateX(5rem) scale(0.9)
+      transform: scale(0.9)
+
+/* 响应式调整 */
+@media (max-width: 1024px)
+    .back-to-top-btn
+        right: 1rem
+        bottom: 8rem
+
+@media (max-width: 768px)
+    .back-to-top-btn
+        right: 0.75rem
+        bottom: 6rem
+        width: 3rem
+        height: 3rem
+        font-size: 1.5rem
+        border-radius: 0.75rem
+        i
+            font-size: 1.25rem
+
+@media (max-width: 480px)
+    .back-to-top-btn
+        right: 0.5rem
+        bottom: 4rem
+        width: 2.5rem
+        height: 2.5rem
+        font-size: 1.25rem
+        border-radius: 0.5rem
+        i
+            font-size: 1rem
+
+/* 高缩放比例适配 */
+@media (min-resolution: 2dppx)
+    .back-to-top-btn
+        right: max(0.5rem, 2rem - 2vw)
+        bottom: max(4rem, 10rem - 5vh)
+
+/* 超小屏幕适配 */
+@media (max-width: 360px)
+    .back-to-top-btn
+        right: 0.25rem
+        bottom: 3rem
+        width: 2rem
+        height: 2rem
+        font-size: 1rem
+        border-radius: 0.375rem
+        i
+            font-size: 0.875rem
+
+/* 横屏模式适配 */
+@media (orientation: landscape) and (max-height: 500px)
+    .back-to-top-btn
+        bottom: 2rem
+        right: 0.5rem
+
+/* 确保按钮始终在可视区域内 */
+.back-to-top-btn
+    /* 防止按钮被裁剪 */
+    min-width: 2rem
+    min-height: 2rem
+    /* 确保按钮有足够的点击区域 */
+    padding: 0.25rem
+    /* 防止按钮超出屏幕 */
+    max-width: 4rem
+    max-height: 4rem
+    /* 确保圆角在所有尺寸下都正确 */
+    border-radius: 1rem !important
+
+/* 高DPI屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+    .back-to-top-btn
+        /* 确保在高DPI屏幕上清晰显示 */
+        image-rendering: -webkit-optimize-contrast
+        image-rendering: crisp-edges
+
+/* 极低分辨率适配 */
+@media (max-width: 320px)
+    .back-to-top-btn
+        right: 0.125rem
+        bottom: 2.5rem
+        width: 1.75rem
+        height: 1.75rem
+        font-size: 0.875rem
+        border-radius: 0.25rem
+        i
+            font-size: 0.75rem
+
+/* 确保按钮在容器内正确显示 */
+.back-to-top-wrapper
+    /* 确保容器不会裁剪内容 */
+    overflow: visible
+    /* 防止容器影响按钮定位 */
+    z-index: 999
+
+/* 按钮激活状态 */
+.back-to-top-btn:active
+    transform: scale(0.95)
+
+/* 按钮基础样式 */
+.back-to-top-btn
+    backdrop-filter: blur(12px)
+    transition: all 0.3s ease
+
+/* 浅色主题样式 */
+.back-to-top-btn.light-theme
+    background-color: rgba(255, 255, 255, 0.9)
+    border: 1px solid rgba(0, 0, 0, 0.1)
+    color: var(--primary, #3b82f6)
+
+/* 暗色主题样式 */
+.back-to-top-btn.dark-theme
+    background-color: rgba(255, 255, 255, 0.08)
+    border: 1px solid rgba(255, 255, 255, 0.15)
+    color: var(--primary, #60a5fa)
+
+/* 悬停效果 */
+.back-to-top-btn:hover
+    transform: scale(1.05)
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+
+.back-to-top-btn.light-theme:hover
+    background-color: rgba(255, 255, 255, 0.95)
+    border-color: rgba(0, 0, 0, 0.2)
+
+.back-to-top-btn.dark-theme:hover
+    background-color: rgba(255, 255, 255, 0.15)
+    border-color: rgba(255, 255, 255, 0.3)
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
 
 </style>
 
 <script is:raw is:inline>
-function backToTop() {
+  function backToTop() {
     // 直接使用原生滚动，避免OverlayScrollbars冲突
-    window.scroll({ top: 0, behavior: 'smooth' });
-}
+    window.scroll({ top: 0, behavior: "smooth" });
+  }
+
+  // 响应式返回顶部按钮管理器
+  class BackToTopManager {
+    constructor() {
+      this.button = document.getElementById("back-to-top-btn");
+      this.wrapper = document.querySelector(".back-to-top-wrapper");
+      this.init();
+    }
+
+    init() {
+      if (!this.button || !this.wrapper) return;
+
+      this.setupScrollListener();
+      this.setupResizeListener();
+      this.setupThemeListener();
+      this.updatePosition();
+    }
+
+    setupScrollListener() {
+      let ticking = false;
+
+      const updateVisibility = () => {
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+
+        // 当滚动超过200px时显示按钮
+        if (scrollTop > 200) {
+          this.button.classList.remove("hide");
+        } else {
+          this.button.classList.add("hide");
+        }
+
+        ticking = false;
+      };
+
+      const requestTick = () => {
+        if (!ticking) {
+          requestAnimationFrame(updateVisibility);
+          ticking = true;
+        }
+      };
+
+      window.addEventListener("scroll", requestTick, { passive: true });
+    }
+
+    setupResizeListener() {
+      let resizeTimeout;
+
+      const handleResize = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          this.updatePosition();
+        }, 100);
+      };
+
+      window.addEventListener("resize", handleResize);
+    }
+
+    setupThemeListener() {
+      // 监听DOM变化，检测dark类的添加/移除
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "class"
+          ) {
+            this.updateTheme();
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
+
+    updateTheme() {
+      if (!this.button) return;
+
+      const isDark = document.documentElement.classList.contains("dark");
+
+      // 强制应用主题样式
+      if (isDark) {
+        this.button.classList.add("dark-theme");
+        this.button.classList.remove("light-theme");
+      } else {
+        this.button.classList.add("light-theme");
+        this.button.classList.remove("dark-theme");
+      }
+    }
+
+    updatePosition() {
+      if (!this.button) return;
+
+      const windowWidth = window.innerWidth;
+
+      // 根据屏幕宽度调整位置
+      let rightPosition = 2;
+      let bottomPosition = 10;
+
+      if (windowWidth < 360) {
+        rightPosition = 0.25;
+        bottomPosition = 3;
+      } else if (windowWidth < 480) {
+        rightPosition = 0.5;
+        bottomPosition = 4;
+      } else if (windowWidth < 768) {
+        rightPosition = 0.75;
+        bottomPosition = 6;
+      } else if (windowWidth < 1024) {
+        rightPosition = 1;
+        bottomPosition = 8;
+      }
+
+      // 应用位置
+      this.button.style.right = `${rightPosition}rem`;
+      this.button.style.bottom = `${bottomPosition}rem`;
+    }
+  }
+
+  // 页面加载完成后初始化
+  document.addEventListener("DOMContentLoaded", () => {
+    new BackToTopManager();
+  });
+
+  // 如果页面已经加载完成，立即初始化
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      new BackToTopManager();
+    });
+  } else {
+    new BackToTopManager();
+  }
 </script>
