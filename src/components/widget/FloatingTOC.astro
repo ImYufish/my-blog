@@ -1,6 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
 import type { MarkdownHeading } from "astro";
+import { i18n } from "../../i18n/translation";
+import I18nKey from "../../i18n/i18nKey";
 
 interface Props {
   headings: MarkdownHeading[];
@@ -34,14 +36,16 @@ for (const heading of headings) {
 <div
   id="floating-toc-panel"
   class="floating-toc-panel hide fixed w-80 max-h-[24rem] overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 bg-white/90 dark:border-white/10 z-50"
-  style="background-color: var(--card-bg); bottom: calc(15rem + 6rem); right: 2rem;"
+  style="background-color: var(--card-bg); bottom: calc(13rem + 6rem); right: 2rem;"
 >
   <div
     class="p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 backdrop-blur-sm z-10"
     style="background-color: var(--card-bg);"
   >
     <div class="flex items-center justify-between">
-      <h3 class="text-lg font-bold text-[var(--primary)]">目录</h3>
+      <h3 class="text-lg font-bold text-[var(--primary)]">
+        {i18n(I18nKey.tableOfContents)}
+      </h3>
       <button
         onclick="toggleFloatingTOC()"
         aria-label="Close TOC"
@@ -78,7 +82,7 @@ for (const heading of headings) {
 	font-weight: bold
 	border: none
 	position: fixed
-	bottom: 15rem
+	bottom: 13rem
 	right: 2rem
 	opacity: 1
 	cursor: pointer
@@ -197,11 +201,11 @@ for (const heading of headings) {
 @media (max-width: 1024px)
 	.floating-toc-btn
 		right: 1rem
-		bottom: 12rem
+		bottom: 10rem
 		
 	.floating-toc-panel
 		right: 1rem !important
-		bottom: calc(12rem + 4rem) !important
+		bottom: calc(10rem + 4rem) !important
 		width: calc(100vw - 2rem)
 		max-width: 20rem
 		max-height: 20rem
@@ -209,7 +213,7 @@ for (const heading of headings) {
 @media (max-width: 768px)
 	.floating-toc-btn
 		right: 0.75rem
-		bottom: 10rem
+		bottom: 8rem
 		width: 3rem
 		height: 3rem
 		font-size: 1.5rem
@@ -217,7 +221,7 @@ for (const heading of headings) {
 		
 	.floating-toc-panel
 		right: 0.75rem !important
-		bottom: calc(10rem + 4rem) !important
+		bottom: calc(8rem + 4rem) !important
 		width: calc(100vw - 1.5rem)
 		max-width: 18rem
 		max-height: 18rem
@@ -225,7 +229,7 @@ for (const heading of headings) {
 @media (max-width: 480px)
 	.floating-toc-btn
 		right: 0.5rem
-		bottom: 8rem
+		bottom: 7rem
 		width: 2.5rem
 		height: 2.5rem
 		font-size: 1.25rem
@@ -233,7 +237,7 @@ for (const heading of headings) {
 		
 	.floating-toc-panel
 		right: 0.5rem !important
-		bottom: calc(8rem + 4rem) !important
+		bottom: calc(7rem + 4rem) !important
 		width: calc(100vw - 1rem)
 		max-width: 16rem
 		max-height: 16rem
@@ -242,17 +246,17 @@ for (const heading of headings) {
 @media (min-resolution: 2dppx)
 	.floating-toc-btn
 		right: max(0.5rem, 2rem - 2vw)
-		bottom: max(11rem, 17rem - 5vh)
+		bottom: max(9rem, 13rem - 5vh)
 		
 	.floating-toc-panel
 		right: max(0.5rem, 2rem - 2vw) !important
-		bottom: calc(max(11rem, 17rem - 5vh) + 6rem) !important
+		bottom: calc(max(9rem, 13rem - 5vh) + 6rem) !important
 
 /* 超小屏幕适配 */
 @media (max-width: 360px)
 	.floating-toc-btn
 		right: 0.25rem
-		bottom: 7rem
+		bottom: 6rem
 		width: 2rem
 		height: 2rem
 		font-size: 1rem
@@ -295,7 +299,7 @@ for (const heading of headings) {
 @media (max-width: 320px)
 	.floating-toc-btn
 		right: 0.125rem
-		bottom: 4rem
+		bottom: 5rem
 		width: 1.75rem
 		height: 1.75rem
 		font-size: 0.875rem
@@ -303,7 +307,7 @@ for (const heading of headings) {
 		
 	.floating-toc-panel
 		right: 0.125rem !important
-		bottom: calc(4rem + 4rem) !important
+		bottom: calc(5rem + 4rem) !important
 		width: calc(100vw - 0.25rem)
 		max-width: 12rem
 		max-height: 14rem

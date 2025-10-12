@@ -185,8 +185,6 @@ import { Icon } from "astro-icon/components";
         if (!this.button || !this.wrapper) return;
 
         this.setupScrollListener();
-        this.setupResizeListener();
-        this.updatePosition();
       }
 
       setupScrollListener() {
@@ -205,46 +203,7 @@ import { Icon } from "astro-icon/components";
         window.addEventListener("scroll", updateVisibility, { passive: true });
       }
 
-      setupResizeListener() {
-        let resizeTimeout;
-
-        const handleResize = () => {
-          clearTimeout(resizeTimeout);
-          resizeTimeout = setTimeout(() => {
-            this.updatePosition();
-          }, 100);
-        };
-
-        window.addEventListener("resize", handleResize);
-      }
-
-      updatePosition() {
-        if (!this.button) return;
-
-        const windowWidth = window.innerWidth;
-
-        // 根据屏幕宽度调整位置
-        let rightPosition = 2;
-        let bottomPosition = 10;
-
-        if (windowWidth < 360) {
-          rightPosition = 0.25;
-          bottomPosition = 3;
-        } else if (windowWidth < 480) {
-          rightPosition = 0.5;
-          bottomPosition = 4;
-        } else if (windowWidth < 768) {
-          rightPosition = 0.75;
-          bottomPosition = 6;
-        } else if (windowWidth < 1024) {
-          rightPosition = 1;
-          bottomPosition = 8;
-        }
-
-        // 应用位置
-        this.button.style.right = `${rightPosition}rem`;
-        this.button.style.bottom = `${bottomPosition}rem`;
-      }
+      // 移除resize监听和位置更新逻辑，因为CSS媒体查询已经处理了响应式定位
     };
   }
 
