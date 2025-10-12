@@ -16,7 +16,7 @@
 
 🔧 高度可配置: 所有功能模块均可通过配置文件自定义开关和参数
 
-![Preview Image](https://github.com/user-attachments/assets/0abed958-6ab1-4c82-80ea-0f8e3be8d5d2)
+<img width="2550" height="1245" alt="Firefly - Demo site (1)" src="https://github.com/user-attachments/assets/9356c4ae-0e00-4b07-aa96-3943e4b511e6" />
 
 
 ## 👀 要求
@@ -111,6 +111,7 @@ lang: jp      # 仅当文章语言与 `config.ts` 中的网站语言不同时需
 
 - 感谢原始 [Fuwari](https://github.com/saicaca/fuwari) 模板
 - 感谢基于Fuwari二次开发的[Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 模板
+- 感谢b站up[公公的日常](https://space.bilibili.com/3546750017080050)提供的Q版 流萤 看板娘切片数据模型
 - 使用 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
 ---
 
