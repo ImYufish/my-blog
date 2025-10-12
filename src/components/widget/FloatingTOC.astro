@@ -56,11 +56,11 @@ for (const heading of headings) {
     </div>
   </div>
 
-  <div class="p-4" style="overflow: hidden;">
+  <div class="p-4" style="overflow-y: auto; max-height: calc(24rem - 5rem);">
     <div
       class="toc-content"
       id="floating-toc-content"
-      style="width: 100%; max-width: 100%; overflow: hidden;"
+      style="width: 100%; max-width: 100%;"
     >
       <!-- TOC内容将由JavaScript动态生成 -->
     </div>
@@ -609,6 +609,11 @@ for (const heading of headings) {
           depth === minDepth ? "" : depth === minDepth + 1 ? "pl-4" : "pl-8";
         const levelClass = `level-${depth}`;
 
+        // 确保标题有ID
+        if (!heading.id) {
+          return;
+        }
+
         // 使用与旧版TOC相同的徽章样式
         const badgeContent =
           depth === minDepth
@@ -664,20 +669,25 @@ for (const heading of headings) {
       const anchor = event.target.closest('a[href^="#"]');
       if (!anchor) return;
 
-      event.preventDefault();
+      // 标记这是TOC内部导航，防止其他事件关闭TOC
+      window.tocInternalNavigation = true;
 
-      const id = decodeURIComponent(anchor.hash?.substring(1));
+      event.stopPropagation(); // 阻止事件冒泡
+
+      // 从href属性获取ID
+      const href = anchor.getAttribute("href");
+      const id = href ? href.substring(1) : "";
       const targetElement = document.getElementById(id);
 
       if (targetElement) {
-        // 计算目标位置，与移动端保持一致
-        const navbarHeight = 80; // 导航栏高度
+        // 计算目标位置，考虑导航栏高度
+        const navbarHeight = 80;
         const targetTop =
           targetElement.getBoundingClientRect().top +
           window.pageYOffset -
           navbarHeight;
 
-        // 使用与移动端相同的滚动方式
+        // 平滑滚动到目标位置
         window.scrollTo({
           top: targetTop,
           behavior: "smooth",
@@ -706,10 +716,10 @@ for (const heading of headings) {
       // 生成TOC内容
       generateTOCContent();
 
-      // 设置点击监听
+      // 设置点击监听 - 使用capture模式确保优先处理
       const tocContent = document.getElementById("floating-toc-content");
       if (tocContent) {
-        tocContent.addEventListener("click", handleTOCClick);
+        tocContent.addEventListener("click", handleTOCClick, { capture: true });
       }
 
       // 设置滚动监听
@@ -734,7 +744,6 @@ for (const heading of headings) {
         if (floatingTOCPanel && !floatingTOCPanel.classList.contains("hide")) {
           floatingTOCPanel.classList.add("hide");
           floatingTOCPanel.classList.remove("show");
-          console.log("TOC自动关闭");
         }
       }
 
@@ -762,7 +771,7 @@ for (const heading of headings) {
           window.swup.on("contentReplaced", closeTOC);
         }
       } catch (e) {
-        console.log("Swup not available or not properly initialized");
+        // Swup not available
       }
 
       // 监听Turbo页面切换（如果使用Turbo）
@@ -775,21 +784,43 @@ for (const heading of headings) {
       document.addEventListener("astro:page-load", closeTOC);
       document.addEventListener("astro:before-preparation", closeTOC);
 
-      // 监听链接点击（通用方法）
-      document.addEventListener("click", (e) => {
-        const link = e.target.closest("a");
-        if (link && link.href && !link.href.startsWith("#")) {
-          console.log("检测到链接点击，准备关闭TOC");
-          // 立即关闭，不延迟
-          closeTOC();
-        }
-      });
+      // 监听外部链接点击（不处理锚点链接）
+      document.addEventListener(
+        "click",
+        (e) => {
+          const link = e.target.closest("a");
+          if (link && link.href) {
+            // 只处理外部链接，锚点链接不关闭TOC
+            const href = link.getAttribute("href");
+            const isExternalLink =
+              href && !href.startsWith("#") && !href.startsWith("javascript:");
+
+            if (!isExternalLink) {
+              return;
+            }
+
+            // 检查是否点击的是TOC内部的链接
+            const tocPanel = document.getElementById("floating-toc-panel");
+            const tocContent = document.getElementById("floating-toc-content");
+
+            if (
+              tocPanel &&
+              tocContent &&
+              (tocPanel.contains(link) || tocContent.contains(link))
+            ) {
+              return;
+            }
+
+            closeTOC();
+          }
+        },
+        { capture: false }
+      );
 
       // 监听表单提交
       document.addEventListener("submit", (e) => {
         const form = e.target;
         if (form.action) {
-          console.log("检测到表单提交，准备关闭TOC");
           closeTOC();
         }
       });
@@ -799,7 +830,6 @@ for (const heading of headings) {
 
       // 监听页面可见性变化（更可靠）
       document.addEventListener("visibilitychange", () => {
-        console.log("页面可见性变化:", document.hidden ? "隐藏" : "显示");
         if (document.hidden) {
           closeTOC();
         }
@@ -808,21 +838,26 @@ for (const heading of headings) {
       // 监听页面卸载前
       window.addEventListener("unload", closeTOC);
 
-      // 监听所有可能的导航事件
-      window.addEventListener("hashchange", closeTOC);
+      // 监听hashchange事件，但排除TOC内部的锚点链接
+      window.addEventListener("hashchange", (e) => {
+        // 检查是否是TOC内部点击导致的hashchange
+        if (window.tocInternalNavigation) {
+          window.tocInternalNavigation = false; // 重置标记
+          return;
+        }
+        closeTOC();
+      });
 
       // 监听pushState和replaceState（手动路由变化）
       const originalPushState = history.pushState;
       const originalReplaceState = history.replaceState;
 
       history.pushState = function (...args) {
-        console.log("检测到pushState，准备关闭TOC");
         closeTOC();
         return originalPushState.apply(this, args);
       };
 
       history.replaceState = function (...args) {
-        console.log("检测到replaceState，准备关闭TOC");
         closeTOC();
         return originalReplaceState.apply(this, args);
       };
@@ -831,7 +866,11 @@ for (const heading of headings) {
       let currentUrl = window.location.href;
       const checkUrlChange = () => {
         if (window.location.href !== currentUrl) {
-          console.log("检测到URL变化，准备关闭TOC");
+          // 检查是否是TOC内部导航导致的URL变化
+          if (window.tocInternalNavigation) {
+            currentUrl = window.location.href;
+            return;
+          }
           currentUrl = window.location.href;
           closeTOC();
         }
@@ -840,11 +879,39 @@ for (const heading of headings) {
       // 定期检查URL变化
       setInterval(checkUrlChange, 100);
 
-      // 监听页面焦点变化
-      window.addEventListener("blur", closeTOC);
+      // 监听页面焦点变化 - 但排除TOC内部的焦点变化
+      window.addEventListener("blur", (e) => {
+        // 检查是否是TOC内部导航
+        if (window.tocInternalNavigation) {
+          return;
+        }
+        closeTOC();
+      });
 
-      // 监听页面失去焦点
-      document.addEventListener("focusout", closeTOC);
+      // 监听页面失去焦点 - 但排除TOC内部的焦点变化
+      document.addEventListener("focusout", (e) => {
+        // 检查焦点是否转移到了TOC内部
+        const tocPanel = document.getElementById("floating-toc-panel");
+        const tocContent = document.getElementById("floating-toc-content");
+        const relatedTarget = e.relatedTarget;
+
+        if (
+          tocPanel &&
+          tocContent &&
+          relatedTarget &&
+          (tocPanel.contains(relatedTarget) ||
+            tocContent.contains(relatedTarget))
+        ) {
+          return;
+        }
+
+        // 检查是否是TOC内部导航
+        if (window.tocInternalNavigation) {
+          return;
+        }
+
+        closeTOC();
+      });
     }
 
     // 页面加载完成后初始化
