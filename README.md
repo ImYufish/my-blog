@@ -19,9 +19,9 @@
 
 📱 移动友好: 完美的响应式体验，移动端专项优化
 
-🌟 看板娘支持: 同时支持Spine和Live2D动画引擎，带来丰富的互动体验
+🌟 看板娘支持: 同时支持Spine和Live2D动画引擎
 
-🔧 高度可配置: 所有功能模块均可通过配置文件自定义开关和参数
+🔧 高度可配置: 大部分功能模块均可通过配置文件自定义
 
 <img width="2540" height="1225" alt="firefly" src="https://github.com/user-attachments/assets/d10a7d73-493b-4e3e-b633-878f58f7db46" />
 
