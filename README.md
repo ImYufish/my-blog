@@ -1,10 +1,17 @@
 
-# Firefly 是一款清新好看的 Astro 博客主题模板
+<img src="https://github.com/user-attachments/assets/19a66e36-a5b6-48c7-a347-1b3089a0c417" width = "405" height = "511" alt="NapCat" align=right />
+
+<div align="center">
+
+# Firefly
+> 一款清新好看的 Astro 博客主题模板
+</div>
 
 
-[**🖥️在线预览（Netlify）**](https://demo-firefly.netlify.app/)  
+---
 
-[**📝使用文档**](https://docs-firefly.cuteleaf.cn/)
+[**🖥️Firefly在线预览（Netlify）**](https://demo-firefly.netlify.app/)  &emsp;
+[**📝Firefly使用文档**](https://docs-firefly.cuteleaf.cn/)
 
 ⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
 
@@ -16,17 +23,16 @@
 
 🔧 高度可配置: 所有功能模块均可通过配置文件自定义开关和参数
 
-<img width="2550" height="1245" alt="Firefly - Demo site (1)" src="https://github.com/user-attachments/assets/9356c4ae-0e00-4b07-aa96-3943e4b511e6" />
+<img width="2540" height="1225" alt="firefly" src="https://github.com/user-attachments/assets/d10a7d73-493b-4e3e-b633-878f58f7db46" />
 
-
-## 👀 要求
-
-- Node.js <= 22
-- pnpm <= 9
 
 ## 🚀 快速开始
 
-### 📦 安装
+### 环境要求
+- Node.js ≤ 22
+- pnpm ≤ 9
+
+### 安装
 
 1. **克隆仓库：**
    ```bash
