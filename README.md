@@ -1,5 +1,5 @@
 
-<img src="https://github.com/user-attachments/assets/19a66e36-a5b6-48c7-a347-1b3089a0c417" width = "405" height = "511" alt="NapCat" align=right />
+<img src="https://s2.loli.net/2025/10/14/4mfuArLMowk6EXj.png" width = "405" height = "511" alt="NapCat" align=right />
 
 <div align="center">
 
@@ -23,16 +23,17 @@
 
 🔧 高度可配置: 大部分功能模块均可通过配置文件自定义
 
-<img width="2540" height="1225" alt="firefly" src="https://github.com/user-attachments/assets/d10a7d73-493b-4e3e-b633-878f58f7db46" />
+<img alt="firefly" src="https://s2.loli.net/2025/10/14/bsvCrO4FcSVlQq7.png" />
 
 
 ## 🚀 快速开始
 
 ### 环境要求
+
 - Node.js ≤ 22
 - pnpm ≤ 9
 
-### 安装
+### 本地开发部署
 
 1. **克隆仓库：**
    ```bash
@@ -51,8 +52,6 @@
 
 3. **配置博客：**
    - 编辑 `src/config.ts` 自定义博客设置
-   - 更新站点信息、主题色彩、横幅图片和社交链接
-   - 配置特色页面功能
 
 4. **启动开发服务器：**
    ```bash
@@ -60,6 +59,9 @@
    ```
    博客将在 `http://localhost:4321` 可用
 
+### 平台托管部署
+
+**参考[官方指南](https://docs.astro.build/zh-cn/guides/deploy/)将博客部署至 Vercel, Netlify, GitHub Pages 等。**
 
 ## 📖 配置说明
 
