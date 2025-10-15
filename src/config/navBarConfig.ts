@@ -1,58 +1,76 @@
-import type { NavBarConfig } from "../types/config";
+import type { NavBarConfig, NavBarLink } from "../types/config";
 import { LinkPreset } from "../types/config";
+import { siteConfig } from "../config";
 
-export const navBarConfig: NavBarConfig = {
-  links: [
+// 根据页面开关动态生成导航栏配置
+const getDynamicNavBarConfig = (): NavBarConfig => {
+  const links: (NavBarLink | LinkPreset)[] = [
     LinkPreset.Home,
     LinkPreset.Archive,
-    LinkPreset.Anime,
-    // 支持自定义导航栏链接,并且支持多级菜单
-    {
-      name: "链接",
-      url: "/links/",
-      icon: "material-symbols:link",
-      children: [
-        {
-          name: "GitHub",
-          url: "https://github.com/CuteLeaf/Firefly",
-          external: true,
-          icon: "fa6-brands:github",
-        },
-        {
-          name: "Bilibili",
-          url: "https://space.bilibili.com/38932988",
-          external: true,
-          icon: "fa6-brands:bilibili",
-        },
-      ],
-    },
-    {
-      name: "关于",
-      url: "/content/",
-      icon: "material-symbols:info",
-      children: [LinkPreset.About, LinkPreset.Friends],
-    },
-    {
-      name: "其他",
-      url: "#",
-      icon: "material-symbols:more-horiz",
-      children: [
-        {
-          name: "我的项目",
-          url: "/projects/",
-          icon: "material-symbols:work",
-        },
-        {
-          name: "我的技能",
-          url: "/skills/",
-          icon: "material-symbols:psychology",
-        },
-        {
-          name: "我的经历",
-          url: "/timeline/",
-          icon: "material-symbols:timeline",
-        },
-      ],
-    },
-  ],
+  ];
+
+  // 根据配置决定是否添加追番页面
+  if (siteConfig.pages.anime) {
+    links.push(LinkPreset.Anime);
+  }
+
+  // 支持自定义导航栏链接,并且支持多级菜单
+  links.push({
+    name: "链接",
+    url: "/links/",
+    icon: "material-symbols:link",
+    children: [
+      {
+        name: "GitHub",
+        url: "https://github.com/CuteLeaf/Firefly",
+        external: true,
+        icon: "fa6-brands:github",
+      },
+      {
+        name: "Bilibili",
+        url: "https://space.bilibili.com/38932988",
+        external: true,
+        icon: "fa6-brands:bilibili",
+      },
+    ],
+  });
+
+  links.push(LinkPreset.Friends);
+
+  // 根据config的页面开关动态生成项目、技能、经历菜单项
+  const otherChildren: NavBarLink[] = [];
+
+  if (siteConfig.pages.projects) {
+    otherChildren.push({
+      name: "我的项目",
+      url: "/projects/",
+      icon: "material-symbols:work",
+    });
+  }
+
+  if (siteConfig.pages.skills) {
+    otherChildren.push({
+      name: "我的技能",
+      url: "/skills/",
+      icon: "material-symbols:psychology",
+    });
+  }
+
+  if (siteConfig.pages.timeline) {
+    otherChildren.push({
+      name: "我的经历",
+      url: "/timeline/",
+      icon: "material-symbols:timeline",
+    });
+  }
+
+  links.push({
+    name: "关于",
+    url: "/content/",
+    icon: "material-symbols:info",
+    children: [LinkPreset.About, ...otherChildren],
+  });
+  return { links };
 };
+
+export const navBarConfig: NavBarConfig = getDynamicNavBarConfig();

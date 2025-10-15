@@ -52,7 +52,15 @@ export type SiteConfig = {
     value: string; // icon名或图片url
     alt?: string; // 图片alt文本
   };
-  showLastModified: boolean; // 控制“上次编辑”卡片显示的开关
+  showLastModified: boolean; // 控制"上次编辑"卡片显示的开关
+
+  // 页面开关配置
+  pages: {
+    anime: boolean; // 追番页面开关
+    projects: boolean; // 项目展示页面开关
+    timeline: boolean; // 时间线页面开关
+    skills: boolean; // 技能页面开关
+  };
 };
 
 export type Favicon = {

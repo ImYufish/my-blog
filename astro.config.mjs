@@ -15,7 +15,7 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-directives";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
-import { expressiveCodeConfig } from "./src/config.ts";
+import { expressiveCodeConfig, siteConfig } from "./src/config.ts";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -111,7 +111,29 @@ export default defineConfig({
 			},
 		}),
 		svelte(),
-		sitemap(),
+		sitemap({
+			filter: (page) => {
+				// 根据页面开关配置过滤sitemap
+				const url = new URL(page);
+				const pathname = url.pathname;
+				
+				// 检查各个页面是否启用
+				if (pathname === '/anime/' && !siteConfig.pages.anime) {
+					return false;
+				}
+				if (pathname === '/projects/' && !siteConfig.pages.projects) {
+					return false;
+				}
+				if (pathname === '/timeline/' && !siteConfig.pages.timeline) {
+					return false;
+				}
+				if (pathname === '/skills/' && !siteConfig.pages.skills) {
+					return false;
+				}
+				
+				return true;
+			},
+		}),
 	],
 	markdown: {
 		remarkPlugins: [
