@@ -1,117 +1,171 @@
 import { getImage } from "astro:assets";
-import { getCollection } from "astro:content";
 import type { RSSFeedItem } from "@astrojs/rss";
 import rss from "@astrojs/rss";
 import type { APIContext, ImageMetadata } from "astro";
-import MarkdownIt from "markdown-it";
 import { parse as htmlParser } from "node-html-parser";
-import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
 import { getSortedPosts } from "@/utils/content-utils";
 
-const markdownParser = new MarkdownIt();
+// Function to sanitize XML content by removing invalid characters
+function sanitizeXmlContent(content: string): string {
+  return content
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "") // Remove control characters except \t, \n, \r
+    .replace(/&(?!amp;|lt;|gt;|quot;|apos;)/g, "&amp;") // Escape unescaped ampersands
+    .replace(/</g, "&lt;") // Escape <
+    .replace(/>/g, "&gt;") // Escape >
+    .replace(/"/g, "&quot;") // Escape "
+    .replace(/'/g, "&apos;"); // Escape '
+}
+
+// Function to sanitize HTML content for XML (removes invalid chars but preserves HTML)
+function sanitizeHtmlForXml(content: string): string {
+  return content
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "") // Remove control characters except \t, \n, \r
+    .replace(/&(?!amp;|lt;|gt;|quot;|apos;)/g, "&amp;"); // Only escape unescaped ampersands
+}
+
+// Constants
+const CONTENT_POSTS_PATH = "/src/content/posts";
+const CONTENT_PATH = "/src/content";
+
+// Dynamic imports will be done inside the GET function
 
 // get dynamic import of images as a map collection
 const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
   "/src/content/**/*.{jpeg,jpg,png,gif,webp}" // include posts and assets
 );
 
+// Helper function to extract post directory
+function getPostDirectory(postId: string): string {
+  return postId.includes("/") ? postId.split("/")[0] : "";
+}
+
+// Helper function to build image import path
+function buildImageImportPath(src: string, postId: string): string | null {
+  if (src.startsWith("./")) {
+    const prefixRemoved = src.slice(2);
+    const postDir = getPostDirectory(postId);
+    return postDir
+      ? `${CONTENT_POSTS_PATH}/${postDir}/${prefixRemoved}`
+      : `${CONTENT_POSTS_PATH}/${prefixRemoved}`;
+  } else if (src.startsWith("../")) {
+    const cleaned = src.replace(/^\.\.\//, "");
+    return `${CONTENT_PATH}/${cleaned}`;
+  } else {
+    // Handle direct filename (no ./ prefix)
+    const postDir = getPostDirectory(postId);
+    return postDir
+      ? `${CONTENT_POSTS_PATH}/${postDir}/${src}`
+      : `${CONTENT_POSTS_PATH}/${src}`;
+  }
+}
+
 export async function GET(context: APIContext) {
   if (!context.site) {
-    throw Error("site not set");
+    throw new Error("site not set");
   }
+
+  // Dynamic imports with proper type handling
+  const markdownItModule = await import("markdown-it");
+  const sanitizeHtmlModule = await import("sanitize-html");
+
+  // Handle both CommonJS and ES module exports with proper typing
+  const MarkdownIt =
+    (markdownItModule as { default?: any }).default || markdownItModule;
+  const sanitizeHtml =
+    (sanitizeHtmlModule as { default?: any }).default || sanitizeHtmlModule;
+  const markdownParser = new MarkdownIt();
 
   // Use the same ordering as site listing (pinned first, then by published desc)
   const posts = await getSortedPosts();
   const feed: RSSFeedItem[] = [];
 
-  for (const post of posts) {
-    // convert markdown to html string
-    const body = markdownParser.render(post.body);
-    // convert html string to DOM-like structure
-    const html = htmlParser.parse(body);
-    // hold all img tags in variable images
-    const images = html.querySelectorAll("img");
+  // Process posts in parallel for better performance
+  const processedPosts = await Promise.all(
+    posts.map(async (post) => {
+      // convert markdown to html string
+      const body = markdownParser.render(post.body);
+      // convert html string to DOM-like structure
+      const html = htmlParser.parse(body);
+      // hold all img tags in variable images
+      const images = html.querySelectorAll("img");
 
-    for (const img of images) {
-      const src = img.getAttribute("src");
-      if (!src) continue;
+      // Process images in parallel
+      await Promise.all(
+        images.map(async (img) => {
+          const src = img.getAttribute("src");
+          if (!src) return;
 
-      // Handle content-relative images and convert them to built _astro paths
-      if (
-        src.startsWith("./") ||
-        src.startsWith("../") ||
-        (!src.startsWith("http") && !src.startsWith("/"))
-      ) {
-        let importPath: string | null = null;
+          // Handle content-relative images and convert them to built _astro paths
+          if (
+            src.startsWith("./") ||
+            src.startsWith("../") ||
+            (!src.startsWith("http") && !src.startsWith("/"))
+          ) {
+            const importPath = buildImageImportPath(src, post.id);
+            if (!importPath) return;
 
-        if (src.startsWith("./")) {
-          // Path relative to the post file directory
-          const prefixRemoved = src.slice(2);
-          // Check if this post is in a subdirectory (like bestimageapi/index.md)
-          const postPath = post.id; // This gives us the full path like "bestimageapi/index.md"
-          const postDir = postPath.includes("/") ? postPath.split("/")[0] : "";
-
-          if (postDir) {
-            // For posts in subdirectories
-            importPath = `/src/content/posts/${postDir}/${prefixRemoved}`;
-          } else {
-            // For posts directly in posts directory
-            importPath = `/src/content/posts/${prefixRemoved}`;
+            try {
+              const imageMod = await imagesGlob[importPath]?.()?.then(
+                (res) => res.default
+              );
+              if (imageMod) {
+                const optimizedImg = await getImage({ src: imageMod });
+                img.setAttribute(
+                  "src",
+                  new URL(optimizedImg.src, context.site).href
+                );
+              } else {
+                // Only log in development mode
+                if (import.meta.env.DEV) {
+                  console.warn(
+                    `Failed to load image: ${importPath} for post: ${post.id}`
+                  );
+                }
+              }
+            } catch (error) {
+              // Handle image loading errors gracefully
+              if (import.meta.env.DEV) {
+                console.error(
+                  `Error loading image ${importPath} for post ${post.id}:`,
+                  error
+                );
+              }
+            }
+          } else if (src.startsWith("/")) {
+            // images starting with `/` are in public dir
+            img.setAttribute("src", new URL(src, context.site).href);
           }
-        } else if (src.startsWith("../")) {
-          // Path like ../assets/images/xxx -> relative to /src/content/
-          const cleaned = src.replace(/^\.\.\//, "");
-          importPath = `/src/content/${cleaned}`;
-        } else {
-          // Handle direct filename (no ./ prefix) - assume it's in the same directory as the post
-          const postPath = post.id; // This gives us the full path like "bestimageapi/index.md"
-          const postDir = postPath.includes("/") ? postPath.split("/")[0] : "";
+        })
+      );
 
-          if (postDir) {
-            // For posts in subdirectories
-            importPath = `/src/content/posts/${postDir}/${src}`;
-          } else {
-            // For posts directly in posts directory
-            importPath = `/src/content/posts/${src}`;
-          }
-        }
+      return {
+        post,
+        html,
+      };
+    })
+  );
 
-        const imageMod = await imagesGlob[importPath]?.()?.then(
-          (res) => res.default
-        );
-        if (imageMod) {
-          const optimizedImg = await getImage({ src: imageMod });
-          img.setAttribute("src", new URL(optimizedImg.src, context.site).href);
-        } else {
-          // Debug: log the failed import path
-          console.log(
-            `Failed to load image: ${importPath} for post: ${post.id}`
-          );
-        }
-      } else if (src.startsWith("/")) {
-        // images starting with `/` are in public dir
-        img.setAttribute("src", new URL(src, context.site).href);
-      }
-    }
-
+  for (const { post, html } of processedPosts) {
     feed.push({
-      title: post.data.title,
-      description: post.data.description,
+      title: sanitizeXmlContent(post.data.title),
+      description: sanitizeXmlContent(post.data.description || ""),
       pubDate: post.data.published,
       link: `/posts/${post.slug}/`,
-      // sanitize the new html string with corrected image paths
-      content: sanitizeHtml(html.toString(), {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-      }),
+      // content:encoded should contain HTML but must be XML-safe
+      content: sanitizeHtmlForXml(
+        sanitizeHtml(html.toString(), {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+        })
+      ),
     });
   }
 
   return rss({
-    title: siteConfig.title,
-    description: siteConfig.subtitle || "No description",
+    title: sanitizeXmlContent(siteConfig.title),
+    description: sanitizeXmlContent(siteConfig.subtitle || "No description"),
     site: context.site,
     items: feed,
-    customData: `<language>${siteConfig.lang}</language>`,
+    customData: `<language>${sanitizeXmlContent(siteConfig.lang)}</language>`,
   });
 }
