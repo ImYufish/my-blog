@@ -5,6 +5,11 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 
+// 检查页面是否启用
+if (!siteConfig.pages.anime) {
+  return Astro.redirect("/404/");
+}
+
 // 服务器端只传递配置信息到客户端
 const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "your-user-id";
 
