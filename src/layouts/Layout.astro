@@ -126,7 +126,7 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
-		<meta name="description" content={description || pageTitle}>
+		<meta name="description" content={description || siteConfig.description || pageTitle}>
 		{siteConfig.keywords && siteConfig.keywords.length > 0 && (
 			<meta name="keywords" content={siteConfig.keywords.join(', ')} />
 		)}
@@ -135,7 +135,7 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 		<meta property="og:site_name" content={siteConfig.title}>
 		<meta property="og:url" content={Astro.url}>
 		<meta property="og:title" content={pageTitle}>
-		<meta property="og:description" content={description || pageTitle}>
+		<meta property="og:description" content={description || siteConfig.description || pageTitle}>
 		{ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
 		{
 			setOGTypeArticle ? (
@@ -148,7 +148,7 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 		<meta name="twitter:card" content="summary_large_image">
 		<meta property="twitter:url" content={Astro.url}>
 		<meta name="twitter:title" content={pageTitle}>
-		<meta name="twitter:description" content={description || pageTitle}>
+		<meta name="twitter:description" content={description || siteConfig.description || pageTitle}>
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />

@@ -162,8 +162,13 @@ export async function GET(context: APIContext) {
   }
 
   return rss({
-    title: sanitizeXmlContent(siteConfig.title),
-    description: sanitizeXmlContent(siteConfig.subtitle || "No description"),
+    title:
+      sanitizeXmlContent(siteConfig.title) +
+      " - " +
+      sanitizeXmlContent(siteConfig.subtitle),
+    description: sanitizeXmlContent(
+      siteConfig.description || siteConfig.subtitle || "No description"
+    ),
     site: context.site,
     items: feed,
     customData: `<language>${sanitizeXmlContent(siteConfig.lang)}</language>`,
