@@ -121,6 +121,7 @@ lang: jp      # 仅当文章语言与 `config.ts` 中的网站语言不同时需
 - 感谢基于Fuwari二次开发的[Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 模板
 - 感谢b站up[公公的日常](https://space.bilibili.com/3546750017080050)提供的Q版 流萤 看板娘切片数据模型
 - 使用 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
+- 图标来自 [Iconify](https://iconify.design/)
 ---
 
 如有问题或建议，请提交 [Issue](https://github.com/CuteLeaf/Firefly/issues) 或 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls)。
