@@ -76,6 +76,9 @@ export const zh_TW: Translation = {
   [Key.notFoundDescription]: "抱歉，您訪問的頁面不存在或已被移動。",
   [Key.backToHome]: "返回首頁",
 
+  // 音樂播放器
+  [Key.playlist]: "播放列表",
+
   // 項目展示頁面
   [Key.projects]: "項目展示",
   [Key.projectsSubtitle]: "我的開發項目作品集",

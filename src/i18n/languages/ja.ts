@@ -78,6 +78,9 @@ export const ja: Translation = {
     "申し訳ありませんが、アクセスしたページは存在しないか、移動されています。",
   [Key.backToHome]: "ホームに戻る",
 
+  // Music Player
+  [Key.playlist]: "プレイリスト",
+
   // プロジェクトページ
   [Key.projects]: "プロジェクト",
   [Key.projectsSubtitle]: "私の開発プロジェクトポートフォリオ",

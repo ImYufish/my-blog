@@ -448,3 +448,202 @@ export type FriendLink = {
   weight: number; // 权重，数字越大排序越靠前
   enabled: boolean; // 是否启用
 };
+
+// 音乐播放器配置
+export type MusicPlayerConfig = {
+  // 基础功能开关
+  enable: boolean; // 启用音乐播放器功能
+
+  // 播放器模式配置
+  mode?: "local" | "meting"; // 播放器模式："local" 本地音乐，"meting" 在线音乐
+
+  // Meting API 配置
+  meting?: {
+    // Meting API 地址
+    api?: string;
+
+    // 歌单配置
+    playlist?: {
+      id?: string; // 歌单ID
+      server?: "netease" | "tencent" | "kugou" | "xiami" | "baidu"; // 音乐平台
+      type?: "playlist" | "album" | "song"; // 类型
+    };
+
+    // 备用 API 配置
+    fallbackApis?: string[];
+  };
+
+  // 本地音乐配置
+  local?: {
+    // 本地音乐文件路径
+    musicPath?: string;
+
+    // 本地播放列表
+    playlist?: Array<{
+      id: number;
+      title: string;
+      artist: string;
+      cover: string;
+      url: string;
+      duration: number;
+    }>;
+  };
+
+  // 播放器行为配置
+  behavior?: {
+    // 自动播放
+    autoplay?: boolean;
+
+    // 默认音量
+    defaultVolume?: number;
+
+    // 默认播放模式
+    defaultShuffle?: boolean;
+    defaultRepeat?: 0 | 1 | 2; // 0=不循环, 1=单曲循环, 2=列表循环
+
+    // 播放器位置
+    position?: {
+      bottom?: number;
+      right?: number;
+      left?: number | "auto";
+    };
+
+    // 播放器尺寸
+    size?: {
+      mini?: {
+        width?: number;
+        height?: number;
+      };
+      expanded?: {
+        width?: number;
+        height?: number | "auto";
+      };
+      hidden?: {
+        size?: number;
+      };
+    };
+  };
+
+  // 界面配置
+  ui?: {
+    // 主题配置
+    theme?: {
+      backgroundOpacity?: number;
+      backdropBlur?: boolean;
+      primaryColor?: string;
+    };
+
+    // 动画配置
+    animation?: {
+      coverRotation?: {
+        enable?: boolean;
+        speed?: number;
+        pauseOnHover?: boolean;
+      };
+      expandAnimation?: {
+        duration?: number;
+        easing?: string;
+      };
+      songTransition?: {
+        enable?: boolean;
+        duration?: number;
+      };
+    };
+
+    // 显示配置
+    display?: {
+      showPlaylistButton?: boolean;
+      showVolumeControl?: boolean;
+      showProgressBar?: boolean;
+      showTimeDisplay?: boolean;
+      showShuffleButton?: boolean;
+      showRepeatButton?: boolean;
+      showSkipButtons?: boolean;
+      showHideButton?: boolean;
+    };
+
+    // 播放列表配置
+    playlist?: {
+      maxHeight?: number;
+      width?: number;
+      itemsPerPage?: number;
+      showTrackNumbers?: boolean;
+      showDuration?: boolean;
+    };
+  };
+
+  // 响应式配置
+  responsive?: {
+    // 移动端配置
+    mobile?: {
+      position?: {
+        bottom?: number;
+        right?: number;
+        left?: number;
+      };
+      size?: {
+        mini?: {
+          width?: string | number;
+          maxWidth?: number;
+        };
+        expanded?: {
+          width?: string | number;
+          maxWidth?: number | "none";
+        };
+      };
+      controls?: {
+        buttonSize?: number;
+        playButtonSize?: number;
+        gap?: number;
+      };
+    };
+
+    // 小屏幕配置
+    smallScreen?: {
+      size?: {
+        mini?: {
+          width?: number;
+        };
+      };
+      controls?: {
+        buttonSize?: number;
+        playButtonSize?: number;
+        gap?: number;
+      };
+    };
+  };
+
+  // 错误处理配置
+  errorHandling?: {
+    showErrorMessages?: boolean;
+    errorDisplayDuration?: number;
+    autoSkipOnError?: boolean;
+    maxRetries?: number;
+  };
+
+  // 快捷键配置
+  shortcuts?: {
+    enable?: boolean;
+    keys?: {
+      playPause?: string;
+      next?: string;
+      previous?: string;
+      volumeUp?: string;
+      volumeDown?: string;
+      toggleMute?: string;
+      toggleShuffle?: string;
+      toggleRepeat?: string;
+      togglePlaylist?: string;
+      toggleExpanded?: string;
+      toggleHidden?: string;
+    };
+  };
+
+  // 存储配置
+  storage?: {
+    rememberPlayState?: boolean;
+    rememberVolume?: boolean;
+    rememberPlayMode?: boolean;
+    storagePrefix?: string;
+  };
+};

@@ -74,6 +74,9 @@ enum I18nKey {
   notFoundDescription = "notFoundDescription",
   backToHome = "backToHome",
 
+  // 音乐播放器
+  playlist = "playlist",
+
   // 项目展示页面
   projects = "projects",
   projectsSubtitle = "projectsSubtitle",

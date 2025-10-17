@@ -7,11 +7,13 @@ import type {
   ProfileConfig,
   SakuraConfig,
   SiteConfig,
+  MusicPlayerConfig,
 } from "./types/config";
 import { adConfig1, adConfig2 } from "./config/adConfig";
 import { spineModelConfig, live2dModelConfig } from "./config/pioConfig";
 import { sidebarLayoutConfig } from "./config/sidebarConfig";
 import { fontConfig } from "./config/fontConfig";
+import { musicPlayerConfig } from "./config/musicConfig";
 
 // 更多配置在/src/config/目录下
 // 路径以 '/' 开头，则相对于 /public 目录
@@ -248,6 +250,8 @@ export const sakuraConfig: SakuraConfig = {
   zIndex: 100, // 层级，确保樱花在合适的层级显示
 };
 
+// 音乐播放器配置已移至 /src/config/musicConfig.ts
+
 // 导出所有配置的统一接口
 export const widgetConfigs = {
   profile: profileConfig,
@@ -258,6 +262,7 @@ export const widgetConfigs = {
   live2d: live2dModelConfig,
   advertisement: adConfig1,
   advertisement2: adConfig2,
+  music: musicPlayerConfig,
 } as const;
 
 export const umamiConfig = {
