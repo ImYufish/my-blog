@@ -25,6 +25,12 @@
 
 <img alt="firefly" src="https://s2.loli.net/2025/10/14/bsvCrO4FcSVlQq7.png" />
 
+<table>
+  <tr>
+    <td valign="top"><img src="https://s2.loli.net/2025/10/18/Kj6kZtm4edExfFT.png"></td>
+    <td valign="top"><img src="https://s2.loli.net/2025/10/18/KZGHY8X27gThafF.png"></td>
+  </tr>
+ </table>
 
 ## 🚀 快速开始
 
