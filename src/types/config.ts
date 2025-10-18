@@ -62,6 +62,17 @@ export type SiteConfig = {
     timeline: boolean; // 时间线页面开关
     skills: boolean; // 技能页面开关
   };
+
+  // 文章列表布局配置
+  postListLayout: {
+    defaultMode: "list" | "grid"; // 默认布局模式：list=列表模式，grid=网格模式
+    allowSwitch: boolean; // 是否允许用户切换布局
+  };
+
+  // 分页配置
+  pagination: {
+    postsPerPage: number; // 每页显示的文章数量
+  };
 };
 
 export type Favicon = {

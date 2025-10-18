@@ -3,6 +3,8 @@ import { Icon } from "astro-icon/components";
 import { type NavBarLink, LinkPreset } from "../../types/config";
 import { LinkPresets } from "../../constants/link-presets";
 import { url } from "../../utils/url-utils";
+import LayoutSwitchButton from "../LayoutSwitchButton.svelte";
+import { siteConfig } from "../../config/siteConfig";
 
 interface Props {
 	links: NavBarLink[];
@@ -24,6 +26,14 @@ const processedLinks = Astro.props.links.map(
 );
 ---
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute transition-all fixed right-4 px-2 py-2 max-h-[80vh] overflow-y-auto"]}>
+    {siteConfig.postListLayout.allowSwitch && (
+        <div class="mobile-menu-item border-b border-[var(--line-divider)] mb-2 pb-2">
+            <div class="flex items-center justify-between py-2 pl-3 pr-1">
+                <span class="text-black/75 dark:text-white/75 font-bold">布局模式</span>
+                <LayoutSwitchButton client:only="svelte" />
+            </div>
+        </div>
+    )}
     {processedLinks.map((link) => (
         <div class="mobile-menu-item">
             {link.children && link.children.length > 0 ? (
