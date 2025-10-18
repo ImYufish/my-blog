@@ -1,6 +1,6 @@
 import type { NavBarConfig, NavBarLink } from "../types/config";
 import { LinkPreset } from "../types/config";
-import { siteConfig } from "../config";
+import { siteConfig } from "./siteConfig";
 
 // 根据页面开关动态生成导航栏配置
 const getDynamicNavBarConfig = (): NavBarConfig => {

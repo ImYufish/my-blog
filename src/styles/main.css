@@ -317,9 +317,6 @@ html {
     transform: translateY(-50%);
 }
 
-.collapsed {
-    height: var(--collapsedHeight);
-}
 
 /*剧透效果*/
 .custom-md spoiler {

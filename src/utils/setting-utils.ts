@@ -4,7 +4,7 @@ import {
   LIGHT_MODE,
   SYSTEM_MODE,
 } from "@constants/constants";
-import { siteConfig } from "@/config";
+import { siteConfig } from "../config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
 export function getDefaultHue(): number {

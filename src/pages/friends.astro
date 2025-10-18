@@ -4,7 +4,7 @@ import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
-import { getEnabledFriends } from "../config/friendsConfig";
+import { getEnabledFriends } from "../config";
 
 const friendsPost = await getEntry("spec", "friends");
 
@@ -29,7 +29,7 @@ const items = getEnabledFriends();
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 my-4">
         {
           items.map((item) => (
-            <div class="flex flex-nowrap items-stretch h-28 gap-3 sm:gap-4 rounded-[var(--radius-large)]">
+            <div class="flex flex-nowrap items-stretch h-24 sm:h-28 gap-3 sm:gap-4 rounded-[var(--radius-large)]">
               <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">
                 <img
                   src={item.imgurl}
@@ -57,11 +57,11 @@ const items = getEnabledFriends();
                     { flex: true, "hidden md:flex": false },
                   ]}
                 >
-                  <div class="flex flex-row flex-wrap items-center gap-1">
+                  <div class="flex flex-row items-center gap-1 overflow-hidden">
                     {item.tags &&
                       item.tags.length > 0 &&
                       item.tags.map((tag) => (
-                        <span class="btn-regular h-5 sm:h-6 text-xs px-1.5 sm:px-2 rounded-md">
+                        <span class="btn-regular h-5 sm:h-6 text-xs px-1.5 sm:px-2 rounded-md whitespace-nowrap flex-shrink-0">
                           {tag}
                         </span>
                       ))}

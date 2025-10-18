@@ -19,14 +19,13 @@
     
     // Meting API 配置
     let meting_api = config.meting?.api ?? "https://www.bilibili.uno/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
-    let meting_id = config.meting?.playlist?.id ?? "14164869977";
+    let meting_id = config.meting?.playlist?.id ?? "8814137515";
     let meting_server = config.meting?.playlist?.server ?? "netease";
     let meting_type = config.meting?.playlist?.type ?? "playlist";
     let fallback_apis = config.meting?.fallbackApis ?? [];
     
     // 本地音乐配置
     let local_playlist = config.local?.playlist ?? [];
-    let local_music_path = config.local?.musicPath ?? "assets/music/";
     
     // 行为配置
     let autoplay = config.behavior?.autoplay ?? false;
@@ -39,21 +38,13 @@
     let position_right = config.behavior?.position?.right ?? 16;
     let position_left = config.behavior?.position?.left ?? "auto";
     
-    // 尺寸配置
-    let mini_width = config.behavior?.size?.mini?.width ?? 280;
-    let mini_height = config.behavior?.size?.mini?.height ?? 80;
-    let expanded_width = config.behavior?.size?.expanded?.width ?? 320;
-    let hidden_size = config.behavior?.size?.hidden?.size ?? 48;
     
     // UI 配置
     let show_playlist_button = config.ui?.display?.showPlaylistButton ?? true;
     let show_volume_control = config.ui?.display?.showVolumeControl ?? true;
-    let show_progress_bar = config.ui?.display?.showProgressBar ?? true;
-    let show_time_display = config.ui?.display?.showTimeDisplay ?? true;
     let show_shuffle_button = config.ui?.display?.showShuffleButton ?? true;
     let show_repeat_button = config.ui?.display?.showRepeatButton ?? true;
     let show_skip_buttons = config.ui?.display?.showSkipButtons ?? true;
-    let show_hide_button = config.ui?.display?.showHideButton ?? true;
     
     // 播放列表配置
     let playlist_max_height = config.ui?.playlist?.maxHeight ?? 384;
@@ -71,17 +62,13 @@
     let error_display_duration = config.errorHandling?.errorDisplayDuration ?? 3000;
     let auto_skip_on_error = config.errorHandling?.autoSkipOnError ?? true;
     
-    // 存储配置
-    let remember_play_state = config.storage?.rememberPlayState ?? true;
-    let remember_volume = config.storage?.rememberVolume ?? true;
-    let remember_play_mode = config.storage?.rememberPlayMode ?? true;
-    let storage_prefix = config.storage?.storagePrefix ?? "firefly_music_";
+    
     // 播放状态，默认为 false (未播放)
     let isPlaying = false;
     // 播放器是否展开，默认为 false
     let isExpanded = false;
-    // 播放器是否隐藏，默认为 false
-    let isHidden = false;
+    // 播放器是否折叠贴边，默认为 true（默认显示折叠状态）
+    let isCollapsed = true;
     // 是否显示播放列表，默认为 false
     let showPlaylist = false;
     // 当前播放时间，默认为 0
@@ -105,8 +92,8 @@
     
     // 当前歌曲信息
     let currentSong = {
-        title: "示例歌曲",
-        artist: "示例艺术家",
+        title: "Loading ...",
+        artist: "Loading ...", 
         cover: "/favicon/favicon-light-192.png",
         url: "",
         duration: 0,
@@ -128,38 +115,53 @@
     async function fetchMetingPlaylist() {
         if (!meting_api || !meting_id) return;
         isLoading = true;
-        const apiUrl = meting_api
-            .replace(":server", meting_server)
-            .replace(":type", meting_type)
-            .replace(":id", meting_id)
-            .replace(":auth", "")
-            .replace(":r", Date.now().toString());
-        try {
-            const res = await fetch(apiUrl);
-            if (!res.ok) throw new Error("meting api error");
-            const list = await res.json();
-            playlist = list.map((song) => {
-                let title = song.name ?? song.title ?? "未知歌曲";
-                let artist = song.artist ?? song.author ?? "未知艺术家";
-                let dur = song.duration ?? 0;
-                if (dur > 10000) dur = Math.floor(dur / 1000);
-                if (!Number.isFinite(dur) || dur <= 0) dur = 0;
-                return {
-                    id: song.id,
-                    title,
-                    artist,
-                    cover: song.pic ?? "",
-                    url: song.url ?? "",
-                    duration: dur,
-                };
-            });
-            if (playlist.length > 0) {
-                loadSong(playlist[0]);
+        
+        // 尝试主API
+        const apis = [meting_api, ...fallback_apis];
+        
+        for (let i = 0; i < apis.length; i++) {
+            try {
+                const apiUrl = apis[i]
+                    .replace(":server", meting_server)
+                    .replace(":type", meting_type)
+                    .replace(":id", meting_id)
+                    .replace(":auth", "")
+                    .replace(":r", Date.now().toString());
+                
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error(`API ${i + 1} error: ${res.status}`);
+                
+                const list = await res.json();
+                playlist = list.map((song) => {
+                    let title = song.name ?? song.title ?? "未知歌曲";
+                    let artist = song.artist ?? song.author ?? "未知艺术家";
+                    let dur = song.duration ?? 0;
+                    if (dur > 10000) dur = Math.floor(dur / 1000);
+                    if (!Number.isFinite(dur) || dur <= 0) dur = 0;
+                    return {
+                        id: song.id,
+                        title,
+                        artist,
+                        cover: song.pic ?? "",
+                        url: song.url ?? "",
+                        duration: dur,
+                    };
+                });
+                
+                if (playlist.length > 0) {
+                    loadSong(playlist[0]);
+                }
+                isLoading = false;
+                return; // 成功获取，退出循环
+                
+            } catch (e) {
+                console.warn(`API ${i + 1} failed:`, e);
+                if (i === apis.length - 1) {
+                    // 所有API都失败了
+                    showErrorMessage("所有 Meting API 都无法访问，请检查网络连接");
+                    isLoading = false;
+                }
             }
-            isLoading = false;
-        } catch (e) {
-            showErrorMessage("Meting 歌单获取失败");
-            isLoading = false;
         }
     }
     
@@ -176,14 +178,19 @@
         isExpanded = !isExpanded;
         if (isExpanded) {
             showPlaylist = false;
-            isHidden = false;
+            isCollapsed = false;
         }
     }
     
-    function toggleHidden() {
-        isHidden = !isHidden;
-        if (isHidden) {
+
+    function toggleCollapsed() {
+        isCollapsed = !isCollapsed;
+        if (isCollapsed) {
             isExpanded = false;
+            showPlaylist = false;
+        } else {
+            // 从折叠状态展开时，直接显示完整播放器
+            isExpanded = true;
             showPlaylist = false;
         }
     }
@@ -201,13 +208,14 @@
     }
     
     function previousSong() {
-        if (playlist.length <= 1) return;
+        if (playlist.length === 0) return;
         const newIndex = currentIndex > 0 ? currentIndex - 1 : playlist.length - 1;
         playSong(newIndex);
     }
     
     function nextSong() {
-        if (playlist.length <= 1) return;
+        if (playlist.length === 0) return;
+        
         let newIndex: number;
         if (isShuffled) {
             do {
@@ -216,6 +224,7 @@
         } else {
             newIndex = currentIndex < playlist.length - 1 ? currentIndex + 1 : 0;
         }
+        console.log('nextSong 调用', { currentIndex, newIndex, playlistLength: playlist.length, isShuffled });
         playSong(newIndex);
     }
     
@@ -248,6 +257,7 @@
         if (path.startsWith("/")) return path;
         return `/${path}`;
     }
+    
     
     function loadSong(song: typeof currentSong) {
         if (!song || !audio) return;
@@ -350,16 +360,23 @@
             currentTime = audio.currentTime;
         });
         audio.addEventListener("ended", () => {
+            console.log('歌曲播放结束', { isRepeating, currentIndex, playlistLength: playlist.length, isShuffled });
             if (isRepeating === 1) {
+                // 单曲循环：重新播放当前歌曲
+                console.log('单曲循环：重新播放当前歌曲');
                 audio.currentTime = 0;
                 audio.play().catch(() => {});
-            } else if (
-                isRepeating === 2 ||
-                currentIndex < playlist.length - 1 ||
-                isShuffled
-            ) {
+            } else if (isRepeating === 2) {
+                // 列表循环：播放下一首
+                console.log('列表循环：播放下一首');
+                nextSong();
+            } else if (currentIndex < playlist.length - 1 || isShuffled) {
+                // 非循环模式：如果还有下一首或随机播放，则播放下一首
+                console.log('非循环模式：播放下一首');
                 nextSong();
             } else {
+                // 非循环模式：播放列表结束，停止播放
+                console.log('非循环模式：播放列表结束，停止播放');
                 isPlaying = false;
             }
         });
@@ -373,17 +390,37 @@
     onMount(() => {
         audio = new Audio();
         audio.volume = volume;
+        audio.muted = isMuted;
         handleAudioEvents();
+        
         if (!musicPlayerConfig.enable) {
             return;
         }
+        
         if (mode === "meting") {
-            fetchMetingPlaylist();
+            fetchMetingPlaylist().then(() => {
+                // 如果启用了自动播放，则开始播放
+                if (autoplay && playlist.length > 0) {
+                    setTimeout(() => {
+                        if (audio && audio.readyState >= 2) {
+                            audio.play().catch(() => {});
+                        }
+                    }, 1000);
+                }
+            });
         } else {
             // 使用本地播放列表，不发送任何API请求
             playlist = [...local_playlist];
             if (playlist.length > 0) {
                 loadSong(playlist[0]);
+                // 如果启用了自动播放，则开始播放
+                if (autoplay) {
+                    setTimeout(() => {
+                        if (audio && audio.readyState >= 2) {
+                            audio.play().catch(() => {});
+                        }
+                    }, 1000);
+                }
             } else {
                 showErrorMessage("本地播放列表为空");
             }
@@ -411,48 +448,21 @@
     </div>
     {/if}
     
-    <div class="music-player fixed z-50 transition-all duration-300 ease-in-out"
+    <div class="music-player fixed z-[1001] transition-all duration-300 ease-in-out"
          class:expanded={isExpanded}
-         class:hidden-mode={isHidden}
-         style="bottom: {position_bottom}px; right: {position_right}px; {position_left !== 'auto' ? `left: ${position_left}px;` : ''}; --mini-width: {mini_width}px; --mini-height: {mini_height}px; --expanded-width: {expanded_width}px; --hidden-size: {hidden_size}px; --rotation-speed: {cover_rotation_speed}s; --rotation-pause-hover: {cover_rotation_pause_hover ? 'paused' : 'running'};">
-        <!-- 隐藏状态的小圆球 -->
-        <div class="orb-player bg-[var(--primary)] rounded-full shadow-lg cursor-pointer transition-all duration-500 ease-in-out flex items-center justify-center hover:scale-110 active:scale-95"
-             style="width: {hidden_size}px; height: {hidden_size}px;"
-             class:opacity-0={!isHidden}
-             class:scale-0={!isHidden}
-             class:pointer-events-none={!isHidden}
-             on:click={toggleHidden}
-             on:keydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleHidden();
-                }
-             }}
-             role="button"
-             tabindex="0"
-             aria-label="显示音乐播放器"
-             title="{currentSong.title} - {currentSong.artist}">
-            {#if isLoading}
-                <Icon icon="eos-icons:loading" class="text-white text-lg" />
-            {:else if isPlaying}
-                <div class="flex space-x-0.5">
-                    <div class="w-0.5 h-3 bg-white rounded-full animate-pulse"></div>
-                    <div class="w-0.5 h-4 bg-white rounded-full animate-pulse" style="animation-delay: 150ms;"></div>
-                    <div class="w-0.5 h-2 bg-white rounded-full animate-pulse" style="animation-delay: 300ms;"></div>
-                </div>
-            {:else}
-                <Icon icon="material-symbols:music-note" class="text-white text-lg" />
-            {/if}
-        </div>
-        <!-- 收缩状态的迷你播放器（封面圆形） -->
-        <div class="mini-player card-base bg-[var(--float-panel-bg)] shadow-xl rounded-2xl p-3 transition-all duration-500 ease-in-out"
-             style="width: {mini_width}px; height: {mini_height}px;"
-             class:opacity-0={isExpanded || isHidden}
-             class:scale-95={isExpanded || isHidden}
-             class:pointer-events-none={isExpanded || isHidden}>
-            <div class="flex items-center gap-3">
-                <!-- 封面区域 - 点击播放/暂停 -->
-                <div class="cover-container relative w-12 h-12 rounded-full overflow-hidden cursor-pointer"
+         class:collapsed-mode={isCollapsed}
+         style="bottom: {position_bottom}px; right: {position_right}px; {position_left !== 'auto' ? `left: ${position_left}px;` : ''}; --rotation-speed: {cover_rotation_speed}s; --rotation-pause-hover: {cover_rotation_pause_hover ? 'paused' : 'running'};">
+
+        
+        <!-- 折叠贴边状态 - 只显示封面和展开按钮 -->
+        <div class="collapsed-player card-base bg-[var(--float-panel-bg)] dark:bg-zinc-800/90 dark:backdrop-blur-md dark:border dark:border-zinc-700/50 rounded-2xl p-3 transition-all duration-500 ease-in-out"
+             style="width: 90px; height: 80px; background-color: var(--card-bg); "
+             class:opacity-0={!isCollapsed}
+             class:scale-95={!isCollapsed}
+             class:pointer-events-none={!isCollapsed}>
+            <div class="flex items-center gap-2 h-full">
+                <!-- 封面区域 -->
+                <div class="cover-container relative w-12 h-12 rounded-full overflow-hidden cursor-pointer flex-shrink-0"
                      on:click={togglePlay}
                      on:keydown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
@@ -460,58 +470,50 @@
                             togglePlay();
                         }
                      }}
-                     role="button"
                      tabindex="0"
-                     aria-label="播放/暂停音乐"
-                     title="{currentSong.title} - {currentSong.artist}">
-                    <img src={getAssetPath(currentSong.cover)} alt="封面"
-                         class="w-full h-full object-cover transition-transform duration-300"
-                         class:spinning={isPlaying && !isLoading && cover_rotation_enable}
-                         class:animate-pulse={isLoading}
-                         style="animation-duration: {cover_rotation_speed}s;" />
-                    <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        {#if isLoading}
-                            <Icon icon="eos-icons:loading" class="text-white text-xl" />
-                        {:else if isPlaying}
-                            <Icon icon="material-symbols:pause" class="text-white text-xl" />
-                        {:else}
-                            <Icon icon="material-symbols:play-arrow" class="text-white text-xl" />
-                        {/if}
-                    </div>
-                </div>
-                <!-- 歌曲信息区域 - 点击展开播放器 -->
-                <div class="flex-1 min-w-0 cursor-pointer"
-                     on:click={toggleExpanded}
-                     on:keydown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            toggleExpanded();
-                        }
-                     }}
                      role="button"
-                     tabindex="0"
-                     aria-label="展开音乐播放器"
-                     title="{currentSong.title} - {currentSong.artist}">
-                    <div class="text-sm font-medium text-90 truncate">{currentSong.title}</div>
-                    <div class="text-xs text-50 truncate">{currentSong.artist}</div>
+                     aria-label={isPlaying ? "暂停音乐" : "播放音乐"}>
+                    {#if currentSong.cover}
+                        <img src={currentSong.cover} 
+                             alt="{currentSong.title} - {currentSong.artist}"
+                             class="w-full h-full object-cover transition-transform duration-300"
+                             class:spinning={isPlaying && !isLoading && cover_rotation_enable}
+                             class:animate-pulse={isLoading}
+                             style="animation-duration: {cover_rotation_speed}s;" />
+                    {:else}
+                        <div class="w-full h-full bg-gradient-to-br from-[var(--primary)] to-[var(--primary)]/70 flex items-center justify-center">
+                            <Icon icon="fa6-solid:music" class="text-white text-lg" />
+                        </div>
+                    {/if}
+                    <!-- 播放状态指示器 -->
+                    {#if isPlaying}
+                        <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                            <div class="w-4 h-4 bg-white/90 rounded-full flex items-center justify-center">
+                                <div class="w-2 h-2 bg-[var(--primary)] rounded-full"></div>
+                            </div>
+                        </div>
+                    {/if}
                 </div>
-                <!-- 控制按钮区域 -->
-                <div class="flex items-center gap-1">
-                    <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
-                            on:click|stopPropagation={toggleHidden}
-                            title="隐藏播放器">
-                        <Icon icon="material-symbols:visibility-off" class="text-lg" />
-                    </button>
-                    <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
-                            on:click|stopPropagation={toggleExpanded}>
-                        <Icon icon="material-symbols:expand-less" class="text-lg" />
-                    </button>
-                </div>
+                
+                <!-- 展开按钮 -->
+                <button class="expand-btn w-8 h-8 rounded-full btn-regular border border-[var(--line-divider)] hover:border-[var(--primary)] active:scale-95 transition-all duration-200 flex items-center justify-center flex-shrink-0"
+                        on:click={toggleCollapsed}
+                        on:keydown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggleCollapsed();
+                            }
+                        }}
+                        tabindex="0"
+                        aria-label="展开音乐播放器">
+                    <Icon icon="fa6-solid:chevron-left" class="text-[var(--primary)] text-sm" />
+                </button>
             </div>
         </div>
+        
         <!-- 展开状态的完整播放器（封面圆形） -->
-        <div class="expanded-player card-base bg-[var(--float-panel-bg)] shadow-xl rounded-2xl p-4 transition-all duration-500 ease-in-out"
-             style="width: {expanded_width}px;"
+        <div class="expanded-player card-base bg-[var(--float-panel-bg)] dark:bg-zinc-800/90 dark:backdrop-blur-md dark:border dark:border-zinc-700/50 rounded-2xl p-4 transition-all duration-500 ease-in-out"
+             style="width: 320px; background-color: var(--card-bg);"
              class:opacity-0={!isExpanded}
              class:scale-95={!isExpanded}
              class:pointer-events-none={!isExpanded}>
@@ -533,12 +535,7 @@
                 </div>
                 <div class="flex items-center gap-1">
                     <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
-                            on:click={toggleHidden}
-                            title="隐藏播放器">
-                        <Icon icon="material-symbols:visibility-off" class="text-lg" />
-                    </button>
-                    <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
-                            on:click={toggleExpanded}>
+                            on:click={toggleCollapsed}>
                         <Icon icon="material-symbols:expand-more" class="text-lg" />
                     </button>
                 </div>
@@ -669,7 +666,7 @@
                         <Icon icon="material-symbols:close" class="text-lg" />
                     </button>
                 </div>
-                <div class="playlist-content overflow-y-auto max-h-80">
+                <div class="playlist-content overflow-y-auto max-h-80 scrollbar-custom">
                     {#each playlist as song, index}
                         <div class="playlist-item flex items-center gap-3 p-3 hover:bg-[var(--btn-plain-bg-hover)] cursor-pointer transition-colors"
                              class:bg-[var(--btn-plain-bg)]={index === currentIndex}
@@ -718,28 +715,7 @@
     </div>
     
     <style>
-    .orb-player {
-        position: relative;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-    }
-    .orb-player::before {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        background: linear-gradient(45deg, var(--primary), transparent, var(--primary));
-        border-radius: 50%;
-        z-index: -1;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    .orb-player:hover::before {
-        opacity: 0.3;
-        animation: rotate 2s linear infinite;
-    }
-    .orb-player .animate-pulse {
-        animation: musicWave 1.5s ease-in-out infinite;
-    }
+
     @keyframes rotate {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
@@ -748,27 +724,36 @@
         0%, 100% { transform: scaleY(0.5); }
         50% { transform: scaleY(1); }
     }
-    .music-player.hidden-mode {
-        width: var(--hidden-size, 48px);
-        height: var(--hidden-size, 48px);
+    .music-player.collapsed-mode {
+        width: 96px;
+        height: 80px;
     }
     .music-player {
-        max-width: var(--expanded-width, 320px);
+        max-width: 320px;
         user-select: none;
     }
-    .mini-player {
-        width: var(--mini-width, 280px);
-        height: var(--mini-height, 80px);
-        position: absolute;
-        bottom: 0;
-        right: 0;
-    }
     .expanded-player {
-        width: var(--expanded-width, 320px);
+        width: 320px;
         position: absolute;
         bottom: 0;
         right: 0;
     }
+    
+    .collapsed-player {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        backdrop-filter: blur(12px);
+    }
+    
+    .collapsed-player {
+        border: 1px solid var(--line-divider) !important;
+    }
+    
+    .expanded-player {
+        border: 1px solid var(--line-divider) !important;
+    }
+    
     
     .animate-pulse {
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -881,7 +866,7 @@
     }
     
     .cover-container img {
-        animation: spin-continuous var(--rotation-speed, 3s) linear infinite;
+        animation: spin-continuous 3s linear infinite;
         animation-play-state: paused;
     }
     
@@ -897,6 +882,52 @@
     button.bg-\[var\(--primary\)\] {
         box-shadow: 0 0 0 2px var(--primary);
         border: none;
+    }
+    
+    /* 播放列表自定义滚动条样式 */
+    .scrollbar-custom {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 3px;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+        background-color: rgba(156, 163, 175, 0.3);
+        border-radius: 3px;
+        transition: background-color 0.2s ease;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(156, 163, 175, 0.5);
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-thumb:active {
+        background-color: rgba(156, 163, 175, 0.7);
+    }
+    
+    /* 暗色模式下的滚动条样式 */
+    :global(.dark) .scrollbar-custom {
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+    
+    :global(.dark) .scrollbar-custom::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    :global(.dark) .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    :global(.dark) .scrollbar-custom::-webkit-scrollbar-thumb:active {
+        background-color: rgba(255, 255, 255, 0.4);
     }
     </style>
     {/if}

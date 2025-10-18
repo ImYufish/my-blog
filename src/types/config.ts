@@ -253,6 +253,10 @@ export type SakuraConfig = {
     min: number; // 樱花最小尺寸倍数
     max: number; // 樱花最大尺寸倍数
   };
+  opacity: {
+    min: number; // 樱花最小不透明度
+    max: number; // 樱花最大不透明度
+  };
   speed: {
     horizontal: {
       min: number; // 水平移动速度最小值
@@ -263,6 +267,7 @@ export type SakuraConfig = {
       max: number; // 垂直移动速度最大值
     };
     rotation: number; // 旋转速度
+    fadeSpeed: number; // 消失速度，不应大于最小不透明度
   };
   zIndex: number; // 层级，确保樱花在合适的层级显示
 };
@@ -475,10 +480,8 @@ export type MusicPlayerConfig = {
 
   // 本地音乐配置
   local?: {
-    // 本地音乐文件路径
-    musicPath?: string;
-
     // 本地播放列表
+    // 本地音乐文件路径（相对于 public 目录）
     playlist?: Array<{
       id: number;
       title: string;
@@ -507,32 +510,10 @@ export type MusicPlayerConfig = {
       right?: number;
       left?: number | "auto";
     };
-
-    // 播放器尺寸
-    size?: {
-      mini?: {
-        width?: number;
-        height?: number;
-      };
-      expanded?: {
-        width?: number;
-        height?: number | "auto";
-      };
-      hidden?: {
-        size?: number;
-      };
-    };
   };
 
   // 界面配置
   ui?: {
-    // 主题配置
-    theme?: {
-      backgroundOpacity?: number;
-      backdropBlur?: boolean;
-      primaryColor?: string;
-    };
-
     // 动画配置
     animation?: {
       coverRotation?: {
@@ -540,33 +521,21 @@ export type MusicPlayerConfig = {
         speed?: number;
         pauseOnHover?: boolean;
       };
-      expandAnimation?: {
-        duration?: number;
-        easing?: string;
-      };
-      songTransition?: {
-        enable?: boolean;
-        duration?: number;
-      };
     };
 
     // 显示配置
     display?: {
       showPlaylistButton?: boolean;
       showVolumeControl?: boolean;
-      showProgressBar?: boolean;
-      showTimeDisplay?: boolean;
       showShuffleButton?: boolean;
       showRepeatButton?: boolean;
       showSkipButtons?: boolean;
-      showHideButton?: boolean;
     };
 
     // 播放列表配置
     playlist?: {
       maxHeight?: number;
       width?: number;
-      itemsPerPage?: number;
       showTrackNumbers?: boolean;
       showDuration?: boolean;
     };
@@ -581,36 +550,10 @@ export type MusicPlayerConfig = {
         right?: number;
         left?: number;
       };
-      size?: {
-        mini?: {
-          width?: string | number;
-          maxWidth?: number;
-        };
-        expanded?: {
-          width?: string | number;
-          maxWidth?: number | "none";
-        };
-      };
-      controls?: {
-        buttonSize?: number;
-        playButtonSize?: number;
-        gap?: number;
-      };
     };
 
     // 小屏幕配置
-    smallScreen?: {
-      size?: {
-        mini?: {
-          width?: number;
-        };
-      };
-      controls?: {
-        buttonSize?: number;
-        playButtonSize?: number;
-        gap?: number;
-      };
-    };
+    smallScreen?: {};
   };
 
   // 错误处理配置
@@ -618,32 +561,5 @@ export type MusicPlayerConfig = {
     showErrorMessages?: boolean;
     errorDisplayDuration?: number;
     autoSkipOnError?: boolean;
-    maxRetries?: number;
-  };
-
-  // 快捷键配置
-  shortcuts?: {
-    enable?: boolean;
-    keys?: {
-      playPause?: string;
-      next?: string;
-      previous?: string;
-      volumeUp?: string;
-      volumeDown?: string;
-      toggleMute?: string;
-      toggleShuffle?: string;
-      toggleRepeat?: string;
-      togglePlaylist?: string;
-      toggleExpanded?: string;
-      toggleHidden?: string;
-    };
-  };
-
-  // 存储配置
-  storage?: {
-    rememberPlayState?: boolean;
-    rememberVolume?: boolean;
-    rememberPlayMode?: boolean;
-    storagePrefix?: string;
   };
 };

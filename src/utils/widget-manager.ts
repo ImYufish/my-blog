@@ -1,4 +1,4 @@
-import { sidebarLayoutConfig } from "../config/sidebarConfig";
+import { sidebarLayoutConfig } from "../config";
 import type {
   SidebarLayoutConfig,
   WidgetComponentConfig,

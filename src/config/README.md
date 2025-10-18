@@ -1,148 +1,62 @@
 # 配置文件说明
 
-## 音乐播放器配置 (musicConfig.ts)
+本目录包含 Firefly 主题的所有配置文件，采用模块化设计，每个文件负责特定的功能模块。
 
-音乐播放器现在支持丰富的配置选项，所有配置都在 `/src/config/musicConfig.ts` 文件中。
+## 📁 配置文件结构
 
-### 基础配置
-
-```typescript
-export const musicPlayerConfig: MusicPlayerConfig = {
-  enable: true, // 启用音乐播放器功能
-  mode: "meting", // 播放器模式："local" 本地音乐，"meting" 在线音乐
-}
+```
+src/config/
+├── index.ts              # 配置索引文件 - 统一导出
+├── siteConfig.ts         # 站点基础配置
+├── profileConfig.ts      # 用户资料配置
+├── musicConfig.ts        # 音乐播放器配置
+├── sakuraConfig.ts       # 樱花特效配置
+├── commentConfig.ts      # 评论系统配置
+├── announcementConfig.ts # 公告配置
+├── licenseConfig.ts      # 许可证配置
+├── footerConfig.ts       # 页脚配置
+├── umamiConfig.ts        # 统计配置
+├── expressiveCodeConfig.ts # 代码高亮配置
+├── fontConfig.ts         # 字体配置
+├── sidebarConfig.ts      # 侧边栏配置
+├── navBarConfig.ts       # 导航栏配置
+├── pioConfig.ts          # Pio 模型配置
+├── adConfig.ts           # 广告配置
+├── friendsConfig.ts      # 友链配置
+└── README.md             # 本文件
 ```
 
-### 主要配置类别
+## 🚀 使用方式
 
-#### 1. Meting API 配置
-- 支持多个音乐平台（网易云、QQ音乐、酷狗等）
-- 可配置备用API
-- 支持歌单、专辑、单曲等类型
-
-#### 2. 本地音乐配置
-- 自定义本地音乐文件路径
-- 配置本地播放列表
-- 支持相对路径和绝对路径
-
-#### 3. 播放器行为配置
-- 自动播放设置
-- 默认音量和播放模式
-- 播放器位置和尺寸
-- 响应式布局配置
-
-#### 4. 界面配置
-- 主题和动画设置
-- 控制按钮显示/隐藏
-- 播放列表显示选项
-- 封面旋转动画配置
-
-#### 5. 错误处理配置
-- 错误消息显示设置
-- 自动跳过失败歌曲
-- 重试机制配置
-
-#### 6. 快捷键配置
-- 全局快捷键支持
-- 自定义快捷键绑定
-- 键盘操作优化
-
-#### 7. 存储配置
-- 播放状态记忆
-- 音量设置记忆
-- 播放模式记忆
-
-### 使用示例
-
-#### 切换到本地音乐模式
+### 推荐：使用配置索引（统一导入）
 ```typescript
-export const musicPlayerConfig: MusicPlayerConfig = {
-  enable: true,
-  mode: "local",
-  local: {
-    musicPath: "assets/music/",
-    playlist: [
-      {
-        id: 1,
-        title: "歌曲名称",
-        artist: "艺术家",
-        cover: "assets/music/cover/song.jpg",
-        url: "assets/music/song.mp3",
-        duration: 240,
-      }
-    ]
-  }
-}
+import { siteConfig, profileConfig, musicPlayerConfig } from '../config';
 ```
 
-#### 自定义播放器外观
+### 直接导入单个配置
 ```typescript
-export const musicPlayerConfig: MusicPlayerConfig = {
-  enable: true,
-  behavior: {
-    position: {
-      bottom: 20,
-      right: 20,
-    },
-    size: {
-      mini: { width: 300, height: 100 },
-      expanded: { width: 400 },
-    }
-  },
-  ui: {
-    display: {
-      showVolumeControl: false,
-      showShuffleButton: false,
-    }
-  }
-}
+import { siteConfig } from '../config/siteConfig';
+import { profileConfig } from '../config/profileConfig';
 ```
 
-#### 配置快捷键
-```typescript
-export const musicPlayerConfig: MusicPlayerConfig = {
-  enable: true,
-  shortcuts: {
-    enable: true,
-    keys: {
-      playPause: "Space",
-      next: "ArrowRight",
-      previous: "ArrowLeft",
-      toggleMute: "m",
-    }
-  }
-}
+## 📋 配置文件列表
+
+- `siteConfig.ts` - 站点基础配置（标题、描述、主题色等）
+- `profileConfig.ts` - 用户资料配置（头像、姓名、社交链接等）
+- `musicConfig.ts` - 音乐播放器配置（播放列表、行为设置等）
+- `sakuraConfig.ts` - 樱花特效配置（数量、速度、尺寸等）
+- `commentConfig.ts` - 评论系统配置（Twikoo 等）
+- `announcementConfig.ts` - 公告配置（标题、内容、链接等）
+- `licenseConfig.ts` - 许可证配置（CC 协议等）
+- `footerConfig.ts` - 页脚配置（HTML 注入等）
+- `umamiConfig.ts` - 统计配置（API 密钥、脚本等）
+- `expressiveCodeConfig.ts` - 代码高亮配置（主题等）
+- `fontConfig.ts` - 字体配置（字体族、大小等）
+- `sidebarConfig.ts` - 侧边栏配置（组件布局等）
+- `navBarConfig.ts` - 导航栏配置（链接、样式等）
+- `pioConfig.ts` - Pio 模型配置（Spine、Live2D 等）
+- `adConfig.ts` - 广告配置（广告位设置等）
+- `friendsConfig.ts` - 友链配置（友链列表等）
+
+
 ```
-
-### 响应式配置
-
-音乐播放器支持移动端和小屏幕设备的专门配置：
-
-```typescript
-responsive: {
-  mobile: {
-    position: { bottom: 8, right: 8, left: 8 },
-    size: {
-      mini: { width: "calc(100vw - 16px)", maxWidth: 280 },
-      expanded: { width: "calc(100vw - 16px)", maxWidth: "none" },
-    },
-    controls: { buttonSize: 36, playButtonSize: 44, gap: 8 }
-  },
-  smallScreen: {
-    size: { mini: { width: 260 } },
-    controls: { buttonSize: 32, playButtonSize: 40, gap: 6 }
-  }
-}
-```
-
-### 注意事项
-
-1. 所有配置项都有默认值，可以根据需要选择性配置
-2. 修改配置后需要重启开发服务器才能生效
-3. 某些配置（如自动播放）可能受到浏览器安全策略限制
-4. 本地音乐文件需要放在 `public` 目录下
-5. Meting API 的可用性可能因网络环境而异
-
-### 配置验证
-
-配置系统会自动验证配置项的有效性，无效的配置会使用默认值。建议在修改配置后检查浏览器控制台是否有相关警告。
