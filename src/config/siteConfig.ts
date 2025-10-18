@@ -66,6 +66,20 @@ export const siteConfig: SiteConfig = {
     skills: true, // 技能页面开关，设为false时访问/skills/会返回404
   },
 
+  // 文章列表布局配置
+  postListLayout: {
+    // 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（双列布局）
+    defaultMode: "list",
+    // 是否允许用户切换布局
+    allowSwitch: true,
+  },
+
+  // 分页配置
+  pagination: {
+    // 每页显示的文章数量
+    postsPerPage: 8,
+  },
+
   backgroundWallpaper: {
     // 是否启用背景壁纸功能
     enable: true,
