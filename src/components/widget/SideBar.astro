@@ -7,6 +7,7 @@ import Profile from "./Profile.astro";
 import Tags from "./Tags.astro";
 import TOC from "./TOC.astro";
 import Advertisement from "./Advertisement.astro";
+import MusicPlayer from "./MusicPlayer.svelte";
 
 interface Props {
   class?: string;
@@ -38,6 +39,7 @@ const componentMap = {
   tags: Tags,
   toc: TOC,
   advertisement: Advertisement,
+  "music-player": MusicPlayer,
 };
 
 // 渲染组件的辅助函数

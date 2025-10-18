@@ -4,7 +4,7 @@ import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
-import { getEnabledFriends } from "../config/friendsConfig";
+import { getEnabledFriends } from "../config";
 
 const friendsPost = await getEntry("spec", "friends");
 
@@ -29,42 +29,44 @@ const items = getEnabledFriends();
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 my-4">
         {
           items.map((item) => (
-            <div class="flex flex-nowrap items-stretch h-28 gap-4 rounded-[var(--radius-large)]">
-              <div class="w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">
+            <div class="flex flex-nowrap items-stretch h-24 sm:h-28 gap-3 sm:gap-4 rounded-[var(--radius-large)]">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">
                 <img
                   src={item.imgurl}
                   alt="站点头像"
                   class="w-full h-full object-cover"
                 />
               </div>
-              <div class="grow w-full flex flex-col justify-between">
-                <div>
+              <div class="grow w-full flex flex-col justify-between min-w-0">
+                <div class="min-w-0 flex-1">
                   <a
                     href={item.siteurl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="font-bold transition text-lg text-neutral-900 dark:text-neutral-100 mb-1 hover:text-[var(--primary)] block"
+                    class="font-bold transition text-base sm:text-lg text-neutral-900 dark:text-neutral-100 mb-1 hover:text-[var(--primary)] block truncate"
                   >
                     {item.title}
                   </a>
-                  <div class="text-50 text-sm font-medium">{item.desc}</div>
+                  <div class="text-50 text-xs sm:text-sm font-medium line-clamp-2 leading-relaxed">
+                    {item.desc}
+                  </div>
                 </div>
                 <div
                   class:list={[
-                    "items-center",
+                    "items-center flex-shrink-0 mt-1 sm:mt-2",
                     { flex: true, "hidden md:flex": false },
                   ]}
                 >
-                  <div class="flex flex-row flex-wrap items-center gap-1">
+                  <div class="flex flex-row items-center gap-1 overflow-hidden">
                     {item.tags &&
                       item.tags.length > 0 &&
                       item.tags.map((tag) => (
-                        <span class="btn-regular h-6 text-xs px-2 rounded-md">
+                        <span class="btn-regular h-5 sm:h-6 text-xs px-1.5 sm:px-2 rounded-md whitespace-nowrap flex-shrink-0">
                           {tag}
                         </span>
                       ))}
                     {!(item.tags && item.tags.length > 0) && (
-                      <div class="transition text-50 text-sm font-medium">
+                      <div class="transition text-50 text-xs sm:text-sm font-medium">
                         {i18n(I18nKey.noTags)}
                       </div>
                     )}
@@ -75,14 +77,14 @@ const items = getEnabledFriends();
                 href={item.siteurl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex btn-regular w-[3.25rem] rounded-lg bg-[var(--enter-btn-bg)] hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95"
+                class="flex btn-regular w-[3.25rem] rounded-lg bg-[var(--enter-btn-bg)] hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95 flex-shrink-0"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   aria-hidden="true"
                   role="img"
-                  class="transition text-[var(--primary)] text-4xl mx-auto iconify iconify--material-symbols"
+                  class="transition text-[var(--primary)] text-2xl sm:text-4xl mx-auto iconify iconify--material-symbols"
                   width="1em"
                   height="1em"
                   viewBox="0 0 24 24"

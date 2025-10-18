@@ -78,6 +78,9 @@ export const en: Translation = {
     "Sorry, the page you visited does not exist or has been moved.",
   [Key.backToHome]: "Back to Home",
 
+  // Music Player
+  [Key.playlist]: "Playlist",
+
   // Projects Page
   [Key.projects]: "Projects",
   [Key.projectsSubtitle]: "My development project portfolio",

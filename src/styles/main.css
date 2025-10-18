@@ -317,16 +317,13 @@ html {
     transform: translateY(-50%);
 }
 
-.collapsed {
-    height: var(--collapsedHeight);
-}
 
 /*剧透效果*/
 .custom-md spoiler {
   --_spoiler-mask: var(--primary);
   @apply hover:bg-transparent px-1 py-0.5 overflow-hidden rounded-md transition-all duration-150;
   background-color: var(--_spoiler-mask);
-
+  box-decoration-break: clone;
   &:not(:hover) {
     color: var(--_spoiler-mask);
     * {

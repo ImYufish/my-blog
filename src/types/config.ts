@@ -253,6 +253,10 @@ export type SakuraConfig = {
     min: number; // 樱花最小尺寸倍数
     max: number; // 樱花最大尺寸倍数
   };
+  opacity: {
+    min: number; // 樱花最小不透明度
+    max: number; // 樱花最大不透明度
+  };
   speed: {
     horizontal: {
       min: number; // 水平移动速度最小值
@@ -263,6 +267,7 @@ export type SakuraConfig = {
       max: number; // 垂直移动速度最大值
     };
     rotation: number; // 旋转速度
+    fadeSpeed: number; // 消失速度，不应大于最小不透明度
   };
   zIndex: number; // 层级，确保樱花在合适的层级显示
 };
@@ -447,4 +452,114 @@ export type FriendLink = {
   tags?: string[]; // 标签数组
   weight: number; // 权重，数字越大排序越靠前
   enabled: boolean; // 是否启用
+};
+
+// 音乐播放器配置
+export type MusicPlayerConfig = {
+  // 基础功能开关
+  enable: boolean; // 启用音乐播放器功能
+
+  // 播放器模式配置
+  mode?: "local" | "meting"; // 播放器模式："local" 本地音乐，"meting" 在线音乐
+
+  // Meting API 配置
+  meting?: {
+    // Meting API 地址
+    api?: string;
+
+    // 歌单配置
+    playlist?: {
+      id?: string; // 歌单ID
+      server?: "netease" | "tencent" | "kugou" | "xiami" | "baidu"; // 音乐平台
+      type?: "playlist" | "album" | "song"; // 类型
+    };
+
+    // 备用 API 配置
+    fallbackApis?: string[];
+  };
+
+  // 本地音乐配置
+  local?: {
+    // 本地播放列表
+    // 本地音乐文件路径（相对于 public 目录）
+    playlist?: Array<{
+      id: number;
+      title: string;
+      artist: string;
+      cover: string;
+      url: string;
+      duration: number;
+    }>;
+  };
+
+  // 播放器行为配置
+  behavior?: {
+    // 自动播放
+    autoplay?: boolean;
+
+    // 默认音量
+    defaultVolume?: number;
+
+    // 默认播放模式
+    defaultShuffle?: boolean;
+    defaultRepeat?: 0 | 1 | 2; // 0=不循环, 1=单曲循环, 2=列表循环
+
+    // 播放器位置
+    position?: {
+      bottom?: number;
+      right?: number;
+      left?: number | "auto";
+    };
+  };
+
+  // 界面配置
+  ui?: {
+    // 动画配置
+    animation?: {
+      coverRotation?: {
+        enable?: boolean;
+        speed?: number;
+        pauseOnHover?: boolean;
+      };
+    };
+
+    // 显示配置
+    display?: {
+      showPlaylistButton?: boolean;
+      showVolumeControl?: boolean;
+      showShuffleButton?: boolean;
+      showRepeatButton?: boolean;
+      showSkipButtons?: boolean;
+    };
+
+    // 播放列表配置
+    playlist?: {
+      maxHeight?: number;
+      width?: number;
+      showTrackNumbers?: boolean;
+      showDuration?: boolean;
+    };
+  };
+
+  // 响应式配置
+  responsive?: {
+    // 移动端配置
+    mobile?: {
+      position?: {
+        bottom?: number;
+        right?: number;
+        left?: number;
+      };
+    };
+
+    // 小屏幕配置
+    smallScreen?: {};
+  };
+
+  // 错误处理配置
+  errorHandling?: {
+    showErrorMessages?: boolean;
+    errorDisplayDuration?: number;
+    autoSkipOnError?: boolean;
+  };
 };

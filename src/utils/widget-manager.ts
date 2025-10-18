@@ -1,4 +1,4 @@
-import { sidebarLayoutConfig } from "../config/sidebarConfig";
+import { sidebarLayoutConfig } from "../config";
 import type {
   SidebarLayoutConfig,
   WidgetComponentConfig,
@@ -15,6 +15,7 @@ export const WIDGET_COMPONENT_MAP = {
   tags: "../components/widget/Tags.astro",
   toc: "../components/widget/TOC.astro",
   advertisement: "../components/widget/Advertisement.astro",
+  "music-player": "../components/widget/MusicPlayer.svelte",
   custom: null, // 自定义组件需要在配置中指定路径
 } as const;
 
