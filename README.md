@@ -10,8 +10,9 @@
 
 ---
 
-[**🖥️Firefly在线预览（Netlify）**](https://demo-firefly.netlify.app/)  &emsp;
-[**📝Firefly使用文档**](https://docs-firefly.cuteleaf.cn/)
+[**🖥️在线预览（Netlify）**](https://demo-firefly.netlify.app/)  &emsp;
+[**📝使用文档**](https://docs-firefly.cuteleaf.cn/) &emsp;
+[**🍀我的博客**](https://www.cuteleaf.cn) &emsp;
 
 ⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
 
