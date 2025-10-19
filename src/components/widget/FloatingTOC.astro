@@ -35,15 +35,17 @@ for (const heading of headings) {
 <!-- 悬浮TOC面板 -->
 <div
   id="floating-toc-panel"
-  class="floating-toc-panel hide fixed w-80 max-h-[24rem] overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 bg-white/90 dark:border-white/10 z-50"
-  style="background-color: var(--card-bg); bottom: calc(13rem + 6rem); right: 2rem;"
+  class="floating-toc-panel hide fixed w-80 max-h-[24rem] overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 bg-white/60 dark:bg-black/60 dark:border-white/10 z-50"
+  style="background-color: rgba(var(--card-bg-rgb, 255, 255, 255), 0.2); bottom: calc(13rem + 6rem); right: 2rem;"
 >
   <div
     class="p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 backdrop-blur-sm z-10"
-    style="background-color: var(--card-bg);"
+    style="background-color: rgba(var(--card-bg-rgb, 255, 255, 255), 0.2);"
   >
     <div class="flex items-center justify-between">
-      <h3 class="text-lg font-bold text-[var(--primary)]">
+      <h3
+        class="text-lg font-bold text-[var(--primary)] flex items-center gap-2"
+      >
         {i18n(I18nKey.tableOfContents)}
       </h3>
       <button
@@ -126,6 +128,8 @@ for (const heading of headings) {
 	pointer-events: none
 	overflow: hidden
 	box-sizing: border-box
+	backdrop-filter: blur(20px)
+	-webkit-backdrop-filter: blur(20px)
 	
 	&.show
 		transform: translateY(0)
@@ -246,11 +250,11 @@ for (const heading of headings) {
 @media (min-resolution: 2dppx)
 	.floating-toc-btn
 		right: max(0.5rem, 2rem - 2vw)
-		bottom: max(9rem, 13rem - 5vh)
+		bottom: max(12rem, 16rem - 5vh)
 		
 	.floating-toc-panel
 		right: max(0.5rem, 2rem - 2vw) !important
-		bottom: calc(max(9rem, 13rem - 5vh) + 6rem) !important
+		bottom: calc(max(12rem, 16rem - 5vh) + 6rem) !important
 
 /* 超小屏幕适配 */
 @media (max-width: 360px)
@@ -342,6 +346,15 @@ for (const heading of headings) {
 
 .floating-toc-panel::-webkit-scrollbar-thumb:active
 	background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)
+
+/* 暗色主题半透明效果 */
+:global(.dark) .floating-toc-panel
+	background-color: rgba(0, 0, 0, 0.6) !important
+	backdrop-filter: blur(20px)
+	-webkit-backdrop-filter: blur(20px)
+
+:global(.dark) .floating-toc-panel .p-4
+	background-color: rgba(0, 0, 0, 0.8) !important
 
 /* 暗色主题滚动条 */
 :global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb
