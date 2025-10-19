@@ -1,5 +1,5 @@
 
-<img src="https://s2.loli.net/2025/10/14/4mfuArLMowk6EXj.png" width = "405" height = "511" alt="NapCat" align=right />
+<img src="./docs/images/1131.png" width = "405" height = "511" alt="NapCat" align=right />
 
 <div align="center">
 
@@ -23,12 +23,12 @@
 
 🔧 高度可配置: 大部分功能模块均可通过配置文件自定义
 
-<img alt="firefly" src="https://s2.loli.net/2025/10/14/bsvCrO4FcSVlQq7.png" />
+<img alt="firefly" src="./docs/images/1.png" />
 
 <table>
   <tr>
-    <td valign="top"><img src="https://s2.loli.net/2025/10/18/Kj6kZtm4edExfFT.png"></td>
-    <td valign="top"><img src="https://s2.loli.net/2025/10/18/KZGHY8X27gThafF.png"></td>
+    <td valign="top"><img src="./docs/images/2.png"></td>
+    <td valign="top"><img src="./docs/images/3.png"></td>
   </tr>
  </table>
 
