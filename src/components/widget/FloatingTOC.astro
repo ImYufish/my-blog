@@ -417,7 +417,19 @@ for (const heading of headings) {
     };
 
     function updateActiveHeading() {
-      // 只在文章内容容器内查找标题
+      // 直接更新TOC活动状态，检测所有可见标题
+      updateTOCActiveState();
+    }
+
+    function updateTOCActiveState() {
+      if (!tocItems) return;
+
+      // 移除所有活动状态
+      tocItems.forEach((item) => {
+        item.classList.remove("visible");
+      });
+
+      // 获取所有在屏幕可视区域内的标题
       const contentContainer =
         document.querySelector(".custom-md") ||
         document.querySelector(".prose") ||
@@ -429,37 +441,48 @@ for (const heading of headings) {
         "h1, h2, h3, h4, h5, h6"
       );
       const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
       const offset = 100;
 
-      let currentActiveId = "";
+      // 找到所有在屏幕可视区域内的标题
+      const visibleHeadingIds = [];
       headings.forEach((heading) => {
         if (heading.id) {
-          const elementTop = heading.offsetTop - offset;
-          if (scrollTop >= elementTop) {
-            currentActiveId = heading.id;
+          const rect = heading.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+          if (isVisible) {
+            visibleHeadingIds.push(heading.id);
           }
         }
       });
 
-      if (currentActiveId !== activeHeadingId) {
-        activeHeadingId = currentActiveId;
-        window.activeHeadingId = activeHeadingId;
-        updateTOCActiveState();
+      // 如果没有找到任何可见标题，选择最接近屏幕顶部的标题
+      if (visibleHeadingIds.length === 0 && headings.length > 0) {
+        let closestHeading = null;
+        let minDistance = Infinity;
+
+        headings.forEach((heading) => {
+          if (heading.id) {
+            const rect = heading.getBoundingClientRect();
+            const distance = Math.abs(rect.top);
+
+            if (distance < minDistance) {
+              minDistance = distance;
+              closestHeading = heading.id;
+            }
+          }
+        });
+
+        if (closestHeading) {
+          visibleHeadingIds.push(closestHeading);
+        }
       }
-    }
 
-    function updateTOCActiveState() {
-      if (!tocItems) return;
-
-      // 移除所有活动状态
-      tocItems.forEach((item) => {
-        item.classList.remove("visible");
-      });
-
-      // 找到当前活动的标题
+      // 找到对应的TOC项并添加活动状态
       const activeItems = tocItems.filter((item) => {
         const headingId = item.dataset.headingId;
-        return headingId === activeHeadingId;
+        return visibleHeadingIds.includes(headingId);
       });
 
       // 添加活动状态
@@ -480,27 +503,57 @@ for (const heading of headings) {
         return;
       }
 
-      // 计算活动项的位置
-      const firstActive = activeItems[0];
-      const lastActive = activeItems[activeItems.length - 1];
+      // 为每个活动项单独创建指示器区域
       const tocContent = document.getElementById("floating-toc-content");
       const tocPanel = document.getElementById("floating-toc-panel");
 
       if (!tocContent || !tocPanel) return;
 
       const contentRect = tocContent.getBoundingClientRect();
-      const firstRect = firstActive.getBoundingClientRect();
-      const lastRect = lastActive.getBoundingClientRect();
+      const panelRect = tocPanel.getBoundingClientRect();
 
-      const top = firstRect.top - contentRect.top;
-      const height = lastRect.bottom - firstRect.top;
+      // 计算可视区域范围
+      const visibleTop = Math.max(0, panelRect.top + 60); // 考虑面板头部高度
+      const visibleBottom = panelRect.bottom - 20; // 考虑面板底部边距
+
+      // 找到所有在可视区域内的活动项
+      const visibleActiveItems = [];
+      activeItems.forEach((item) => {
+        const itemRect = item.getBoundingClientRect();
+        const itemTop = itemRect.top;
+        const itemBottom = itemRect.bottom;
+
+        // 检查活动项是否在可视区域内
+        if (itemTop < visibleBottom && itemBottom > visibleTop) {
+          visibleActiveItems.push({
+            element: item,
+            top: itemTop - contentRect.top,
+            bottom: itemBottom - contentRect.top,
+          });
+        }
+      });
+
+      if (visibleActiveItems.length === 0) {
+        indicator.style.opacity = "0";
+        return;
+      }
+
+      // 计算指示器位置，只包裹可见的活动项
+      const firstVisible = visibleActiveItems[0];
+      const lastVisible = visibleActiveItems[visibleActiveItems.length - 1];
+
+      const top = firstVisible.top;
+      const height = lastVisible.bottom - firstVisible.top;
 
       indicator.style.top = `${top}px`;
       indicator.style.height = `${height}px`;
       indicator.style.opacity = "1";
 
       // 自动滚动到活动项
-      scrollToActiveItem(firstActive, tocContent, tocPanel);
+      const firstActive = activeItems[0];
+      if (firstActive) {
+        scrollToActiveItem(firstActive, tocContent, tocPanel);
+      }
     }
 
     function scrollToActiveItem(activeItem, tocContent, tocPanel) {
@@ -541,15 +594,11 @@ for (const heading of headings) {
 
       observer = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              activeHeadingId = entry.target.id;
-              updateTOCActiveState();
-            }
-          });
+          // 当任何标题进入或离开可视区域时，更新TOC状态
+          updateTOCActiveState();
         },
         {
-          rootMargin: "-80px 0px -80% 0px",
+          rootMargin: "0px 0px 0px 0px",
           threshold: 0,
         }
       );
@@ -678,6 +727,7 @@ for (const heading of headings) {
       window.tocInternalNavigation = true;
 
       event.stopPropagation(); // 阻止事件冒泡
+      event.preventDefault(); // 阻止默认行为
 
       // 从href属性获取ID
       const href = anchor.getAttribute("href");
@@ -698,6 +748,8 @@ for (const heading of headings) {
           behavior: "smooth",
         });
       }
+
+      // 点击后不关闭TOC面板，保持打开状态
     }
 
     function initFloatingTOC() {
@@ -736,6 +788,11 @@ for (const heading of headings) {
       // 初始化活动状态
       updateActiveHeading();
       updateTOCVisibility();
+
+      // 延迟再次更新，确保DOM完全渲染
+      setTimeout(() => {
+        updateActiveHeading();
+      }, 100);
 
       // 设置自动关闭功能
       setupAutoClose();
@@ -812,6 +869,11 @@ for (const heading of headings) {
               tocContent &&
               (tocPanel.contains(link) || tocContent.contains(link))
             ) {
+              return;
+            }
+
+            // 检查是否是TOC内部导航
+            if (window.tocInternalNavigation) {
               return;
             }
 
