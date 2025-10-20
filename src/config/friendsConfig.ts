@@ -5,11 +5,11 @@ import type { FriendLink } from "../types/config";
 // 友链配置
 export const friendsConfig: FriendLink[] = [
   {
-    title: "夏叶博客",
+    title: "夏夜流萤",
     imgurl:
       "https://q.qlogo.cn/headimg_dl?dst_uin=7618557&spec=640&img_type=jpg",
     desc: "总有一场相遇，是互相喜欢的！",
-    siteurl: "https://www.cuteleaf.cn",
+    siteurl: "https://blog.cuteleaf.cn",
     tags: ["Blog"],
     weight: 10, // 权重，数字越大排序越靠前
     enabled: true, // 是否启用
