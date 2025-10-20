@@ -16,6 +16,9 @@ enum I18nKey {
   announcementClose = "announcementClose",
 
   comments = "comments",
+  commentSection = "commentSection",
+  commentSubtitle = "commentSubtitle",
+  commentNotConfigured = "commentNotConfigured",
 
   untitled = "untitled",
   uncategorized = "uncategorized",
@@ -177,6 +180,7 @@ enum I18nKey {
   //最后编辑时间卡片
   lastModifiedPrefix = "lastModifiedPrefix",
   lastModifiedOutdated = "lastModifiedOutdated",
+  lastModifiedDaysAgo = "lastModifiedDaysAgo",
   year = "year",
   month = "month",
   day = "day",

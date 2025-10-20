@@ -19,6 +19,9 @@ export const zh_CN: Translation = {
   [Key.announcementClose]: "关闭",
 
   [Key.comments]: "评论",
+  [Key.commentSection]: "评论区",
+  [Key.commentSubtitle]: "分享你的想法，与大家交流讨论",
+  [Key.commentNotConfigured]: "评论系统暂未配置",
   [Key.friends]: "友链",
   [Key.untitled]: "无标题",
   [Key.uncategorized]: "未分类",
@@ -178,8 +181,9 @@ export const zh_CN: Translation = {
   [Key.timelineAvailable]: "可入职",
 
   //最后编辑时间卡片
-  [Key.lastModifiedPrefix]: "上次编辑日期: ",
-  [Key.lastModifiedOutdated]: "部分信息可能已经过时",
+  [Key.lastModifiedPrefix]: "最后更新于 ",
+  [Key.lastModifiedOutdated]: "部分内容可能已过时",
+  [Key.lastModifiedDaysAgo]: "距今已过 {days} 天",
   [Key.year]: "年",
   [Key.month]: "月",
   [Key.day]: "日",

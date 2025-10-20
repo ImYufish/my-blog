@@ -19,6 +19,9 @@ export const ja: Translation = {
   [Key.announcementClose]: "閉じる",
 
   [Key.comments]: "コメント",
+  [Key.commentSection]: "コメント欄",
+  [Key.commentSubtitle]: "あなたの考えを共有し、みんなと議論しましょう",
+  [Key.commentNotConfigured]: "コメントシステムが設定されていません",
   [Key.friends]: "友達",
   [Key.untitled]: "無題",
   [Key.uncategorized]: "未分類",
@@ -182,8 +185,9 @@ export const ja: Translation = {
   [Key.timelineAvailable]: "入社可能",
 
   // 最終更新時間カード
-  [Key.lastModifiedPrefix]: "最終編集からの時間：",
-  [Key.lastModifiedOutdated]: "一部の情報は古くなっている可能性があります",
+  [Key.lastModifiedPrefix]: "最終更新日：",
+  [Key.lastModifiedOutdated]: "一部の内容が古くなっている可能性があります",
+  [Key.lastModifiedDaysAgo]: "{days}日前",
   [Key.year]: "年",
   [Key.month]: "月",
   [Key.day]: "日",

@@ -184,9 +184,6 @@ const jsonLd = {
     </div>
   </div>
 
-  <!-- 评论 -->
-  <Comment post={entry} />
-
   {
     siteConfig.showLastModified && (
       <div class="card-base p-6 mb-4">
@@ -199,22 +196,40 @@ const jsonLd = {
               />
             </div>
 
-            <div class="flex flex-col gap-0.1">
-              <div class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75">
-                {i18n(I18nKey.lastModifiedPrefix)}{" "}
-                {dayjs(entry.data.updated || entry.data.published).format(
-                  "YYYY-MM-DD"
-                )}
-              </div>
-              <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
-                {i18n(I18nKey.lastModifiedOutdated)}
-              </p>
-            </div>
+            {(() => {
+              const lastModified = dayjs(
+                entry.data.updated || entry.data.published
+              );
+              const now = dayjs();
+              const daysDiff = now.diff(lastModified, "day");
+              const dateStr = lastModified.format("YYYY-MM-DD");
+              const isOutdated = daysDiff >= 1;
+
+              return (
+                <div class="flex flex-col gap-0.1">
+                  <div class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75">
+                    {`${i18n(I18nKey.lastModifiedPrefix)}${dateStr}${
+                      isOutdated
+                        ? `，${i18n(I18nKey.lastModifiedDaysAgo).replace("{days}", daysDiff.toString())}`
+                        : ""
+                    }`}
+                  </div>
+                  {isOutdated && (
+                    <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
+                      {i18n(I18nKey.lastModifiedOutdated)}
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>
     )
   }
+
+  <!-- 评论 -->
+  <Comment post={entry} />
 
   <div
     class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full"

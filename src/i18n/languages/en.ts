@@ -19,6 +19,9 @@ export const en: Translation = {
   [Key.announcementClose]: "Close",
 
   [Key.comments]: "Comments",
+  [Key.commentSection]: "Comments",
+  [Key.commentSubtitle]: "Share your thoughts and discuss with everyone",
+  [Key.commentNotConfigured]: "Comment system not configured",
   [Key.friends]: "Friends",
   [Key.untitled]: "Untitled",
   [Key.uncategorized]: "Uncategorized",
@@ -183,8 +186,9 @@ export const en: Translation = {
   [Key.timelineAvailable]: "Available",
 
   // Last Modified Time Card
-  [Key.lastModifiedPrefix]: "Time since last edit: ",
-  [Key.lastModifiedOutdated]: "Some information may be outdated",
+  [Key.lastModifiedPrefix]: "Last updated on ",
+  [Key.lastModifiedOutdated]: "Some content may be outdated",
+  [Key.lastModifiedDaysAgo]: "{days} days ago",
   [Key.year]: "year",
   [Key.month]: "month",
   [Key.day]: "day",
