@@ -1,6 +1,6 @@
 export const umamiConfig = {
   enabled: false, // 是否显示Umami统计
-  apiKey: "api_XXXXXXXXXX", // 你的API密钥
+  apiKey: import.meta.env.UMAMI_API_KEY || "api_xxxxxxxx", // 优先从环境变量读取，否则使用配置文件中的值
   baseUrl: "https://api.umami.is", // Umami Cloud API地址
   scripts: `
 <script defer src="XXXX.XXX" data-website-id="ABCD1234"></script>
