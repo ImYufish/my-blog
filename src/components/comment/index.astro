@@ -4,12 +4,16 @@ import { commentConfig } from "../../config/commentConfig";
 import Twikoo from "./Twikoo.astro";
 
 interface Props {
-  post: CollectionEntry<"posts">;
+  post: CollectionEntry<"posts"> | CollectionEntry<"spec">;
+  customPath?: string;
 }
 
-const { id, data, slug } = Astro.props.post;
+const { post, customPath } = Astro.props;
+const { id, data, slug } = post;
 
-const path = `/posts/${slug}`;
+// 根据页面类型确定路径
+const path =
+  customPath || (post.collection === "posts" ? `/posts/${slug}` : `/${slug}`);
 const url = `${Astro.site?.href}${path}`;
 
 let commentService = "";
