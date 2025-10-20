@@ -157,7 +157,7 @@ html.dark {
 }
 
 .tk-comment {
-  @apply border-[1px] border-[var(--line-divider)] p-6 rounded-2xl hover:shadow-lg hover:border-[var(--primary)] transition-all duration-300 mb-4;
+  @apply  border-[1px] border-[var(--line-divider)] p-4 rounded-2xl hover:shadow-lg hover:border-[var(--primary)] transition-all duration-300 ;
   background: linear-gradient(135deg, var(--card-bg) 0%, rgba(var(--primary), 0.02) 100%);
   
   .tk-action-icon svg {
@@ -215,10 +215,10 @@ html.dark {
 
 /* Replies */
 .tk-replies {
-  @apply ml-8 mt-4 space-y-4;
+
   
   .tk-comment {
-    @apply bg-[var(--page-bg)] border-l-4 border-l-[var(--primary)] border-opacity-30;
+    @apply border-l-4 border-l-[var(--btn-regular-bg)] p-3 border-opacity-30 hover:border-[var(--primary)] transition-all duration-300;
     .tk-content {
       > span:first-of-type {
         @apply text-xs text-[var(--content-meta)];
@@ -251,7 +251,7 @@ html.dark {
 
 .tk-expand-wrap .tk-expand,
 .tk-collapse-wrap .tk-expand {
-  @apply hover:rounded-lg mt-1 hover:bg-[var(--btn-plain-bg-hover)];
+  @apply border-[1px]  border-[var(--line-divider)] rounded-lg mt-1 bg-[var(--btn-regular-bg)] text-[var(--btn-content)] hover:text-[var(--primary)] hover:bg-[var(--btn-regular-bg-hover)];
 }
 
 /* by @SirTamago 
