@@ -87,7 +87,6 @@ src/
 │   ├── licenseConfig.ts      # 许可证配置
 │   ├── footerConfig.ts       # 页脚配置
 │   ├── FooterConfig.html     # 页脚HTML内容
-│   ├── umamiConfig.ts        # 统计配置
 │   ├── expressiveCodeConfig.ts # 代码高亮配置
 │   ├── sakuraConfig.ts       # 樱花特效配置
 │   ├── fontConfig.ts         # 字体配置
