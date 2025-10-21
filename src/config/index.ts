@@ -10,7 +10,6 @@ export { commentConfig } from "./commentConfig"; // 评论系统配置
 export { announcementConfig } from "./announcementConfig"; // 公告配置
 export { licenseConfig } from "./licenseConfig"; // 许可证配置
 export { footerConfig } from "./footerConfig"; // 页脚配置
-export { umamiConfig } from "./umamiConfig"; // 统计配置
 
 // 样式配置
 export { expressiveCodeConfig } from "./expressiveCodeConfig"; // 代码高亮配置

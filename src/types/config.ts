@@ -125,6 +125,7 @@ export type LicenseConfig = {
 
 export type CommentConfig = {
   enable: boolean; // 是否启用评论功能
+  enableVisitorCount?: boolean; // 是否启用文章访问量统计功能
   twikoo?: TwikooConfig;
 };
 

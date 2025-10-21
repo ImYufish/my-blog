@@ -195,4 +195,9 @@ export const en: Translation = {
   [Key.hour]: "hour",
   [Key.minute]: "minute",
   [Key.second]: "second",
+
+  // Page Views Statistics
+  [Key.pageViews]: "Views",
+  [Key.pageViewsLoading]: "Loading...",
+  [Key.pageViewsError]: "Stats unavailable",
 };

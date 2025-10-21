@@ -3,7 +3,7 @@ import ConfigCarrier from "@components/ConfigCarrier.astro";
 import FontManager from "@components/FontManager.astro";
 import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 
-import { profileConfig, siteConfig, umamiConfig, sakuraConfig } from "../config";
+import { profileConfig, siteConfig, sakuraConfig } from "../config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
@@ -111,8 +111,6 @@ const bannerOffsetByPosition = {
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.backgroundWallpaper.position || "center"];
 
-const umamiEnabled = umamiConfig.enabled || false;
-const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 ---
 
 <!DOCTYPE html>
@@ -251,8 +249,6 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 
-		<!-- Umami Analytics -->
-		{umamiEnabled && umamiScripts && <Fragment set:html={umamiScripts} />}
 		
 		<!-- Font Manager -->
 		<FontManager />

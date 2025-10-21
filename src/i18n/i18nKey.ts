@@ -187,6 +187,11 @@ enum I18nKey {
   hour = "hour",
   minute = "minute",
   second = "second",
+
+  // 访问量统计
+  pageViews = "pageViews",
+  pageViewsLoading = "pageViewsLoading",
+  pageViewsError = "pageViewsError",
 }
 
 export default I18nKey;
