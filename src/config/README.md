@@ -15,7 +15,6 @@ src/config/
 ├── announcementConfig.ts # 公告配置
 ├── licenseConfig.ts      # 许可证配置
 ├── footerConfig.ts       # 页脚配置
-├── umamiConfig.ts        # 统计配置
 ├── expressiveCodeConfig.ts # 代码高亮配置
 ├── fontConfig.ts         # 字体配置
 ├── sidebarConfig.ts      # 侧边栏配置
@@ -45,11 +44,10 @@ import { profileConfig } from '../config/profileConfig';
 - `profileConfig.ts` - 用户资料配置（头像、姓名、社交链接等）
 - `musicConfig.ts` - 音乐播放器配置（播放列表、行为设置等）
 - `sakuraConfig.ts` - 樱花特效配置（数量、速度、尺寸等）
-- `commentConfig.ts` - 评论系统配置（Twikoo 等）
+- `commentConfig.ts` - 评论系统配置（Twikoo 评论和文章访问量统计）
 - `announcementConfig.ts` - 公告配置（标题、内容、链接等）
 - `licenseConfig.ts` - 许可证配置（CC 协议等）
 - `footerConfig.ts` - 页脚配置（HTML 注入等）
-- `umamiConfig.ts` - 统计配置（API 密钥、脚本等）
 - `expressiveCodeConfig.ts` - 代码高亮配置（主题等）
 - `fontConfig.ts` - 字体配置（字体族、大小等）
 - `sidebarConfig.ts` - 侧边栏配置（组件布局等）

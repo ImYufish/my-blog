@@ -1,18 +1,10 @@
 ---
 import { Icon } from "astro-icon/components";
-import { profileConfig } from "../config";
+import { profileConfig, commentConfig } from "../config";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { formatDateToYYYYMMDD } from "../utils/date-utils";
 import { getCategoryUrl, getTagUrl } from "../utils/url-utils";
-
-import { umamiConfig } from '../config';
-
-// 解析 umami
-const umamiEnabled = umamiConfig.enabled || false;
-const umamiWebsiteId = umamiConfig.scripts.match(/data-website-id="([^"]+)"/)?.[1] || "";
-const umamiApiKey = umamiConfig.apiKey || "";
-const umamiBaseUrl = umamiConfig.baseUrl || "";
 
 export interface Props {
   published: Date;
@@ -68,7 +60,7 @@ const {
             <Icon name="material-symbols:book-2-outline-rounded" class="text-xl"></Icon>
         </div>
         <div class="flex flex-row flex-nowrap items-center">
-            <a href={getCategoryUrl(category)} aria-label={`View all posts in the ${category} category`}
+            <a href={getCategoryUrl(category || '')} aria-label={`View all posts in the ${category} category`}
                class="link-lg transition text-50 text-sm font-medium
                             hover:text-[var(--primary)] dark:hover:text-[var(--primary)] whitespace-nowrap">
                 {category || i18n(I18nKey.uncategorized)}
@@ -95,60 +87,15 @@ const {
         </div>
     </div>
     
-    <!-- 访问量（首页不显示，且umami.enabled为true时显示） -->
-    {!isHome && umamiEnabled && slug && (
+    <!-- Twikoo访问量统计（首页不显示，且文章访问量统计启用时显示） -->
+    {!isHome && commentConfig.enable && commentConfig.enableVisitorCount && slug && (
         <div class="flex items-center">
             <div class="meta-icon">
                 <Icon name="material-symbols:visibility-outline-rounded" class="text-xl"></Icon>
             </div>
-            <span class="text-50 text-sm font-medium" id="page-views-display">统计加载中...</span>
+            <span class="text-50 text-sm font-medium mr-1">{i18n(I18nKey.pageViews)}</span>
+            <span class="text-50 text-sm font-medium" id="twikoo_visitors">{i18n(I18nKey.pageViewsLoading)}</span>
         </div>
     )}
 </div>
 
-<!-- 只有在非首页且启用umami且有slug时才加载脚本 -->
-{!isHome && umamiEnabled && slug && (
-    <script define:vars={{ slug, umamiBaseUrl, umamiApiKey, umamiWebsiteId, umamiConfig }}>
-        // 客户端统计文案生成函数
-        function generateStatsText(pageViews, visitors) {
-            return `浏览量 ${pageViews} · 访客 ${visitors}`;
-        }
-        
-        // 获取访问量统计
-        async function fetchPageViews(isRetry = false) {
-            if (!umamiConfig.enabled) {
-                return;
-            }
-            
-            try {
-                // 构造文章页面的URL路径
-                const pageUrl = `/posts/${slug}/`;
-                
-                // 调用全局工具获取特定页面的 Umami 统计数据
-                const stats = await getUmamiPageStats(umamiBaseUrl, umamiApiKey, umamiWebsiteId, pageUrl);
-                
-                // 从返回的数据中提取页面浏览量和访客数
-                const pageViews = stats.pageviews || 0;
-                const visitors = stats.visitors || 0;
-                
-                const displayElement = document.getElementById('page-views-display');
-                if (displayElement) {
-                    displayElement.textContent = generateStatsText(pageViews, visitors);
-                }
-            } catch (error) {
-                console.error('Error fetching page views:', error);
-                const displayElement = document.getElementById('page-views-display');
-                if (displayElement) {
-                    displayElement.textContent = '统计不可用';
-                }
-            }
-        }
-
-        // 页面加载完成后获取统计数据
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', fetchPageViews);
-        } else {
-            fetchPageViews();
-        }
-    </script>
-)}
