@@ -4,7 +4,7 @@ import * as path from "node:path";
 import { Icon } from "astro-icon/components";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
-import { getDir } from "../utils/url-utils";
+import { getDir, getTagUrl } from "../utils/url-utils";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
 
@@ -96,6 +96,9 @@ const { remarkPluginFrontmatter } = await entry.render();
       category={category || undefined}
       hideTagsForMobile={true}
       hideUpdateDate={true}
+      words={remarkPluginFrontmatter.words}
+      minutes={remarkPluginFrontmatter.minutes}
+      showWordCount={true}
       className="mb-4 post-meta"
     />
 
@@ -109,33 +112,31 @@ const { remarkPluginFrontmatter } = await entry.render();
       {description || remarkPluginFrontmatter.excerpt}
     </div>
 
-    <!-- word count and read time  -->
+    <!-- tags -->
     <div
-      class="text-sm text-black/30 dark:text-white/30 flex gap-4 transition stats mt-auto"
+      class="text-sm text-black/30 dark:text-white/30 flex flex-wrap gap-2 transition stats mt-auto"
     >
-      <div>
-        {remarkPluginFrontmatter.words}
-        {
-          " " +
-            i18n(
-              remarkPluginFrontmatter.words === 1
-                ? I18nKey.wordCount
-                : I18nKey.wordsCount
-            )
-        }
-      </div>
-      <div>|</div>
-      <div>
-        {remarkPluginFrontmatter.minutes}
-        {
-          " " +
-            i18n(
-              remarkPluginFrontmatter.minutes === 1
-                ? I18nKey.minuteCount
-                : I18nKey.minutesCount
-            )
-        }
-      </div>
+      {
+        tags &&
+          tags.length > 0 &&
+          tags.map((tag, i) => (
+            <a
+              href={getTagUrl(tag)}
+              aria-label={`View all posts with the ${tag.trim()} tag`}
+              class="btn-regular h-6 text-xs px-2 py-1 rounded-md border border-[var(--line-divider)]
+                    transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              #{tag.trim()}
+            </a>
+          ))
+      }
+      {
+        !(tags && tags.length > 0) && (
+          <span class="text-[var(--content-meta)] text-xs">
+            {i18n(I18nKey.noTags)}
+          </span>
+        )
+      }
     </div>
   </div>
 
