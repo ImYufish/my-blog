@@ -8,7 +8,7 @@
 /* 确保导航栏在没有banner时有基本的背景色和圆角（低优先级，不覆盖card-base） */
 #navbar > div {
     background: var(--card-bg);
-    border-radius: var(--radius-large);
+    border-radius: 0 0 var(--radius-large) var(--radius-large);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -19,7 +19,7 @@
         backdrop-filter: blur(20px) !important;
         background: rgba(255, 255, 255, 0.55) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
-        border-radius: 0.75rem !important;
+        border-radius: 0 0 0.75rem 0.75rem !important;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
@@ -32,7 +32,7 @@
     backdrop-filter: blur(20px) !important;
     background: rgba(255, 255, 255, 0.55) !important;
     border: 1px solid rgba(255, 255, 255, 0.55) !important;
-    border-radius: 0.75rem !important;
+    border-radius: 0 0 0.75rem 0.75rem !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -94,7 +94,7 @@
         backdrop-filter: blur(20px) !important;
         background: rgba(255, 255, 255, 0.55) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
-        border-radius: 0.75rem !important;
+        border-radius: 0 0 0.75rem 0.75rem !important;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
@@ -133,7 +133,7 @@
         backdrop-filter: blur(20px) !important;
         background: rgba(255, 255, 255, 0.55) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
-        border-radius: 0.75rem !important;
+        border-radius: 0 0 0.75rem 0.75rem !important;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
@@ -203,14 +203,14 @@
 /* 平板设备优化 */
 @media (min-width: 768px) and (max-width: 1023px) {
     #navbar > div {
-        border-radius: 1rem !important;
+        border-radius: 0 0 1rem 1rem !important;
     }
 }
 
 /* 小屏手机优化 */
 @media (max-width: 480px) {
     #navbar > div {
-        border-radius: 0.5rem !important;
+        border-radius: 0 0 0.5rem 0.5rem !important;
         margin: 0 !important;
         padding-left: 1rem !important;
         padding-right: 1rem !important;

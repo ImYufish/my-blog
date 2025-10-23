@@ -114,6 +114,7 @@ html {
     
     .wallpaper-transparent #navbar > div {
     @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
+    border-radius: 0 0 var(--radius-large) var(--radius-large) !important;
 }
     
     .wallpaper-transparent .btn-card {
