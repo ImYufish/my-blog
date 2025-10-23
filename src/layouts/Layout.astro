@@ -882,7 +882,7 @@ const setup = () => {
 		const tocWrapper = document.getElementById('toc-wrapper');
 		const isArticlePage = tocWrapper !== null;
 		
-		// 只在文章页面重新初始化 TOC 组件
+		// 只在文章页面重新初始化桌面端 TOC 组件
 		if (isArticlePage) {
 			const tocElement = document.querySelector('table-of-contents');
 			if (tocElement && typeof (tocElement as any).init === 'function') {
@@ -890,13 +890,14 @@ const setup = () => {
 					(tocElement as any).init();
 				}, 100);
 			}
-			
-			// 重新初始化移动端 TOC 组件
-			if (typeof (window as any).mobileTOCInit === 'function') {
-				setTimeout(() => {
-					(window as any).mobileTOCInit();
-				}, 100);
-			}
+		}
+		
+		// 移动端 TOC 组件需要在所有页面都重新初始化
+		// 因为它在首页显示文章列表，在其他页面显示目录
+		if (typeof (window as any).mobileTOCInit === 'function') {
+			setTimeout(() => {
+				(window as any).mobileTOCInit();
+			}, 100);
 		}
 		
 		
