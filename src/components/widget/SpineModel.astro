@@ -173,6 +173,10 @@ import { spineModelConfig } from "../../config/pioConfig";
     messageEl.appendChild(arrowEl);
     messageContainer.appendChild(messageEl);
 
+    // 添加到页面并保存引用
+    document.body.appendChild(messageContainer);
+    currentMessageContainer = messageContainer;
+
     // 将消息显示在 firefly 头顶居中
     const container = document.getElementById("spine-model-container");
     if (container) {
@@ -180,22 +184,142 @@ import { spineModelConfig } from "../../config/pioConfig";
 
       // 消息框居中显示在模型上方
       const containerCenterX = rect.left + rect.width / 2;
-      messageContainer.style.left = containerCenterX + "px";
 
-      // 消息显示在模型容器顶部上方（调整为更靠下）
-      messageContainer.style.top = rect.top - 25 + "px"; // 距离模型顶部25px
+      // 使用估算的消息框尺寸进行初步定位
+      const estimatedMessageWidth = 240; // 使用maxWidth作为估算
+      const estimatedMessageHeight = 60; // 估算高度
+      const screenPadding = 10; // 距离屏幕边缘的最小距离
+
+      // 计算消息框的实际位置（考虑translateX(-50%)的影响）
+      let messageX = containerCenterX;
+      let messageY = rect.top - estimatedMessageHeight - 25; // 距离模型顶部25px
+
+      // 屏幕边界检查 - 水平方向
+      const minX = screenPadding + estimatedMessageWidth / 2; // 考虑translateX(-50%)
+      const maxX =
+        window.innerWidth - screenPadding - estimatedMessageWidth / 2;
+
+      if (messageX < minX) {
+        messageX = minX;
+      } else if (messageX > maxX) {
+        messageX = maxX;
+      }
+
+      // 屏幕边界检查 - 垂直方向
+      const minY = screenPadding;
+      const maxY = window.innerHeight - estimatedMessageHeight - screenPadding;
+
+      if (messageY < minY) {
+        // 如果上方空间不够，显示在模型下方
+        messageY = rect.bottom + 25;
+        // 调整箭头方向（显示在下方）
+        arrowEl.style.top = "0";
+        arrowEl.style.bottom = "auto";
+        arrowEl.style.borderTop = "none";
+        arrowEl.style.borderBottom = isDarkMode
+          ? "8px solid rgba(45, 55, 72, 0.95)"
+          : "8px solid rgba(255, 255, 255, 0.95)";
+      } else if (messageY > maxY) {
+        messageY = maxY;
+      }
+
+      // 设置位置
+      messageContainer.style.left = messageX + "px";
+      messageContainer.style.top = messageY + "px";
+
+      // 在消息框渲染后，进行精确的边界调整
+      setTimeout(() => {
+        const actualMessageRect = messageContainer.getBoundingClientRect();
+        const actualWidth = actualMessageRect.width;
+        const actualHeight = actualMessageRect.height;
+
+        // 重新计算水平位置
+        let adjustedX = containerCenterX;
+        const actualMinX = screenPadding + actualWidth / 2;
+        const actualMaxX = window.innerWidth - screenPadding - actualWidth / 2;
+
+        if (adjustedX < actualMinX) {
+          adjustedX = actualMinX;
+        } else if (adjustedX > actualMaxX) {
+          adjustedX = actualMaxX;
+        }
+
+        // 重新计算垂直位置
+        let adjustedY = rect.top - actualHeight - 25;
+        const actualMinY = screenPadding;
+        const actualMaxY = window.innerHeight - actualHeight - screenPadding;
+        let isAboveModel = true; // 标记消息框是否在模型上方
+
+        if (adjustedY < actualMinY) {
+          adjustedY = rect.bottom + 25;
+          isAboveModel = false;
+        } else if (adjustedY > actualMaxY) {
+          adjustedY = actualMaxY;
+        }
+
+        // 计算箭头应该指向的位置（模型中心）
+        const modelCenterX = rect.left + rect.width / 2;
+        const messageCenterX = adjustedX; // 消息框中心位置
+        const arrowOffsetX = modelCenterX - messageCenterX; // 箭头相对于消息框中心的偏移
+
+        // 限制箭头偏移范围，避免超出消息框边界
+        const maxOffset = actualWidth / 2 - 20; // 留出20px边距
+        const clampedOffsetX = Math.max(
+          -maxOffset,
+          Math.min(maxOffset, arrowOffsetX)
+        );
+
+        // 根据最终位置调整箭头方向和位置
+        if (isAboveModel) {
+          // 消息框在模型上方，箭头向下
+          Object.assign(arrowEl.style, {
+            position: "absolute",
+            top: "100%",
+            left: "50%",
+            bottom: "auto",
+            transform: `translateX(calc(-50% + ${clampedOffsetX}px))`,
+            width: "0",
+            height: "0",
+            borderLeft: "8px solid transparent",
+            borderRight: "8px solid transparent",
+            borderTop: isDarkMode
+              ? "8px solid rgba(45, 55, 72, 0.95)"
+              : "8px solid rgba(255, 255, 255, 0.95)",
+            borderBottom: "none",
+            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
+          });
+        } else {
+          // 消息框在模型下方，箭头向上
+          Object.assign(arrowEl.style, {
+            position: "absolute",
+            top: "0",
+            left: "50%",
+            bottom: "auto",
+            transform: `translateX(calc(-50% + ${clampedOffsetX}px))`,
+            width: "0",
+            height: "0",
+            borderLeft: "8px solid transparent",
+            borderRight: "8px solid transparent",
+            borderTop: "none",
+            borderBottom: isDarkMode
+              ? "8px solid rgba(45, 55, 72, 0.95)"
+              : "8px solid rgba(255, 255, 255, 0.95)",
+            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
+          });
+        }
+
+        // 应用调整后的位置
+        messageContainer.style.left = adjustedX + "px";
+        messageContainer.style.top = adjustedY + "px";
+      }, 50); // 增加延迟确保消息框完全渲染
     }
-
-    // 添加到页面并保存引用
-    document.body.appendChild(messageContainer);
-    currentMessageContainer = messageContainer;
 
     // 显示动画
     setTimeout(() => {
       messageContainer.style.opacity = "1";
       messageContainer.style.transform =
         "translateY(0) translateX(-50%) scale(1)";
-    }, 10);
+    }, 100); // 延迟到边界调整完成后
 
     // 自动隐藏
     const displayTime = spineModelConfig.interactive.messageDisplayTime || 3000;

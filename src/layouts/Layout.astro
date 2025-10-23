@@ -114,9 +114,7 @@ const bannerOffset =
 ---
 
 <!DOCTYPE html>
-<html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]"
-	  data-overlayscrollbars-initialize
->
+<html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]">
 	<head>
 		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KRX3XGVH');</script>
 		<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "tjr3vkhj8i");</script>
@@ -261,9 +259,7 @@ const bannerOffset =
 				? siteConfig.font.selected 
 				: [siteConfig.font.selected]
 			).map(fontId => `font-${fontId}-enabled`) : [])
-	]}
-		  data-overlayscrollbars-initialize
-	>
+	]}>
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KRX3XGVH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		
 		<!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
@@ -675,18 +671,12 @@ const bannerOffset =
 			transform: translate3d(85px, 0, 0);
 		}
 	}
+
+	/* 使用浏览器原生滚动条，无自定义样式 */
 }
 </style>
 
 <script>
-import { animationManager } from '../utils/animation-utils';
-import 'overlayscrollbars/overlayscrollbars.css';
-import {
-	OverlayScrollbars,
-	// ScrollbarsHidingPlugin,
-	// SizeObserverPlugin,
-	// ClickScrollPlugin
-} from 'overlayscrollbars';
 import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
 import {pathsEqual, url} from "../utils/url-utils";
 import {
@@ -772,8 +762,7 @@ function loadHue() {
 }
 
 function initCustomScrollbar() {
-	// 完全禁用OverlayScrollbars的body初始化，避免导致页面重新加载
-	// 只处理katex元素的滚动条
+	// 只处理katex元素的滚动条，使用浏览器原生滚动条
 	const katexElements = document.querySelectorAll('.katex-display:not([data-scrollbar-initialized])') as NodeListOf<HTMLElement>;
 	katexElements.forEach(element => {
 		if (!element.parentNode) return;
@@ -783,34 +772,10 @@ function initCustomScrollbar() {
 		element.parentNode.insertBefore(container, element);
 		container.appendChild(element);
 
-		// 使用简单的CSS滚动条而不是OverlayScrollbars
+		// 使用浏览器原生滚动条，无自定义样式
 		container.style.cssText = `
 			overflow-x: auto;
-			scrollbar-width: thin;
-			scrollbar-color: rgba(0,0,0,0.3) transparent;
 		`;
-		
-		// 为webkit浏览器添加自定义滚动条样式
-		const style = document.createElement('style');
-		style.textContent = `
-			.katex-display-container::-webkit-scrollbar {
-				height: 6px;
-			}
-			.katex-display-container::-webkit-scrollbar-track {
-				background: transparent;
-			}
-			.katex-display-container::-webkit-scrollbar-thumb {
-				background: rgba(0,0,0,0.3);
-				border-radius: 3px;
-			}
-			.katex-display-container::-webkit-scrollbar-thumb:hover {
-				background: rgba(0,0,0,0.5);
-			}
-		`;
-		if (!document.head.querySelector('style[data-katex-scrollbar]')) {
-			style.setAttribute('data-katex-scrollbar', 'true');
-			document.head.appendChild(style);
-		}
 
 		element.setAttribute('data-scrollbar-initialized', 'true');
 	});
@@ -875,14 +840,14 @@ const setup = () => {
 		}
 	})
 	window.swup.hooks.on('content:replace', () => {
-		// 只处理新的katex元素的滚动条，使用原生CSS滚动条
+		// 只处理katex元素的容器，使用浏览器原生滚动条
 		initCustomScrollbar();
 		
 		// 检查当前页面是否为文章页面（有TOC元素）
 		const tocWrapper = document.getElementById('toc-wrapper');
 		const isArticlePage = tocWrapper !== null;
 		
-		// 只在文章页面重新初始化 TOC 组件
+		// 只在文章页面重新初始化桌面端 TOC 组件
 		if (isArticlePage) {
 			const tocElement = document.querySelector('table-of-contents');
 			if (tocElement && typeof (tocElement as any).init === 'function') {
@@ -890,13 +855,14 @@ const setup = () => {
 					(tocElement as any).init();
 				}, 100);
 			}
-			
-			// 重新初始化移动端 TOC 组件
-			if (typeof (window as any).mobileTOCInit === 'function') {
-				setTimeout(() => {
-					(window as any).mobileTOCInit();
-				}, 100);
-			}
+		}
+		
+		// 移动端 TOC 组件需要在所有页面都重新初始化
+		// 因为它在首页显示文章列表，在其他页面显示目录
+		if (typeof (window as any).mobileTOCInit === 'function') {
+			setTimeout(() => {
+				(window as any).mobileTOCInit();
+			}, 100);
 		}
 		
 		
@@ -1113,13 +1079,15 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
-// 页面加载完成后初始化banner和轮播图
+// 页面加载完成后初始化banner和katex容器
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', () => {
 		showBanner();
+		initCustomScrollbar();
 	});
 } else {
 	showBanner();
+	initCustomScrollbar();
 }
 
 </script>
