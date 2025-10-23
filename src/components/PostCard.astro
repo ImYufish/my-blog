@@ -61,6 +61,18 @@ const { remarkPluginFrontmatter } = await entry.render();
       },
     ]}
   >
+    <!-- pinned icon -->
+    {
+      pinned && (
+        <div class="absolute top-2 left-3 z-10">
+          <Icon
+            name="material-symbols:pinboard"
+            class="text-[var(--primary)] text-xl transform"
+          />
+        </div>
+      )
+    }
+
     <a
       href={url}
       class="transition group w-full block font-bold mb-3 text-3xl text-90
@@ -69,14 +81,14 @@ const { remarkPluginFrontmatter } = await entry.render();
         before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
         before:absolute before:top-[35px] before:left-[18px] before:hidden md:before:block"
     >
-      {
+      <!--       {
         pinned && (
           <Icon
             name="mdi:pin"
             class="inline text-[var(--primary)] text-2xl mr-2 -translate-y-0.5"
           />
         )
-      }
+      } -->
       {title}
       <Icon
         class="inline text-[2rem] text-[var(--primary)] md:hidden translate-y-0.5 absolute"
