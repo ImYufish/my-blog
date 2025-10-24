@@ -64,11 +64,14 @@ const { remarkPluginFrontmatter } = await entry.render();
     <!-- pinned icon -->
     {
       pinned && (
-        <div class="absolute top-2 left-3 z-10">
+        <div class="absolute top-2 left-3 z-10 flex items-center gap-0.5">
           <Icon
             name="material-symbols:pinboard"
-            class="text-[var(--primary)] text-xl transform"
+            class="text-[var(--primary)] text-xl"
           />
+          <span class="text-[var(--primary)] text-sm">
+            {i18n(I18nKey.pinned)}
+          </span>
         </div>
       )
     }
@@ -83,10 +86,12 @@ const { remarkPluginFrontmatter } = await entry.render();
     >
       <!--       {
         pinned && (
-          <Icon
-            name="mdi:pin"
-            class="inline text-[var(--primary)] text-2xl mr-2 -translate-y-0.5"
-          />
+          <>
+            <Icon
+              name="mdi:pin"
+              class="inline text-[var(--primary)] text-2xl mr-2 -translate-y-0.5"
+            />
+          </>
         )
       } -->
       {title}
