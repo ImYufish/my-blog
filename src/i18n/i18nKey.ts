@@ -192,6 +192,9 @@ enum I18nKey {
   pageViews = "pageViews",
   pageViewsLoading = "pageViewsLoading",
   pageViewsError = "pageViewsError",
+
+  // 置顶
+  pinned = "pinned",
 }
 
 export default I18nKey;
