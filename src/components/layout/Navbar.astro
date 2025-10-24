@@ -1,16 +1,16 @@
 ---
 import { Icon } from "astro-icon/components";
-import { siteConfig, navBarConfig } from "../config";
-import { LinkPresets } from "../constants/link-presets";
-import { LinkPreset, type NavBarLink } from "../types/config";
-import { url } from "../utils/url-utils";
-import LightDarkSwitch from "./LightDarkSwitch.svelte";
-import LayoutSwitchButton from "./LayoutSwitchButton.svelte";
-import MobileTOC from "./MobileTOC.svelte";
-import Search from "./Search.svelte";
-import DisplaySettings from "./widget/DisplaySettings.svelte";
-import DropdownMenu from "./widget/DropdownMenu.astro";
-import NavMenuPanel from "./widget/NavMenuPanel.astro";
+import { siteConfig, navBarConfig } from "@/config";
+import { LinkPresets } from "@/constants/link-presets";
+import { LinkPreset, type NavBarLink } from "@/types/config";
+import { url } from "@/utils/url-utils";
+import LightDarkSwitch from "../interactive/LightDarkSwitch.svelte";
+import LayoutSwitchButton from "../interactive/LayoutSwitchButton.svelte";
+import MobileTOC from "../interactive/MobileTOC.svelte";
+import Search from "../interactive/Search.svelte";
+import DisplaySettings from "../interactive/DisplaySettings.svelte";
+import DropdownMenu from "./DropdownMenu.astro";
+import NavMenuPanel from "./NavMenuPanel.astro";
 
 const className = Astro.props.class;
 

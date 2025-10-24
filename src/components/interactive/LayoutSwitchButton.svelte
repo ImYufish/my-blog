@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { siteConfig } from '../config/siteConfig';
+  import { siteConfig } from '@/config';
   
   export let currentLayout: 'list' | 'grid' = 'list';
   

@@ -1,9 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getPostUrlBySlug } from "@utils/url-utils";
-import PostCard from "./PostCard.astro";
-import PostCardCompact from "./PostCardCompact.astro";
-import { siteConfig } from "../config/siteConfig";
+import PostCard from "../content/PostCard.astro";
+import { siteConfig } from "@/config";
 
 const { page } = Astro.props;
 

@@ -1,19 +1,19 @@
 ---
 import BackToTop from "@components/control/BackToTop.astro";
-import Footer from "@components/Footer.astro";
-import Navbar from "@components/Navbar.astro";
-import SideBar from "@components/widget/SideBar.astro";
+import Footer from "@components/layout/Footer.astro";
+import Navbar from "@components/layout/Navbar.astro";
+import SideBar from "@components/layout/SideBar.astro";
 import SpineModel from "@components/widget/SpineModel.astro";
 import Live2DWidget from "@components/widget/Live2DWidget.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
-import FullscreenWallpaper from "../components/misc/FullscreenWallpaper.astro";
-import IconifyLoader from "../components/misc/IconifyLoader.astro";
-import ImageWrapper from "../components/misc/ImageWrapper.astro";
-import TypewriterText from "../components/TypewriterText.astro";
-import TOC from "../components/widget/TOC.astro";
-import FloatingTOC from "../components/widget/FloatingTOC.astro";
-import { siteConfig, sidebarLayoutConfig, live2dModelConfig } from "../config";
+import FullscreenWallpaper from "@/components/misc/FullscreenWallpaper.astro";
+import IconifyLoader from "@/components/misc/IconifyLoader.astro";
+import ImageWrapper from "@/components/misc/ImageWrapper.astro";
+import TypewriterText from "@/components/content/TypewriterText.astro";
+import TOC from "@/components/widget/TOC.astro";
+import FloatingTOC from "@/components/interactive/FloatingTOC.astro";
+import { siteConfig, sidebarLayoutConfig, live2dModelConfig } from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,

@@ -1,12 +1,12 @@
 <script lang="ts">
-import { DARK_MODE, LIGHT_MODE, SYSTEM_MODE } from "@constants/constants.ts";
+import { DARK_MODE, LIGHT_MODE, SYSTEM_MODE } from "@/constants/constants";
 import Icon from "@iconify/svelte";
 import {
 	getStoredTheme,
 	setTheme,
 	resolveTheme,
 	setupSystemThemeListener,
-} from "@utils/setting-utils.ts";
+} from "@/utils/setting-utils";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 
 const seq: LIGHT_DARK_MODE[] = [LIGHT_MODE, DARK_MODE, SYSTEM_MODE];

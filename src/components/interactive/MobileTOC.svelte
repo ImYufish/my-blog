@@ -1,9 +1,9 @@
 <script lang="ts">
 import Icon from "@iconify/svelte";
 import { onMount } from "svelte";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
-import { navigateToPage } from "../utils/navigation-utils";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import { navigateToPage } from "@/utils/navigation-utils";
 
 let tocItems: Array<{ id: string; text: string; level: number }> = [];
 let postItems: Array<{

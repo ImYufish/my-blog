@@ -1,13 +1,13 @@
 ---
 import type { MarkdownHeading } from "astro";
 import { widgetManager } from "../../utils/widget-manager";
-import Announcement from "./Announcement.astro";
-import Categories from "./Categories.astro";
-import Profile from "./Profile.astro";
-import Tags from "./Tags.astro";
-import TOC from "./TOC.astro";
-import Advertisement from "./Advertisement.astro";
-import MusicPlayer from "./MusicPlayer.svelte";
+import Announcement from "../widget/Announcement.astro";
+import Categories from "../widget/Categories.astro";
+import Profile from "../content/Profile.astro";
+import Tags from "../widget/Tags.astro";
+import TOC from "../widget/TOC.astro";
+import Advertisement from "../widget/Advertisement.astro";
+import MusicPlayer from "../widget/MusicPlayer.svelte";
 
 interface Props {
   class?: string;
