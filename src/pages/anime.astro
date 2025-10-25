@@ -256,7 +256,9 @@ const COLLECTION_TYPES = {
 </script>
 
 <script is:inline>
-  class AnimePageManager {
+  // 避免重复声明
+  if (typeof window.AnimePageManager === 'undefined') {
+    window.AnimePageManager = class AnimePageManager {
     constructor() {
       this.config = window.animePageConfig;
       this.currentPage = 1;
@@ -785,10 +787,13 @@ const COLLECTION_TYPES = {
       document.getElementById("animeGrid")?.classList.add("hidden");
       document.getElementById("paginationContainer")?.classList.add("hidden");
     }
+    };
   }
 
   // 直接初始化
-  new AnimePageManager();
+  if (typeof window.animePageManagerInstance === 'undefined') {
+    window.animePageManagerInstance = new window.AnimePageManager();
+  }
 </script>
 
 <style>
