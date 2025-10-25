@@ -11,12 +11,12 @@ import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { licenseConfig } from "../../config/licenseConfig";
-import ImageWrapper from "../../components/misc/ImageWrapper.astro";
-import PostMetadata from "../../components/content/PostMeta.astro";
-import { profileConfig } from "../../config/profileConfig";
-import { siteConfig } from "../../config/siteConfig";
-import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+import { licenseConfig } from "@/config/licenseConfig";
+import ImageWrapper from "@/components/misc/ImageWrapper.astro";
+import PostMetadata from "@/components/content/PostMeta.astro";
+import { profileConfig } from "@/config/profileConfig";
+import { siteConfig } from "@/config/siteConfig";
+import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 export async function getStaticPaths() {
   const blogEntries = await getSortedPosts();
   return blogEntries.map((entry) => ({

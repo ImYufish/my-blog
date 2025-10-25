@@ -1,7 +1,7 @@
 ---
 import type { MarkdownHeading } from "astro";
-import { widgetManager } from "../../utils/widget-manager";
-import type { WidgetComponentConfig } from "../../types/config";
+import { widgetManager } from "@/utils/widget-manager";
+import type { WidgetComponentConfig } from "@/types/config";
 
 // 动态导入所有可能的组件
 import Profile from "./Profile.astro";
@@ -226,7 +226,7 @@ const hasAnyComponents = hasTopComponents || hasStickyComponents;
 
 <!-- 增强的JavaScript功能 -->
 <script>
-	import { widgetManager } from "../../utils/widget-manager";
+	import { widgetManager } from "@/utils/widget-manager";
 	
 	/**
 	 * 动态侧边栏管理器

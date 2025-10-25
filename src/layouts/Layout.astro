@@ -5,24 +5,24 @@ import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 import SakuraEffect from "@components/effects/SakuraEffect.astro";
 import FancyboxManager from "@components/effects/FancyboxManager.astro";
 
-import { profileConfig, siteConfig } from "../config";
+import { profileConfig, siteConfig } from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
 	BANNER_HEIGHT_HOME,
 	PAGE_WIDTH,
-} from "../constants/constants";
-import { defaultFavicons } from "../constants/icon";
-import type { Favicon } from "../types/config";
-import { url } from "../utils/url-utils";
-import { getDefaultBackground, isHomePage } from "../utils/layout-utils";
+} from "@/constants/constants";
+import { defaultFavicons } from "@/constants/icon";
+import type { Favicon } from "@/types/config";
+import { url } from "@/utils/url-utils";
+import { getDefaultBackground, isHomePage } from "@/utils/layout-utils";
 
 import "katex/dist/katex.css";
-import "../styles/mobile-navbar.css";
-import "../styles/wallpaper-navbar-transparent.css";
-import "../styles/fancybox-custom.css";
-import "../styles/layout-styles.css";
-import "../styles/waves.css";
+import "@/styles/mobile-navbar.css";
+import "@/styles/wallpaper-navbar-transparent.css";
+import "@/styles/fancybox-custom.css";
+import "@/styles/layout-styles.css";
+import "@/styles/waves.css";
 
 interface Props {
 	title?: string;
@@ -245,15 +245,15 @@ const bannerOffset =
 </style>
 
 <script>
-import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
-import {pathsEqual, url} from "../utils/url-utils";
+import {getHue, getStoredTheme, setHue, setTheme} from "@/utils/setting-utils";
+import {pathsEqual, url} from "@/utils/url-utils";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_HOME,
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
-} from "../constants/constants";
-import { siteConfig } from '../config';
+} from "@/constants/constants";
+import { siteConfig } from '@/config';
 
 /* Preload fonts */
 // (async function() {
