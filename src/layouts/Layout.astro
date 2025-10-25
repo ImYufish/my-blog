@@ -2,26 +2,26 @@
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 import FontManager from "@components/interactive/FontManager.astro";
 import MusicPlayer from "@components/widget/MusicPlayer.svelte";
+import SakuraEffect from "@components/effects/SakuraEffect.astro";
 
-import { profileConfig, siteConfig, sakuraConfig } from "../config";
+import { profileConfig, siteConfig } from "../config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
 	BANNER_HEIGHT_HOME,
-	DARK_MODE,
-	DEFAULT_THEME,
-	LIGHT_MODE,
-	SYSTEM_MODE,
 	PAGE_WIDTH,
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
-import type { Favicon, SakuraConfig } from "../types/config";
+import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
+import { getDefaultBackground, isHomePage } from "../utils/layout-utils";
 
 import "katex/dist/katex.css";
 import "../styles/mobile-navbar.css";
 import "../styles/wallpaper-navbar-transparent.css";
 import "../styles/fancybox-custom.css";
+import "../styles/layout-styles.css";
+import "../styles/waves.css";
 
 interface Props {
 	title?: string;
@@ -38,7 +38,7 @@ let { title, banner, description, lang, setOGTypeArticle, postSlug } =
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
 // so use Swup hooks instead to change the height immediately when a link is clicked
-const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const isHomePageCheck = isHomePage(Astro.url.pathname);
 
 // defines global css variables
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
@@ -50,26 +50,6 @@ const navbarTransparentMode =
 // 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
 const shouldShowTopHighlight =
 	navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
-
-// 获取默认背景图片的辅助函数
-const getDefaultBackground = (): string => {
-	const src = siteConfig.backgroundWallpaper.src;
-	if (typeof src === "string") {
-		return src;
-	}
-	if (src && typeof src === "object" && !Array.isArray(src)) {
-		// 优先使用desktop，如果没有则使用mobile
-		const desktopSrc = src.desktop;
-		const mobileSrc = src.mobile;
-		if (typeof desktopSrc === "string") {
-			return desktopSrc;
-		}
-		if (typeof mobileSrc === "string") {
-			return mobileSrc;
-		}
-	}
-	return "";
-};
 
 if (!banner || typeof banner !== "string" || banner.trim() === "") {
 	banner = getDefaultBackground();
@@ -157,74 +137,20 @@ const bannerOffset =
 		))}
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, SYSTEM_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "system"}}>
-			// Load the theme from local storage, use defaultMode from config if not set
+		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "system"}}>
+			// 简化的主题初始化
 			const theme = localStorage.getItem('theme') || defaultMode;
+			const isDark = theme === 'DARK_MODE' || (theme === 'SYSTEM_MODE' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 			
-			// Helper function to get system preference
-			function getSystemPreference() {
-				return window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_MODE : LIGHT_MODE;
+			if (isDark) {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
 			}
 			
-			// Resolve theme (convert system to actual theme)
-			function resolveTheme(themeValue) {
-				if (themeValue === SYSTEM_MODE) {
-					return getSystemPreference();
-				}
-				return themeValue;
-			}
+			// Set the theme for Expressive Code
+			document.documentElement.setAttribute("data-theme", isDark ? "github-dark" : "github-light");
 			
-			const resolvedTheme = resolveTheme(theme);
-			let isDark = false;
-			
-			switch (resolvedTheme) {
-				case LIGHT_MODE:
-					document.documentElement.classList.remove('dark');
-					isDark = false;
-					break
-				case DARK_MODE:
-					document.documentElement.classList.add('dark');
-					isDark = true;
-					break
-			}
-			
-			// Setup system theme change listener if using system mode
-			if (theme === SYSTEM_MODE) {
-				const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-				const handleSystemThemeChange = (e) => {
-					const currentStoredTheme = localStorage.getItem('theme');
-					if (currentStoredTheme === SYSTEM_MODE) {
-						const newTheme = e.matches ? DARK_MODE : LIGHT_MODE;
-						const newIsDark = newTheme === DARK_MODE;
-						
-						if (newIsDark) {
-							document.documentElement.classList.add('dark');
-						} else {
-							document.documentElement.classList.remove('dark');
-						}
-						
-						const expressiveTheme = newIsDark ? "github-dark" : "github-light";
-						document.documentElement.setAttribute("data-theme", expressiveTheme);
-					}
-				};
-				
-				// Add listener for system theme changes
-				mediaQuery.addListener(handleSystemThemeChange);
-			}
-			
-			// Set the theme for Expressive Code based on current mode
-			const expressiveTheme = isDark ? "github-dark" : "github-light";
-			document.documentElement.setAttribute("data-theme", expressiveTheme);
-			
-			// 确保主题正确应用 - 解决代码块渲染问题
-			// 使用 requestAnimationFrame 确保在下一帧检查主题状态
-			requestAnimationFrame(() => {
-				const currentTheme = document.documentElement.getAttribute('data-theme');
-				if (currentTheme !== expressiveTheme) {
-					document.documentElement.setAttribute('data-theme', expressiveTheme);
-				}
-			});
-
 			// Load the hue from local storage
 			const hue = localStorage.getItem('hue') || configHue;
 			document.documentElement.style.setProperty('--hue', hue);
@@ -253,7 +179,7 @@ const bannerOffset =
 
 </head>
 	<body class=" min-h-screen " class:list={[
-		{"lg:is-home": isHomePage, "enable-banner": enableBanner},
+		{"lg:is-home": isHomePageCheck, "enable-banner": enableBanner},
 		...(siteConfig.font.enable && siteConfig.font.selected ? 
 			(Array.isArray(siteConfig.font.selected) 
 				? siteConfig.font.selected 
@@ -274,352 +200,7 @@ const bannerOffset =
 		<div id="page-height-extend" class="hidden h-[300vh]"></div>
 
 		<!-- Sakura Effect -->
-		{sakuraConfig?.enable && (
-			<script define:vars={{ sakuraConfig }}>
-				// 樱花对象类
-				class Sakura {
-					constructor(x, y, s, r, a, fn, idx, img, limitArray, config) {
-						this.x = x;
-						this.y = y;
-						this.s = s;
-						this.r = r;
-						this.a = a;
-						this.fn = fn;
-						this.idx = idx;
-						this.img = img;
-						this.limitArray = limitArray;
-						this.config = config;
-					}
-
-					draw(cxt) {
-						cxt.save();
-						cxt.translate(this.x, this.y);
-						cxt.rotate(this.r);
-						cxt.globalAlpha = this.a;
-						cxt.drawImage(this.img, 0, 0, 40 * this.s, 40 * this.s);
-						cxt.restore();
-					}
-
-					update() {
-						this.x = this.fn.x(this.x, this.y);
-						this.y = this.fn.y(this.y, this.y);
-						this.r = this.fn.r(this.r);
-						this.a = this.fn.a(this.a);
-						// 如果樱花越界，重新调整位置
-						if (
-							this.x > window.innerWidth ||
-							this.x < 0 ||
-							this.y > window.innerHeight ||
-							this.y < 0 ||
-							this.a <= 0
-						) {
-							// 如果樱花不做限制
-							if (this.limitArray[this.idx] === -1) {
-								this.resetPosition();
-							}
-							// 否则樱花有限制
-							else {
-								if (this.limitArray[this.idx] > 0) {
-									this.resetPosition();
-									this.limitArray[this.idx]--;
-								}
-							}
-						}
-					}
-
-					resetPosition() {
-						this.r = getRandom('fnr', this.config);
-						if (Math.random() > 0.4) {
-							this.x = getRandom('x', this.config);
-							this.y = 0;
-							this.s = getRandom('s', this.config);
-							this.r = getRandom('r', this.config);
-							this.a = getRandom('a', this.config);
-						} else {
-							this.x = window.innerWidth;
-							this.y = getRandom('y', this.config);
-							this.s = getRandom('s', this.config);
-							this.r = getRandom('r', this.config);
-							this.a = getRandom('a', this.config);
-						}
-					}
-				}
-
-				// 樱花列表类
-				class SakuraList {
-					constructor() {
-						this.list = [];
-					}
-
-					push(sakura) {
-						this.list.push(sakura);
-					}
-
-					update() {
-						for (let i = 0, len = this.list.length; i < len; i++) {
-							this.list[i].update();
-						}
-					}
-
-					draw(cxt) {
-						for (let i = 0, len = this.list.length; i < len; i++) {
-							this.list[i].draw(cxt);
-						}
-					}
-
-					get(i) {
-						return this.list[i];
-					}
-
-					size() {
-						return this.list.length;
-					}
-				}
-
-				// 获取随机值的函数
-				function getRandom(option, config) {
-					let ret;
-					let random;
-
-					switch (option) {
-						case 'x':
-							ret = Math.random() * window.innerWidth;
-							break;
-						case 'y':
-							ret = Math.random() * window.innerHeight;
-							break;
-						case 's':
-							ret = config.size.min + Math.random() * (config.size.max - config.size.min);
-							break;
-						case 'r':
-							ret = Math.random() * 6;
-							break;
-						case 'a':
-							ret = config.opacity.min + Math.random() * (config.opacity.max - config.opacity.min);
-							break;
-						case 'fnx':
-							random = config.speed.horizontal.min + Math.random() * (config.speed.horizontal.max - config.speed.horizontal.min);
-							ret = function (x, y) {
-								return x + random;
-							};
-							break;
-						case 'fny':
-							random = config.speed.vertical.min + Math.random() * (config.speed.vertical.max - config.speed.vertical.min);
-							ret = function (x, y) {
-								return y + random;
-							};
-							break;
-						case 'fnr':
-							ret = function (r) {
-								return r + config.speed.rotation;
-							};
-							break;
-						case 'fna':
-							ret = function (alpha) {
-								return alpha - config.speed.fadeSpeed * 0.01;
-							};
-							break;
-					}
-					return ret;
-				}
-
-				// 樱花管理器类
-				class SakuraManager {
-					constructor(config) {
-						this.config = config;
-						this.canvas = null;
-						this.ctx = null;
-						this.sakuraList = null;
-						this.animationId = null;
-						this.img = null;
-						this.isRunning = false;
-					}
-
-					// 初始化樱花特效
-					async init() {
-						if (!this.config.enable || this.isRunning) {
-							return;
-						}
-
-						// 创建图片对象
-						this.img = new Image();
-						this.img.src = '/assets/images/sakura.png'; // 使用樱花图片
-
-						// 等待图片加载完成
-						await new Promise((resolve, reject) => {
-							if (this.img) {
-								this.img.onload = () => resolve();
-								this.img.onerror = () => reject(new Error('Failed to load sakura image'));
-							}
-						});
-
-						this.createCanvas();
-						this.createSakuraList();
-						this.startAnimation();
-						this.isRunning = true;
-					}
-
-					// 创建画布
-					createCanvas() {
-						this.canvas = document.createElement('canvas');
-						this.canvas.height = window.innerHeight;
-						this.canvas.width = window.innerWidth;
-						this.canvas.setAttribute('style', `position: fixed; left: 0; top: 0; pointer-events: none; z-index: ${this.config.zIndex};`);
-						this.canvas.setAttribute('id', 'canvas_sakura');
-						document.body.appendChild(this.canvas);
-						this.ctx = this.canvas.getContext('2d');
-
-						// 监听窗口大小变化
-						window.addEventListener('resize', this.handleResize.bind(this));
-					}
-
-					// 创建樱花列表
-					createSakuraList() {
-						if (!this.img || !this.ctx) return;
-
-						this.sakuraList = new SakuraList();
-						const limitArray = new Array(this.config.sakuraNum).fill(this.config.limitTimes);
-
-						for (let i = 0; i < this.config.sakuraNum; i++) {
-							const randomX = getRandom('x', this.config);
-							const randomY = getRandom('y', this.config);
-							const randomS = getRandom('s', this.config);
-							const randomR = getRandom('r', this.config);
-							const randomA = getRandom('a', this.config);
-							const randomFnx = getRandom('fnx', this.config);
-							const randomFny = getRandom('fny', this.config);
-							const randomFnR = getRandom('fnr', this.config);
-							const randomFnA = getRandom('fna', this.config);
-
-							const sakura = new Sakura(
-								randomX,
-								randomY,
-								randomS,
-								randomR,
-								randomA,
-								{
-									x: randomFnx,
-									y: randomFny,
-									r: randomFnR,
-									a: randomFnA,
-								},
-								i,
-								this.img,
-								limitArray,
-								this.config
-							);
-
-							sakura.draw(this.ctx);
-							this.sakuraList.push(sakura);
-						}
-					}
-
-					// 开始动画
-					startAnimation() {
-						if (!this.ctx || !this.canvas || !this.sakuraList) return;
-
-						const animate = () => {
-							if (!this.ctx || !this.canvas || !this.sakuraList) return;
-
-							this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-							this.sakuraList.update();
-							this.sakuraList.draw(this.ctx);
-							this.animationId = requestAnimationFrame(animate);
-						};
-
-						this.animationId = requestAnimationFrame(animate);
-					}
-
-					// 处理窗口大小变化
-					handleResize() {
-						if (this.canvas) {
-							this.canvas.width = window.innerWidth;
-							this.canvas.height = window.innerHeight;
-						}
-					}
-
-					// 停止樱花特效
-					stop() {
-						if (this.animationId) {
-							cancelAnimationFrame(this.animationId);
-							this.animationId = null;
-						}
-
-						if (this.canvas) {
-							document.body.removeChild(this.canvas);
-							this.canvas = null;
-						}
-
-						window.removeEventListener('resize', this.handleResize.bind(this));
-						this.isRunning = false;
-					}
-
-					// 切换樱花特效
-					toggle() {
-						if (this.isRunning) {
-							this.stop();
-						} else {
-							this.init();
-						}
-					}
-
-					// 更新配置
-					updateConfig(newConfig) {
-						const wasRunning = this.isRunning;
-						if (wasRunning) {
-							this.stop();
-						}
-						this.config = newConfig;
-						if (wasRunning && newConfig.enable) {
-							this.init();
-						}
-					}
-
-					// 获取运行状态
-					getIsRunning() {
-						return this.isRunning;
-					}
-				}
-
-				// 创建全局樱花管理器实例
-				let globalSakuraManager = null;
-
-				// 初始化樱花特效
-				function initSakura(config) {
-					if (globalSakuraManager) {
-						globalSakuraManager.updateConfig(config);
-					} else {
-						globalSakuraManager = new SakuraManager(config);
-						if (config.enable) {
-							globalSakuraManager.init();
-						}
-					}
-				}
-
-				// 樱花特效初始化
-				(function() {
-					// 全局标记，确保樱花特效只初始化一次
-					if (window.sakuraInitialized) {
-						return;
-					}
-					
-					// 初始化樱花特效的函数
-					const setupSakura = () => {
-						if (sakuraConfig.enable && !window.sakuraInitialized) {
-							initSakura(sakuraConfig);
-							window.sakuraInitialized = true;
-						}
-					};
-					
-					// 页面加载完成后初始化樱花特效
-					if (document.readyState === 'loading') {
-						document.addEventListener('DOMContentLoaded', setupSakura);
-					} else {
-						setupSakura();
-					}
-				})();
-			</script>
-		)}
+		<SakuraEffect />
 		
 		
 	</body>
@@ -657,78 +238,6 @@ const bannerOffset =
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
 	}
-	
-	/* Water waves animation */
-	.waves > .parallax use {
-		animation: wave 25s cubic-bezier(0.5, 0.5, 0.45, 0.5) infinite;
-	}
-
-	/* 性能优化：低质量模式 */
-	[data-wave-quality="low"] .waves > .parallax use {
-		animation: wave-slow 30s linear infinite;
-		animation-fill-mode: both;
-	}
-
-	/* 性能优化：中等质量模式 */
-	[data-wave-quality="medium"] .waves > .parallax use {
-		animation: wave 20s cubic-bezier(0.4, 0.4, 0.6, 0.4) infinite;
-	}
-
-	/* 性能优化：高质量模式 */
-	[data-wave-quality="high"] .waves > .parallax use {
-		animation: wave 15s cubic-bezier(0.5, 0.5, 0.45, 0.5) infinite;
-	}
-
-	/* 硬件加速控制 */
-	[data-hardware-acceleration="true"] .waves > .parallax use {
-		transform: translateZ(0);
-		will-change: transform;
-		backface-visibility: hidden;
-	}
-
-	[data-hardware-acceleration="false"] .waves > .parallax use {
-		will-change: auto;
-		backface-visibility: visible;
-	}
-
-	@keyframes wave {
-		0% {
-			transform: translate3d(-90px, 0, 0);
-		}
-		100% {
-			transform: translate3d(85px, 0, 0);
-		}
-	}
-
-	@keyframes wave-slow {
-		0% {
-			transform: translate(-90px, 0);
-		}
-		100% {
-			transform: translate(85px, 0);
-		}
-	}
-
-	/* 低质量模式的额外优化 */
-	.wave-low-quality {
-		animation-timing-function: linear !important;
-		animation-iteration-count: infinite !important;
-	}
-
-	/* 性能优化：减少重绘 */
-	[data-wave-quality="low"] .waves {
-		contain: layout style paint;
-	}
-
-	[data-wave-quality="medium"] .waves {
-		contain: layout style;
-	}
-
-	[data-wave-quality="high"] .waves {
-		contain: none;
-	}
-
-	/* 使用浏览器原生滚动条，无自定义样式 */
 }
 </style>
 
@@ -966,8 +475,8 @@ const setup = () => {
 			const transparentMode = navbar.getAttribute('data-transparent-mode')
 			if (transparentMode === 'semifull') {
 				// 重新调用初始化函数来重新绑定滚动事件
-				if (typeof window.initSemifullScrollDetection === 'function') {
-					window.initSemifullScrollDetection()
+				if (typeof (window as any).initSemifullScrollDetection === 'function') {
+					(window as any).initSemifullScrollDetection()
 				}
 			}
 		}
@@ -1157,7 +666,7 @@ function initFancybox() {
   Fancybox.close();
   
   // 为相册图片添加 Fancybox 支持
-  Fancybox.bind(".custom-md img, #post-cover img, .moment-images img", {
+  Fancybox.bind(".custom-md img, #post-cover img, .moment-images img" as any, {
     groupAll: true,
     Thumbs: {
       autoStart: true,
@@ -1216,7 +725,7 @@ function initFancybox() {
   });
   
   // 为相册中的链接添加 Fancybox 支持
-  Fancybox.bind(".moment-images a[data-fancybox]", {
+  Fancybox.bind(".moment-images a[data-fancybox]" as any, {
     Thumbs: {
       autoStart: true,
       showOnStart: "yes",
@@ -1273,7 +782,7 @@ function initFancybox() {
   });
   
   // 为单独的 fancybox 图片添加支持
-  Fancybox.bind("[data-fancybox]:not(.moment-images a)", {
+  Fancybox.bind("[data-fancybox]:not(.moment-images a)" as any, {
     // 自定义选项
     Thumbs: {
       autoStart: true,
