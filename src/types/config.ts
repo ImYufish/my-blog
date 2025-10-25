@@ -1,7 +1,6 @@
 import type {
   DARK_MODE,
   LIGHT_MODE,
-  SYSTEM_MODE,
 } from "../constants/constants";
 
 export type SiteConfig = {
@@ -25,7 +24,7 @@ export type SiteConfig = {
   themeColor: {
     hue: number;
     fixed: boolean;
-    defaultMode?: "light" | "dark" | "system"; // 默认模式：浅色、深色或跟随系统
+    defaultMode?: LIGHT_DARK_MODE; // 默认模式：浅色、深色或跟随系统
   };
 
   // 字体配置
@@ -130,8 +129,7 @@ type TwikooConfig = {
 
 export type LIGHT_DARK_MODE =
   | typeof LIGHT_MODE
-  | typeof DARK_MODE
-  | typeof SYSTEM_MODE;
+  | typeof DARK_MODE;
 
 export type BlogPostData = {
   body: string;

@@ -138,11 +138,23 @@ const bannerOffset =
 		))}
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "system"}}>
-			// 简化的主题初始化
-			const theme = localStorage.getItem('theme') || defaultMode;
-			const isDark = theme === 'DARK_MODE' || (theme === 'SYSTEM_MODE' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "light"}}>
+			// 主题初始化 - 与setting-utils.ts保持一致
+			const LIGHT_MODE = 'light';
+			const DARK_MODE = 'dark';
 			
+			// 获取存储的主题，如果没有则使用默认值
+			const theme = localStorage.getItem('theme') || defaultMode;
+			
+			// 解析主题
+			function resolveTheme(themeValue) {
+				return themeValue;
+			}
+			
+			const resolvedTheme = resolveTheme(theme);
+			const isDark = resolvedTheme === DARK_MODE;
+			
+			// 应用主题
 			if (isDark) {
 				document.documentElement.classList.add('dark');
 			} else {
