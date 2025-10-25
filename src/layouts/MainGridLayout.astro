@@ -11,15 +11,14 @@ import FullscreenWallpaper from "@/components/misc/FullscreenWallpaper.astro";
 import IconifyLoader from "@/components/misc/IconifyLoader.astro";
 import ImageWrapper from "@/components/misc/ImageWrapper.astro";
 import TypewriterText from "@/components/content/TypewriterText.astro";
-import TOC from "@/components/widget/TOC.astro";
+//import TOC from "@/components/widget/TOC.astro";
 import FloatingTOC from "@/components/interactive/FloatingTOC.astro";
-import { siteConfig, sidebarLayoutConfig, live2dModelConfig } from "@/config";
+import { siteConfig, live2dModelConfig } from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
-import { widgetManager } from "../utils/widget-manager";
 import { getBackgroundImages, isHomePage } from "../utils/layout-utils";
 import { getResponsiveSidebarConfig, generateGridClasses, generateSidebarClasses, generateMainContentClasses } from "../utils/responsive-utils";
 import Layout from "./Layout.astro";
@@ -340,4 +339,3 @@ const transparentClass = shouldEnableTransparency
 {!siteConfig.toc.enable && <div id="toc"></div>}
 </Layout>
 
-<!-- 样式已移至独立的CSS文件中 -->
