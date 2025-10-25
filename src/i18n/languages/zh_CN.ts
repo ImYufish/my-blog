@@ -58,10 +58,36 @@ export const zh_CN: Translation = {
   [Key.animeStatusWatching]: "追番中",
   [Key.animeStatusCompleted]: "已追完",
   [Key.animeStatusPlanned]: "计划中",
-  [Key.animeYear]: "年份",
   [Key.animeStudio]: "制作",
   [Key.animeEmpty]: "暂无追番数据",
   [Key.animeEmptyBangumi]: "请检查 Bangumi 配置或网络连接",
+  
+  // 动漫状态
+  [Key.animeStatusAll]: "全部",
+  [Key.animeStatusWish]: "想看",
+  [Key.animeStatusDone]: "看过",
+  [Key.animeStatusDoing]: "在看",
+  [Key.animeStatusOnhold]: "搁置",
+  [Key.animeStatusDropped]: "抛弃",
+  
+  // 动漫页面文本
+  [Key.animeLoading]: "正在加载追番数据...",
+  [Key.animeLoadingDescription]: "请稍候，正在从 Bangumi 获取您的收藏信息",
+  [Key.animeError]: "数据加载失败",
+  [Key.animeErrorDescription]: "无法连接到 Bangumi API，请检查网络连接或稍后重试",
+  [Key.animeRetry]: "重新加载",
+  [Key.animeEmptyData]: "暂无数据",
+  [Key.animeEmptyDescription]: "该分类下暂时没有找到相关的动漫作品",
+  [Key.animeEmptySuggestion]: "试试切换到其他分类查看",
+  [Key.animeConfigDescription]: "请在 src/config/siteConfig.ts 文件中设置你的 Bangumi 用户ID",
+  [Key.animeRefreshNote]: "由于一些限制，可能需要F5刷新一次页面才会加载追番数据，目前还没有很好的解决方法",
+  
+  // 动漫信息
+  [Key.animeYear]: "年份",
+  [Key.animeEpisodes]: "集数",
+  [Key.animeRank]: "排名",
+  [Key.animeUnknown]: "未知",
+  [Key.animeLoadFailed]: "加载失败",
 
   // 分页
   [Key.paginationFirst]: "首页",

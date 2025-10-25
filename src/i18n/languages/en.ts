@@ -58,11 +58,37 @@ export const en: Translation = {
   [Key.animeStatusWatching]: "Watching",
   [Key.animeStatusCompleted]: "Completed",
   [Key.animeStatusPlanned]: "Planned",
-  [Key.animeYear]: "Year",
   [Key.animeStudio]: "Studio",
   [Key.animeEmpty]: "No anime data",
   [Key.animeEmptyBangumi]:
     "Please check Bangumi configuration or network connection",
+    
+  // Anime Status
+  [Key.animeStatusAll]: "All",
+  [Key.animeStatusWish]: "Wish",
+  [Key.animeStatusDone]: "Done",
+  [Key.animeStatusDoing]: "Watching",
+  [Key.animeStatusOnhold]: "On Hold",
+  [Key.animeStatusDropped]: "Dropped",
+  
+  // Anime Page Text
+  [Key.animeLoading]: "Loading anime data...",
+  [Key.animeLoadingDescription]: "Please wait, fetching your collection from Bangumi",
+  [Key.animeError]: "Data loading failed",
+  [Key.animeErrorDescription]: "Unable to connect to Bangumi API, please check your network connection or try again later",
+  [Key.animeRetry]: "Retry",
+  [Key.animeEmptyData]: "No data",
+  [Key.animeEmptyDescription]: "No anime found in this category",
+  [Key.animeEmptySuggestion]: "Try switching to other categories",
+  [Key.animeConfigDescription]: "Please set your Bangumi user ID in src/config/siteConfig.ts",
+  [Key.animeRefreshNote]: "Due to some limitations, you may need to refresh the page once to load anime data, there is no good solution yet",
+  
+  // Anime Info
+  [Key.animeYear]: "Year",
+  [Key.animeEpisodes]: "Episodes",
+  [Key.animeRank]: "Rank",
+  [Key.animeUnknown]: "Unknown",
+  [Key.animeLoadFailed]: "Load failed",
 
   // Pagination
   [Key.paginationFirst]: "First",

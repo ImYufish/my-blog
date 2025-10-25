@@ -56,11 +56,37 @@ enum I18nKey {
   animeStatusWatching = "animeStatusWatching",
   animeStatusCompleted = "animeStatusCompleted",
   animeStatusPlanned = "animeStatusPlanned",
-  animeYear = "animeYear",
   animeStudio = "animeStudio",
   animeEmpty = "animeEmpty",
   animeEmptyBangumi = "animeEmptyBangumi",
-
+  
+  // 动漫状态
+  animeStatusAll = "animeStatusAll",
+  animeStatusWish = "animeStatusWish",
+  animeStatusDone = "animeStatusDone",
+  animeStatusDoing = "animeStatusDoing",
+  animeStatusOnhold = "animeStatusOnhold",
+  animeStatusDropped = "animeStatusDropped",
+  
+  // 动漫页面文本
+  animeLoading = "animeLoading",
+  animeLoadingDescription = "animeLoadingDescription",
+  animeError = "animeError",
+  animeErrorDescription = "animeErrorDescription",
+  animeRetry = "animeRetry",
+  animeEmptyData = "animeEmptyData",
+  animeEmptyDescription = "animeEmptyDescription",
+  animeEmptySuggestion = "animeEmptySuggestion",
+  animeConfigDescription = "animeConfigDescription",
+  animeRefreshNote = "animeRefreshNote",
+  
+  // 动漫信息
+  animeYear = "animeYear",
+  animeEpisodes = "animeEpisodes",
+  animeRank = "animeRank",
+  animeUnknown = "animeUnknown",
+  animeLoadFailed = "animeLoadFailed",
+  
   // 分页
   paginationFirst = "paginationFirst",
   paginationPrev = "paginationPrev",
