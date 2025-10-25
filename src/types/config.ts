@@ -58,9 +58,6 @@ export type SiteConfig = {
   // 页面开关配置
   pages: {
     anime: boolean; // 追番页面开关
-    projects: boolean; // 项目展示页面开关
-    timeline: boolean; // 时间线页面开关
-    skills: boolean; // 技能页面开关
   };
 
   // 文章列表布局配置
@@ -87,10 +84,6 @@ export enum LinkPreset {
   About = 2,
   Friends = 3,
   Anime = 4,
-
-  Projects = 7,
-  Skills = 8,
-  Timeline = 9,
 }
 
 export type NavBarLink = {

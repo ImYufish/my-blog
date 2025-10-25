@@ -36,11 +36,8 @@
 - `PostCardCompact.astro` - 紧凑文章卡片组件
 - `PostMeta.astro` - 文章元数据组件
 - `TypewriterText.astro` - 打字机效果文本组件
-- `ProjectCard.astro` - 项目卡片组件
-- `SkillCard.astro` - 技能卡片组件
 - `StatCard.astro` - 统计卡片组件
 - `Profile.astro` - 个人资料组件
-- `TimelineItem.astro` - 时间线项目组件
 
 ### 🎛️ control/ - 控制组件
 页面控制相关的组件，如按钮、分页等。

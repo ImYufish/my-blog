@@ -58,12 +58,9 @@ export const siteConfig: SiteConfig = {
   // OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
   generateOgImages: false,
 
-  // 页面开关配置 - 控制特定页面的访问权限
+  // 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
   pages: {
-    anime: true, // 追番页面开关，设为false时访问/anime/会返回404
-    projects: true, // 项目展示页面开关，设为false时访问/projects/会返回404
-    timeline: true, // 时间线页面开关，设为false时访问/timeline/会返回404
-    skills: true, // 技能页面开关，设为false时访问/skills/会返回404
+    anime: true, // 追番页面开关，
   },
 
   // 文章列表布局配置
