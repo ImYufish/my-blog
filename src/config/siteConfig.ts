@@ -141,6 +141,16 @@ export const siteConfig: SiteConfig = {
           desktop: true, // 桌面端启用波浪动画效果
           mobile: true, // 移动端启用波浪动画效果
         },
+        performance: {
+          quality: "high", 
+          hardwareAcceleration: true, // 是否启用硬件加速
+        },
+        // 性能优化说明：
+        // quality: "high" - 最佳视觉效果，但GPU占用较高，适合高性能设备
+        // quality: "medium" - 平衡性能和质量，适合中等性能设备
+        // quality: "low" - 最低GPU占用，动画更简单，适合低性能设备
+        // hardwareAcceleration: true - 启用GPU加速，提升性能但增加GPU占用
+        // hardwareAcceleration: false - 禁用GPU加速，降低GPU占用但可能影响性能
       },
     },
 

@@ -411,6 +411,10 @@ export type BackgroundWallpaperConfig = {
             desktop: boolean; // 桌面端是否启用波浪动画效果
             mobile: boolean; // 移动端是否启用波浪动画效果
           }; // 是否启用波浪动画效果，支持布尔值或分别设置桌面端和移动端
+      performance?: {
+        quality: "high" | "medium" | "low"; // 渲染质量：high=高质量，medium=中等质量，low=低质量
+        hardwareAcceleration: boolean; // 是否启用硬件加速
+      }; // 波浪效果性能优化配置
     };
   };
   // 全屏透明覆盖模式特有配置
