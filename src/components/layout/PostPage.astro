@@ -15,7 +15,7 @@ type PostEntry = CollectionEntry<"posts">;
 
 <div
   id="post-list-container"
-  class="transition flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4"
+  class="transition flex flex-col gap-4 md:gap-4 mb-4"
   style="opacity: 0;"
   data-default-layout={siteConfig.postListLayout.defaultMode}
 >
@@ -76,7 +76,7 @@ type PostEntry = CollectionEntry<"posts">;
     } else {
       // 切换到列表模式
       postListContainer.className =
-        "transition flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4";
+        "transition flex flex-col gap-4 md:gap-4 mb-4";
     }
 
     // 布局应用后显示容器
