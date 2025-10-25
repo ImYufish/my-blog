@@ -791,9 +791,8 @@ const COLLECTION_TYPES = {
   }
 
   // 直接初始化
-  if (typeof window.animePageManagerInstance === 'undefined') {
-    window.animePageManagerInstance = new window.AnimePageManager();
-  }
+  new window.AnimePageManager()
+  
 </script>
 
 <style>
