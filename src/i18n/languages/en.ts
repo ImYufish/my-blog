@@ -49,7 +49,7 @@ export const en: Translation = {
 
   // Anime Page
   [Key.animeTitle]: "My Anime List",
-  [Key.animeSubtitle]: "Record my二次元 journey",
+  [Key.animeSubtitle]: "Record my anime journey",
   [Key.animeList]: "Anime List",
   [Key.animeTotal]: "Total",
   [Key.animeWatching]: "Watching",
