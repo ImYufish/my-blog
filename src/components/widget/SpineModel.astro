@@ -135,6 +135,17 @@ import MessageBox from "./PioMessageBox.astro";
   async function initSpineModel() {
     if (!spineModelConfig.enable) return;
 
+    // 检查移动端显示设置，如果隐藏则不加载运行时
+    if (
+      spineModelConfig.responsive.hideOnMobile &&
+      window.innerWidth <= spineModelConfig.responsive.mobileBreakpoint
+    ) {
+      console.log("📱 Mobile device detected, skipping Spine model initialization");
+      const container = document.getElementById("spine-model-container");
+      if (container) container.style.display = "none";
+      return;
+    }
+
     // 检查是否已经初始化
     if (window.spineModelInitialized) {
       console.log("⏭️ Spine model already initialized, skipping...");
@@ -212,16 +223,6 @@ import MessageBox from "./PioMessageBox.astro";
 
       // 然后等待 Spine 对象可用
       await waitForSpine();
-
-      // 检查移动端显示设置
-      if (
-        spineModelConfig.responsive.hideOnMobile &&
-        window.innerWidth <= spineModelConfig.responsive.mobileBreakpoint
-      ) {
-        const container = document.getElementById("spine-model-container");
-        if (container) container.style.display = "none";
-        return;
-      }
 
       // 标记为已初始化
       window.spineModelInitialized = true;

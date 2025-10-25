@@ -331,6 +331,17 @@ const size = config.size || { width: 280, height: 250 };
 
   // Load Live2D and initialize
   function loadLive2DSDK() {
+    // 检查移动端显示设置，如果隐藏则不加载运行时
+    if (
+      config.responsive?.hideOnMobile &&
+      window.innerWidth <= (config.responsive.mobileBreakpoint || 768)
+    ) {
+      console.log("📱 Mobile device detected, skipping Live2D model initialization");
+      const widget = document.getElementById("live2d-widget");
+      if (widget) widget.style.display = "none";
+      return;
+    }
+
     // Check if Live2D SDK is already loaded
     if (window.loadlive2d) {
       initLive2D();
