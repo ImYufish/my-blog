@@ -2,7 +2,6 @@ import {
   DARK_MODE,
   DEFAULT_THEME,
   LIGHT_MODE,
-  SYSTEM_MODE,
 } from "@constants/constants";
 import { siteConfig } from "../config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
@@ -17,17 +16,7 @@ export function getDefaultTheme(): LIGHT_DARK_MODE {
   return siteConfig.themeColor.defaultMode || DEFAULT_THEME;
 }
 
-export function getSystemPreference(): LIGHT_DARK_MODE {
-  if (typeof window === "undefined") return LIGHT_MODE;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? DARK_MODE
-    : LIGHT_MODE;
-}
-
 export function resolveTheme(theme: LIGHT_DARK_MODE): LIGHT_DARK_MODE {
-  if (theme === SYSTEM_MODE) {
-    return getSystemPreference();
-  }
   return theme;
 }
 
@@ -46,7 +35,7 @@ export function setHue(hue: number): void {
 }
 
 export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
-  // 解析主题，如果是系统模式则获取系统偏好
+  // 解析主题
   const resolvedTheme = resolveTheme(theme);
 
   // 获取当前主题状态的完整信息
@@ -121,38 +110,8 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
 export function setTheme(theme: LIGHT_DARK_MODE): void {
   localStorage.setItem("theme", theme);
   applyThemeToDocument(theme);
-
-  // 如果设置为系统模式，监听系统偏好变化
-  if (theme === SYSTEM_MODE && typeof window !== "undefined") {
-    setupSystemThemeListener();
-  }
 }
 
-// 设置系统主题变化监听器
-let systemThemeListener: ((e: MediaQueryListEvent) => void) | null = null;
-
-export function setupSystemThemeListener(): void {
-  if (typeof window === "undefined") return;
-
-  // 移除之前的监听器
-  if (systemThemeListener) {
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .removeListener(systemThemeListener);
-  }
-
-  // 添加新的监听器
-  systemThemeListener = (e: MediaQueryListEvent) => {
-    const currentTheme = getStoredTheme();
-    if (currentTheme === SYSTEM_MODE) {
-      applyThemeToDocument(SYSTEM_MODE);
-    }
-  };
-
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addListener(systemThemeListener);
-}
 
 export function getStoredTheme(): LIGHT_DARK_MODE {
   return (

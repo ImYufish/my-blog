@@ -1,8 +1,13 @@
+/* 导入统一变量 */
+@import './variables-unified.styl';
 /* 导入追番页面样式 */
 @import './anime.css';
-/* 导入动画样式 */
-@import './transition.css';
-@import './animation-enhancements.css';
+/* 导入统一动画样式 */
+@import './animations-unified.css';
+/* 导入统一导航栏样式 */
+@import './navbar-unified.css';
+/* 导入性能优化样式 */
+@import './performance-enhancements.css';
 
 
 @tailwind base;
@@ -24,7 +29,7 @@ html {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 30%, rgba(255, 255, 255, 0.15) 60%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
     pointer-events: none;
     z-index: 20;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--duration-medium) var(--ease-standard);
 }
 
 /* 暗色主题下的渐变高光效果 */
@@ -97,10 +102,12 @@ html {
     }
     
     .card-base {
-        @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition-colors duration-150;
+        @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition-colors;
+        transition-duration: var(--duration-fast);
     }
     .card-base-transparent {
-        @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg-transparent)] backdrop-blur-sm transition-colors duration-150;
+        @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg-transparent)] backdrop-blur-sm transition-colors;
+        transition-duration: var(--duration-fast);
     }
     
     /* 全屏壁纸模式下的半透明效果 */

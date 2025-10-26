@@ -1,5 +1,7 @@
 ---
-import type { Live2DModelConfig } from "../../types/config";
+import type { Live2DModelConfig } from "@/types/config";
+import MessageBox from "./PioMessageBox.astro";
+import { url } from "@/utils/url-utils";
 
 interface Props {
   config: Live2DModelConfig;
@@ -29,7 +31,10 @@ const size = config.size || { width: 280, height: 250 };
   <canvas id="live2d-canvas" width={size.width} height={size.height}></canvas>
 </div>
 
-<script define:vars={{ config }}>
+<!-- 引入消息框组件 -->
+<MessageBox />
+
+<script define:vars={{ config, modelPath: url(config.model.path), sdkPath: url("/pio/static/live2d-sdk/live2d.min.js") }}>
   let modelData = null;
   let motionGroups = {};
   let hitAreas = {};
@@ -48,7 +53,7 @@ const size = config.size || { width: 280, height: 250 };
       return;
     }
 
-    const modelPath = config.model.path;
+    const modelPath = modelPath;
 
     // Load model data first to get motion groups and hit areas
     fetch(modelPath)
@@ -253,11 +258,9 @@ const size = config.size || { width: 280, height: 250 };
     showMessage();
   }
 
-  // 全局变量，跟踪当前显示的消息容器和隐藏定时器
-  let currentMessageContainer = null;
-  let hideMessageTimer = null;
+  // 消息框功能已移至公共组件 MessageBox.astro
 
-  // Show random message with advanced styling (same as Spine)
+  // Show random message using the common MessageBox component
   function showMessage() {
     const messages = config.interactive?.clickMessages || [
       "你好！伊利雅~",
@@ -269,272 +272,13 @@ const size = config.size || { width: 280, height: 250 };
 
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
-    // 防止空消息或重复调用
-    if (!randomMessage || !randomMessage.trim()) {
-      return;
+    // 使用公共消息框组件
+    if (window.showModelMessage) {
+      window.showModelMessage(randomMessage, {
+        containerId: "live2d-widget",
+        displayTime: config.interactive?.messageDisplayTime || 3000
+      });
     }
-
-    // 立即清除之前的消息
-    if (currentMessageContainer) {
-      clearTimeout(hideMessageTimer);
-      if (currentMessageContainer.parentNode) {
-        currentMessageContainer.parentNode.removeChild(currentMessageContainer);
-      }
-      currentMessageContainer = null;
-    }
-
-    // 确保DOM中没有残留的消息容器
-    const existingMessages = document.querySelectorAll(
-      ".live2d-message-container"
-    );
-    existingMessages.forEach((msg) => {
-      if (msg.parentNode) {
-        msg.parentNode.removeChild(msg);
-      }
-    });
-
-    // 检测暗色主题
-    const isDarkMode =
-      document.documentElement.classList.contains("dark") ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    // 创建消息容器
-    const messageContainer = document.createElement("div");
-    messageContainer.className = "live2d-message-container";
-
-    // 创建消息元素
-    const messageEl = document.createElement("div");
-    messageEl.className = "live2d-message";
-    messageEl.textContent = randomMessage;
-
-    // 创建箭头元素
-    const arrowEl = document.createElement("div");
-    arrowEl.className = "live2d-message-arrow";
-
-    // 设置容器样式
-    Object.assign(messageContainer.style, {
-      position: "fixed",
-      zIndex: "1001",
-      pointerEvents: "none",
-      opacity: "0",
-      transform: "translateY(15px) translateX(-50%) scale(0.9)",
-      transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    });
-
-    // 设置消息框美化样式（支持暗色主题）
-    const messageStyles = {
-      position: "relative",
-      background: isDarkMode
-        ? "linear-gradient(135deg, rgba(45, 55, 72, 0.95), rgba(26, 32, 44, 0.9))"
-        : "linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9))",
-      color: isDarkMode ? "#e2e8f0" : "#2c3e50",
-      padding: "12px 16px",
-      borderRadius: "16px",
-      fontSize: "14px",
-      fontWeight: "500",
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      maxWidth: "240px",
-      minWidth: "100px",
-      wordWrap: "break-word",
-      textAlign: "center",
-      whiteSpace: "pre-wrap",
-      boxShadow: isDarkMode
-        ? "0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2)"
-        : "0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)",
-      border: isDarkMode
-        ? "1px solid rgba(255, 255, 255, 0.1)"
-        : "1px solid rgba(255, 255, 255, 0.6)",
-      backdropFilter: "blur(12px)",
-      letterSpacing: "0.3px",
-      lineHeight: "1.4",
-    };
-    Object.assign(messageEl.style, messageStyles);
-
-    // 设置箭头样式（居中显示）
-    Object.assign(arrowEl.style, {
-      position: "absolute",
-      top: "100%",
-      left: "50%",
-      transform: "translateX(-50%)", // 箭头居中
-      width: "0",
-      height: "0",
-      borderLeft: "8px solid transparent",
-      borderRight: "8px solid transparent",
-      borderTop: isDarkMode
-        ? "8px solid rgba(45, 55, 72, 0.95)"
-        : "8px solid rgba(255, 255, 255, 0.95)",
-      filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
-    });
-
-    // 组装消息框元素
-    messageEl.appendChild(arrowEl);
-    messageContainer.appendChild(messageEl);
-
-    // 添加到页面并保存引用
-    document.body.appendChild(messageContainer);
-    currentMessageContainer = messageContainer;
-
-    // 将消息显示在 Live2D 模型头顶居中
-    const container = document.getElementById("live2d-widget");
-    if (container) {
-      const rect = container.getBoundingClientRect();
-
-      // 消息框居中显示在模型上方
-      const containerCenterX = rect.left + rect.width / 2;
-
-      // 使用估算的消息框尺寸进行初步定位
-      const estimatedMessageWidth = 240; // 使用maxWidth作为估算
-      const estimatedMessageHeight = 60; // 估算高度
-      const screenPadding = 10; // 距离屏幕边缘的最小距离
-
-      // 计算消息框的实际位置（考虑translateX(-50%)的影响）
-      let messageX = containerCenterX;
-      let messageY = rect.top - estimatedMessageHeight - 25; // 距离模型顶部25px
-
-      // 屏幕边界检查 - 水平方向
-      const minX = screenPadding + estimatedMessageWidth / 2; // 考虑translateX(-50%)
-      const maxX =
-        window.innerWidth - screenPadding - estimatedMessageWidth / 2;
-
-      if (messageX < minX) {
-        messageX = minX;
-      } else if (messageX > maxX) {
-        messageX = maxX;
-      }
-
-      // 屏幕边界检查 - 垂直方向
-      const minY = screenPadding;
-      const maxY = window.innerHeight - estimatedMessageHeight - screenPadding;
-
-      if (messageY < minY) {
-        // 如果上方空间不够，显示在模型下方
-        messageY = rect.bottom + 25;
-        // 调整箭头方向（显示在下方）
-        arrowEl.style.top = "0";
-        arrowEl.style.bottom = "auto";
-        arrowEl.style.borderTop = "none";
-        arrowEl.style.borderBottom = isDarkMode
-          ? "8px solid rgba(45, 55, 72, 0.95)"
-          : "8px solid rgba(255, 255, 255, 0.95)";
-      } else if (messageY > maxY) {
-        messageY = maxY;
-      }
-
-      // 设置位置
-      messageContainer.style.left = messageX + "px";
-      messageContainer.style.top = messageY + "px";
-
-      // 在消息框渲染后，进行精确的边界调整
-      setTimeout(() => {
-        const actualMessageRect = messageContainer.getBoundingClientRect();
-        const actualWidth = actualMessageRect.width;
-        const actualHeight = actualMessageRect.height;
-
-        // 重新计算水平位置
-        let adjustedX = containerCenterX;
-        const actualMinX = screenPadding + actualWidth / 2;
-        const actualMaxX = window.innerWidth - screenPadding - actualWidth / 2;
-
-        if (adjustedX < actualMinX) {
-          adjustedX = actualMinX;
-        } else if (adjustedX > actualMaxX) {
-          adjustedX = actualMaxX;
-        }
-
-        // 重新计算垂直位置
-        let adjustedY = rect.top - actualHeight - 25;
-        const actualMinY = screenPadding;
-        const actualMaxY = window.innerHeight - actualHeight - screenPadding;
-        let isAboveModel = true; // 标记消息框是否在模型上方
-
-        if (adjustedY < actualMinY) {
-          adjustedY = rect.bottom + 25;
-          isAboveModel = false;
-        } else if (adjustedY > actualMaxY) {
-          adjustedY = actualMaxY;
-        }
-
-        // 计算箭头应该指向的位置（模型中心）
-        const modelCenterX = rect.left + rect.width / 2;
-        const messageCenterX = adjustedX; // 消息框中心位置
-        const arrowOffsetX = modelCenterX - messageCenterX; // 箭头相对于消息框中心的偏移
-
-        // 限制箭头偏移范围，避免超出消息框边界
-        const maxOffset = actualWidth / 2 - 20; // 留出20px边距
-        const clampedOffsetX = Math.max(
-          -maxOffset,
-          Math.min(maxOffset, arrowOffsetX)
-        );
-
-        // 根据最终位置调整箭头方向和位置
-        if (isAboveModel) {
-          // 消息框在模型上方，箭头向下
-          Object.assign(arrowEl.style, {
-            position: "absolute",
-            top: "100%",
-            left: "50%",
-            bottom: "auto",
-            transform: `translateX(calc(-50% + ${clampedOffsetX}px))`,
-            width: "0",
-            height: "0",
-            borderLeft: "8px solid transparent",
-            borderRight: "8px solid transparent",
-            borderTop: isDarkMode
-              ? "8px solid rgba(45, 55, 72, 0.95)"
-              : "8px solid rgba(255, 255, 255, 0.95)",
-            borderBottom: "none",
-            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
-          });
-        } else {
-          // 消息框在模型下方，箭头向上
-          Object.assign(arrowEl.style, {
-            position: "absolute",
-            top: "0",
-            left: "50%",
-            bottom: "auto",
-            transform: `translateX(calc(-50% + ${clampedOffsetX}px))`,
-            width: "0",
-            height: "0",
-            borderLeft: "8px solid transparent",
-            borderRight: "8px solid transparent",
-            borderTop: "none",
-            borderBottom: isDarkMode
-              ? "8px solid rgba(45, 55, 72, 0.95)"
-              : "8px solid rgba(255, 255, 255, 0.95)",
-            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
-          });
-        }
-
-        // 应用调整后的位置
-        messageContainer.style.left = adjustedX + "px";
-        messageContainer.style.top = adjustedY + "px";
-      }, 50); // 增加延迟确保消息框完全渲染
-    }
-
-    // 显示动画
-    setTimeout(() => {
-      messageContainer.style.opacity = "1";
-      messageContainer.style.transform =
-        "translateY(0) translateX(-50%) scale(1)";
-    }, 100); // 延迟到边界调整完成后
-
-    // 自动隐藏
-    const displayTime = config.interactive?.messageDisplayTime || 3000;
-    hideMessageTimer = setTimeout(() => {
-      messageContainer.style.opacity = "0";
-      messageContainer.style.transform =
-        "translateY(-15px) translateX(-50%) scale(0.95)";
-      setTimeout(() => {
-        if (messageContainer.parentNode) {
-          messageContainer.parentNode.removeChild(messageContainer);
-        }
-        // 清除引用
-        if (currentMessageContainer === messageContainer) {
-          currentMessageContainer = null;
-        }
-      }, 400);
-    }, displayTime);
   }
 
   // Play motion from a specific group
@@ -588,6 +332,17 @@ const size = config.size || { width: 280, height: 250 };
 
   // Load Live2D and initialize
   function loadLive2DSDK() {
+    // 检查移动端显示设置，如果隐藏则不加载运行时
+    if (
+      config.responsive?.hideOnMobile &&
+      window.innerWidth <= (config.responsive.mobileBreakpoint || 768)
+    ) {
+      console.log("📱 Mobile device detected, skipping Live2D model initialization");
+      const widget = document.getElementById("live2d-widget");
+      if (widget) widget.style.display = "none";
+      return;
+    }
+
     // Check if Live2D SDK is already loaded
     if (window.loadlive2d) {
       initLive2D();
@@ -596,7 +351,7 @@ const size = config.size || { width: 280, height: 250 };
 
     // Load Live2D SDK
     const script = document.createElement("script");
-    script.src = "/pio/static/live2d-sdk/live2d.min.js";
+    script.src = sdkPath;
     script.onload = () => {
       // Wait a bit for the SDK to initialize
       setTimeout(() => {

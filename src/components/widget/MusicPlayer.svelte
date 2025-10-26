@@ -36,7 +36,30 @@
     // 位置配置
     let position_bottom = config.behavior?.position?.bottom ?? 16;
     let position_right = config.behavior?.position?.right ?? 16;
-    let position_left = config.behavior?.position?.left ?? "auto";
+    
+    // 响应式位置配置
+    let mobile_position_bottom = config.responsive?.mobile?.position?.bottom ?? 24;
+    let mobile_position_right = config.responsive?.mobile?.position?.right ?? 8;
+    
+    // 当前使用的位置配置
+    let current_bottom = position_bottom;
+    let current_right = position_right;
+    
+    // 检测屏幕尺寸并更新位置
+    function updatePositionForScreenSize() {
+        // 确保在浏览器环境中
+        if (typeof window === 'undefined') return;
+        
+        if (window.innerWidth <= 768) {
+            // 移动端
+            current_bottom = mobile_position_bottom;
+            current_right = mobile_position_right;
+        } else {
+            // 桌面端
+            current_bottom = position_bottom;
+            current_right = position_right;
+        }
+    }
     
     
     // UI 配置
@@ -94,7 +117,7 @@
     let currentSong = {
         title: "Loading ...",
         artist: "Loading ...", 
-        cover: "/favicon/favicon-light-192.png",
+        cover: "",
         url: "",
         duration: 0,
     };
@@ -254,14 +277,26 @@
     
     function getAssetPath(path: string): string {
         if (path.startsWith("http://") || path.startsWith("https://")) return path;
-        if (path.startsWith("/")) return path;
-        return `/${path}`;
+        if (path.startsWith("/")) {
+            // 处理绝对路径，需要添加 base URL
+            const baseUrl = import.meta.env.BASE_URL || "/";
+            return baseUrl + path.substring(1);
+        }
+        // 处理相对路径
+        const baseUrl = import.meta.env.BASE_URL || "/";
+        return baseUrl + path;
     }
     
     
     function loadSong(song: typeof currentSong) {
         if (!song || !audio) return;
         currentSong = { ...song };
+        
+        // 如果没有封面，使用默认封面
+        if (!currentSong.cover) {
+            currentSong.cover = "/favicon/favicon-light-192.png";
+        }
+        
         if (song.url) {
             isLoading = true;
             audio.pause();
@@ -393,6 +428,15 @@
         audio.muted = isMuted;
         handleAudioEvents();
         
+        
+        // 初始化位置
+        updatePositionForScreenSize();
+        
+        // 监听窗口大小变化
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', updatePositionForScreenSize);
+        }
+        
         if (!musicPlayerConfig.enable) {
             return;
         }
@@ -432,6 +476,10 @@
             audio.pause();
             audio.src = "";
         }
+        // 移除窗口大小变化监听器
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', updatePositionForScreenSize);
+        }
     });
     </script>
     
@@ -451,7 +499,7 @@
     <div class="music-player fixed z-[1001] transition-all duration-300 ease-in-out"
          class:expanded={isExpanded}
          class:collapsed-mode={isCollapsed}
-         style="bottom: {position_bottom}px; right: {position_right}px; {position_left !== 'auto' ? `left: ${position_left}px;` : ''}; --rotation-speed: {cover_rotation_speed}s; --rotation-pause-hover: {cover_rotation_pause_hover ? 'paused' : 'running'};">
+         style="bottom: {current_bottom}px; right: {current_right}px; --rotation-speed: {cover_rotation_speed}s; --rotation-pause-hover: {cover_rotation_pause_hover ? 'paused' : 'running'};">
 
         
         <!-- 折叠贴边状态 - 只显示封面和展开按钮 -->
@@ -474,7 +522,7 @@
                      role="button"
                      aria-label={isPlaying ? "暂停音乐" : "播放音乐"}>
                     {#if currentSong.cover}
-                        <img src={currentSong.cover} 
+                        <img src={getAssetPath(currentSong.cover)} 
                              alt="{currentSong.title} - {currentSong.artist}"
                              class="w-full h-full object-cover transition-transform duration-300"
                              class:spinning={isPlaying && !isLoading && cover_rotation_enable}

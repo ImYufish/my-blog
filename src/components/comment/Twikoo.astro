@@ -1,5 +1,6 @@
 ---
-import { commentConfig } from "../../config/commentConfig";
+import { commentConfig } from "@/config/commentConfig";
+import { url } from "@/utils/url-utils";
 
 interface Props {
   path: string;
@@ -14,7 +15,7 @@ const config = {
 
 <div id="tcomment"></div>
 <!-- 使用自编译的 Twikoo 文件，避免点赞等按钮导致页面触发滚动回顶部 https://github.com/twikoojs/twikoo/issues/721 -->
-<script is:inline src="/assets/js/firefly-twikoo-1.6.44.all.min.js"></script>
+<script is:inline src={url("/assets/js/firefly-twikoo-1.6.44.all.min.js")}></script>
 <script is:inline define:vars={{ config }}>
   // 获取当前页面路径
   function getCurrentPath() {

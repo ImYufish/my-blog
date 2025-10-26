@@ -1,7 +1,6 @@
 import type {
   DARK_MODE,
   LIGHT_MODE,
-  SYSTEM_MODE,
 } from "../constants/constants";
 
 export type SiteConfig = {
@@ -25,7 +24,7 @@ export type SiteConfig = {
   themeColor: {
     hue: number;
     fixed: boolean;
-    defaultMode?: "light" | "dark" | "system"; // 默认模式：浅色、深色或跟随系统
+    defaultMode?: LIGHT_DARK_MODE; // 默认模式：浅色、深色或跟随系统
   };
 
   // 字体配置
@@ -47,20 +46,18 @@ export type SiteConfig = {
     theme?: "light" | "dark";
     sizes?: string;
   }>;
-  /** 网站首页Logo图标，可选类型：icon库、图片链接、本地图片 */
-  logoIcon?: {
+  /** 导航栏Logo图标，可选类型：icon库、图片链接、本地图片 */
+  navbarLogo?: {
     type: "icon" | "image";
     value: string; // icon名或图片url
     alt?: string; // 图片alt文本
   };
+  navbarTitle?: string; // 导航栏标题，如果不设置则使用 title
   showLastModified: boolean; // 控制"上次编辑"卡片显示的开关
 
   // 页面开关配置
   pages: {
     anime: boolean; // 追番页面开关
-    projects: boolean; // 项目展示页面开关
-    timeline: boolean; // 时间线页面开关
-    skills: boolean; // 技能页面开关
   };
 
   // 文章列表布局配置
@@ -87,10 +84,6 @@ export enum LinkPreset {
   About = 2,
   Friends = 3,
   Anime = 4,
-
-  Projects = 7,
-  Skills = 8,
-  Timeline = 9,
 }
 
 export type NavBarLink = {
@@ -137,8 +130,7 @@ type TwikooConfig = {
 
 export type LIGHT_DARK_MODE =
   | typeof LIGHT_MODE
-  | typeof DARK_MODE
-  | typeof SYSTEM_MODE;
+  | typeof DARK_MODE;
 
 export type BlogPostData = {
   body: string;
@@ -418,6 +410,10 @@ export type BackgroundWallpaperConfig = {
             desktop: boolean; // 桌面端是否启用波浪动画效果
             mobile: boolean; // 移动端是否启用波浪动画效果
           }; // 是否启用波浪动画效果，支持布尔值或分别设置桌面端和移动端
+      performance?: {
+        quality: "high" | "medium" | "low"; // 渲染质量：high=高质量，medium=中等质量，low=低质量
+        hardwareAcceleration: boolean; // 是否启用硬件加速
+      }; // 波浪效果性能优化配置
     };
   };
   // 全屏透明覆盖模式特有配置
@@ -520,7 +516,6 @@ export type MusicPlayerConfig = {
     position?: {
       bottom?: number;
       right?: number;
-      left?: number | "auto";
     };
   };
 
@@ -560,7 +555,6 @@ export type MusicPlayerConfig = {
       position?: {
         bottom?: number;
         right?: number;
-        left?: number;
       };
     };
 

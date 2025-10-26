@@ -1,10 +1,10 @@
 ---
 import type { GetStaticPaths } from "astro";
-import Pagination from "../components/control/Pagination.astro";
-import PostPage from "../components/PostPage.astro";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
-import { getSortedPosts } from "../utils/content-utils";
-import { siteConfig } from "../config/siteConfig";
+import Pagination from "@/components/control/Pagination.astro";
+import PostPage from "@/components/layout/PostPage.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { getSortedPosts } from "@/utils/content-utils";
+import { siteConfig } from "@/config";
 export const getStaticPaths = (async ({ paginate }) => {
   const allBlogPosts = await getSortedPosts();
   // 使用配置中的文章数量

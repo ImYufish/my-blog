@@ -41,9 +41,9 @@ export default defineConfig({
 			// the default value `transition-` cause transition delay
 			// when the Tailwind class `transition-all` is used
 			containers: ["main"],
-			smoothScrolling: false, // 禁用平滑滚动以提升性能，避免与锚点导航冲突
+			smoothScrolling: true,
 			cache: true,
-			preload: false, // 禁用预加载以减少网络请求
+			preload: true, 
 			accessibility: true,
 			updateHead: true,
 			updateBodyClass: false,
