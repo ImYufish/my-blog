@@ -138,10 +138,11 @@ export const siteConfig: SiteConfig = {
       navbar: {
         transparentMode: "semifull", // 导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
       },
+      // 波浪动画效果配置，开启可能会影响页面性能，请根据实际情况开启
       waves: {
         enable: {
-          desktop: false, // 桌面端启用波浪动画效果
-          mobile: false, // 移动端启用波浪动画效果
+          desktop: true, // 桌面端启用波浪动画效果
+          mobile: true, // 移动端启用波浪动画效果
         },
         performance: {
           quality: "high", 
