@@ -1,6 +1,6 @@
 /* Water waves animation */
 .waves > .parallax use {
-	animation: wave 25s cubic-bezier(0.5, 0.5, 0.45, 0.5) infinite;
+	animation: wave-default 25s cubic-bezier(0.5, 0.5, 0.45, 0.5) infinite;
 }
 
 /* 性能优化：低质量模式 */
@@ -31,7 +31,7 @@
 	backface-visibility: visible;
 }
 
-@keyframes wave {
+@keyframes wave-default {
 	0% {
 		transform: translate3d(-90px, 0, 0);
 	}
