@@ -58,7 +58,7 @@ for (const heading of headings) {
     </div>
   </div>
 
-  <div class="p-4" style="overflow-y: auto; max-height: calc(24rem - 5rem);">
+  <div class="toc-scroll-container p-4">
     <div
       class="toc-content"
       id="floating-toc-content"
@@ -141,12 +141,29 @@ for (const heading of headings) {
 		opacity: 0
 		pointer-events: none
 
+.toc-scroll-container
+	overflow-y: auto
+	overflow-x: hidden
+	max-height: calc(24rem - 5rem)
+	-webkit-overflow-scrolling: touch
+	scroll-behavior: smooth
+	
+	/* 移动端滚动优化 */
+	@media (max-width: 768px)
+		max-height: calc(18rem - 5rem)
+		
+	@media (max-width: 480px)
+		max-height: calc(16rem - 5rem)
+		
+	@media (max-width: 360px)
+		max-height: calc(12rem - 5rem)
+
 .toc-content
 	display: flex
 	flex-direction: column
 	gap: 2px
 	position: relative
-	overflow: hidden
+	overflow: visible
 	width: 100%
 	max-width: 100%
 	box-sizing: border-box
@@ -326,25 +343,25 @@ for (const heading of headings) {
 	transform: scale(0.95)
 
 /* 滚动条样式 */
-.floating-toc-panel::-webkit-scrollbar
+.toc-scroll-container::-webkit-scrollbar
 	width: 6px
 
-.floating-toc-panel::-webkit-scrollbar-track
+.toc-scroll-container::-webkit-scrollbar-track
 	background: transparent
 	border-radius: 3px
 
-.floating-toc-panel::-webkit-scrollbar-thumb
+.toc-scroll-container::-webkit-scrollbar-thumb
 	background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%)
 	border-radius: 3px
 	border: 1px solid rgba(255, 255, 255, 0.1)
 	transition: all 0.2s ease
 
-.floating-toc-panel::-webkit-scrollbar-thumb:hover
+.toc-scroll-container::-webkit-scrollbar-thumb:hover
 	background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%)
 	border-color: rgba(255, 255, 255, 0.2)
 	transform: scaleX(1.2)
 
-.floating-toc-panel::-webkit-scrollbar-thumb:active
+.toc-scroll-container::-webkit-scrollbar-thumb:active
 	background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)
 
 /* 暗色主题半透明效果 */
@@ -357,23 +374,23 @@ for (const heading of headings) {
 	background-color: rgba(0, 0, 0, 0.8) !important
 
 /* 暗色主题滚动条 */
-:global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb
+:global(.dark) .toc-scroll-container::-webkit-scrollbar-thumb
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%)
 	border: 1px solid rgba(0, 0, 0, 0.1)
 
-:global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb:hover
+:global(.dark) .toc-scroll-container::-webkit-scrollbar-thumb:hover
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.3) 100%)
 	border-color: rgba(0, 0, 0, 0.2)
 
-:global(.dark) .floating-toc-panel::-webkit-scrollbar-thumb:active
+:global(.dark) .toc-scroll-container::-webkit-scrollbar-thumb:active
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.4) 100%)
 
 /* Firefox 滚动条样式 */
-.floating-toc-panel
+.toc-scroll-container
 	scrollbar-width: thin
 	scrollbar-color: rgba(0, 0, 0, 0.2) transparent
 
-:global(.dark) .floating-toc-panel
+:global(.dark) .toc-scroll-container
 	scrollbar-color: rgba(255, 255, 255, 0.2) transparent
 </style>
 
