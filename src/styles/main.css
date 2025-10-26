@@ -68,6 +68,21 @@ html {
         backdrop-filter: none !important;
     }
     
+    /* 页面切换保护 - 防止导航栏在页面切换时闪烁 */
+    .is-page-transitioning #navbar > div,
+    .is-page-transitioning #navbar[data-transparent-mode] > div,
+    .is-page-transitioning #navbar[data-transparent-mode].scrolled > div,
+    .is-page-transitioning body.wallpaper-transparent #navbar > div,
+    .is-page-transitioning body.wallpaper-transparent #navbar[data-transparent-mode] > div,
+    .is-page-transitioning body.wallpaper-transparent #navbar[data-transparent-mode].scrolled > div,
+    .is-page-transitioning #banner-wrapper ~ * #navbar > div,
+    .is-page-transitioning #banner-wrapper ~ * #navbar[data-transparent-mode] > div,
+    .is-page-transitioning body:has(#banner-wrapper) #navbar > div,
+    .is-page-transitioning body:has(#banner-wrapper) #navbar[data-transparent-mode] > div {
+        transition: none !important;
+        backdrop-filter: none !important;
+    }
+    
     /* 导航栏相关浮动面板的过渡禁用 */
     .is-theme-transitioning .dropdown-content,
     .is-theme-transitioning .float-panel,
