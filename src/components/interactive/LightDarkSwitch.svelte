@@ -4,11 +4,13 @@ import Icon from "@iconify/svelte";
 import {
 	getStoredTheme,
 	setTheme,
+	applyThemeToDocument,
 } from "@/utils/setting-utils";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
+import { onMount } from 'svelte';
 
 const seq: LIGHT_DARK_MODE[] = [LIGHT_MODE, DARK_MODE];
-let mode: LIGHT_DARK_MODE = $state(getStoredTheme());
+let mode: LIGHT_DARK_MODE = $state(LIGHT_MODE);
 
 function switchScheme(newMode: LIGHT_DARK_MODE) {
 	mode = newMode;
@@ -25,40 +27,48 @@ function toggleScheme() {
 	switchScheme(seq[(i + 1) % seq.length]);
 }
 
-// 添加Swup钩子监听，确保在页面切换后同步主题状态
-if (typeof window !== 'undefined') {
-  // 监听Swup的内容替换事件
-  const handleContentReplace = () => {
-    // 使用requestAnimationFrame确保在下一帧更新状态，避免渲染冲突
-    requestAnimationFrame(() => {
-      const newMode = getStoredTheme();
-      if (mode !== newMode) {
-        mode = newMode;
-      }
-    });
-  };
-  
-  // 检查Swup是否已经加载
-  if ((window as any).swup && (window as any).swup.hooks) {
-    (window as any).swup.hooks.on('content:replace', handleContentReplace);
-  } else {
-    document.addEventListener('swup:enable', () => {
-      if ((window as any).swup && (window as any).swup.hooks) {
-        (window as any).swup.hooks.on('content:replace', handleContentReplace);
-      }
-    });
-  }
-  
-  // 页面加载完成后也同步一次状态
-  document.addEventListener('DOMContentLoaded', () => {
-    requestAnimationFrame(() => {
-      const newMode = getStoredTheme();
-      if (mode !== newMode) {
-        mode = newMode;
-      }
-    });
-  });
-}
+// 使用onMount确保在组件挂载后正确初始化
+onMount(() => {
+	// 立即获取并设置正确的主题
+	const storedTheme = getStoredTheme();
+	mode = storedTheme;
+	
+	// 确保DOM状态与存储的主题一致
+	const currentTheme = document.documentElement.classList.contains('dark') ? DARK_MODE : LIGHT_MODE;
+	if (storedTheme !== currentTheme) {
+		applyThemeToDocument(storedTheme);
+	}
+	
+	// 添加Swup监听
+	const handleContentReplace = () => {
+		const newTheme = getStoredTheme();
+		mode = newTheme;
+	};
+	
+	// 检查Swup是否已经加载
+	if ((window as any).swup && (window as any).swup.hooks) {
+		(window as any).swup.hooks.on('content:replace', handleContentReplace);
+	} else {
+		document.addEventListener('swup:enable', () => {
+			if ((window as any).swup && (window as any).swup.hooks) {
+				(window as any).swup.hooks.on('content:replace', handleContentReplace);
+			}
+		});
+	}
+	
+	// 监听主题变化事件
+	const handleThemeChange = () => {
+		const newTheme = getStoredTheme();
+		mode = newTheme;
+	};
+	
+	window.addEventListener('theme-change', handleThemeChange);
+	
+	// 清理函数
+	return () => {
+		window.removeEventListener('theme-change', handleThemeChange);
+	};
+});
 </script>
 
 <div class="relative z-50">
