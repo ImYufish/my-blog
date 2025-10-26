@@ -1,6 +1,7 @@
 ---
 import { spineModelConfig } from "@/config/pioConfig";
 import MessageBox from "./PioMessageBox.astro";
+import { url } from "@/utils/url-utils";
 ---
 
 <!-- Spine Web Player CSS 将在 script 中动态加载 -->{
@@ -26,7 +27,7 @@ import MessageBox from "./PioMessageBox.astro";
 <!-- 引入消息框组件 -->
 <MessageBox />
 
-<script define:vars={{ spineModelConfig }}>
+<script define:vars={{ spineModelConfig, modelPath: url(spineModelConfig.model.path), atlasPath: url(spineModelConfig.model.path.replace(".json", ".atlas")), cssPath: url("/pio/static/spine-player.min.css"), jsPath: url("/pio/static/spine-player.min.js") }}>
   // 动态加载 Spine CSS（带本地备用）
   function loadSpineCSS() {
     if (!spineModelConfig.enable) return;
@@ -53,7 +54,7 @@ import MessageBox from "./PioMessageBox.astro";
       // 创建本地备用 CSS link
       const localLink = document.createElement("link");
       localLink.rel = "stylesheet";
-      localLink.href = "/pio/static/spine-player.min.css";
+      localLink.href = cssPath;
       localLink.onerror = function () {
         console.error("❌ Failed to load Spine CSS");
       };
@@ -182,7 +183,7 @@ import MessageBox from "./PioMessageBox.astro";
 
           // 尝试本地回退
           const fallbackScript = document.createElement("script");
-          fallbackScript.src = "/pio/static/spine-player.min.js";
+          fallbackScript.src = jsPath;
           fallbackScript.onload = () => {
             console.log("✅ Spine runtime loaded from local fallback");
             resolve();
@@ -229,8 +230,8 @@ import MessageBox from "./PioMessageBox.astro";
 
       // 创建 SpinePlayer
       const player = new window.spine.SpinePlayer("spine-player-container", {
-        skeleton: spineModelConfig.model.path,
-        atlas: spineModelConfig.model.path.replace(".json", ".atlas"),
+        skeleton: modelPath,
+        atlas: atlasPath,
         animation: "idle",
         backgroundColor: "#00000000", // 透明背景
         showControls: false, // 隐藏控件

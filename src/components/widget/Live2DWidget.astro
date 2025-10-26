@@ -1,6 +1,7 @@
 ---
 import type { Live2DModelConfig } from "@/types/config";
 import MessageBox from "./PioMessageBox.astro";
+import { url } from "@/utils/url-utils";
 
 interface Props {
   config: Live2DModelConfig;
@@ -33,7 +34,7 @@ const size = config.size || { width: 280, height: 250 };
 <!-- 引入消息框组件 -->
 <MessageBox />
 
-<script define:vars={{ config }}>
+<script define:vars={{ config, modelPath: url(config.model.path), sdkPath: url("/pio/static/live2d-sdk/live2d.min.js") }}>
   let modelData = null;
   let motionGroups = {};
   let hitAreas = {};
@@ -52,7 +53,7 @@ const size = config.size || { width: 280, height: 250 };
       return;
     }
 
-    const modelPath = config.model.path;
+    const modelPath = modelPath;
 
     // Load model data first to get motion groups and hit areas
     fetch(modelPath)
@@ -350,7 +351,7 @@ const size = config.size || { width: 280, height: 250 };
 
     // Load Live2D SDK
     const script = document.createElement("script");
-    script.src = "/pio/static/live2d-sdk/live2d.min.js";
+    script.src = sdkPath;
     script.onload = () => {
       // Wait a bit for the SDK to initialize
       setTimeout(() => {
