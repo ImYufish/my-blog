@@ -397,6 +397,9 @@ const setup = () => {
 		// Remove the delay for the first time page load
 		document.documentElement.style.setProperty('--content-delay', '0ms')
 
+		// 添加页面切换保护，防止导航栏闪烁
+		document.documentElement.classList.add('is-page-transitioning')
+
 		// 简化navbar处理逻辑
 		if (bannerEnabled) {
 			const navbar = document.getElementById('navbar-wrapper')
@@ -575,6 +578,9 @@ const setup = () => {
             if (toc) {
                 toc.classList.remove('toc-not-ready')
             }
+            
+            // 移除页面切换保护，恢复过渡动画
+            document.documentElement.classList.remove('is-page-transitioning')
         }, 200)
 	});
 }
