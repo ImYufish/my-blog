@@ -47,7 +47,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
   // 播放器行为配置
   behavior: {
     // 自动播放（注意：现代浏览器通常阻止自动播放）
-    autoplay: true,
+    autoplay: false,
 
     // 默认音量 (0-1)
     defaultVolume: 0.7,

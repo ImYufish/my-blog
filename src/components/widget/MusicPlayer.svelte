@@ -117,7 +117,7 @@
     let currentSong = {
         title: "Loading ...",
         artist: "Loading ...", 
-        cover: "/favicon/favicon-light-192.png",
+        cover: "",
         url: "",
         duration: 0,
     };
@@ -277,14 +277,26 @@
     
     function getAssetPath(path: string): string {
         if (path.startsWith("http://") || path.startsWith("https://")) return path;
-        if (path.startsWith("/")) return path;
-        return `/${path}`;
+        if (path.startsWith("/")) {
+            // 处理绝对路径，需要添加 base URL
+            const baseUrl = import.meta.env.BASE_URL || "/";
+            return baseUrl + path.substring(1);
+        }
+        // 处理相对路径
+        const baseUrl = import.meta.env.BASE_URL || "/";
+        return baseUrl + path;
     }
     
     
     function loadSong(song: typeof currentSong) {
         if (!song || !audio) return;
         currentSong = { ...song };
+        
+        // 如果没有封面，使用默认封面
+        if (!currentSong.cover) {
+            currentSong.cover = "/favicon/favicon-light-192.png";
+        }
+        
         if (song.url) {
             isLoading = true;
             audio.pause();
@@ -510,7 +522,7 @@
                      role="button"
                      aria-label={isPlaying ? "暂停音乐" : "播放音乐"}>
                     {#if currentSong.cover}
-                        <img src={currentSong.cover} 
+                        <img src={getAssetPath(currentSong.cover)} 
                              alt="{currentSong.title} - {currentSong.artist}"
                              class="w-full h-full object-cover transition-transform duration-300"
                              class:spinning={isPlaying && !isLoading && cover_rotation_enable}

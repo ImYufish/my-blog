@@ -63,7 +63,14 @@ export const getDefaultBackground = (): string => {
 
 // 检查是否为首页
 export const isHomePage = (pathname: string): boolean => {
-	return pathname === "/" || pathname === "";
+	// 获取 base URL
+	const baseUrl = import.meta.env.BASE_URL || "/";
+	
+	// 标准化路径：移除 base URL 前缀
+	const normalizedPath = pathname.replace(baseUrl, "/");
+	
+	// 检查是否为根路径
+	return normalizedPath === "/" || normalizedPath === "";
 };
 
 // 获取横幅偏移量
