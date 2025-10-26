@@ -36,17 +36,19 @@ export const siteConfig: SiteConfig = {
     },
   ],
 
-  // 网站Logo
-  // logoIcon 支持三种类型：Astro图标库，本地图片，网络图片
+  // 导航栏Logo
+  // navbarLogo 支持三种类型：Astro图标库，本地图片，网络图片
   // { type: "icon", value: "material-symbols:home-pin-outline" }
   // { type: "image", value: "/assets/images/logo.webp", alt: "Firefly Logo" }
   // { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
-  logoIcon: {
+  navbarLogo: {
     type: "image",
     value: "/assets/images/LiuYingPure3.svg",
     alt: "🍀",
   },
+  navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
 
+  
   // 追番配置
   bangumi: {
     userId: "1163581", // 在此处设置你的Bangumi用户ID
@@ -74,7 +76,7 @@ export const siteConfig: SiteConfig = {
   // 分页配置
   pagination: {
     // 每页显示的文章数量
-    postsPerPage: 8,
+    postsPerPage: 10,
   },
 
   backgroundWallpaper: {
@@ -94,7 +96,7 @@ export const siteConfig: SiteConfig = {
     // 图片位置
     // 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
     // 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
-    position: "10% 20%",
+    position: "0% 20%",
 
     // Banner模式特有配置
     banner: {
@@ -125,7 +127,7 @@ export const siteConfig: SiteConfig = {
           mobile: false, // 移动端显示横幅图片来源文本
         },
         text: {
-          desktop: "晚晚喵", // 桌面端要显示的来源文本
+          desktop: "Pixiv - 晚晚喵", // 桌面端要显示的来源文本
           mobile: "Mobile Credit", // 移动端要显示的来源文本
         },
         url: {

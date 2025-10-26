@@ -46,12 +46,13 @@ export type SiteConfig = {
     theme?: "light" | "dark";
     sizes?: string;
   }>;
-  /** 网站首页Logo图标，可选类型：icon库、图片链接、本地图片 */
-  logoIcon?: {
+  /** 导航栏Logo图标，可选类型：icon库、图片链接、本地图片 */
+  navbarLogo?: {
     type: "icon" | "image";
     value: string; // icon名或图片url
     alt?: string; // 图片alt文本
   };
+  navbarTitle?: string; // 导航栏标题，如果不设置则使用 title
   showLastModified: boolean; // 控制"上次编辑"卡片显示的开关
 
   // 页面开关配置
