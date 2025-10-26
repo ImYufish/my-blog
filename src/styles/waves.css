@@ -1,4 +1,4 @@
-/* Water waves animation */
+/* Water waves animation - 恢复原始效果 */
 .waves > .parallax use {
 	animation: wave-default 25s cubic-bezier(0.5, 0.5, 0.45, 0.5) infinite;
 }
@@ -49,6 +49,15 @@
 	}
 }
 
+@keyframes wave {
+	0% {
+		transform: translate3d(-90px, 0, 0);
+	}
+	100% {
+		transform: translate3d(85px, 0, 0);
+	}
+}
+
 /* 低质量模式的额外优化 */
 .wave-low-quality {
 	animation-timing-function: linear !important;
@@ -57,11 +66,13 @@
 
 /* 性能优化：减少重绘 */
 [data-wave-quality="low"] .waves {
-	contain: layout style paint;
+	/* 移除contain属性，避免限制波浪动画 */
+	contain: none;
 }
 
 [data-wave-quality="medium"] .waves {
-	contain: layout style;
+	/* 移除contain属性，避免限制波浪动画 */
+	contain: none;
 }
 
 [data-wave-quality="high"] .waves {

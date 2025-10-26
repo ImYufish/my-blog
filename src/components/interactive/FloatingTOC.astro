@@ -17,7 +17,7 @@ for (const heading of headings) {
 ---
 
 <!-- 悬浮TOC按钮 -->
-<div class="floating-toc-wrapper hidden lg:block">
+<div class="floating-toc-wrapper">
   <div
     id="floating-toc-btn"
     class="floating-toc-btn hide flex items-center rounded-2xl overflow-hidden transition"
@@ -35,7 +35,7 @@ for (const heading of headings) {
 <!-- 悬浮TOC面板 -->
 <div
   id="floating-toc-panel"
-  class="floating-toc-panel hide fixed w-80 max-h-[24rem] overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 bg-white/60 dark:bg-black/60 dark:border-white/10 z-50"
+  class="floating-toc-panel hide fixed w-80 max-h-[24rem] overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 bg-white/60 dark:bg-black/60 dark:border-white/10 z-50 md:w-80 w-[calc(100vw-2rem)] md:max-h-[24rem] max-h-[calc(100vh-8rem)]"
   style="background-color: rgba(var(--card-bg-rgb, 255, 255, 255), 0.6); bottom: calc(13rem + 6rem); right: 2rem;"
 >
   <div
@@ -623,25 +623,29 @@ for (const heading of headings) {
 
       // 检查是否为文章页面
       if (!isPostPage()) {
-        // 如果不是文章页面，隐藏TOC
         tocContent.innerHTML = "";
         return;
       }
 
-      // 只在文章内容容器内查找标题
+      // 尝试在文章内容容器内查找标题
       const contentContainer =
         document.querySelector(".custom-md") ||
         document.querySelector(".prose") ||
         document.querySelector(".markdown-content");
 
-      if (!contentContainer) {
-        tocContent.innerHTML = "";
-        return;
+      let headings;
+      if (contentContainer) {
+        headings = contentContainer.querySelectorAll("h1, h2, h3, h4, h5, h6");
+      } else {
+        // 如果没有找到文章内容容器，尝试在整个页面查找标题
+        headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
       }
 
-      const headings = contentContainer.querySelectorAll(
-        "h1, h2, h3, h4, h5, h6"
-      );
+      if (headings.length === 0) {
+        tocContent.innerHTML =
+          '<div class="text-center py-8 text-gray-500 dark:text-gray-400"><p>当前页面没有目录</p></div>';
+        return;
+      }
 
       // 计算最小深度
       let currentMinDepth = 10;
@@ -711,12 +715,16 @@ for (const heading of headings) {
     function updateTOCVisibility() {
       // 检查是否为文章页面
       if (!isPostPage()) {
-        floatingTOCBtn.classList.add("hide");
+        if (floatingTOCBtn) {
+          floatingTOCBtn.classList.add("hide");
+        }
         return;
       }
 
-      // 在文章页面始终显示按钮
-      floatingTOCBtn.classList.remove("hide");
+      // 在文章页面显示按钮
+      if (floatingTOCBtn) {
+        floatingTOCBtn.classList.remove("hide");
+      }
     }
 
     function handleTOCClick(event) {
@@ -764,7 +772,7 @@ for (const heading of headings) {
         return;
       }
 
-      // 立即检查是否为文章页面，如果不是则立即隐藏按钮
+      // 检查是否为文章页面，如果不是则隐藏按钮
       if (!isPostPage()) {
         floatingTOCBtn.classList.add("hide");
         return;

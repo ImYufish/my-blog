@@ -6,6 +6,8 @@
 @import './animations-unified.css';
 /* 导入统一导航栏样式 */
 @import './navbar-unified.css';
+/* 导入性能优化样式 */
+@import './performance-enhancements.css';
 
 
 @tailwind base;

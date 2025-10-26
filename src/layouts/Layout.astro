@@ -534,8 +534,8 @@ const setup = () => {
 		});
 		
 		// 同步主题状态 - 解决从首页进入文章页面时代码块渲染问题
-		const storedTheme = localStorage.getItem('theme') || 'LIGHT_MODE';
-		const isDark = storedTheme === 'DARK_MODE';
+		const storedTheme = localStorage.getItem('theme') || 'light';
+		const isDark = storedTheme === 'dark';
 		const expectedTheme = isDark ? 'github-dark' : 'github-light';
 		const currentTheme = document.documentElement.getAttribute('data-theme');
 		
@@ -588,43 +588,36 @@ let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
 
-// 节流函数
-function throttle(func: Function, limit: number) {
-	let inThrottle: boolean;
-	return function(this: any) {
-		const args = arguments;
-		const context = this;
-		if (!inThrottle) {
-			func.apply(context, args);
-			inThrottle = true;
-			setTimeout(() => inThrottle = false, limit);
-		}
-	}
-}
-
+// 优化的滚动处理函数
 function scrollFunction() {
 	const scrollTop = document.documentElement.scrollTop;
 	const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
 
-	// 批量处理DOM操作
-	requestAnimationFrame(() => {
-		if (backToTopBtn) {
+	// 使用批量DOM操作优化性能
+	const operations = [];
+	
+	if (backToTopBtn) {
+		operations.push(() => {
 			if (scrollTop > bannerHeight) {
 				backToTopBtn.classList.remove('hide')
 			} else {
 				backToTopBtn.classList.add('hide')
 			}
-		}
+		});
+	}
 
-		if (bannerEnabled && toc) {
+	if (bannerEnabled && toc) {
+		operations.push(() => {
 			if (scrollTop > bannerHeight) {
 				toc.classList.remove('toc-hide')
 			} else {
 				toc.classList.add('toc-hide')
 			}
-		}
+		});
+	}
 
-		if (bannerEnabled && navbar) {
+	if (bannerEnabled && navbar) {
+		operations.push(() => {
 			const isHome = document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024;
 			const currentBannerHeight = isHome ? BANNER_HEIGHT_HOME : BANNER_HEIGHT;
 			const threshold = window.innerHeight * (currentBannerHeight / 100) - 88;
@@ -634,12 +627,25 @@ function scrollFunction() {
 			} else {
 				navbar.classList.remove('navbar-hidden')
 			}
-		}
-	});
+		});
+	}
+
+	// 批量执行DOM操作
+	if (operations.length > 0) {
+		requestAnimationFrame(() => {
+			operations.forEach(op => op());
+		});
+	}
 }
 
-// 使用节流优化滚动性能
-window.onscroll = throttle(scrollFunction, 16); // 约60fps
+// 使用优化的滚动性能处理
+let scrollTimeout: number;
+window.addEventListener('scroll', () => {
+	if (scrollTimeout) {
+		cancelAnimationFrame(scrollTimeout);
+	}
+	scrollTimeout = requestAnimationFrame(scrollFunction);
+}, { passive: true });
 
 window.onresize = () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text

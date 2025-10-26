@@ -47,20 +47,19 @@ export const musicPlayerConfig: MusicPlayerConfig = {
   // 播放器行为配置
   behavior: {
     // 自动播放（注意：现代浏览器通常阻止自动播放）
-    autoplay: false,
+    autoplay: true,
 
     // 默认音量 (0-1)
     defaultVolume: 0.7,
 
     // 默认播放模式
-    defaultShuffle: false, // 随机播放
+    defaultShuffle: true, // 随机播放
     defaultRepeat: 2, // 循环模式：0=不循环, 1=单曲循环, 2=列表循环
 
     // 播放器位置
     position: {
       bottom: 16, // 距离底部距离 (px)
       right: 16, // 距离右侧距离 (px)
-      left: "auto", // 距离左侧距离 (px)，设为 "auto" 时使用 right 定位
     },
   },
 
@@ -116,9 +115,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
     mobile: {
       // 移动端播放器位置
       position: {
-        bottom: 8,
+        bottom: 24, // 增加底部距离，避免被手机屏幕圆角遮挡
         right: 8,
-        left: 8,
       },
     },
 

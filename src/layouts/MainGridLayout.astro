@@ -232,28 +232,28 @@ const transparentClass = shouldEnableTransparency
                     x="48"
                     y="0"
                     class={`opacity-25 fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -2s; animation-duration: ${waveQuality === 'low' ? '10s' : waveQuality === 'medium' ? '8s' : '7s'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    style={`animation-delay: -2s; animation-duration: ${waveQuality === 'low' ? '10s' : waveQuality === 'medium' ? '8s' : '7s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="3"
                     class={`opacity-50 fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -3s; animation-duration: ${waveQuality === 'low' ? '15s' : waveQuality === 'medium' ? '12s' : '10s'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    style={`animation-delay: -3s; animation-duration: ${waveQuality === 'low' ? '15s' : waveQuality === 'medium' ? '12s' : '10s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="5"
                     class={`opacity-75 fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -4s; animation-duration: ${waveQuality === 'low' ? '20s' : waveQuality === 'medium' ? '16s' : '13s'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    style={`animation-delay: -4s; animation-duration: ${waveQuality === 'low' ? '20s' : waveQuality === 'medium' ? '16s' : '13s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="7"
                     class={`fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -5s; animation-duration: ${waveQuality === 'low' ? '30s' : waveQuality === 'medium' ? '25s' : '20s'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    style={`animation-delay: -5s; animation-duration: ${waveQuality === 'low' ? '30s' : waveQuality === 'medium' ? '25s' : '20s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
                 ></use>
             </g>
         </svg>

@@ -516,7 +516,6 @@ export type MusicPlayerConfig = {
     position?: {
       bottom?: number;
       right?: number;
-      left?: number | "auto";
     };
   };
 
@@ -556,7 +555,6 @@ export type MusicPlayerConfig = {
       position?: {
         bottom?: number;
         right?: number;
-        left?: number;
       };
     };
 

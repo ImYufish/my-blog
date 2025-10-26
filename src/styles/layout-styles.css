@@ -12,7 +12,7 @@
     animation: banner-fadeInUp 1s ease-out 0.3s both;
 }
 
-@keyframes fadeInUp {
+@keyframes banner-fadeInUp {
     from {
         opacity: 0;
         transform: translateY(30px);
@@ -348,8 +348,8 @@
         contain: layout style;
     }
 
-    /* 移动端图片优化 */
-    .banner-container img {
+    /* 移动端图片优化 - 只针对装饰性图片 */
+    .banner-container img:not(.interactive):not([onclick]):not([data-clickable]) {
         /* 图片渲染优化 */
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
@@ -361,8 +361,16 @@
         -o-user-drag: none;
         user-drag: none;
         
-        /* 触摸优化 */
+        /* 触摸优化 - 只针对装饰性图片 */
         pointer-events: none;
+    }
+    
+    /* 交互式图片保持可点击 */
+    .banner-container img.interactive,
+    .banner-container img[onclick],
+    .banner-container img[data-clickable] {
+        pointer-events: auto;
+        cursor: pointer;
     }
 }
 
@@ -463,8 +471,8 @@
     /* 硬件加速，确保与背景同步渲染 */
     transform: translateZ(0);
     will-change: transform;
-    /* 确保与页面背景在同一合成层 */
-    contain: layout style paint;
+    /* 移除contain属性，避免限制动画渲染范围 */
+    contain: none;
 }
 
 .waves svg {
@@ -487,8 +495,8 @@
 #header-waves {
     /* 确保波浪容器与页面背景在同一合成层 */
     isolation: isolate;
-    /* 强制重绘，确保与body背景同步 */
-    contain: layout style paint;
+    /* 移除contain属性，避免限制波浪动画 */
+    contain: none;
     /* 精确对齐 */
     margin-bottom: -1px;
 }
