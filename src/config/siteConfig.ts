@@ -22,7 +22,7 @@ export const siteConfig: SiteConfig = {
   lang: SITE_LANG,
 
   themeColor: {
-    hue: 155, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
+    hue: 165, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
     fixed: false, // 对访问者隐藏主题色选择器
     defaultMode: "light", // 默认模式："light" 浅色，"dark" 深色
   },
@@ -140,8 +140,8 @@ export const siteConfig: SiteConfig = {
       },
       waves: {
         enable: {
-          desktop: true, // 桌面端启用波浪动画效果
-          mobile: true, // 移动端启用波浪动画效果
+          desktop: false, // 桌面端启用波浪动画效果
+          mobile: false, // 移动端启用波浪动画效果
         },
         performance: {
           quality: "high", 
