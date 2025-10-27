@@ -38,8 +38,6 @@
     "astro": "5.14.7",
     "astro-expressive-code": "^0.41.3",
     "astro-icon": "^1.1.5",
-    "bcryptjs": "^3.0.2",
-    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.18",
     "hastscript": "^9.0.1",
     "katex": "^0.16.22",
