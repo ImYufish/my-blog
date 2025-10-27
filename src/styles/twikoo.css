@@ -24,7 +24,7 @@ html.dark {
     @apply flex-col-reverse;
     .tk-input {
       textarea {
-        @apply rounded-[var(--radius-large)] py-4 px-6 !min-h-[150px] focus:border-[var(--primary)] 
+        @apply rounded-[var(--radius-large)] py-4 px-6 !min-h-[150px] focus:border-[var(--primary)]
                border-[var(--line-divider)] bg-[var(--card-bg)] text-[var(--btn-content)]
                placeholder:text-[var(--content-meta)] transition-all duration-300
                focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-20;
@@ -62,29 +62,29 @@ html.dark {
   div {
     @apply min-h-12 rounded-lg border border-[var(--line-divider)] bg-[var(--card-bg)] overflow-hidden
            hover:border-[var(--primary)] hover:shadow-sm transition-all duration-200 flex items-center;
-    
+
     .el-input-group__prepend {
       @apply !bg-[var(--btn-regular-bg)] !text-[var(--btn-content)] px-4 font-medium text-sm
              border-r border-[var(--line-divider)] flex items-center justify-center min-w-[80px] flex-shrink-0
              rounded-l-lg rounded-r-none;
       min-height: inherit;
     }
-    
+
     input {
       @apply px-4 bg-transparent text-[var(--btn-content)] placeholder:text-[var(--content-meta)]
              focus:!border-[var(--primary)] transition-all duration-200 flex-1
              rounded-r-lg rounded-l-none;
       min-height: inherit;
-      
+
       &::placeholder {
         @apply text-[var(--content-meta)] opacity-70;
       }
-      
+
       &:focus {
         @apply outline-none;
       }
     }
-    
+
     &:focus-within {
       @apply border-[var(--primary)] shadow-md;
     }
@@ -100,7 +100,7 @@ html.dark {
   .tk-send,
   .tk-cancel {
     @apply border-none rounded-lg px-6 py-2 h-10 font-medium transition-all duration-300
-           !bg-[var(--btn-regular-bg)] hover:!bg-[var(--btn-regular-bg-hover)] 
+           !bg-[var(--btn-regular-bg)] hover:!bg-[var(--btn-regular-bg-hover)]
            active:!bg-[var(--btn-regular-bg-active)] disabled:!bg-[var(--btn-regular-bg)]
            !text-[var(--btn-content)] disabled:!text-[var(--content-meta)]
            hover:scale-105 active:scale-95 shadow-sm hover:shadow-md;
@@ -150,29 +150,24 @@ html.dark {
 /* Comment title */
 .tk-comments-title {
   @apply hidden; /* 隐藏默认标题，使用自定义标题 */
-  
+
   .__comments svg {
     @apply fill-[var(--primary)];
   }
 }
 
 .tk-comment {
-  @apply  border-[1px] border-[var(--line-divider)] p-4 rounded-2xl hover:shadow-lg hover:border-[var(--primary)] transition-all duration-300 ;
+  @apply border-[1px] border-[var(--line-divider)] p-4 rounded-2xl hover:shadow-lg hover:border-[var(--primary)] transition-all duration-300;
   background: linear-gradient(135deg, var(--card-bg) 0%, rgba(var(--primary), 0.02) 100%);
-  
+
   .tk-action-icon svg {
     @apply fill-[var(--primary)] hover:scale-110 transition-transform duration-200;
   }
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.tk-action {
-  .tk-action-count {
-    @apply text-[var(--btn-content)];
+    z-index: 2;
   }
 }
 
@@ -216,7 +211,7 @@ html.dark {
 /* Replies */
 .tk-replies {
 
-  
+
   .tk-comment {
     @apply border-l-4 border-l-[var(--btn-regular-bg)] p-3 border-opacity-30 hover:border-[var(--primary)] transition-all duration-300;
     .tk-content {
@@ -225,7 +220,7 @@ html.dark {
       }
     }
   }
-  
+
   /* 回复层级指示器 */
   &::before {
     content: '';
@@ -254,7 +249,7 @@ html.dark {
   @apply border-[1px]  border-[var(--line-divider)] rounded-lg mt-1 bg-[var(--btn-regular-bg)] text-[var(--btn-content)] hover:text-[var(--primary)] hover:bg-[var(--btn-regular-bg-hover)];
 }
 
-/* by @SirTamago 
+/* by @SirTamago
 Make the emoji component display correctly when there are too many emoji packs
 */
 .card-base {

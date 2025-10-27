@@ -25,6 +25,7 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
+import mdx from "@astrojs/mdx";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://demo-firefly.netlify.app/",
@@ -43,7 +44,7 @@ export default defineConfig({
 			containers: ["main"],
 			smoothScrolling: true,
 			cache: true,
-			preload: true, 
+			preload: true,
 			accessibility: true,
 			updateHead: true,
 			updateBodyClass: false,
@@ -116,7 +117,7 @@ export default defineConfig({
 				// 根据页面开关配置过滤sitemap
 				const url = new URL(page);
 				const pathname = url.pathname;
-				
+
 				// 检查各个页面是否启用
 				if (pathname === '/anime/' && !siteConfig.pages.anime) {
 					return false;
@@ -130,10 +131,11 @@ export default defineConfig({
 				if (pathname === '/skills/' && !siteConfig.pages.skills) {
 					return false;
 				}
-				
+
 				return true;
 			},
 		}),
+    mdx()
 	],
 	markdown: {
 		remarkPlugins: [
