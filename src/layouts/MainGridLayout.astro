@@ -45,10 +45,11 @@ const {
 	headings = [],
 } = Astro.props;
 
-// 检查背景壁纸模式和启用状态
+// 检查背景壁纸模式和是否允许切换
 const isBannerMode = siteConfig.backgroundWallpaper.mode === "banner";
 const isOverlayMode = siteConfig.backgroundWallpaper.mode === "overlay";
-const isBackgroundEnabled = siteConfig.backgroundWallpaper.enable;
+const isBackgroundEnabled = siteConfig.backgroundWallpaper.mode !== "none";
+const isWallpaperSwitchable = siteConfig.backgroundWallpaper.switchable ?? true;
 
 // 检查是否启用波浪动画效果
 const wavesConfig = siteConfig.backgroundWallpaper.banner?.waves?.enable;
@@ -117,10 +118,9 @@ const transparentClass = shouldEnableTransparency
 
 
 
-<!-- 全屏透明覆盖壁纸 - 仅在全屏透明覆盖模式启用时显示 -->
-{isOverlayMode && isBackgroundEnabled && (
+<!-- 全屏透明覆盖壁纸 - 如果允许切换则始终渲染，否则只渲染当前模式 -->
+{(isWallpaperSwitchable || isOverlayMode) && (
 	<FullscreenWallpaper config={{
-		enable: isBackgroundEnabled,
 		src: {
 			desktop: typeof backgroundImages.desktop === 'string' ? backgroundImages.desktop : '',
 			mobile: typeof backgroundImages.mobile === 'string' ? backgroundImages.mobile : ''
@@ -129,7 +129,8 @@ const transparentClass = shouldEnableTransparency
 		zIndex: siteConfig.backgroundWallpaper.overlay?.zIndex,
 		opacity: siteConfig.backgroundWallpaper.overlay?.opacity,
 		blur: siteConfig.backgroundWallpaper.overlay?.blur,
-	}} />
+	}} 
+	className={isWallpaperSwitchable && !isOverlayMode ? "hidden opacity-0" : undefined} />
 )}
 
 <!-- 全局图标加载器 -->
@@ -150,8 +151,9 @@ const transparentClass = shouldEnableTransparency
     </div>
 </div>
 
-<!-- Banner -->
-{isBannerMode && isBackgroundEnabled && <div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden ${mobileNonHomeBannerClass}`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
+<!-- Banner - 如果允许切换则始终渲染，否则只渲染当前模式 -->
+{(isWallpaperSwitchable || isBannerMode) && (
+<div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden ${mobileNonHomeBannerClass}`} style={isWallpaperSwitchable ? `top: -${BANNER_HEIGHT_EXTEND}vh; display: none;` : `top: -${BANNER_HEIGHT_EXTEND}vh`}>
     <!-- 背景图片显示 -->
     <div class="relative h-full w-full">
         <!-- Mobile: use mobile-specific image -->
@@ -172,7 +174,7 @@ const transparentClass = shouldEnableTransparency
     </div>
     
     <!-- Home page text overlay -->
-    {showHomeText && (
+    {(showHomeText || isWallpaperSwitchable) && (
         <div class={`banner-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col">
@@ -202,8 +204,8 @@ const transparentClass = shouldEnableTransparency
         </div>
     )}
     
-    <!-- Water waves effect -->
-    {(wavesEnabledOnDesktop || wavesEnabledOnMobile) && (
+    <!-- Water waves effect - 始终渲染以便动态切换 -->
+    {(wavesEnabledOnDesktop || wavesEnabledOnMobile) ? (
     <div class={`waves absolute -bottom-[1px] h-[10vh] max-h-[9.375rem] min-h-[3.125rem] w-full md:h-[15vh] 
         ${!wavesEnabledOnMobile ? 'hidden' : ''} ${!wavesEnabledOnDesktop ? 'md:hidden' : ''} ${wavesEnabledOnDesktop ? 'md:block' : ''}`} 
         id="header-waves" 
@@ -258,8 +260,9 @@ const transparentClass = shouldEnableTransparency
             </g>
         </svg>
     </div>
-    )}
-</div>}
+    ) : null}
+</div>
+)}
 
 <!-- Main content -->
 <div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${!(isBannerMode && isBackgroundEnabled) ? 'no-banner-layout' : ''} ${transparentClass}`} style={`top: ${finalMainPanelTop}`}>

@@ -80,10 +80,10 @@ export const siteConfig: SiteConfig = {
   },
 
   backgroundWallpaper: {
-    // 是否启用背景壁纸功能
-    enable: true,
-    // 壁纸模式："banner" Banner壁纸模式，"overlay" 全屏透明覆盖模式
-    mode: "banner",
+    // 壁纸模式："banner" 横幅壁纸，"overlay" 全屏壁纸，"none" 纯色背景无壁纸
+    mode: "none",
+    // 是否允许用户通过导航栏切换壁纸模式，设为false可提升性能（只渲染当前模式）
+    switchable: true,
 
     // 背景图片配置
     src: {

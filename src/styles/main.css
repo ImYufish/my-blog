@@ -189,6 +189,9 @@ html {
             @apply expand-animation;
         }
     }
+    .current-theme-btn {
+        @apply bg-[var(--btn-plain-bg-hover)] text-[var(--primary)];
+    }
     .btn-regular {
         @apply transition-colors duration-150 flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)]
         text-[var(--btn-content)] dark:text-white/75

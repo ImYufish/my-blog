@@ -1,7 +1,6 @@
 ---
 interface Props {
 	config: {
-		enable: boolean;
 		src: {
 			desktop?: string;
 			mobile?: string;
@@ -15,11 +14,6 @@ interface Props {
 }
 
 const { config, className } = Astro.props;
-
-// 如果全屏壁纸功能未启用，不渲染任何内容
-if (!config.enable) {
-	return null;
-}
 
 // 获取图片源
 const desktopSrc = config.src.desktop || config.src.mobile || '';
@@ -41,7 +35,7 @@ const blur = config.blur || 0;
 	class:list={[
 		"fixed inset-0 w-full h-full overflow-hidden pointer-events-none",
 		className
-	]}
+	].filter(Boolean)}
 	style={`z-index: ${zIndex}; opacity: ${opacity};`}
 	data-fullscreen-wallpaper
 >
