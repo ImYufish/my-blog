@@ -157,13 +157,13 @@ for (const heading of headings) {
 	
 	/* 移动端滚动优化 */
 	@media (max-width: 768px)
-		max-height: calc(18rem - 5rem)
+		max-height: calc(24rem - 5rem)
 		
 	@media (max-width: 480px)
-		max-height: calc(16rem - 5rem)
+		max-height: calc(24rem - 5rem)
 		
 	@media (max-width: 360px)
-		max-height: calc(12rem - 5rem)
+		max-height: calc(20rem - 5rem)
 
 .toc-content
 	display: flex
@@ -225,6 +225,11 @@ for (const heading of headings) {
 	transition: all 0.2s ease
 	z-index: -1
 
+/* 移动端隐藏活动指示器 */
+@media (max-width: 768px)
+	#floating-active-indicator
+		display: none
+
 /* 响应式调整 */
 @media (max-width: 1024px)
 	.floating-toc-btn
@@ -251,8 +256,8 @@ for (const heading of headings) {
 		right: 0.75rem !important
 		bottom: calc(8rem + 4rem) !important
 		width: calc(100vw - 1.5rem)
-		max-width: 18rem
-		max-height: 18rem
+		max-width: 20rem
+		max-height: 28rem
 
 @media (max-width: 480px)
 	.floating-toc-btn
@@ -267,8 +272,8 @@ for (const heading of headings) {
 		right: 0.5rem !important
 		bottom: calc(7rem + 4rem) !important
 		width: calc(100vw - 1rem)
-		max-width: 16rem
-		max-height: 16rem
+		max-width: 20rem
+		max-height: 28rem
 
 /* 高缩放比例适配 */
 @media (min-resolution: 2dppx)
@@ -294,8 +299,8 @@ for (const heading of headings) {
 		right: 0.25rem !important
 		bottom: calc(6rem + 4rem) !important
 		width: calc(100vw - 0.5rem)
-		max-width: 14rem
-		max-height: 12rem
+		max-width: 18rem
+		max-height: 24rem
 
 /* 横屏模式适配 */
 @media (orientation: landscape) and (max-height: 500px)
@@ -521,6 +526,15 @@ for (const heading of headings) {
     function updateActiveIndicator(activeItems) {
       const indicator = document.getElementById("floating-active-indicator");
       if (!indicator || !tocItems.length) return;
+      
+      // 移动端隐藏活动指示器
+      if (window.innerWidth <= 768) {
+        indicator.style.display = 'none';
+        return;
+      } else {
+        // 桌面端显示指示器
+        indicator.style.display = '';
+      }
 
       if (activeItems.length === 0) {
         indicator.style.opacity = "0";
@@ -727,9 +741,13 @@ for (const heading of headings) {
        `;
       });
 
+      // 移动端隐藏活动指示器
+      const isMobile = window.innerWidth <= 768;
+      const indicatorStyle = isMobile ? 'style="opacity: 0; display: none;"' : 'style="opacity: 0;"';
+      
       tocContent.innerHTML =
         tocHTML +
-        '<div id="floating-active-indicator" style="opacity: 0" class="-z-10 absolute bg-[var(--toc-btn-hover)] left-0 right-0 rounded-xl transition-all group-hover:bg-transparent border-2 border-[var(--toc-btn-hover)] group-hover:border-[var(--toc-btn-active)] border-dashed"></div>';
+        `<div id="floating-active-indicator" ${indicatorStyle} class="-z-10 absolute bg-[var(--toc-btn-hover)] left-0 right-0 rounded-xl transition-all group-hover:bg-transparent border-2 border-[var(--toc-btn-hover)] group-hover:border-[var(--toc-btn-active)] border-dashed"></div>`;
       tocItems = Array.from(
         document.querySelectorAll("#floating-toc-content a")
       );
