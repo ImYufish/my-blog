@@ -160,9 +160,6 @@ html.dark {
   @apply border-[1px] border-[var(--line-divider)] p-4 rounded-2xl hover:shadow-lg hover:border-[var(--primary)] transition-all duration-300;
   background: linear-gradient(135deg, var(--card-bg) 0%, rgba(var(--primary), 0.02) 100%);
 
-  position: relative;
-  z-index: 1;
-
   .tk-action-icon svg {
     @apply fill-[var(--primary)] hover:scale-110 transition-transform duration-200;
   }
