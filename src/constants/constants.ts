@@ -4,6 +4,11 @@ export const LIGHT_MODE = "light",
   DARK_MODE = "dark";
 export const DEFAULT_THEME = LIGHT_MODE;
 
+// Wallpaper modes
+export const WALLPAPER_BANNER = "banner",
+  WALLPAPER_OVERLAY = "overlay",
+  WALLPAPER_NONE = "none";
+
 // Banner height unit: vh
 export const BANNER_HEIGHT = 35;
 export const BANNER_HEIGHT_EXTEND = 30;

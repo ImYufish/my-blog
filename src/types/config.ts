@@ -1,6 +1,9 @@
 import type {
   DARK_MODE,
   LIGHT_MODE,
+  WALLPAPER_BANNER,
+  WALLPAPER_OVERLAY,
+  WALLPAPER_NONE,
 } from "../constants/constants";
 
 export type SiteConfig = {
@@ -131,6 +134,11 @@ type TwikooConfig = {
 export type LIGHT_DARK_MODE =
   | typeof LIGHT_MODE
   | typeof DARK_MODE;
+
+export type WALLPAPER_MODE =
+  | typeof WALLPAPER_BANNER
+  | typeof WALLPAPER_OVERLAY
+  | typeof WALLPAPER_NONE;
 
 export type BlogPostData = {
   body: string;
@@ -338,8 +346,8 @@ export type Live2DModelConfig = {
 };
 
 export type BackgroundWallpaperConfig = {
-  enable: boolean; // 是否启用背景壁纸功能
-  mode: "banner" | "overlay"; // 壁纸模式：banner横幅模式或overlay全屏透明覆盖模式
+  mode: "banner" | "overlay" | "none"; // 壁纸模式：banner横幅模式、overlay全屏透明覆盖模式或none纯色背景
+  switchable?: boolean; // 是否允许用户通过导航栏切换壁纸模式，默认true
   src:
     | string
     | string[]

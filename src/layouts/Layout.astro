@@ -58,7 +58,7 @@ if (!banner || typeof banner !== "string" || banner.trim() === "") {
 // TODO don't use post cover as banner for now
 banner = getDefaultBackground();
 
-const enableBanner = siteConfig.backgroundWallpaper.enable && siteConfig.backgroundWallpaper.mode === "banner";
+const enableBanner = siteConfig.backgroundWallpaper.mode === "banner";
 
 let pageTitle: string;
 if (title) {
@@ -132,7 +132,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 		))}
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "light"}}>
+		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "light", defaultWallpaperMode: siteConfig.backgroundWallpaper.mode, isWallpaperSwitchable: siteConfig.backgroundWallpaper.switchable ?? true}}>
 			// 主题初始化 - 与setting-utils.ts保持一致
 			const LIGHT_MODE = 'light';
 			const DARK_MODE = 'dark';
@@ -166,6 +166,102 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 			let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 			offset = offset - offset % 4;
 			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+
+			// 初始化壁纸模式 - 在页面渲染前应用
+			const WALLPAPER_BANNER = 'banner';
+			const WALLPAPER_OVERLAY = 'overlay';
+			const WALLPAPER_NONE = 'none';
+			const wallpaperMode = isWallpaperSwitchable ? (localStorage.getItem('wallpaperMode') || defaultWallpaperMode) : defaultWallpaperMode;
+			
+			// 设置data-wallpaper-mode属性
+			document.documentElement.setAttribute('data-wallpaper-mode', wallpaperMode);
+			
+			// 立即执行函数来处理DOM
+			(function applyWallpaperMode() {
+				// 使用 requestAnimationFrame 确保在下一帧之前执行
+				requestAnimationFrame(function() {
+					// 根据模式隐藏显示对应元素
+					if (wallpaperMode === WALLPAPER_NONE || wallpaperMode === WALLPAPER_OVERLAY) {
+						// 隐藏横幅
+						if (document.body) {
+							document.body.classList.remove('enable-banner');
+							document.body.classList.add('no-banner-layout');
+						}
+					} else {
+						if (document.body) {
+							document.body.classList.add('enable-banner');
+							document.body.classList.remove('no-banner-layout');
+						}
+					}
+					
+					// 全屏壁纸模式
+					if (wallpaperMode === WALLPAPER_OVERLAY) {
+						if (document.body) {
+							document.body.classList.add('wallpaper-transparent');
+						}
+					} else {
+						if (document.body) {
+							document.body.classList.remove('wallpaper-transparent');
+						}
+					}
+
+					// 处理banner和fullscreen wallpaper的显示
+					const bannerWrapper = document.getElementById('banner-wrapper');
+					const fullscreenWallpaper = document.querySelector('[data-fullscreen-wallpaper]');
+					
+					if (wallpaperMode === WALLPAPER_OVERLAY) {
+						// 全屏壁纸模式：显示全屏壁纸，隐藏banner
+						if (bannerWrapper) {
+							bannerWrapper.style.display = 'none';
+						}
+						if (fullscreenWallpaper) {
+							fullscreenWallpaper.style.display = 'block';
+							fullscreenWallpaper.classList.remove('hidden', 'opacity-0');
+							fullscreenWallpaper.classList.add('opacity-100');
+						}
+					} else if (wallpaperMode === WALLPAPER_NONE) {
+						// 纯色背景：隐藏所有壁纸
+						if (bannerWrapper) {
+							bannerWrapper.style.display = 'none';
+						}
+						if (fullscreenWallpaper) {
+							fullscreenWallpaper.style.display = 'none';
+							fullscreenWallpaper.classList.add('hidden', 'opacity-0');
+						}
+					} else {
+						// banner模式：显示banner，隐藏全屏壁纸
+						if (bannerWrapper) {
+							bannerWrapper.style.display = 'block';
+						}
+						if (fullscreenWallpaper) {
+							fullscreenWallpaper.style.display = 'none';
+							fullscreenWallpaper.classList.add('hidden', 'opacity-0');
+						}
+					}
+
+					// 处理credit元素
+					const creditDesktop = document.getElementById('banner-credit-desktop');
+					const creditMobile = document.getElementById('banner-credit-mobile');
+					if (wallpaperMode === WALLPAPER_OVERLAY || wallpaperMode === WALLPAPER_NONE) {
+						if (creditDesktop) creditDesktop.style.display = 'none';
+						if (creditMobile) creditMobile.style.display = 'none';
+					} else {
+						if (creditDesktop) creditDesktop.style.display = '';
+						if (creditMobile) creditMobile.style.display = '';
+					}
+
+					// 处理banner homeText元素
+					const bannerTextOverlay = document.querySelector('.banner-text-overlay');
+					if (bannerTextOverlay) {
+						const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+						if (wallpaperMode === WALLPAPER_BANNER && isHomePage) {
+							bannerTextOverlay.classList.remove('hidden');
+						} else {
+							bannerTextOverlay.classList.add('hidden');
+						}
+					}
+				});
+			})();
 		</script>
 		<style define:vars={{
 			configHue,
@@ -357,7 +453,7 @@ function initCustomScrollbar() {
 
 function showBanner() {
 	const isBannerMode = siteConfig.backgroundWallpaper.mode === "banner";
-	if (!siteConfig.backgroundWallpaper.enable || !isBannerMode) return;
+	if (!isBannerMode) return;
 
 	// 使用requestAnimationFrame优化DOM操作
 	requestAnimationFrame(() => {
@@ -669,6 +765,16 @@ if (document.readyState === 'loading') {
 } else {
 	showBanner();
 	initCustomScrollbar();
+}
+
+// Initialize wallpaper mode
+import { initWallpaperMode } from '@/utils/setting-utils';
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', () => {
+		initWallpaperMode();
+	});
+} else {
+	initWallpaperMode();
 }
 
 </script>
