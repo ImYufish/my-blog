@@ -173,8 +173,8 @@ const transparentClass = shouldEnableTransparency
         />
     </div>
     
-    <!-- Home page text overlay -->
-    {(showHomeText || isWallpaperSwitchable) && (
+    <!-- Home page text overlay - 始终渲染以便切换模式时控制显示 -->
+    {(isWallpaperSwitchable || showHomeText) && homeTextEnable && (
         <div class={`banner-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col">
