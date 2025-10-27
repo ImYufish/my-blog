@@ -270,12 +270,17 @@ function showBannerMode() {
 	if (creditDesktop) creditDesktop.style.display = '';
 	if (creditMobile) creditMobile.style.display = '';
 
-	// 显示横幅首页文本（如果是首页）
+	// 显示横幅首页文本（如果启用且是首页）
 	const bannerTextOverlay = document.querySelector('.banner-text-overlay');
 	if (bannerTextOverlay) {
+		// 检查是否启用 homeText
+		const homeTextEnabled = siteConfig.backgroundWallpaper.banner?.homeText?.enable;
+		
 		// 检查当前是否为首页
 		const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
-		if (isHomePage) {
+		
+		// 只有在启用且在首页时才显示
+		if (homeTextEnabled && isHomePage) {
 			bannerTextOverlay.classList.remove('hidden');
 		} else {
 			bannerTextOverlay.classList.add('hidden');
