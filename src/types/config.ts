@@ -133,7 +133,8 @@ type TwikooConfig = {
 
 export type LIGHT_DARK_MODE =
   | typeof LIGHT_MODE
-  | typeof DARK_MODE;
+  | typeof DARK_MODE
+  | typeof SYSTEM_MODE;
 
 export type WALLPAPER_MODE =
   | typeof WALLPAPER_BANNER

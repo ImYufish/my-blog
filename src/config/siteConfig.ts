@@ -24,7 +24,7 @@ export const siteConfig: SiteConfig = {
   themeColor: {
     hue: 165, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
     fixed: false, // 对访问者隐藏主题色选择器
-    defaultMode: "light", // 默认模式："light" 浅色，"dark" 深色
+    defaultMode: "system", // 默认模式："light" 浅色，"dark" 深色，"system" 跟随系统
   },
 
   favicon: [

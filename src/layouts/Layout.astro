@@ -132,16 +132,25 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 		))}
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode || "light", defaultWallpaperMode: siteConfig.backgroundWallpaper.mode, isWallpaperSwitchable: siteConfig.backgroundWallpaper.switchable ?? true}}>
+		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode ?? "light", defaultWallpaperMode: siteConfig.backgroundWallpaper.mode, isWallpaperSwitchable: siteConfig.backgroundWallpaper.switchable ?? true}}>
 			// 主题初始化 - 与setting-utils.ts保持一致
 			const LIGHT_MODE = 'light';
 			const DARK_MODE = 'dark';
+			const SYSTEM_MODE = 'system';
 			
 			// 获取存储的主题，如果没有则使用默认值
 			const theme = localStorage.getItem('theme') || defaultMode;
 			
-			// 解析主题
+			// 获取系统主题
+			function getSystemTheme() {
+				return window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_MODE : LIGHT_MODE;
+			}
+			
+			// 解析主题（如果是system模式，则获取系统主题）
 			function resolveTheme(themeValue) {
+				if (themeValue === SYSTEM_MODE) {
+					return getSystemTheme();
+				}
 				return themeValue;
 			}
 			
@@ -770,13 +779,15 @@ if (document.readyState === 'loading') {
 }
 
 // Initialize wallpaper mode
-import { initWallpaperMode } from '@/utils/setting-utils';
+import { initWallpaperMode, initThemeListener } from '@/utils/setting-utils';
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', () => {
 		initWallpaperMode();
+		initThemeListener();
 	});
 } else {
 	initWallpaperMode();
+	initThemeListener();
 }
 
 </script>
