@@ -1,6 +1,7 @@
 import type {
   DARK_MODE,
   LIGHT_MODE,
+  SYSTEM_MODE,
   WALLPAPER_BANNER,
   WALLPAPER_OVERLAY,
   WALLPAPER_NONE,
@@ -17,12 +18,7 @@ export type SiteConfig = {
     | "zh_CN"
     | "zh_TW"
     | "ja"
-    | "ko"
-    | "es"
-    | "th"
-    | "vi"
-    | "tr"
-    | "id";
+    | "ru";
 
   themeColor: {
     hue: number;
@@ -133,7 +129,8 @@ type TwikooConfig = {
 
 export type LIGHT_DARK_MODE =
   | typeof LIGHT_MODE
-  | typeof DARK_MODE;
+  | typeof DARK_MODE
+  | typeof SYSTEM_MODE;
 
 export type WALLPAPER_MODE =
   | typeof WALLPAPER_BANNER

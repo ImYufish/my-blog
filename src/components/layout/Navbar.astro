@@ -110,6 +110,26 @@ function loadButtonScript() {
             }
         };
     }
+
+    let wallpaperSwitchBtn = document.getElementById("wallpaper-mode-switch");
+    if (wallpaperSwitchBtn) {
+        wallpaperSwitchBtn.onclick = function () {
+            let wallpaperPanel = document.getElementById("wallpaper-mode-panel");
+            if (wallpaperPanel) {
+                wallpaperPanel.classList.toggle("float-panel-closed");
+            }
+        };
+    }
+
+    let themeSwitchBtn = document.getElementById("scheme-switch");
+    if (themeSwitchBtn) {
+        themeSwitchBtn.onclick = function () {
+            let themePanel = document.getElementById("theme-mode-panel");
+            if (themePanel) {
+                themePanel.classList.toggle("float-panel-closed");
+            }
+        };
+    }
 }
 
 loadButtonScript();

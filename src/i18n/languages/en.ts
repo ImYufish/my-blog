@@ -153,4 +153,10 @@ export const en: Translation = {
 
   // Pinned
   [Key.pinned]: "Pinned",
+
+  // Wallpaper Mode
+  [Key.wallpaperMode]: "Wallpaper Mode",
+  [Key.wallpaperBannerMode]: "Banner Wallpaper",
+  [Key.wallpaperOverlayMode]: "Full Screen Wallpaper",
+  [Key.wallpaperNoneMode]: "Solid Color Background",
 };

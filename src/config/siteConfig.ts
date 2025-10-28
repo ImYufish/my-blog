@@ -2,7 +2,8 @@ import type { SiteConfig } from "../types/config";
 import { fontConfig } from "./fontConfig";
 
 // 定义站点语言
-const SITE_LANG = "zh_CN"; // 语言代码，例如：'en', 'zh_CN', 'ja' 等。
+// 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru'。
+const SITE_LANG = "zh_CN"; 
 
 export const siteConfig: SiteConfig = {
   title: "Firefly",
@@ -24,7 +25,7 @@ export const siteConfig: SiteConfig = {
   themeColor: {
     hue: 165, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
     fixed: false, // 对访问者隐藏主题色选择器
-    defaultMode: "light", // 默认模式："light" 浅色，"dark" 深色
+    defaultMode: "system", // 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
   },
 
   favicon: [
