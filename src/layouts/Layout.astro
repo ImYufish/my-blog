@@ -172,9 +172,27 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 			document.documentElement.style.setProperty('--hue', hue);
 
 			// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
-			let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
-			offset = offset - offset % 4;
-			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+			// 使用更准确的窗口高度计算
+			function calculateBannerHeightExtend() {
+				let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+				offset = offset - offset % 4;
+				document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+			}
+			
+			// 立即设置初始值
+			calculateBannerHeightExtend();
+			
+			// 在下一帧重新计算精确值（仅在值变化时更新，避免闪烁）
+			requestAnimationFrame(() => {
+				const oldValue = parseInt(document.documentElement.style.getPropertyValue('--banner-height-extend'));
+				calculateBannerHeightExtend();
+				const newValue = parseInt(document.documentElement.style.getPropertyValue('--banner-height-extend'));
+				// 如果值变化了，再更新一次确保准确
+				if (Math.abs(oldValue - newValue) > 4) {
+					// 如果有明显变化，延迟一帧再更新，避免闪烁
+					requestAnimationFrame(calculateBannerHeightExtend);
+				}
+			});
 
 			// 初始化壁纸模式 - 在页面渲染前应用
 			const WALLPAPER_BANNER = 'banner';
