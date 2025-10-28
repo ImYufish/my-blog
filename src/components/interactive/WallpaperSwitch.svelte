@@ -8,6 +8,8 @@ import {
 } from "@utils/setting-utils";
 import type { WALLPAPER_MODE } from "@/types/config";
 import { siteConfig } from "@/config";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 
 let mode: WALLPAPER_MODE = $state(siteConfig.backgroundWallpaper.mode);
 
@@ -42,21 +44,21 @@ function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 					onclick={() => switchWallpaperMode(WALLPAPER_BANNER)}
 			>
 				<Icon icon="material-symbols:image-outline" class="text-[1.25rem] mr-3"></Icon>
-				横幅壁纸
+				{i18n(I18nKey.wallpaperBannerMode)}
 			</button>
 			<button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
 					class:current-theme-btn={mode === WALLPAPER_OVERLAY}
 					onclick={() => switchWallpaperMode(WALLPAPER_OVERLAY)}
 			>
 				<Icon icon="material-symbols:wallpaper" class="text-[1.25rem] mr-3"></Icon>
-				全屏壁纸
+				{i18n(I18nKey.wallpaperOverlayMode)}
 			</button>
 			<button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95"
 					class:current-theme-btn={mode === WALLPAPER_NONE}
 					onclick={() => switchWallpaperMode(WALLPAPER_NONE)}
 			>
 				<Icon icon="material-symbols:hide-image-outline" class="text-[1.25rem] mr-3"></Icon>
-				纯色背景
+				{i18n(I18nKey.wallpaperNoneMode)}
 			</button>
 		</div>
 	</div>

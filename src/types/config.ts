@@ -1,6 +1,7 @@
 import type {
   DARK_MODE,
   LIGHT_MODE,
+  SYSTEM_MODE,
   WALLPAPER_BANNER,
   WALLPAPER_OVERLAY,
   WALLPAPER_NONE,
@@ -17,12 +18,7 @@ export type SiteConfig = {
     | "zh_CN"
     | "zh_TW"
     | "ja"
-    | "ko"
-    | "es"
-    | "th"
-    | "vi"
-    | "tr"
-    | "id";
+    | "ru";
 
   themeColor: {
     hue: number;

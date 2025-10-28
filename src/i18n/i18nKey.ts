@@ -144,6 +144,12 @@ enum I18nKey {
 
   // 置顶
   pinned = "pinned",
+
+  // 壁纸模式
+  wallpaperMode = "wallpaperMode",
+  wallpaperBannerMode = "wallpaperBannerMode",
+  wallpaperOverlayMode = "wallpaperOverlayMode",
+  wallpaperNoneMode = "wallpaperNoneMode",
 }
 
 export default I18nKey;
