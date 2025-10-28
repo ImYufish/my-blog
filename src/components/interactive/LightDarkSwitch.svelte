@@ -15,16 +15,22 @@ let mode: LIGHT_DARK_MODE = $state(LIGHT_MODE);
 function switchScheme(newMode: LIGHT_DARK_MODE) {
 	mode = newMode;
 	setTheme(newMode);
+	// 切换模式后是否隐藏面板
+	isPanelOpen = true;
 }
 
-function toggleScheme() {
-	let i = 0;
-	for (; i < seq.length; i++) {
-		if (seq[i] === mode) {
-			break;
-		}
-	}
-	switchScheme(seq[(i + 1) % seq.length]);
+let isPanelOpen = $state(false);
+
+function togglePanel() {
+	isPanelOpen = !isPanelOpen;
+}
+
+function showPanel() {
+	isPanelOpen = true;
+}
+
+function hidePanel() {
+	isPanelOpen = false;
 }
 
 // 使用onMount确保在组件挂载后正确初始化
