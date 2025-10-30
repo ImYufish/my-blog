@@ -116,15 +116,40 @@ export type LicenseConfig = {
 // 评论配置
 
 export type CommentConfig = {
-  enable: boolean; // 是否启用评论功能
-  enableVisitorCount?: boolean; // 是否启用文章访问量统计功能
-  twikoo?: TwikooConfig;
-};
-
-type TwikooConfig = {
-  envId: string;
-  region?: string;
-  lang?: string;
+  /**
+   * 当前启用的评论系统类型
+   * "none" | "twikoo" | "waline" | "giscus" | "disqus"
+   */
+  type: 'none' | 'twikoo' | 'waline' | 'giscus' | 'disqus';
+  twikoo?: {
+    envId: string;
+    region?: string;
+    lang?: string;
+    visitorCount?: boolean; 
+  };
+  waline?: {
+    serverURL: string;
+    lang?: string;
+    login?: 'enable' | 'force' | 'disable';
+    visitorCount?: boolean; // 是否统计访问量，true 启用访问量，false 关闭
+  };
+  giscus?: {
+    repo: string;
+    repoId: string;
+    category: string;
+    categoryId: string;
+    mapping: string;
+    strict: string;
+    reactionsEnabled: string;
+    emitMetadata: string;
+    inputPosition: string;
+    theme: string;
+    lang: string;
+    loading: string;
+  };
+  disqus?: {
+    shortname: string;
+  };
 };
 
 export type LIGHT_DARK_MODE =
