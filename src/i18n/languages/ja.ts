@@ -23,6 +23,7 @@ export const ja: Translation = {
   [Key.commentSubtitle]: "あなたの考えを共有し、みんなと議論しましょう",
   [Key.commentNotConfigured]: "コメントシステムが設定されていません",
   [Key.friends]: "友達",
+  [Key.guestbook]: "ゲストブック",
   [Key.untitled]: "無題",
   [Key.uncategorized]: "未分類",
   [Key.noTags]: "タグなし",

@@ -23,6 +23,7 @@ export const ru: Translation = {
   [Key.commentSubtitle]: "Поделитесь своими мыслями и обсудите с остальными",
   [Key.commentNotConfigured]: "Система комментариев не настроена",
   [Key.friends]: "Ссылки",
+  [Key.guestbook]: "Гостевая книга",
   [Key.untitled]: "Без названия",
   [Key.uncategorized]: "Без категории",
   [Key.noTags]: "Нет тегов",

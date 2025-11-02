@@ -9,11 +9,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
     LinkPreset.Archive,
   ];
 
-  // 根据配置决定是否添加追番页面
-  if (siteConfig.pages.anime) {
-    links.push(LinkPreset.Anime);
-  }
-
   // 支持自定义导航栏链接,并且支持多级菜单
   links.push({
     name: "链接",
@@ -37,11 +32,17 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
   links.push(LinkPreset.Friends);
 
+  // 根据配置决定是否添加留言板页面
+  if (siteConfig.pages.guestbook) {
+    links.push(LinkPreset.Guestbook);
+  }
+
   links.push({
     name: "关于",
     url: "/content/",
     icon: "material-symbols:info",
     children: [
+      ...(siteConfig.pages.anime ? [LinkPreset.Anime] : []), // 根据配置决定是否添加追番页面
       ...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []), // 根据配置决定是否添加赞助页面
       LinkPreset.About,
     ],

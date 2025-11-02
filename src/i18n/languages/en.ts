@@ -23,6 +23,7 @@ export const en: Translation = {
   [Key.commentSubtitle]: "Share your thoughts and discuss with everyone",
   [Key.commentNotConfigured]: "Comment system not configured",
   [Key.friends]: "Friends",
+  [Key.guestbook]: "Guestbook",
   [Key.untitled]: "Untitled",
   [Key.uncategorized]: "Uncategorized",
   [Key.noTags]: "No Tags",

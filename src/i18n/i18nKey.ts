@@ -43,6 +43,7 @@ enum I18nKey {
   publishedAt = "publishedAt",
   license = "license",
   friends = "friends",
+  guestbook = "guestbook",
   anime = "anime",
 
   // 番剧页面

@@ -23,6 +23,7 @@ export const zh_TW: Translation = {
   [Key.commentSubtitle]: "分享你的想法，與大家交流討論",
   [Key.commentNotConfigured]: "評論系統暫未配置",
   [Key.friends]: "友鏈",
+  [Key.guestbook]: "留言板",
   [Key.untitled]: "無標題",
   [Key.uncategorized]: "未分類",
   [Key.noTags]: "無標籤",
