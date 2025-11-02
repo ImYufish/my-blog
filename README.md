@@ -10,7 +10,7 @@
 
 ---
 
-[**🖥️在线预览(Netlify)**](https://demo-firefly.netlify.app/) /
+[**🖥️在线预览(EdgeOne)**](https://firefly.cuteleaf.cn/) /
 [**📝使用文档**](https://docs-firefly.cuteleaf.cn/) /
 [**🍀我的博客**](https://blog.cuteleaf.cn) 
 
