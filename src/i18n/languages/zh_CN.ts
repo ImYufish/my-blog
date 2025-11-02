@@ -24,7 +24,7 @@ export const zh_CN: Translation = {
   [Key.commentNotConfigured]: "评论系统暂未配置",
   [Key.guestbookCommentHint]: "您还未在配置文件中启用评论系统，启用后访客才可在此留言",
   [Key.friends]: "友链",
-  [Key.guestbook]: "留言板",
+  [Key.guestbook]: "留言",
   [Key.untitled]: "无标题",
   [Key.uncategorized]: "未分类",
   [Key.noTags]: "无标签",
