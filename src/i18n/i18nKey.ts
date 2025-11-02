@@ -19,6 +19,7 @@ enum I18nKey {
   commentSection = "commentSection",
   commentSubtitle = "commentSubtitle",
   commentNotConfigured = "commentNotConfigured",
+  guestbookCommentHint = "guestbookCommentHint",
 
   untitled = "untitled",
   uncategorized = "uncategorized",
@@ -43,6 +44,7 @@ enum I18nKey {
   publishedAt = "publishedAt",
   license = "license",
   friends = "friends",
+  guestbook = "guestbook",
   anime = "anime",
 
   // 番剧页面

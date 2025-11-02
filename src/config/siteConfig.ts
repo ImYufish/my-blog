@@ -65,6 +65,7 @@ export const siteConfig: SiteConfig = {
   pages: {
     anime: true, // 追番页面开关
     sponsor: true, // 赞助页面开关
+    guestbook: true, // 留言板页面开关，需要配置评论系统
   },
 
   // 文章列表布局配置

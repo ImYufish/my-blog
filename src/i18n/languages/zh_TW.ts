@@ -22,7 +22,9 @@ export const zh_TW: Translation = {
   [Key.commentSection]: "評論區",
   [Key.commentSubtitle]: "分享你的想法，與大家交流討論",
   [Key.commentNotConfigured]: "評論系統暫未配置",
+  [Key.guestbookCommentHint]: "您還未在配置文件中啟用評論系統，啟用後訪客才可在此留言",
   [Key.friends]: "友鏈",
+  [Key.guestbook]: "留言板",
   [Key.untitled]: "無標題",
   [Key.uncategorized]: "未分類",
   [Key.noTags]: "無標籤",
@@ -62,6 +64,32 @@ export const zh_TW: Translation = {
   [Key.animeStudio]: "製作",
   [Key.animeEmpty]: "暫無追番數據",
   [Key.animeEmptyBangumi]: "請檢查 Bangumi 配置或網絡連接",
+  
+  // 動漫狀態
+  [Key.animeStatusAll]: "全部",
+  [Key.animeStatusWish]: "想看",
+  [Key.animeStatusDone]: "看過",
+  [Key.animeStatusDoing]: "在看",
+  [Key.animeStatusOnhold]: "擱置",
+  [Key.animeStatusDropped]: "拋棄",
+  
+  // 動漫頁面文本
+  [Key.animeLoading]: "正在加載追番數據...",
+  [Key.animeLoadingDescription]: "請稍候，正在從 Bangumi 獲取您的收藏信息",
+  [Key.animeError]: "數據加載失敗",
+  [Key.animeErrorDescription]: "無法連接到 Bangumi API，請檢查網絡連接或稍後重試",
+  [Key.animeRetry]: "重新加載",
+  [Key.animeEmptyData]: "暫無數據",
+  [Key.animeEmptyDescription]: "該分類下暫時沒有找到相關的動漫作品",
+  [Key.animeEmptySuggestion]: "試試切換到其他分類查看",
+  [Key.animeConfigDescription]: "請在 src/config/siteConfig.ts 文件中設置你的 Bangumi 用戶ID",
+  [Key.animeRefreshNote]: "由於一些限制，可能需要F5刷新一次頁面才會加載追番數據，目前還沒有很好的解決方法",
+  
+  // 動漫信息
+  [Key.animeEpisodes]: "集數",
+  [Key.animeRank]: "排名",
+  [Key.animeUnknown]: "未知",
+  [Key.animeLoadFailed]: "加載失敗",
 
   // 分頁
   [Key.paginationFirst]: "首頁",

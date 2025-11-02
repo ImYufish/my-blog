@@ -58,6 +58,7 @@ export type SiteConfig = {
   pages: {
     anime: boolean; // 追番页面开关
     sponsor: boolean; // 赞助页面开关
+    guestbook: boolean; // 留言板页面开关
   };
 
   // 文章列表布局配置
@@ -85,6 +86,7 @@ export enum LinkPreset {
   Friends = 3,
   Anime = 4,
   Sponsor = 5,
+  Guestbook = 6,
 }
 
 export type NavBarLink = {
@@ -628,5 +630,5 @@ export type SponsorConfig = {
   methods: SponsorMethod[]; // 赞助方式列表
   sponsors?: SponsorItem[]; // 赞助者列表（可选）
   showSponsorsList?: boolean; // 是否显示赞助者列表，默认 true
-  showButtonInPost?: boolean; // 是否在文章详情页底部显示赞助按钮，默认 false
+  showButtonInPost?: boolean; // 是否在文章详情页底部显示赞助按钮，默认 true
 };

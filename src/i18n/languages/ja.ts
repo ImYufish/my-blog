@@ -22,7 +22,9 @@ export const ja: Translation = {
   [Key.commentSection]: "コメント欄",
   [Key.commentSubtitle]: "あなたの考えを共有し、みんなと議論しましょう",
   [Key.commentNotConfigured]: "コメントシステムが設定されていません",
+  [Key.guestbookCommentHint]: "設定ファイルでコメントシステムをまだ有効にしていません。有効にすると、訪問者がここにメッセージを残せるようになります",
   [Key.friends]: "友達",
+  [Key.guestbook]: "ゲストブック",
   [Key.untitled]: "無題",
   [Key.uncategorized]: "未分類",
   [Key.noTags]: "タグなし",
@@ -63,6 +65,32 @@ export const ja: Translation = {
   [Key.animeEmpty]: "アニメデータなし",
   [Key.animeEmptyBangumi]:
     "Bangumiの設定またはネットワーク接続を確認してください",
+  
+  // アニメ状態
+  [Key.animeStatusAll]: "すべて",
+  [Key.animeStatusWish]: "見たい",
+  [Key.animeStatusDone]: "見た",
+  [Key.animeStatusDoing]: "視聴中",
+  [Key.animeStatusOnhold]: "保留",
+  [Key.animeStatusDropped]: "中断",
+  
+  // アニメページテキスト
+  [Key.animeLoading]: "アニメデータを読み込み中...",
+  [Key.animeLoadingDescription]: "お待ちください、Bangumiからコレクション情報を取得しています",
+  [Key.animeError]: "データ読み込み失敗",
+  [Key.animeErrorDescription]: "Bangumi APIに接続できません。ネットワーク接続を確認するか、後で再試行してください",
+  [Key.animeRetry]: "再読み込み",
+  [Key.animeEmptyData]: "データなし",
+  [Key.animeEmptyDescription]: "このカテゴリには関連するアニメ作品が見つかりませんでした",
+  [Key.animeEmptySuggestion]: "他のカテゴリに切り替えてみてください",
+  [Key.animeConfigDescription]: "src/config/siteConfig.tsファイルでBangumiユーザーIDを設定してください",
+  [Key.animeRefreshNote]: "一部の制限により、アニメデータを読み込むためにページを一度更新する必要があるかもしれません。現在、良い解決方法はありません",
+  
+  // アニメ情報
+  [Key.animeEpisodes]: "エピソード",
+  [Key.animeRank]: "ランク",
+  [Key.animeUnknown]: "不明",
+  [Key.animeLoadFailed]: "読み込み失敗",
 
   // ページネーション
   [Key.paginationFirst]: "最初",
