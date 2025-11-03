@@ -121,10 +121,15 @@ export type MeiliSearchConfig = {
   PUBLIC_MEILI_SEARCH_KEY: string;
 }
 
+export type NavBarSearchConfig = {
+  method: NavBarSearchMethod;
+  meiliSearchConfig?: MeiliSearchConfig;
+}
+
 export type NavBarConfig = {
   links: (NavBarLink | LinkPreset)[];
-  searchMethod: NavBarSearchMethod;
-  meiliSearchConfig: MeiliSearchConfig;
+  searchMethod?: NavBarSearchMethod;
+  meiliSearchConfig?: MeiliSearchConfig;
 };
 
 export type ProfileConfig = {

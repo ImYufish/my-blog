@@ -19,7 +19,7 @@ export { fontConfig } from "./fontConfig"; // 字体配置
 
 // 布局配置
 export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
-export { navBarConfig } from "./navBarConfig"; // 导航栏配置
+export { navBarConfig, navBarSearchConfig } from "./navBarConfig"; // 导航栏配置与搜索配置
 
 // 组件配置
 export { musicPlayerConfig } from "./musicConfig"; // 音乐播放器配置
