@@ -147,7 +147,6 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
   // 详情页模式：移动端和桌面端都至少300px（与banner-container保持一致）
   preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
 ]}>
-    <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
     <!-- 加载指示器：只对远程API图片（非本地且不是public路径）显示 -->
     {!isLocal && (seed || preview) && (
       <div 

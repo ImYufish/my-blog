@@ -109,10 +109,6 @@ export const ja: Translation = {
     "申し訳ありませんが、アクセスしたページは存在しないか、移動されています。",
   [Key.backToHome]: "ホームに戻る",
 
-  // Music Player
-  [Key.playlist]: "プレイリスト",
-
-
   // RSSページ
   [Key.rss]: "RSSフィード",
   [Key.rssDescription]: "最新の更新を購読する",

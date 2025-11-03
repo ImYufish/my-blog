@@ -1,7 +1,7 @@
 ---
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 import FontManager from "@components/interactive/FontManager.astro";
-import MusicPlayer from "@components/widget/MusicPlayer.svelte";
+import MusicPlayer from "@components/widget/MusicPlayer.astro";
 import SakuraEffect from "@components/effects/SakuraEffect.astro";
 import FancyboxManager from "@components/effects/FancyboxManager.astro";
 
@@ -343,7 +343,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 		<slot />
 		
 		<!-- Music Player -->
-		<MusicPlayer client:load />
+		<MusicPlayer />
 		
 		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
 		<div id="page-height-extend" class="hidden h-[300vh]"></div>

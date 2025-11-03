@@ -109,10 +109,6 @@ export const en: Translation = {
     "Sorry, the page you visited does not exist or has been moved.",
   [Key.backToHome]: "Back to Home",
 
-  // Music Player
-  [Key.playlist]: "Playlist",
-
-
 	// RSS Page
 	[Key.rss]: "RSS Feed",
 	[Key.rssDescription]: "Subscribe to get latest updates",

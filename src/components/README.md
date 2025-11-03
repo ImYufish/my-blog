@@ -53,7 +53,7 @@
 - `Announcement.astro` - 公告组件
 - `Categories.astro` - 分类组件
 - `Live2DWidget.astro` - Live2D 小部件
-- `MusicPlayer.svelte` - 音乐播放器组件
+- `MusicPlayer.astro` - 音乐播放器组件
 - `PioMessageBox.astro` - Pio 消息框组件
 - `SpineModel.astro` - Spine 模型组件
 - `Tags.astro` - 标签组件

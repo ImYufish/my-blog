@@ -105,10 +105,6 @@ enum I18nKey {
   notFoundDescription = "notFoundDescription",
   backToHome = "backToHome",
 
-  // 音乐播放器
-  playlist = "playlist",
-
-
   // RSS页面
   rss = "rss",
   rssDescription = "rssDescription",
