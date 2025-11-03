@@ -13,7 +13,8 @@
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
     "lint": "biome check --write ./src",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "index:meili": "npx tsx src/scripts/index-to-meilisearch.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.5",
@@ -39,11 +40,14 @@
     "astro-expressive-code": "^0.41.3",
     "astro-icon": "^1.1.5",
     "dayjs": "^1.11.19",
+    "glob": "^11.0.3",
+    "gray-matter": "^4.0.3",
     "hastscript": "^9.0.1",
     "katex": "^0.16.22",
     "markdown-it": "^14.1.0",
     "marked": "^16.4.1",
     "mdast-util-to-string": "^4.0.0",
+    "meilisearch": "^0.54.0",
     "node-html-parser": "^7.0.1",
     "overlayscrollbars": "^2.12.0",
     "pagefind": "^1.4.0",
