@@ -12,7 +12,7 @@ import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { licenseConfig } from "@/config/licenseConfig";
-import ImageWrapper from "@/components/misc/ImageWrapper.astro";
+import RandomCoverImage from "@/components/misc/RandomCoverImage.astro";
 import PostMetadata from "@/components/content/PostMeta.astro";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
@@ -160,12 +160,13 @@ const jsonLd = {
       {
         processedImage && (
           <div style="margin-top:1rem;">
-            <ImageWrapper
+            <RandomCoverImage
               id="post-cover"
               src={processedImage}
               basePath={path.join("content/posts/", getDir(entry.id))}
               class="mb-8 rounded-xl banner-container onload-animation"
               seed={entry.slug}
+              preview={false}
             />
           </div>
         )
