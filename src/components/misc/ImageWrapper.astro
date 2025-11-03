@@ -139,19 +139,28 @@ const getWatermarkStyles = (pos?: string): { classes: string; styles: string } =
 
 const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) : { classes: "", styles: "" };
 ---
-<div id={id} class:list={[className, 'overflow-hidden relative']}>
+<div id={id} class:list={[
+  className, 
+  'overflow-hidden relative',
+  // 需要有最小高度占位，确保加载指示器可见
+  // 预览模式（文章列表）：移动端150px，桌面端无限制
+  // 详情页模式：移动端和桌面端都至少300px（与banner-container保持一致）
+  preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
+]}>
     <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
-    <!-- 加载指示器 -->
-    <div 
-      class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
-      style={`background-color: ${coverImageConfig.loading?.backgroundColor || '#fefefe'};`}
-    >
-      <img 
-        src={url(coverImageConfig.loading?.image || "/assets/images/loading.gif")} 
-        alt="Loading..." 
-        class="w-24 h-24 md:w-32 md:h-32 opacity-80" 
-      />
-    </div>
+    <!-- 加载指示器：只对远程API图片（非本地且不是public路径）显示 -->
+    {!isLocal && (seed || preview) && (
+      <div 
+        class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
+        style={`background-color: ${coverImageConfig.loading?.backgroundColor || '#fefefe'};`}
+      >
+        <img 
+          src={url(coverImageConfig.loading?.image || "/assets/images/loading.gif")} 
+          alt="Loading..." 
+          class="w-24 h-24 md:w-32 md:h-32 opacity-80" 
+        />
+      </div>
+    )}
     {isLocal && img && (
       preview ? (
         // 预览模式（文章列表）：使用较小的尺寸
@@ -167,19 +176,6 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
           quality={80}
           widths={[200, 400, 600]}
           sizes="(max-width: 768px) 100vw, 28vw"
-          onload={`(function(img){
-            // 本地图片加载成功后隐藏加载指示器
-            const container = img.closest('[id]') || img.parentElement;
-            if (container) {
-              const loadingIndicator = container.querySelector('.image-loading-indicator');
-              if (loadingIndicator) {
-                loadingIndicator.style.opacity = '0';
-                setTimeout(function() {
-                  loadingIndicator.style.display = 'none';
-                }, 300);
-              }
-            }
-          })(this);`}
         />
       ) : (
         // 详情页模式：使用较大的尺寸以展示完整图片
@@ -195,19 +191,6 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
           quality={90}
           widths={[800, 1200, 1600, 2000]}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
-          onload={`(function(img){
-            // 本地图片加载成功后隐藏加载指示器
-            const container = img.closest('[id]') || img.parentElement;
-            if (container) {
-              const loadingIndicator = container.querySelector('.image-loading-indicator');
-              if (loadingIndicator) {
-                loadingIndicator.style.opacity = '0';
-                setTimeout(function() {
-                  loadingIndicator.style.display = 'none';
-                }, 300);
-              }
-            }
-          })(this);`}
         />
       )
     )}
@@ -226,31 +209,48 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
         data-api-index={allApiUrls.length > 0 ? "0" : ""}
         data-enable={isRandomApiImage ? (coverImageConfig.enable ? "true" : "false") : ""}
         data-need-check-fallback="true"
-        onload={`(function(img){
-          // 图片加载成功后隐藏加载指示器并显示水印
-          // 确保图片已经真正加载完成（有实际尺寸）
-          if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-            // 隐藏加载指示器
-            const container = img.parentElement;
-            if (container) {
-              const loadingIndicator = container.querySelector('.image-loading-indicator');
-              if (loadingIndicator) {
-                loadingIndicator.style.opacity = '0';
-                setTimeout(function() {
-                  loadingIndicator.style.display = 'none';
-                }, 300);
-              }
-              // 显示水印
-              const watermarkEl = container.querySelector('[data-watermark]');
-              if (watermarkEl && watermarkEl.getAttribute('data-watermark-visible') !== 'true') {
-                watermarkEl.setAttribute('data-watermark-visible', 'true');
-                watermarkEl.classList.remove('opacity-0');
-                watermarkEl.classList.add('opacity-100');
-                // 使用配置的水印透明度
-                const originalOpacity = watermarkEl.getAttribute('data-original-opacity') || '0.6';
-                watermarkEl.style.opacity = originalOpacity;
-              }
+        onloadstart={`(function(img){
+          // 图片开始加载时，确保加载指示器显示（特别是移动端lazy loading）
+          const container = img.parentElement;
+          if (container) {
+            const loadingIndicator = container.querySelector('.image-loading-indicator');
+            if (loadingIndicator) {
+              loadingIndicator.classList.remove('hidden');
+              loadingIndicator.style.removeProperty('opacity');
+              loadingIndicator.style.removeProperty('display');
             }
+          }
+        })(this);`}
+        onload={`(function(img){
+          // 图片加载成功后，使用固定延迟确保图片已经渲染完成
+          // 等待足够长的时间，确保图片完全显示在屏幕上
+          if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+            // 固定延迟800ms，确保图片有足够时间渲染到屏幕上
+            setTimeout(function() {
+              const container = img.parentElement;
+              if (container) {
+                const loadingIndicator = container.querySelector('.image-loading-indicator');
+                if (loadingIndicator) {
+                  // 使用淡出动画
+                  loadingIndicator.style.setProperty('opacity', '0', 'important');
+                  loadingIndicator.style.setProperty('transition', 'opacity 0.3s ease-out', 'important');
+                  setTimeout(function() {
+                    loadingIndicator.style.setProperty('display', 'none', 'important');
+                    loadingIndicator.classList.add('hidden');
+                  }, 300);
+                }
+                // 显示水印
+                const watermarkEl = container.querySelector('[data-watermark]');
+                if (watermarkEl && watermarkEl.getAttribute('data-watermark-visible') !== 'true') {
+                  watermarkEl.setAttribute('data-watermark-visible', 'true');
+                  watermarkEl.classList.remove('opacity-0');
+                  watermarkEl.classList.add('opacity-100');
+                  // 使用配置的水印透明度
+                  const originalOpacity = watermarkEl.getAttribute('data-original-opacity') || '0.6';
+                  watermarkEl.style.opacity = originalOpacity;
+                }
+              }
+            }, 800); // 800ms固定延迟
           }
         })(this);`}
         onerror={`(function(img){
@@ -397,20 +397,32 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
 <style>
   /* 图片容器样式 */
   /* 注意：背景色通过内联样式动态设置，确保与配置的加载图背景色一致 */
+  /* 加载指示器默认就是显示的，直到图片加载完成后才隐藏 */
   .image-loading-indicator {
-    opacity: 1;
+    opacity: 1 !important;
+    display: flex !important;
+    visibility: visible !important;
+    /* 确保在移动端也能正确显示 */
+    z-index: 20;
   }
   
-  /* 图片加载完成后，隐藏加载指示器 */
-  img:not([src=""]) ~ .image-loading-indicator,
-  img.complete ~ .image-loading-indicator {
-    opacity: 0;
-    pointer-events: none;
+  /* 图片加载完成后，隐藏加载指示器（由JavaScript控制） */
+  /* 注意：不使用CSS兄弟选择器，因为加载指示器不是图片的兄弟元素 */
+  .image-loading-indicator.hidden {
+    opacity: 0 !important;
+    display: none !important;
+    visibility: hidden !important;
   }
   
   /* 预览模式下优化API图片显示，限制最大尺寸避免像素点 */
   img.api-preview-image,
   img[data-preview="true"] {
+    /* 确保图片在移动端能撑开容器，特别是lazy loading时 */
+    min-height: 150px;
+    /* 桌面端取消最小高度限制 */
+    @media (min-width: 768px) {
+      min-height: 0;
+    }
     /* 图片渲染优化 - 确保大图缩小显示时平滑清晰 */
     image-rendering: -webkit-optimize-contrast !important;
     image-rendering: auto !important;
@@ -434,11 +446,16 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
   
   /* 详情页模式下的API图片优化 */
   img.api-full-image {
+    /* 确保图片在移动端和桌面端都能撑开容器，特别是lazy loading时 */
+    min-height: 300px;
     image-rendering: -webkit-optimize-contrast !important;
     image-rendering: auto !important;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     object-fit: cover !important;
+    /* 确保图片在容器内正确填充 */
+    width: 100%;
+    height: 100%;
   }
 </style>
 
@@ -603,27 +620,51 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
       });
     }
     
-    // 隐藏加载指示器
-    function hideLoadingIndicator(img) {
+    // 显示加载指示器（只对文章封面图）
+    function showLoadingIndicator(img) {
+      // 只处理有data-seed或data-preview属性的图片（文章封面图）
+      if (!img.dataset.seed && img.dataset.preview !== 'true') {
+        return;
+      }
       const container = img.closest('[id]') || img.parentElement;
       if (container) {
         const loadingIndicator = container.querySelector('.image-loading-indicator');
         if (loadingIndicator) {
-          loadingIndicator.style.opacity = '0';
+          loadingIndicator.classList.remove('hidden');
+          loadingIndicator.style.removeProperty('opacity');
+          loadingIndicator.style.removeProperty('display');
+        }
+      }
+    }
+    
+    // 隐藏加载指示器（带淡出动画，只对文章封面图）
+    function hideLoadingIndicator(img) {
+      // 只处理有data-seed或data-preview属性的图片（文章封面图）
+      if (!img.dataset.seed && img.dataset.preview !== 'true') {
+        return;
+      }
+      const container = img.closest('[id]') || img.parentElement;
+      if (container) {
+        const loadingIndicator = container.querySelector('.image-loading-indicator');
+        if (loadingIndicator) {
+          // 使用固定延迟策略，确保图片有足够时间渲染
           setTimeout(function() {
-            loadingIndicator.style.display = 'none';
-          }, 300);
+            loadingIndicator.style.setProperty('opacity', '0', 'important');
+            loadingIndicator.style.setProperty('transition', 'opacity 0.3s ease-out', 'important');
+            setTimeout(function() {
+              loadingIndicator.style.setProperty('display', 'none', 'important');
+              loadingIndicator.classList.add('hidden');
+            }, 300);
+          }, 800); // 800ms固定延迟，确保图片完全显示
         }
       }
     }
     
     // 显示水印（在图片加载成功后）
     function showWatermark(img) {
-      // 确保图片已经真正加载完成（有实际尺寸）
       if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) {
         return;
       }
-      // 隐藏加载指示器
       hideLoadingIndicator(img);
       const container = img.closest('[id]') || img.parentElement;
       if (container) {
@@ -632,7 +673,6 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
           watermarkEl.setAttribute('data-watermark-visible', 'true');
           watermarkEl.classList.remove('opacity-0');
           watermarkEl.classList.add('opacity-100');
-          // 使用配置的水印透明度
           const originalOpacity = watermarkEl.getAttribute('data-original-opacity') || '0.6';
           watermarkEl.style.opacity = originalOpacity;
           watermarkEl.style.setProperty('opacity', originalOpacity, 'important');
@@ -640,52 +680,17 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
       }
     }
     
+    // 处理预览图片（已经通过onload事件处理，这里主要是初始化显示加载指示器）
     function optimizePreviewImages() {
       const previewImages = document.querySelectorAll('img[data-preview="true"]');
-      
       previewImages.forEach(function(img) {
-        // 如果图片已经加载完成（必须同时检查尺寸）
-        if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
-          hideLoadingIndicator(img);
-          optimizePreviewImage(img);
-          showWatermark(img);
-        } else {
-          // 等待图片加载完成
-          img.addEventListener('load', function() { 
-            // 再次确认图片确实加载完成
-            if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-              hideLoadingIndicator(img);
-              optimizePreviewImage(img);
-              showWatermark(img);
-            }
-          }, { once: true });
-          // 也监听error事件，避免无限等待
-          img.addEventListener('error', function() {
-            hideLoadingIndicator(img);
+        if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) {
+          showLoadingIndicator(img);
+          img.addEventListener('loadstart', function() {
+            showLoadingIndicator(img);
           }, { once: true });
         }
       });
-    }
-    
-    function optimizePreviewImage(img) {
-      // 检查图片尺寸，如果过大则进行优化处理
-      const naturalWidth = img.naturalWidth;
-      const naturalHeight = img.naturalHeight;
-      
-      // 如果图片尺寸大于600x450，说明是大图，需要优化缩放
-      if (naturalWidth > 600 || naturalHeight > 450) {
-        // 强制浏览器使用硬件加速和优化的缩放算法
-        img.style.imageRendering = '-webkit-optimize-contrast';
-        
-        // 确保图片使用正确的渲染模式
-        if (!img.style.transform) {
-          img.style.transform = 'translateZ(0)';
-          img.style.webkitTransform = 'translateZ(0)';
-        }
-        
-        // 添加优化类
-        img.classList.add('optimized-preview');
-      }
     }
     
     // 监听动态添加的图片（用于SPA或动态加载的场景）
@@ -695,52 +700,41 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
           mutation.addedNodes.forEach(function(node) {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node;
-              // 检查新添加的节点是否是预览图片
-              if (element.tagName === 'IMG' && element.dataset.preview === 'true') {
-                const img = element;
-                if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
-                  optimizePreviewImage(img);
-                  showWatermark(img);
-                } else {
-                  img.addEventListener('load', function() { 
-                    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-                      optimizePreviewImage(img);
-                      showWatermark(img);
-                    }
-                  }, { once: true });
-                }
+              // 处理新添加的API图片（包括预览和详情页）
+              const apiImages = [];
+              if (element.tagName === 'IMG' && element.dataset.seed && element.dataset.fallback) {
+                apiImages.push(element);
               }
-              // 检查子节点中的预览图片
-              const previewImages = element.querySelectorAll ? element.querySelectorAll('img[data-preview="true"]') : [];
-              previewImages.forEach(function(img) {
-                if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
-                  optimizePreviewImage(img);
-                  showWatermark(img);
-                } else {
-                  img.addEventListener('load', function() { 
-                    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-                      optimizePreviewImage(img);
-                      showWatermark(img);
-                    }
-                  }, { once: true });
+              const childApiImages = element.querySelectorAll ? element.querySelectorAll('img[data-seed][data-fallback]') : [];
+              childApiImages.forEach(function(img) {
+                if (!apiImages.includes(img)) {
+                  apiImages.push(img);
                 }
               });
               
-              // 检查所有API图片（包括详情页）的加载状态
-              const allApiImages = element.querySelectorAll ? element.querySelectorAll('img[data-seed][data-fallback]') : [];
-              allApiImages.forEach(function(img) {
-                // 检查是否需要使用fallback（对于新添加的图片）
+              apiImages.forEach(function(img) {
+                showLoadingIndicator(img);
                 if (img.getAttribute('data-need-check-fallback') === 'true') {
                   checkAndUseFallbackForFailedApis();
                   img.removeAttribute('data-need-check-fallback');
                 }
                 if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
+                  hideLoadingIndicator(img);
                   showWatermark(img);
                 } else {
-                  img.addEventListener('load', function() { 
+                  img.addEventListener('loadstart', function() {
+                    showLoadingIndicator(img);
+                  }, { once: true });
+                  img.addEventListener('load', function() {
                     if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+                      hideLoadingIndicator(img);
                       showWatermark(img);
                     }
+                  }, { once: true });
+                  img.addEventListener('error', function() {
+                    setTimeout(function() {
+                      hideLoadingIndicator(img);
+                    }, 500);
                   }, { once: true });
                 }
               });
@@ -770,19 +764,33 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
         checkAndUseFallbackForFailedApis();
       }
       optimizePreviewImages();
-      // 处理已加载的API图片水印显示
+      
+      // 处理所有API图片（包括预览和详情页）的加载指示器
       const allApiImages = document.querySelectorAll('img[data-seed][data-fallback]');
       allApiImages.forEach(function(img) {
+        showLoadingIndicator(img);
+        img.addEventListener('loadstart', function() {
+          showLoadingIndicator(img);
+        }, { once: true });
+        
         if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
+          hideLoadingIndicator(img);
           showWatermark(img);
         } else {
-          img.addEventListener('load', function() { 
+          img.addEventListener('load', function() {
             if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+              hideLoadingIndicator(img);
               showWatermark(img);
             }
           }, { once: true });
+          img.addEventListener('error', function() {
+            setTimeout(function() {
+              hideLoadingIndicator(img);
+            }, 500);
+          }, { once: true });
         }
       });
+      
       setupObserver();
     }
     
