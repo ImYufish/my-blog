@@ -3,9 +3,8 @@ import { glob } from 'glob';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
-import {navBarConfig} from '../config/index.ts';
-
-const { meiliSearchConfig } = navBarConfig;
+import { navBarSearchConfig } from '../config/index';
+const meiliSearchConfig = navBarSearchConfig.meiliSearchConfig;
 const MEILI_HOST = meiliSearchConfig.MEILI_HOST;
 const MEILI_MASTER_KEY = meiliSearchConfig.MEILI_MASTER_KEY;
 const INDEX_NAME = meiliSearchConfig.INDEX_NAME;
