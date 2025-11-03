@@ -107,10 +107,6 @@ export const zh_CN: Translation = {
   [Key.notFoundDescription]: "抱歉，您访问的页面不存在或已被移动。",
   [Key.backToHome]: "返回首页",
 
-  // Music Player
-  [Key.playlist]: "播放列表",
-
-
   // RSS页面
   [Key.rss]: "RSS 订阅",
   [Key.rssDescription]: "订阅获取最新更新",

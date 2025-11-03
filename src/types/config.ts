@@ -521,106 +521,99 @@ export type MusicPlayerConfig = {
   // 基础功能开关
   enable: boolean; // 启用音乐播放器功能
 
-  // 播放器模式配置
-  mode?: "local" | "meting"; // 播放器模式："local" 本地音乐，"meting" 在线音乐
+  // 使用方式：'meting' 或 'local'
+  mode?: "meting" | "local"; // "meting" 使用 Meting API，"local" 使用本地音乐列表
 
   // Meting API 配置
   meting?: {
     // Meting API 地址
     api?: string;
 
-    // 歌单配置
-    playlist?: {
-      id?: string; // 歌单ID
-      server?: "netease" | "tencent" | "kugou" | "xiami" | "baidu"; // 音乐平台
-      type?: "playlist" | "album" | "song"; // 类型
-    };
+    // 音乐平台：netease=网易云音乐, tencent=QQ音乐, kugou=酷狗音乐, xiami=虾米音乐, baidu=百度音乐
+    server?: "netease" | "tencent" | "kugou" | "xiami" | "baidu";
 
-    // 备用 API 配置
+    // 类型：song=单曲, playlist=歌单, album=专辑, search=搜索, artist=艺术家
+    type?: "song" | "playlist" | "album" | "search" | "artist";
+
+    // 歌单/专辑/单曲 ID 或搜索关键词
+    id?: string;
+
+    // 认证 token（可选）
+    auth?: string;
+
+    // 备用 API 配置（当主 API 失败时使用）
     fallbackApis?: string[];
+
+    // MetingJS 脚本路径（默认使用 CDN，也可配置为本地路径）
+    jsPath?: string;
   };
 
-  // 本地音乐配置
+  // 本地音乐配置（当 mode 为 'local' 时使用）
   local?: {
-    // 本地播放列表
-    // 本地音乐文件路径（相对于 public 目录）
     playlist?: Array<{
-      id: number;
-      title: string;
-      artist: string;
-      cover: string;
-      url: string;
-      duration: number;
+      name: string; // 歌曲名称
+      artist: string; // 艺术家
+      url: string; // 音乐文件路径（相对于 public 目录）
+      cover?: string; // 封面图片路径（相对于 public 目录）
+      lrc?: string; // 歌词内容，支持 LRC 格式
     }>;
   };
 
-  // 播放器行为配置
-  behavior?: {
-    // 自动播放
+  // APlayer 配置选项
+  player?: {
+    // 是否固定模式（固定在页面底部）
+    fixed?: boolean;
+
+    // 是否迷你模式
+    mini?: boolean;
+
+    // 是否自动播放
     autoplay?: boolean;
 
-    // 默认音量
-    defaultVolume?: number;
+    // 主题色
+    theme?: string;
 
-    // 默认播放模式
-    defaultShuffle?: boolean;
-    defaultRepeat?: 0 | 1 | 2; // 0=不循环, 1=单曲循环, 2=列表循环
+    // 循环模式：'all'=列表循环, 'one'=单曲循环, 'none'=不循环
+    loop?: "all" | "one" | "none";
 
-    // 播放器位置
-    position?: {
-      bottom?: number;
-      right?: number;
-    };
-  };
+    // 播放顺序：'list'=列表顺序, 'random'=随机播放
+    order?: "list" | "random";
 
-  // 界面配置
-  ui?: {
-    // 动画配置
-    animation?: {
-      coverRotation?: {
-        enable?: boolean;
-        speed?: number;
-        pauseOnHover?: boolean;
-      };
-    };
+    // 预加载：'none'=不预加载, 'metadata'=预加载元数据, 'auto'=自动
+    preload?: "none" | "metadata" | "auto";
 
-    // 显示配置
-    display?: {
-      showPlaylistButton?: boolean;
-      showVolumeControl?: boolean;
-      showShuffleButton?: boolean;
-      showRepeatButton?: boolean;
-      showSkipButtons?: boolean;
-    };
+    // 默认音量 (0-1)
+    volume?: number;
 
-    // 播放列表配置
-    playlist?: {
-      maxHeight?: number;
-      width?: number;
-      showTrackNumbers?: boolean;
-      showDuration?: boolean;
-    };
+    // 是否互斥播放（同时只能播放一个播放器）
+    mutex?: boolean;
+
+    // 歌词类型：0=不显示, 1=显示（需要提供 lrc 字段）, 2=显示（从 HTML 内容读取）, 3=异步加载（从 API 获取）
+    lrcType?: 0 | 1 | 2 | 3;
+
+    // 歌词是否默认隐藏（当 lrcType 不为 0 时，可以通过此选项控制初始显示状态）
+    lrcHidden?: boolean;
+
+    // 播放列表是否默认折叠
+    listFolded?: boolean;
+
+    // 播放列表最大高度
+    listMaxHeight?: string;
+
+    // localStorage 存储键名
+    storageName?: string;
   };
 
   // 响应式配置
   responsive?: {
     // 移动端配置
     mobile?: {
-      position?: {
-        bottom?: number;
-        right?: number;
-      };
+      // 在移动端是否隐藏
+      hide?: boolean;
+
+      // 移动端断点（小于此宽度时应用移动端配置）
+      breakpoint?: number;
     };
-
-    // 小屏幕配置
-    smallScreen?: {};
-  };
-
-  // 错误处理配置
-  errorHandling?: {
-    showErrorMessages?: boolean;
-    errorDisplayDuration?: number;
-    autoSkipOnError?: boolean;
   };
 };
 
