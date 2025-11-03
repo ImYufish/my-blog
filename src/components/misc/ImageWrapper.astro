@@ -1,5 +1,5 @@
 ---
-import path from "node:path";
+import * as path from "node:path";
 
 interface Props {
 	id?: string;
@@ -90,7 +90,9 @@ if (isLocal) {
 	img = await file();
 }
 
-const imageClass = "w-full h-full object-cover";
+// 仅在文章封面/预览/随机图场景下强制铺满容器，其他场景（如头像等内联图片）不强制尺寸
+const isCoverContext = Boolean(preview || seed || isRandomApiImage);
+const imageClass = isCoverContext ? "w-full h-full object-cover" : "object-cover";
 // 支持所有 CSS object-position 值
 // 添加图片渲染优化，确保大图片在缩小显示时平滑清晰
 // 使用 -webkit-optimize-contrast 确保缩放时平滑，避免像素点
@@ -140,13 +142,11 @@ const getWatermarkStyles = (pos?: string): { classes: string; styles: string } =
 const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) : { classes: "", styles: "" };
 ---
 <div id={id} class:list={[
-  className, 
+  className,
   'overflow-hidden relative',
-  // 需要有最小高度占位，确保加载指示器可见
-  // 预览模式（文章列表）：移动端150px，桌面端无限制
-  // 详情页模式：移动端和桌面端都至少300px（与banner-container保持一致）
-  preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
-]}>
+  // 仅封面/预览场景设置占位最小高度，避免影响头像等内联图片
+  preview ? 'min-h-[150px] md:min-h-0' : (isCoverContext ? 'min-h-[300px]' : '')
+]}> 
     <!-- 加载指示器：只对远程API图片（非本地且不是public路径）显示 -->
     {!isLocal && (seed || preview) && (
       <div 
@@ -197,7 +197,11 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
       <img 
         src={isPublic ? url(src) : src} 
         alt={alt || ""} 
-        class:list={[imageClass, preview ? 'api-preview-image' : 'api-full-image']}
+        class:list={[
+          imageClass,
+          // 仅封面/预览才应用强制最小高度的样式类
+          isCoverContext ? (preview ? 'api-preview-image' : 'api-full-image') : ''
+        ]}
         style={imageStyle}
         loading="lazy"
         decoding="async"
