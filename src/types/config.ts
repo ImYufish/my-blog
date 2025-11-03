@@ -432,7 +432,10 @@ export type BackgroundWallpaperConfig = {
         desktop?: string | string[];
         mobile?: string | string[];
       }; // 支持单个图片、图片数组或分别设置桌面端和移动端图片
-  position?:
+  
+  // Banner模式特有配置
+  banner?: {
+    position?:
     | "top"
     | "center"
     | "bottom"
@@ -452,8 +455,6 @@ export type BackgroundWallpaperConfig = {
     | "right center"
     | "right bottom"
     | string; // 壁纸位置，支持CSS object-position的所有值，包括百分比和像素值
-  // Banner模式特有配置
-  banner?: {
     homeText?: {
       enable: boolean; // 是否在首页显示自定义文字（全局开关）
       title?: string; // 主标题
