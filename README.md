@@ -50,6 +50,7 @@
 - [x] **布局切换** - 列表/网格布局，前台自由切换
 - [x] **字体管理** - 支持自定义字体，丰富的字体选择器
 - [x] **樱花特效** - 可配置数量的樱花飘落动画
+- [x] **文章随机封面图** - 支持通过 API 获取随机封面图，多 API 重试机制，失败自动使用备用图片
 
 ### 页面组件
 
@@ -158,7 +159,8 @@ src/
 │   ├── pioConfig.ts          # 看板娘配置
 │   ├── adConfig.ts           # 广告配置
 │   ├── friendsConfig.ts      # 友链配置
-│   └── sponsorConfig.ts      # 赞助配置
+│   ├── sponsorConfig.ts      # 赞助配置
+│   └── coverImageConfig.ts  # 文章随机封面图配置
 ```
 
 
@@ -169,7 +171,7 @@ src/
 title: My First Blog Post
 published: 2023-09-09
 description: This is the first post of my new Astro blog.
-image: ./cover.jpg
+image: ./cover.jpg  # 或使用 "api" 来启用随机封面图
 tags: [Foo, Bar]
 category: Front-end
 draft: false
