@@ -97,8 +97,34 @@ export type NavBarLink = {
   children?: (NavBarLink | LinkPreset)[]; // 支持子菜单，可以是NavBarLink或LinkPreset
 };
 
+export enum NavBarSearchMethod {
+  PageFind = 0,
+  MeiliSearch = 1,
+};
+
+
+/**
+ * MeiliSearch配置
+ *
+ * @property INDEX_NAME MeiliSearch索引名称
+ * @property MEILI_HOST MeiliSearch服务器地址
+ * @property MEILI_MASTER_KEY MeiliSearch主密钥
+ * @property PUBLIC_MEILI_HOST 公共MeiliSearch服务器地址（前端使用）
+ * @property PUBLIC_MEILI_SEARCH_KEY 公共MeiliSearch搜索密钥（前端使用）
+ */
+export type MeiliSearchConfig = {
+  INDEX_NAME: string;
+  CONTENT_DIR: string;
+  MEILI_HOST: string;
+  MEILI_MASTER_KEY: string;
+  PUBLIC_MEILI_HOST: string;
+  PUBLIC_MEILI_SEARCH_KEY: string;
+}
+
 export type NavBarConfig = {
   links: (NavBarLink | LinkPreset)[];
+  searchMethod: NavBarSearchMethod;
+  meiliSearchConfig: MeiliSearchConfig;
 };
 
 export type ProfileConfig = {
@@ -129,7 +155,7 @@ export type CommentConfig = {
     envId: string;
     region?: string;
     lang?: string;
-    visitorCount?: boolean; 
+    visitorCount?: boolean;
   };
   waline?: {
     serverURL: string;

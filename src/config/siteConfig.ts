@@ -1,9 +1,9 @@
-import type { SiteConfig } from "../types/config";
+import type { SiteConfig } from "@/types/config";
 import { fontConfig } from "./fontConfig";
 
 // 定义站点语言
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru'。
-const SITE_LANG = "zh_CN"; 
+const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
   title: "Firefly",
@@ -49,7 +49,7 @@ export const siteConfig: SiteConfig = {
   },
   navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
 
-  
+
   // 追番配置
   bangumi: {
     userId: "1163581", // 在此处设置你的Bangumi用户ID
@@ -148,7 +148,7 @@ export const siteConfig: SiteConfig = {
           mobile: true, // 移动端启用波浪动画效果
         },
         performance: {
-          quality: "high", 
+          quality: "high",
           hardwareAcceleration: true, // 是否启用硬件加速
         },
         // 性能优化说明：
