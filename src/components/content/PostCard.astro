@@ -5,6 +5,7 @@ import { Icon } from "astro-icon/components";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { getDir, getTagUrl } from "@/utils/url-utils";
+import { processCoverImageSync } from "@/utils/image-utils";
 import ImageWrapper from "@/components/misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
 
@@ -38,7 +39,9 @@ const {
 } = Astro.props;
 const className = Astro.props.class;
 
-const hasCover = image !== undefined && image !== null && image !== "";
+// 处理随机图：如果image为"api"，则从配置的API获取随机图
+const processedImage = processCoverImageSync(image, entry.slug);
+const hasCover = processedImage !== undefined && processedImage !== null && processedImage !== "";
 
 const coverWidth = "28%";
 
@@ -176,10 +179,12 @@ const { remarkPluginFrontmatter } = await entry.render();
           />
         </div>
         <ImageWrapper
-          src={image}
+          src={processedImage}
           basePath={path.join("content/posts/", getDir(entry.id))}
           alt="Cover Image of the Post"
           class="w-full h-full"
+          seed={entry.slug}
+          preview={true}
         />
       </a>
     )
