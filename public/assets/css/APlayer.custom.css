@@ -74,6 +74,17 @@
   .aplayer.aplayer-fixed .aplayer-miniswitcher {
     display: block;
     opacity: 1;
+    /* 触摸设备上半透明背景 */
+    background: rgba(200, 200, 200, 0.5) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  /* 触摸设备暗色主题：半透明背景 */
+  :root.dark .aplayer.aplayer-fixed .aplayer-miniswitcher {
+    background: rgba(100, 100, 100, 0.5) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   
   /* 触摸设备上始终显示背景 */
@@ -135,11 +146,11 @@
 @media (max-width: 768px) {
   .aplayer.aplayer-fixed {
     right: 0 !important;
-    bottom: 2rem !important;
+    bottom: 0rem !important;
   }
   .aplayer.aplayer-fixed .aplayer-body {
     right: 0 !important;
-    bottom: 2rem !important;
+    bottom: 0rem !important;
   }
 }
 
