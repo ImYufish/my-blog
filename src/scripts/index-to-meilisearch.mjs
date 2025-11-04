@@ -1,14 +1,31 @@
-import { MeiliSearch } from 'meilisearch';
-import { glob } from 'glob';
+import {MeiliSearch} from 'meilisearch';
+import {glob} from 'glob';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
-import { navBarSearchConfig } from '../config/index';
+import {navBarSearchConfig} from '../config/index';
+import {NavBarSearchMethod} from "../types/config.ts";
+
 const meiliSearchConfig = navBarSearchConfig.meiliSearchConfig;
 const MEILI_HOST = meiliSearchConfig.MEILI_HOST;
 const MEILI_MASTER_KEY = meiliSearchConfig.MEILI_MASTER_KEY;
 const INDEX_NAME = meiliSearchConfig.INDEX_NAME;
 const contentDir = meiliSearchConfig.CONTENT_DIR.endsWith('/') ? meiliSearchConfig.CONTENT_DIR.slice(0, -1) : meiliSearchConfig.CONTENT_DIR
+
+if (navBarSearchConfig.method !== NavBarSearchMethod.MeiliSearch) {
+  console.log('MeiliSearch is not configured as the search method. Exiting indexing script.');
+  process.exit(0);
+}
+
+if (!MEILI_HOST || !INDEX_NAME || !contentDir) {
+  console.error('Error: MeiliSearch configuration is incomplete. Please check your settings.');
+  process.exit(1);
+}
+
+if (!MEILI_MASTER_KEY) {
+  console.error('Error: MeiliSearch master key is missing. Please provide the MEILI_MASTER_KEY environment variable.');
+  process.exit(1);
+}
 
 console.log('Starting indexing process for MeiliSearch...');
 
@@ -24,13 +41,13 @@ async function getDocuments() {
   return await Promise.all(
     files.map(async (file, idx) => {
       const content = await fs.readFile(file, 'utf-8');
-      const { data, content: body } = matter(content);
+      const {data, content: body} = matter(content);
 
       // 获取文件相对于 'src/content/posts' 的路径
       const relativePath = path.relative(contentDir, file);
 
       // 解析路径，得到目录(dir)和文件名(name)
-      const { dir, name } = path.parse(relativePath);
+      const {dir, name} = path.parse(relativePath);
 
       // 根据 Astro 规则生成 slug:
       // - 如果文件名是 'index', slug 就是它的父目录路径。
@@ -71,8 +88,8 @@ async function main() {
 
     const documents = await getDocuments();
     if (documents.length === 0) {
-        console.log('No documents found to index.');
-        return;
+      console.log('No documents found to index.');
+      return;
     }
     console.log(`Found ${documents.length} documents to index.`);
 
@@ -87,7 +104,7 @@ async function main() {
     });
     console.log('Index settings updated.');
 
-    await index.addDocuments(documents, { primaryKey: 'id' });
+    await index.addDocuments(documents, {primaryKey: 'id'});
     console.log('MeiliSearch indexing completed successfully!');
   } catch (error) {
     console.error('Error during indexing:', error);

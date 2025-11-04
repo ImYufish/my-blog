@@ -10,7 +10,7 @@
 
 ---
 
-[**🖥️在线预览(EdgeOne)**](https://firefly.cuteleaf.cn/) /
+[**🖥️在线预览**](https://firefly.cuteleaf.cn/) /
 [**📝使用文档**](https://docs-firefly.cuteleaf.cn/) /
 [**🍀我的博客**](https://blog.cuteleaf.cn) 
 
@@ -110,8 +110,12 @@
    git clone https://github.com/Cuteleaf/Firefly.git
    cd Firefly
    ```
-
-2. **安装依赖：**
+   **先 [Fork](https://github.com/CuteLeaf/Firefly/fork) 到自己仓库在克隆（推荐）**
+   ```bash
+   git clone https://github.com/you-github-name/Firefly.git
+   cd Firefly
+   ```
+3. **安装依赖：**
    ```bash
    # 如果没有安装 pnpm，先安装
    npm install -g pnpm
@@ -120,18 +124,17 @@
    pnpm install
    ```
 
-3. **配置博客：**
+4. **配置博客：**
    - 编辑 `src/config/` 目录下的配置文件自定义博客设置
 
-4. **启动开发服务器：**
+5. **启动开发服务器：**
    ```bash
    pnpm dev
    ```
    博客将在 `http://localhost:4321` 可用
 
 ### 平台托管部署
-
-- **参考[官方指南](https://docs.astro.build/zh-cn/guides/deploy/)将博客部署至 Vercel, Netlify, GitHub Pages 等。**
+- **参考[官方指南](https://docs.astro.build/zh-cn/guides/deploy/)将博客部署至 Vercel, Netlify, GitHub Pages, Cloudflare Pages, EdgeOne Pages 等。**
 
 ## 📖 配置说明
 
@@ -175,7 +178,7 @@ image: ./cover.jpg  # 或使用 "api" 来启用随机封面图
 tags: [Foo, Bar]
 category: Front-end
 draft: false
-lang: jp      # 仅当文章语言与 `config.ts` 中的网站语言不同时需要设置
+lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不同时需要设置
 ---
 ```
 
@@ -193,7 +196,7 @@ lang: jp      # 仅当文章语言与 `config.ts` 中的网站语言不同时需
 | `pnpm astro ...`                  | 执行 `astro add`, `astro check` 等指令 |
 | `pnpm astro --help`               | 显示 Astro CLI 帮助                   |
 
-## 💝 赞助Firefly
+## 💝 赞助
 
 如果 Firefly 对你有帮助，欢迎通过以下方式赞助支持项目的发展：
 
