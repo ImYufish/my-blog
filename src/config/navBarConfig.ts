@@ -61,7 +61,7 @@ export const navBarSearchConfig: NavBarSearchConfig = {
     INDEX_NAME: 'posts',
     CONTENT_DIR: 'src/content/posts',
     MEILI_HOST: "http://localhost:7700",
-    MEILI_MASTER_KEY: process.env.MEILI_MASTER_KEY || undefined,
+    MEILI_MASTER_KEY: import.meta.env.MEILI_MASTER_KEY || undefined,
     PUBLIC_MEILI_HOST: "http://localhost:7700",
     PUBLIC_MEILI_SEARCH_KEY: "41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b",
   }
