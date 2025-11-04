@@ -6,6 +6,7 @@ const config = musicPlayerConfig;
 
 // 预先生成本地资源路径，确保在非根目录部署时也能正确加载
 const aplayerCssPath = url("/assets/css/APlayer.min.css");
+const aplayerCustomCssPath = url("/assets/css/APlayer.custom.css");
 const aplayerJsPath = url("/assets/js/APlayer.min.js");
 
 // MetingJS 路径处理
@@ -33,6 +34,10 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     <link
       rel="stylesheet"
       href={aplayerCssPath}
+    />
+    <link
+      rel="stylesheet"
+      href={aplayerCustomCssPath}
     />
 
     <!-- 音乐播放器容器 -->
@@ -204,12 +209,35 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
                 if (aplayer && aplayer.container) {
                   clearInterval(checkAPlayer);
                   
+                  // 监听播放状态，更新封面动画
+                  const updatePlayingState = () => {
+                    if (aplayer.container) {
+                      const isPlaying = !aplayer.paused;
+                      aplayer.container.setAttribute('data-playing', String(isPlaying));
+                      if (isPlaying) {
+                        aplayer.container.classList.add('aplayer-playing');
+                      } else {
+                        aplayer.container.classList.remove('aplayer-playing');
+                      }
+                    }
+                  };
+                  
+                  // 监听播放/暂停事件
+                  if (aplayer.audio) {
+                    aplayer.audio.addEventListener('play', updatePlayingState);
+                    aplayer.audio.addEventListener('pause', updatePlayingState);
+                    aplayer.audio.addEventListener('ended', updatePlayingState);
+                  }
+                  
                   aplayer.container.setAttribute('data-positioned', 'right');
                   // 立即应用右侧样式
                   requestAnimationFrame(() => {
                     if (aplayer.container) {
                       aplayer.container.style.right = '0';
                       aplayer.container.style.left = 'unset';
+                      
+                      // 初始化播放状态
+                      updatePlayingState();
                       
                       // 短暂延迟后标记为已初始化，恢复展开动画
                       setTimeout(() => {
@@ -297,6 +325,26 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       try {
         const aplayer = new APlayerClass(aplayerOptions);
         
+        // 监听播放状态，更新封面动画
+        const updatePlayingState = () => {
+          if (aplayer.container) {
+            const isPlaying = !aplayer.paused;
+            aplayer.container.setAttribute('data-playing', String(isPlaying));
+            if (isPlaying) {
+              aplayer.container.classList.add('aplayer-playing');
+            } else {
+              aplayer.container.classList.remove('aplayer-playing');
+            }
+          }
+        };
+        
+        // 监听播放/暂停事件
+        if (aplayer.audio) {
+          aplayer.audio.addEventListener('play', updatePlayingState);
+          aplayer.audio.addEventListener('pause', updatePlayingState);
+          aplayer.audio.addEventListener('ended', updatePlayingState);
+        }
+        
         // 立即设置右侧定位，避免动画
         if (aplayer.container) {
           aplayer.container.setAttribute('data-positioned', 'right');
@@ -305,6 +353,9 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
             if (aplayer.container) {
               aplayer.container.style.right = '0';
               aplayer.container.style.left = 'unset';
+              
+              // 初始化播放状态
+              updatePlayingState();
               
               // 短暂延迟后标记为已初始化，恢复展开动画
               setTimeout(() => {
