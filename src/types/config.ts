@@ -116,7 +116,7 @@ export type MeiliSearchConfig = {
   INDEX_NAME: string;
   CONTENT_DIR: string;
   MEILI_HOST: string;
-  MEILI_MASTER_KEY: string;
+  MEILI_MASTER_KEY: string | undefined;
   PUBLIC_MEILI_HOST: string;
   PUBLIC_MEILI_SEARCH_KEY: string;
 }
@@ -432,7 +432,7 @@ export type BackgroundWallpaperConfig = {
         desktop?: string | string[];
         mobile?: string | string[];
       }; // 支持单个图片、图片数组或分别设置桌面端和移动端图片
-  
+
   // Banner模式特有配置
   banner?: {
     position?:
