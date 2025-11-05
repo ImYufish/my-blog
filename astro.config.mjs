@@ -26,6 +26,7 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import mdx from "@astrojs/mdx";
+import searchIndexer from "./src/integrations/searchIndex.mts";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://firefly.cuteleaf.cn/",
@@ -132,6 +133,7 @@ export default defineConfig({
 				return true;
 			},
 		}),
+    searchIndexer(),
     mdx()
 	],
 	markdown: {
