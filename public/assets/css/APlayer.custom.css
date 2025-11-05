@@ -182,7 +182,6 @@
 /* 封面基础样式 - 默认正方形（触摸设备） */
 .aplayer .aplayer-pic {
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
-  border-radius: 4px;
   overflow: hidden;
   position: relative;
   aspect-ratio: 1;
@@ -193,7 +192,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
 }
 
 /* 桌面端：圆形封面 */

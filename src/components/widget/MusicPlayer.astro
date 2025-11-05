@@ -182,6 +182,186 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       }
     }
 
+    // 检查 MetingJS 元素是否成功加载了音乐
+    function checkMetingSuccess(metingElement, timeout = 5000) {
+      return new Promise((resolve) => {
+        const startTime = Date.now();
+        
+        const checkSuccess = setInterval(() => {
+          const aplayer = metingElement?.aplayer;
+          // 检查是否有 APlayer 实例且有音频列表
+          if (aplayer && aplayer.list && aplayer.list.audios && aplayer.list.audios.length > 0) {
+            clearInterval(checkSuccess);
+            resolve(true);
+            return;
+          }
+          
+          // 超时检查
+          if (Date.now() - startTime >= timeout) {
+            clearInterval(checkSuccess);
+            resolve(false);
+          }
+        }, 100);
+      });
+    }
+
+    // 重新创建 MetingJS 元素以使用新的 API
+    function recreateMetingElement(container, apiUrl, config) {
+      // 移除旧的元素
+      const oldElement = container.querySelector('meting-js');
+      if (oldElement) {
+        // 如果已有 APlayer 实例，先销毁它
+        if (oldElement.aplayer) {
+          try {
+            oldElement.aplayer.destroy();
+          } catch (e) {
+            console.warn('销毁旧 APlayer 实例时出错:', e);
+          }
+        }
+        oldElement.remove();
+      }
+      
+      // 创建新元素
+      const newElement = document.createElement('meting-js');
+      newElement.setAttribute('server', config.meting?.server || 'netease');
+      newElement.setAttribute('type', config.meting?.type || 'playlist');
+      newElement.setAttribute('id', config.meting?.id || '');
+      newElement.setAttribute('api', apiUrl);
+      if (config.meting?.auth) {
+        newElement.setAttribute('auth', config.meting.auth);
+      }
+      newElement.setAttribute('fixed', (config.player?.fixed ?? true) ? 'true' : 'false');
+      newElement.setAttribute('mini', (config.player?.mini ?? true) ? 'true' : 'false');
+      newElement.setAttribute('autoplay', config.player?.autoplay ? 'true' : 'false');
+      newElement.setAttribute('theme', config.player?.theme || '#b7daff');
+      newElement.setAttribute('loop', config.player?.loop || 'all');
+      newElement.setAttribute('order', config.player?.order || 'list');
+      newElement.setAttribute('preload', config.player?.preload || 'auto');
+      newElement.setAttribute('volume', String(config.player?.volume ?? 0.7));
+      newElement.setAttribute('mutex', config.player?.mutex !== false ? 'true' : 'false');
+      newElement.setAttribute('lrc-type', String(config.player?.lrcType ?? 3));
+      newElement.setAttribute('list-folded', config.player?.listFolded ? 'true' : 'false');
+      newElement.setAttribute('list-max-height', config.player?.listMaxHeight || '340px');
+      newElement.setAttribute('storage-name', config.player?.storageName || 'aplayer-setting');
+      
+      container.appendChild(newElement);
+      return newElement;
+    }
+
+    // 初始化 MetingJS 元素并设置播放器
+    function setupMetingElement(metingElement) {
+      return new Promise((resolve) => {
+        // 监听 aplayer 初始化
+        const checkAPlayer = setInterval(() => {
+          const aplayer = metingElement.aplayer;
+          if (aplayer && aplayer.container) {
+            clearInterval(checkAPlayer);
+            
+            // 监听播放状态，更新封面动画
+            const updatePlayingState = () => {
+              if (aplayer.container) {
+                const isPlaying = !aplayer.paused;
+                aplayer.container.setAttribute('data-playing', String(isPlaying));
+                if (isPlaying) {
+                  aplayer.container.classList.add('aplayer-playing');
+                } else {
+                  aplayer.container.classList.remove('aplayer-playing');
+                }
+              }
+            };
+            
+            // 监听播放/暂停事件
+            if (aplayer.audio) {
+              aplayer.audio.addEventListener('play', updatePlayingState);
+              aplayer.audio.addEventListener('pause', updatePlayingState);
+              aplayer.audio.addEventListener('ended', updatePlayingState);
+            }
+            
+            aplayer.container.setAttribute('data-positioned', 'right');
+            // 立即应用右侧样式
+            requestAnimationFrame(() => {
+              if (aplayer.container) {
+                aplayer.container.style.right = '0';
+                aplayer.container.style.left = 'unset';
+                
+                // 初始化播放状态
+                updatePlayingState();
+                
+                // 短暂延迟后标记为已初始化，恢复展开动画
+                setTimeout(() => {
+                  aplayer.container.setAttribute('data-initialized', 'true');
+                  
+                  // 如果配置了默认隐藏歌词，则隐藏歌词
+                  if (config.player?.lrcHidden && aplayer.lrc) {
+                    aplayer.lrc.hide();
+                    // 同时设置歌词按钮为未激活状态
+                    const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
+                    if (lrcButton) {
+                      lrcButton.classList.add('aplayer-icon-lrc-inactivity');
+                    }
+                  }
+                  
+                  // 如果自动播放被阻止，等待用户交互后恢复
+                  if (config.player?.autoplay && aplayer.paused) {
+                    tryAutoplay(aplayer);
+                  }
+                }, 200);
+              }
+            });
+            
+            resolve(true);
+          }
+        }, 50);
+        
+        // 10秒后停止检查
+        setTimeout(() => {
+          clearInterval(checkAPlayer);
+          resolve(false);
+        }, 10000);
+      });
+    }
+
+    // 使用备用 API 重试加载
+    async function retryWithFallbackAPI(container, fallbackApis, currentIndex = 0) {
+      if (currentIndex >= fallbackApis.length) {
+        console.error('所有 API 都失败了，无法加载音乐播放器');
+        return null;
+      }
+      
+      const fallbackApi = fallbackApis[currentIndex];
+      console.log(`尝试使用备用 API ${currentIndex + 1}/${fallbackApis.length}: ${fallbackApi}`);
+      
+      // 替换 API URL 中的占位符
+      const server = config.meting?.server || 'netease';
+      const type = config.meting?.type || 'playlist';
+      const id = config.meting?.id || '';
+      
+      let apiUrl = fallbackApi
+        .replace(':server', server)
+        .replace(':type', type)
+        .replace(':id', id);
+      
+      // 设置全局 API
+      window.meting_api = apiUrl;
+      
+      // 重新创建元素
+      const newElement = recreateMetingElement(container, apiUrl, config);
+      
+      // 等待元素初始化
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // 检查是否成功
+      const success = await checkMetingSuccess(newElement, 5000);
+      
+      if (success) {
+        console.log(`备用 API ${currentIndex + 1} 成功加载音乐`);
+        return newElement;
+      } else {
+        // 如果失败，尝试下一个备用 API
+        return retryWithFallbackAPI(container, fallbackApis, currentIndex + 1);
+      }
+    }
+
     // 加载 MetingJS
     function loadMetingJS() {
       return new Promise((resolve) => {
@@ -193,80 +373,55 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         const metingScript = document.createElement("script");
         metingScript.src = metingJsPath;
         metingScript.async = true;
-        metingScript.onload = () => {
-          // 如果配置了全局 API，设置它
-          if (config.mode === "meting" && config.meting?.api) {
-            window.meting_api = config.meting.api;
+        metingScript.onload = async () => {
+          // 等待 MetingJS 元素创建
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          const container = document.getElementById('aplayer-container');
+          if (!container) {
+            resolve(false);
+            return;
           }
           
-          // 等待 MetingJS 元素创建后，立即设置右侧定位避免动画
-          setTimeout(() => {
-            const metingElements = document.querySelectorAll('meting-js');
-            metingElements.forEach((element) => {
-              // 监听 aplayer 初始化
-              const checkAPlayer = setInterval(() => {
-                const aplayer = element.aplayer;
-                if (aplayer && aplayer.container) {
-                  clearInterval(checkAPlayer);
-                  
-                  // 监听播放状态，更新封面动画
-                  const updatePlayingState = () => {
-                    if (aplayer.container) {
-                      const isPlaying = !aplayer.paused;
-                      aplayer.container.setAttribute('data-playing', String(isPlaying));
-                      if (isPlaying) {
-                        aplayer.container.classList.add('aplayer-playing');
-                      } else {
-                        aplayer.container.classList.remove('aplayer-playing');
-                      }
-                    }
-                  };
-                  
-                  // 监听播放/暂停事件
-                  if (aplayer.audio) {
-                    aplayer.audio.addEventListener('play', updatePlayingState);
-                    aplayer.audio.addEventListener('pause', updatePlayingState);
-                    aplayer.audio.addEventListener('ended', updatePlayingState);
-                  }
-                  
-                  aplayer.container.setAttribute('data-positioned', 'right');
-                  // 立即应用右侧样式
-                  requestAnimationFrame(() => {
-                    if (aplayer.container) {
-                      aplayer.container.style.right = '0';
-                      aplayer.container.style.left = 'unset';
-                      
-                      // 初始化播放状态
-                      updatePlayingState();
-                      
-                      // 短暂延迟后标记为已初始化，恢复展开动画
-                      setTimeout(() => {
-                        aplayer.container.setAttribute('data-initialized', 'true');
-                        
-                        // 如果配置了默认隐藏歌词，则隐藏歌词
-                        if (config.player?.lrcHidden && aplayer.lrc) {
-                          aplayer.lrc.hide();
-                          // 同时设置歌词按钮为未激活状态
-                          const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
-                          if (lrcButton) {
-                            lrcButton.classList.add('aplayer-icon-lrc-inactivity');
-                          }
-                        }
-                        
-                        // 如果自动播放被阻止，等待用户交互后恢复
-                        if (config.player?.autoplay && aplayer.paused) {
-                          tryAutoplay(aplayer);
-                        }
-                      }, 200);
-                    }
-                  });
-                }
-              }, 50);
-              
-              // 10秒后停止检查
-              setTimeout(() => clearInterval(checkAPlayer), 10000);
-            });
-          }, 100);
+          let metingElement = container.querySelector('meting-js');
+          
+          if (config.mode === "meting" && config.meting?.api && metingElement) {
+            const server = config.meting.server || 'netease';
+            const type = config.meting.type || 'playlist';
+            const id = config.meting.id || '';
+            
+            // 替换 API URL 中的占位符
+            let mainApiUrl = config.meting.api
+              .replace(':server', server)
+              .replace(':type', type)
+              .replace(':id', id)
+              .replace(':r', Math.random().toString());
+            
+            // 设置全局 API
+            window.meting_api = mainApiUrl;
+            
+            console.log('尝试使用主 API:', mainApiUrl);
+            
+            // 等待元素初始化
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 检查主 API 是否成功
+            const mainApiSuccess = await checkMetingSuccess(metingElement, 5000);
+            
+            if (!mainApiSuccess && config.meting.fallbackApis && config.meting.fallbackApis.length > 0) {
+              // 主 API 失败，尝试备用 API
+              console.warn('主 API 失败，尝试使用备用 API');
+              const newElement = await retryWithFallbackAPI(container, config.meting.fallbackApis);
+              if (newElement) {
+                metingElement = newElement;
+              }
+            }
+          }
+          
+          // 设置播放器（如果元素存在）
+          if (metingElement) {
+            await setupMetingElement(metingElement);
+          }
           
           resolve(true);
         };

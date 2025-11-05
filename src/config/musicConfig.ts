@@ -28,8 +28,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 
     // 备用 API 配置（当主 API 失败时使用）
     fallbackApis: [
-      "https://api.injahow.cn/bete/?server=:server&type=:type&id=:id",
-      "https://api.uomg.com/api/other/163music?format=json&id=:id",
+      "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id",
+      "https://api.moeyao.cn/meting/?server=:server&type=:type&id=:id",
     ],
 
     // MetingJS 脚本路径
