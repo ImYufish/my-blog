@@ -1,4 +1,4 @@
-import {LinkPreset, NavBarConfig, NavBarLink, NavBarSearchMethod, NavBarSearchConfig} from "../types/config";
+import {LinkPreset, type NavBarConfig, type NavBarLink, NavBarSearchMethod, type NavBarSearchConfig} from "../types/config";
 import {siteConfig} from "./siteConfig";
 
 // 根据页面开关动态生成导航栏配置
@@ -61,7 +61,6 @@ export const navBarSearchConfig: NavBarSearchConfig = {
     INDEX_NAME: 'posts',
     CONTENT_DIR: 'src/content/posts',
     MEILI_HOST: "http://localhost:7700",
-    MEILI_MASTER_KEY: import.meta.env.MEILI_MASTER_KEY || undefined,
     PUBLIC_MEILI_HOST: "http://localhost:7700",
     PUBLIC_MEILI_SEARCH_KEY: "41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b",
   }
