@@ -5,7 +5,7 @@ import type {AstroIntegration} from "astro";
 import {execSync} from "child_process";
 
 /**
- * Astro 集成，用于在构建开始时运行 Search 索引器
+ * Astro 集成，用于在构建结束时运行 Search 索引器
  * @returns AstroIntegration
  */
 export default function searchIndexer() {
@@ -14,7 +14,6 @@ export default function searchIndexer() {
     hooks: {
       'astro:build:done': async () => {
         console.log('='.repeat(10)+'Running Search Indexer...'+'='.repeat(10));
-        // 在构建开始时调用你的索引函数;
         if (navBarSearchConfig.method === NavBarSearchMethod.MeiliSearch) {
           const meiliSearchConfig = navBarSearchConfig.meiliSearchConfig;
           if (!meiliSearchConfig) {
