@@ -248,6 +248,68 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       return newElement;
     }
 
+    // 处理移动端显示/隐藏
+    function handleMobileVisibility(aplayer) {
+      if (!aplayer || !aplayer.container) return;
+      
+      const shouldHide = config.responsive?.mobile?.hide === true;
+      const breakpoint = config.responsive?.mobile?.breakpoint || 768;
+      const isMobile = window.innerWidth <= breakpoint;
+      
+      if (shouldHide && isMobile) {
+        aplayer.container.style.display = 'none';
+        aplayer.container.classList.add('mobile-hide');
+        
+        // 同时处理容器（如果存在）
+        const container = document.getElementById('aplayer-container');
+        if (container) {
+          container.style.display = 'none';
+          container.classList.add('mobile-hide');
+        }
+      } else {
+        aplayer.container.style.display = '';
+        aplayer.container.classList.remove('mobile-hide');
+        
+        // 同时处理容器（如果存在）
+        const container = document.getElementById('aplayer-container');
+        if (container) {
+          container.style.display = '';
+          container.classList.remove('mobile-hide');
+        }
+      }
+    }
+    
+    // 初始化时处理容器的移动端显示/隐藏
+    function initContainerMobileVisibility() {
+      const container = document.getElementById('aplayer-container');
+      if (!container) return;
+      
+      const shouldHide = config.responsive?.mobile?.hide === true;
+      const breakpoint = config.responsive?.mobile?.breakpoint || 768;
+      const isMobile = window.innerWidth <= breakpoint;
+      
+      if (shouldHide && isMobile) {
+        container.style.display = 'none';
+        container.classList.add('mobile-hide');
+      } else {
+        container.style.display = '';
+        container.classList.remove('mobile-hide');
+      }
+      
+      // 监听窗口大小变化
+      const resizeHandler = () => {
+        const nowIsMobile = window.innerWidth <= breakpoint;
+        if (shouldHide && nowIsMobile) {
+          container.style.display = 'none';
+          container.classList.add('mobile-hide');
+        } else {
+          container.style.display = '';
+          container.classList.remove('mobile-hide');
+        }
+      };
+      window.addEventListener('resize', resizeHandler);
+    }
+
     // 初始化 MetingJS 元素并设置播放器
     function setupMetingElement(metingElement) {
       return new Promise((resolve) => {
@@ -286,6 +348,13 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
                 
                 // 初始化播放状态
                 updatePlayingState();
+                
+                // 处理移动端显示/隐藏
+                handleMobileVisibility(aplayer);
+                
+                // 监听窗口大小变化，动态调整显示/隐藏
+                const resizeHandler = () => handleMobileVisibility(aplayer);
+                window.addEventListener('resize', resizeHandler);
                 
                 // 短暂延迟后标记为已初始化，恢复展开动画
                 setTimeout(() => {
@@ -500,45 +569,59 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
           aplayer.audio.addEventListener('ended', updatePlayingState);
         }
         
-        // 立即设置右侧定位，避免动画
-        if (aplayer.container) {
-          aplayer.container.setAttribute('data-positioned', 'right');
-          // 确保立即应用右侧样式，避免从左到右的过渡
-          requestAnimationFrame(() => {
-            if (aplayer.container) {
-              aplayer.container.style.right = '0';
-              aplayer.container.style.left = 'unset';
-              
-              // 初始化播放状态
-              updatePlayingState();
-              
-              // 短暂延迟后标记为已初始化，恢复展开动画
-              setTimeout(() => {
-                aplayer.container.setAttribute('data-initialized', 'true');
-                
-                // 如果配置了默认隐藏歌词，则隐藏歌词
-                if (config.player?.lrcHidden && aplayer.lrc) {
-                  aplayer.lrc.hide();
-                  // 同时设置歌词按钮为未激活状态
-                  const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
-                  if (lrcButton) {
-                    lrcButton.classList.add('aplayer-icon-lrc-inactivity');
+              // 立即设置右侧定位，避免动画
+              if (aplayer.container) {
+                aplayer.container.setAttribute('data-positioned', 'right');
+                // 确保立即应用右侧样式，避免从左到右的过渡
+                requestAnimationFrame(() => {
+                  if (aplayer.container) {
+                    aplayer.container.style.right = '0';
+                    aplayer.container.style.left = 'unset';
+                    
+                    // 初始化播放状态
+                    updatePlayingState();
+                    
+                    // 处理移动端显示/隐藏
+                    handleMobileVisibility(aplayer);
+                    
+                    // 监听窗口大小变化，动态调整显示/隐藏
+                    const resizeHandler = () => handleMobileVisibility(aplayer);
+                    window.addEventListener('resize', resizeHandler);
+                    
+                    // 短暂延迟后标记为已初始化，恢复展开动画
+                    setTimeout(() => {
+                      aplayer.container.setAttribute('data-initialized', 'true');
+                      
+                      // 如果配置了默认隐藏歌词，则隐藏歌词
+                      if (config.player?.lrcHidden && aplayer.lrc) {
+                        aplayer.lrc.hide();
+                        // 同时设置歌词按钮为未激活状态
+                        const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
+                        if (lrcButton) {
+                          lrcButton.classList.add('aplayer-icon-lrc-inactivity');
+                        }
+                      }
+                      
+                      // 如果自动播放被阻止，等待用户交互后恢复
+                      if (config.player?.autoplay && aplayer.paused) {
+                        tryAutoplay(aplayer);
+                      }
+                    }, 100);
                   }
-                }
-                
-                // 如果自动播放被阻止，等待用户交互后恢复
-                if (config.player?.autoplay && aplayer.paused) {
-                  tryAutoplay(aplayer);
-                }
-              }, 100);
-            }
-          });
-        }
+                });
+              }
       } catch (error) {
         console.error("Failed to initialize APlayer:", error);
       }
     }
 
+    // 初始化容器的移动端显示/隐藏
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initContainerMobileVisibility);
+    } else {
+      initContainerMobileVisibility();
+    }
+    
     // 如果使用 Meting 模式，加载 MetingJS
     if (config.mode === "meting") {
       loadAPlayer().then(() => {
@@ -590,11 +673,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     left: unset !important;
   }
 
-  /* 移动端隐藏 */
-  @media (max-width: 768px) {
-    #aplayer-container.mobile-hide {
-      display: none !important;
-    }
+  /* 移动端隐藏 - 通过 JavaScript 动态添加类 */
+  .aplayer-fixed.mobile-hide {
+    display: none !important;
+  }
+  
+  /* 移动端隐藏容器 */
+  #aplayer-container.mobile-hide {
+    display: none !important;
   }
 </style>
 
