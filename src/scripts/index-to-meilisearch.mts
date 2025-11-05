@@ -27,6 +27,7 @@ class MeiliSearchIndexer {
       host: this.MEILI_HOST,
       apiKey: this.MEILI_MASTER_KEY,
     });
+    console.log('Running MeiliSearch Indexer:', MEILI_HOST);
   }
 
   async getDocuments() {
@@ -78,11 +79,14 @@ class MeiliSearchIndexer {
     try {
       // 删除旧索引
       await this.client.deleteIndexIfExists(this.INDEX_NAME);
+      console.log(`Index '${this.INDEX_NAME}' deleted.`);
 
       const documents = await this.getDocuments();
       if (documents.length === 0) {
+        console.log('No documents found to index.');
         return;
       }
+      console.log(`Found ${documents.length} documents to index.`);
 
       // 创建新索引
       const index = this.client.index(this.INDEX_NAME);
@@ -93,8 +97,10 @@ class MeiliSearchIndexer {
         displayedAttributes: ['title', 'description', 'content', 'pubDate', 'slug'],
         sortableAttributes: ['pubDate'],
       });
+      console.log('Index settings updated.');
 
       await index.addDocuments(documents, {primaryKey: 'id'});
+      console.log('MeiliSearch indexing completed successfully!');
     } catch (error) {
       console.error('Error during indexing:', error);
       process.exit(1);
