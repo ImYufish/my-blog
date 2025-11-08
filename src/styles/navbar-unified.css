@@ -315,6 +315,13 @@
     #navbar > div {
         border-radius: 0 0 1rem 1rem !important;
     }
+    
+    /* 隐藏导航栏主导航项的图标，只显示文字 */
+    /* 只隐藏主导航栏按钮和链接中的图标，保留下拉菜单中的图标 */
+    #navbar .dropdown-container > .btn-plain .navbar-icon,
+    #navbar .dropdown-container > a.btn-plain .navbar-icon {
+        display: none !important;
+    }
 }
 
 /* 小屏手机优化 */
