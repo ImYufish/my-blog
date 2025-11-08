@@ -130,7 +130,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 移动端断点：屏幕宽度小于768px
       mobile: 768,
       // 平板端断点：屏幕宽度小于1024px
-      tablet: 1024,
+      tablet: 1279,
       // 桌面端断点：屏幕宽度小于1280px
       desktop: 1280,
     },
