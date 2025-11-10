@@ -5,7 +5,7 @@ import MusicPlayer from "@components/widget/MusicPlayer.astro";
 import SakuraEffect from "@components/effects/SakuraEffect.astro";
 import FancyboxManager from "@components/effects/FancyboxManager.astro";
 
-import { profileConfig, siteConfig } from "@/config";
+import { profileConfig, siteConfig, expressiveCodeConfig } from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
@@ -132,7 +132,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 		))}
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode ?? "light", defaultWallpaperMode: siteConfig.backgroundWallpaper.mode, isWallpaperSwitchable: siteConfig.backgroundWallpaper.switchable ?? true}}>
+		<script is:inline define:vars={{BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, defaultMode: siteConfig.themeColor.defaultMode ?? "light", defaultWallpaperMode: siteConfig.backgroundWallpaper.mode, isWallpaperSwitchable: siteConfig.backgroundWallpaper.switchable ?? true, darkTheme: expressiveCodeConfig.darkTheme, lightTheme: expressiveCodeConfig.lightTheme}}>
 			// 主题初始化 - 与setting-utils.ts保持一致
 			const LIGHT_MODE = 'light';
 			const DARK_MODE = 'dark';
@@ -165,7 +165,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 			}
 			
 			// Set the theme for Expressive Code
-			document.documentElement.setAttribute("data-theme", isDark ? "github-dark" : "github-light");
+			document.documentElement.setAttribute("data-theme", isDark ? darkTheme : lightTheme);
 			
 			// Load the hue from local storage
 			const hue = localStorage.getItem('hue') || configHue;
@@ -401,7 +401,7 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "@/constants/constants";
-import { siteConfig } from '@/config';
+import { siteConfig, expressiveCodeConfig } from '@/config';
 
 /* Preload fonts */
 // (async function() {
@@ -683,7 +683,7 @@ const setup = () => {
 		// 同步主题状态 - 解决从首页进入文章页面时代码块渲染问题
 		const storedTheme = localStorage.getItem('theme') || 'light';
 		const isDark = storedTheme === 'dark';
-		const expectedTheme = isDark ? 'github-dark' : 'github-light';
+		const expectedTheme = isDark ? expressiveCodeConfig.darkTheme : expressiveCodeConfig.lightTheme;
 		const currentTheme = document.documentElement.getAttribute('data-theme');
 		
 		// 如果主题不匹配，强制重新应用

@@ -213,7 +213,12 @@ export type BlogPostData = {
 };
 
 export type ExpressiveCodeConfig = {
-  theme: string;
+  /** @deprecated 使用 darkTheme 和 lightTheme 代替 */
+  theme?: string;
+  /** 暗色主题名称（用于暗色模式） */
+  darkTheme: string;
+  /** 亮色主题名称（用于亮色模式） */
+  lightTheme: string;
 };
 
 export type AnnouncementConfig = {
