@@ -99,6 +99,10 @@ export const zh_CN: Translation = {
   [Key.bangumiCategoryMusic]: "音乐",
   [Key.bangumiCategoryGame]: "游戏",
   [Key.bangumiCategoryReal]: "三次元",
+
+  // 番组数据更新
+  [Key.bangumiLastUpdated]: "数据更新于",
+  [Key.bangumiUpdatedAt]: "构建时间",
   
   // 动漫状态
   [Key.animeStatusAll]: "全部",

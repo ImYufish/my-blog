@@ -10,7 +10,7 @@ import type {
   UserSubjectCollectionResponse,
 } from "@/types/bangumi";
 
-//Author：霞葉 https://kasuha.com/posts/fuwari-enhance-ep2/
+//参考：霞葉 https://kasuha.com/posts/fuwari-enhance-ep2/
 
 // 检查页面是否启用
 if (!siteConfig.pages.anime) {
@@ -146,6 +146,9 @@ for (const [categoryKey, enabled] of Object.entries(bangumiConfig.categories)) {
 }
 
 const activeTab = tabs[0]?.id || "anime";
+
+// 获取构建时间
+const buildTime = new Date().toLocaleString();
 ---
 
 <MainGridLayout title={i18n(I18nKey.bangumi)} description={i18n(I18nKey.animeSubtitle)}>
@@ -159,6 +162,9 @@ const activeTab = tabs[0]?.id || "anime";
                 </h1>
                 <p class="text-black/75 dark:text-white/75">
                     {i18n(I18nKey.animeSubtitle)}
+                </p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    {i18n(I18nKey.bangumiLastUpdated)} {buildTime}
                 </p>
             </div>
 

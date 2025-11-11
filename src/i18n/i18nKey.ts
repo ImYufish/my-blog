@@ -97,7 +97,12 @@ enum I18nKey {
   bangumiCategoryMusic = "bangumiCategoryMusic",
   bangumiCategoryGame = "bangumiCategoryGame",
   bangumiCategoryReal = "bangumiCategoryReal",
-  
+
+  // 番组数据更新
+  bangumiLastUpdated = "bangumiLastUpdated",
+  bangumiUpdatedAt = "bangumiUpdatedAt",
+  bangumiDataStatic = "bangumiDataStatic",
+
   // 动漫状态
   animeStatusAll = "animeStatusAll",
   animeStatusWish = "animeStatusWish",

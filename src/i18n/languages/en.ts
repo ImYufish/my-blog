@@ -100,6 +100,10 @@ export const en: Translation = {
   [Key.bangumiCategoryMusic]: "Music",
   [Key.bangumiCategoryGame]: "Game",
   [Key.bangumiCategoryReal]: "Real",
+
+  // Bangumi Data Update
+  [Key.bangumiLastUpdated]: "Data updated at",
+  [Key.bangumiUpdatedAt]: "Build time",
   
   // Anime Status
   [Key.animeStatusAll]: "All",

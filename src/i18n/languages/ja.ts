@@ -101,6 +101,10 @@ export const ja: Translation = {
   [Key.bangumiCategoryMusic]: "音楽",
   [Key.bangumiCategoryGame]: "ゲーム",
   [Key.bangumiCategoryReal]: "実写",
+
+  // バングミデータ更新
+  [Key.bangumiLastUpdated]: "データ更新",
+  [Key.bangumiUpdatedAt]: "ビルド時間",
   
   // アニメ状態
   [Key.animeStatusAll]: "すべて",
