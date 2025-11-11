@@ -74,7 +74,7 @@ export default defineConfig({
 			plugins: [
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
-				pluginLanguageBadge(),
+				// pluginLanguageBadge(),
 				pluginCustomCopyButton(),
 			],
 			defaultProps: {
