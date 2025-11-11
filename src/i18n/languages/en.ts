@@ -50,10 +50,6 @@ export const en: Translation = {
   [Key.anime]: "Anime",
   [Key.bangumi]: "Bangumi",
 
-  // Bangumi
-  [Key.bangumiTitle]: "My Bangumi",
-  [Key.bangumiSubtitle]: "Record my ACG journey",
-
   // Anime Page
   [Key.animeTitle]: "My Anime List",
   [Key.animeSubtitle]: "Record my ACG journey",
@@ -69,7 +65,42 @@ export const en: Translation = {
   [Key.animeEmpty]: "No anime data",
   [Key.animeEmptyBangumi]:
     "Please check Bangumi configuration or network connection",
-    
+
+  // Bangumi Filter and Status Text
+  [Key.bangumiTitle]: "My Bangumi",
+  [Key.bangumiSubtitle]: "Record my ACG journey",
+  [Key.bangumiFilterAll]: "All",
+  [Key.bangumiFilterWatched]: "Watched",
+  [Key.bangumiFilterWatching]: "Watching",
+  [Key.bangumiFilterWish]: "Wish",
+  [Key.bangumiFilterOnHold]: "On Hold",
+  [Key.bangumiFilterDropped]: "Dropped",
+  [Key.bangumiStatusWish]: "Wish",
+  [Key.bangumiStatusWatched]: "Watched",
+  [Key.bangumiStatusWatching]: "Watching",
+  [Key.bangumiStatusOnHold]: "On Hold",
+  [Key.bangumiStatusDropped]: "Dropped",
+  [Key.bangumiStatusUnknown]: "Unknown",
+  [Key.bangumiNoData]: "No Data",
+  [Key.bangumiNoDataDescription]: "No items in this category",
+  [Key.bangumiEmpty]: "No Data",
+  [Key.bangumiEmptyReason]: "Possible reasons: username does not exist, network connection issue, or API limit",
+  [Key.bangumiUsername]: "Username",
+  [Key.bangumiApi]: "API",
+  [Key.bangumiConfigTip]: "Tip: Please set the correct Bangumi username in the page configuration",
+  [Key.bangumiPrevPage]: "Previous",
+  [Key.bangumiNextPage]: "Next",
+  [Key.bangumiCurrentPage]: "Page",
+  [Key.bangumiTotalPages]: "of",
+  [Key.bangumiPage]: "page",
+
+  // Bangumi Categories
+  [Key.bangumiCategoryBook]: "Book",
+  [Key.bangumiCategoryAnime]: "Anime",
+  [Key.bangumiCategoryMusic]: "Music",
+  [Key.bangumiCategoryGame]: "Game",
+  [Key.bangumiCategoryReal]: "Real",
+  
   // Anime Status
   [Key.animeStatusAll]: "All",
   [Key.animeStatusWish]: "Wish",

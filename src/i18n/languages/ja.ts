@@ -50,10 +50,6 @@ export const ja: Translation = {
   [Key.anime]: "アニメ",
   [Key.bangumi]: "バングミ",
 
-  // バングミ
-  [Key.bangumiTitle]: "私のバングミ",
-  [Key.bangumiSubtitle]: "私の二次元の旅を記録する",
-
   // アニメページ
   [Key.animeTitle]: "私のアニメリスト",
   [Key.animeSubtitle]: "私の二次元の旅を記録する",
@@ -70,6 +66,41 @@ export const ja: Translation = {
   [Key.animeEmpty]: "アニメデータなし",
   [Key.animeEmptyBangumi]:
     "Bangumiの設定またはネットワーク接続を確認してください",
+
+  // バングミフィルターと状態文本
+  [Key.bangumiTitle]: "私のバングミ",
+  [Key.bangumiSubtitle]: "私の二次元の旅を記録する",
+  [Key.bangumiFilterAll]: "すべて",
+  [Key.bangumiFilterWatched]: "見た",
+  [Key.bangumiFilterWatching]: "視聴中",
+  [Key.bangumiFilterWish]: "見たい",
+  [Key.bangumiFilterOnHold]: "保留",
+  [Key.bangumiFilterDropped]: "中断",
+  [Key.bangumiStatusWish]: "見たい",
+  [Key.bangumiStatusWatched]: "見た",
+  [Key.bangumiStatusWatching]: "視聴中",
+  [Key.bangumiStatusOnHold]: "保留",
+  [Key.bangumiStatusDropped]: "中断",
+  [Key.bangumiStatusUnknown]: "不明",
+  [Key.bangumiNoData]: "データなし",
+  [Key.bangumiNoDataDescription]: "このカテゴリに項目がありません",
+  [Key.bangumiEmpty]: "データなし",
+  [Key.bangumiEmptyReason]: "考えられる理由：ユーザー名が存在しない、ネットワーク接続の問題、またはAPI制限",
+  [Key.bangumiUsername]: "ユーザー名",
+  [Key.bangumiApi]: "API",
+  [Key.bangumiConfigTip]: "ヒント：ページ設定で正しいBangumiユーザー名を設定してください",
+  [Key.bangumiPrevPage]: "前へ",
+  [Key.bangumiNextPage]: "次へ",
+  [Key.bangumiCurrentPage]: "ページ",
+  [Key.bangumiTotalPages]: "の",
+  [Key.bangumiPage]: "ページ",
+
+  // バングミカテゴリ
+  [Key.bangumiCategoryBook]: "本",
+  [Key.bangumiCategoryAnime]: "アニメ",
+  [Key.bangumiCategoryMusic]: "音楽",
+  [Key.bangumiCategoryGame]: "ゲーム",
+  [Key.bangumiCategoryReal]: "実写",
   
   // アニメ状態
   [Key.animeStatusAll]: "すべて",

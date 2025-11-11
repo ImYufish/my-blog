@@ -48,10 +48,6 @@ enum I18nKey {
   anime = "anime",
   bangumi = "bangumi",
 
-  // 番组计划
-  bangumiTitle = "bangumiTitle",
-  bangumiSubtitle = "bangumiSubtitle",
-
   // 番剧页面
   animeTitle = "animeTitle",
   animeSubtitle = "animeSubtitle",
@@ -66,6 +62,41 @@ enum I18nKey {
   animeStudio = "animeStudio",
   animeEmpty = "animeEmpty",
   animeEmptyBangumi = "animeEmptyBangumi",
+
+  // 番组计划筛选和状态文本
+  bangumiTitle = "bangumiTitle",
+  bangumiSubtitle = "bangumiSubtitle",
+  bangumiFilterAll = "bangumiFilterAll",
+  bangumiFilterWatched = "bangumiFilterWatched",
+  bangumiFilterWatching = "bangumiFilterWatching",
+  bangumiFilterWish = "bangumiFilterWish",
+  bangumiFilterOnHold = "bangumiFilterOnHold",
+  bangumiFilterDropped = "bangumiFilterDropped",
+  bangumiStatusWish = "bangumiStatusWish",
+  bangumiStatusWatched = "bangumiStatusWatched",
+  bangumiStatusWatching = "bangumiStatusWatching",
+  bangumiStatusOnHold = "bangumiStatusOnHold",
+  bangumiStatusDropped = "bangumiStatusDropped",
+  bangumiStatusUnknown = "bangumiStatusUnknown",
+  bangumiNoData = "bangumiNoData",
+  bangumiNoDataDescription = "bangumiNoDataDescription",
+  bangumiEmpty = "bangumiEmpty",
+  bangumiEmptyReason = "bangumiEmptyReason",
+  bangumiUsername = "bangumiUsername",
+  bangumiApi = "bangumiApi",
+  bangumiConfigTip = "bangumiConfigTip",
+  bangumiPrevPage = "bangumiPrevPage",
+  bangumiNextPage = "bangumiNextPage",
+  bangumiCurrentPage = "bangumiCurrentPage",
+  bangumiTotalPages = "bangumiTotalPages",
+  bangumiPage = "bangumiPage",
+
+  // 番组分类
+  bangumiCategoryBook = "bangumiCategoryBook",
+  bangumiCategoryAnime = "bangumiCategoryAnime",
+  bangumiCategoryMusic = "bangumiCategoryMusic",
+  bangumiCategoryGame = "bangumiCategoryGame",
+  bangumiCategoryReal = "bangumiCategoryReal",
   
   // 动漫状态
   animeStatusAll = "animeStatusAll",

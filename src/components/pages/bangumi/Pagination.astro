@@ -1,5 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
 
 interface Props {
   totalItems: number;
@@ -68,18 +70,18 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
         data-page="prev"
         data-section={sectionId}
         disabled={currentPage === 1}
-        aria-label="上一页"
+        aria-label={i18n(I18nKey.bangumiPrevPage)}
       >
         <Icon name="material-symbols:chevron-left-rounded" class="text-base" />
       </button>
 
       <!-- 移动端页码信息 -->
       <div class="flex items-center space-x-1">
-        <span class="text-sm text-gray-600 dark:text-gray-400">第</span>
+        <span class="text-sm text-gray-600 dark:text-gray-400">{i18n(I18nKey.bangumiCurrentPage)}</span>
         <span class="mobile-current-page px-2 py-1 text-sm font-medium bg-blue-500 text-white rounded">{currentPage}</span>
-        <span class="text-sm text-gray-600 dark:text-gray-400">页，共</span>
+        <span class="text-sm text-gray-600 dark:text-gray-400">{i18n(I18nKey.bangumiTotalPages)}</span>
         <span class="mobile-total-pages text-sm font-medium text-gray-700 dark:text-gray-300">{totalPages}</span>
-        <span class="text-sm text-gray-600 dark:text-gray-400">页</span>
+        <span class="text-sm text-gray-600 dark:text-gray-400">{i18n(I18nKey.bangumiPage)}</span>
       </div>
 
       <button
@@ -88,7 +90,7 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
         data-page="next"
         data-section={sectionId}
         disabled={currentPage === totalPages}
-        aria-label="下一页"
+        aria-label={i18n(I18nKey.bangumiNextPage)}
       >
         <Icon name="material-symbols:chevron-right-rounded" class="text-base" />
       </button>
@@ -102,7 +104,7 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
         data-page="prev"
         data-section={sectionId}
         disabled={currentPage === 1}
-        aria-label="上一页"
+        aria-label={i18n(I18nKey.bangumiPrevPage)}
       >
         <Icon name="material-symbols:chevron-left-rounded" class="text-lg" />
       </button>
@@ -138,7 +140,7 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
         data-page="next"
         data-section={sectionId}
         disabled={currentPage === totalPages}
-        aria-label="下一页"
+        aria-label={i18n(I18nKey.bangumiNextPage)}
       >
         <Icon name="material-symbols:chevron-right-rounded" class="text-lg" />
       </button>

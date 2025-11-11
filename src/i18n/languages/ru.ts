@@ -50,10 +50,6 @@ export const ru: Translation = {
   [Key.anime]: "Аниме",
   [Key.bangumi]: "Бангуми",
 
-  // Бангуми
-  [Key.bangumiTitle]: "Мой план группы",
-  [Key.bangumiSubtitle]: "Запись моего аниме путешествия",
-
   // Страница аниме
   [Key.animeTitle]: "Мой список аниме",
   [Key.animeSubtitle]: "Запись моего аниме путешествия",
@@ -69,7 +65,42 @@ export const ru: Translation = {
   [Key.animeEmpty]: "Нет данных об аниме",
   [Key.animeEmptyBangumi]:
     "Пожалуйста, проверьте конфигурацию Bangumi или подключение к сети",
-    
+
+  // Фильтр и статус Бангуми текст
+  [Key.bangumiTitle]: "Мой план группы",
+  [Key.bangumiSubtitle]: "Запись моего аниме путешествия",
+  [Key.bangumiFilterAll]: "Все",
+  [Key.bangumiFilterWatched]: "Просмотрено",
+  [Key.bangumiFilterWatching]: "Смотрю",
+  [Key.bangumiFilterWish]: "Хочу",
+  [Key.bangumiFilterOnHold]: "Отложено",
+  [Key.bangumiFilterDropped]: "Брошено",
+  [Key.bangumiStatusWish]: "Хочу",
+  [Key.bangumiStatusWatched]: "Просмотрено",
+  [Key.bangumiStatusWatching]: "Смотрю",
+  [Key.bangumiStatusOnHold]: "Отложено",
+  [Key.bangumiStatusDropped]: "Брошено",
+  [Key.bangumiStatusUnknown]: "Неизвестно",
+  [Key.bangumiNoData]: "Нет данных",
+  [Key.bangumiNoDataDescription]: "В этой категории нет элементов",
+  [Key.bangumiEmpty]: "Нет данных",
+  [Key.bangumiEmptyReason]: "Возможные причины: имя пользователя не существует, проблема с подключением к сети или ограничение API",
+  [Key.bangumiUsername]: "Имя пользователя",
+  [Key.bangumiApi]: "API",
+  [Key.bangumiConfigTip]: "Подсказка: установите правильное имя пользователя Bangumi в конфигурации страницы",
+  [Key.bangumiPrevPage]: "Предыдущая",
+  [Key.bangumiNextPage]: "Следующая",
+  [Key.bangumiCurrentPage]: "Страница",
+  [Key.bangumiTotalPages]: "из",
+  [Key.bangumiPage]: "страница",
+
+  // Категории Бангуми
+  [Key.bangumiCategoryBook]: "Книга",
+  [Key.bangumiCategoryAnime]: "Аниме",
+  [Key.bangumiCategoryMusic]: "Музыка",
+  [Key.bangumiCategoryGame]: "Игра",
+  [Key.bangumiCategoryReal]: "Реальный",
+  
   // Статус аниме
   [Key.animeStatusAll]: "Все",
   [Key.animeStatusWish]: "Хочу",

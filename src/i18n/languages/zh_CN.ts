@@ -50,10 +50,6 @@ export const zh_CN: Translation = {
   [Key.anime]: "追番",
   [Key.bangumi]: "番组计划",
 
-  // 番组计划
-  [Key.bangumiTitle]: "我的番组计划",
-  [Key.bangumiSubtitle]: "记录我的二次元之旅",
-
   // 番剧页面
   [Key.animeTitle]: "我的追番记录",
   [Key.animeSubtitle]: "记录我的二次元之旅",
@@ -68,6 +64,41 @@ export const zh_CN: Translation = {
   [Key.animeStudio]: "制作",
   [Key.animeEmpty]: "暂无追番数据",
   [Key.animeEmptyBangumi]: "请检查 Bangumi 配置或网络连接",
+
+  // 番组计划筛选和状态文本
+  [Key.bangumiTitle]: "我的番组计划",
+  [Key.bangumiSubtitle]: "记录我的二次元之旅",
+  [Key.bangumiFilterAll]: "全部",
+  [Key.bangumiFilterWatched]: "看过",
+  [Key.bangumiFilterWatching]: "在看",
+  [Key.bangumiFilterWish]: "想看",
+  [Key.bangumiFilterOnHold]: "搁置",
+  [Key.bangumiFilterDropped]: "抛弃",
+  [Key.bangumiStatusWish]: "想看",
+  [Key.bangumiStatusWatched]: "看过",
+  [Key.bangumiStatusWatching]: "在看",
+  [Key.bangumiStatusOnHold]: "搁置",
+  [Key.bangumiStatusDropped]: "抛弃",
+  [Key.bangumiStatusUnknown]: "未知",
+  [Key.bangumiNoData]: "暂无数据",
+  [Key.bangumiNoDataDescription]: "该分类下还没有任何条目",
+  [Key.bangumiEmpty]: "暂无数据",
+  [Key.bangumiEmptyReason]: "可能的原因：用户名不存在、网络连接问题或API限制",
+  [Key.bangumiUsername]: "用户名",
+  [Key.bangumiApi]: "API",
+  [Key.bangumiConfigTip]: "提示：请在页面配置中设置正确的Bangumi用户名",
+  [Key.bangumiPrevPage]: "上一页",
+  [Key.bangumiNextPage]: "下一页",
+  [Key.bangumiCurrentPage]: "第",
+  [Key.bangumiTotalPages]: "页，共",
+  [Key.bangumiPage]: "页",
+
+  // 番组分类
+  [Key.bangumiCategoryBook]: "书籍",
+  [Key.bangumiCategoryAnime]: "动画",
+  [Key.bangumiCategoryMusic]: "音乐",
+  [Key.bangumiCategoryGame]: "游戏",
+  [Key.bangumiCategoryReal]: "三次元",
   
   // 动漫状态
   [Key.animeStatusAll]: "全部",
