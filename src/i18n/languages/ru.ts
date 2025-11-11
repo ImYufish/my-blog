@@ -48,6 +48,11 @@ export const ru: Translation = {
   [Key.publishedAt]: "Опубликовано",
   [Key.license]: "Лицензия",
   [Key.anime]: "Аниме",
+  [Key.bangumi]: "Бангуми",
+
+  // Бангуми
+  [Key.bangumiTitle]: "Мой план группы",
+  [Key.bangumiSubtitle]: "Запись моего аниме путешествия",
 
   // Страница аниме
   [Key.animeTitle]: "Мой список аниме",

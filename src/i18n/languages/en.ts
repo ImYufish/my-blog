@@ -48,10 +48,15 @@ export const en: Translation = {
   [Key.publishedAt]: "Published at",
   [Key.license]: "License",
   [Key.anime]: "Anime",
+  [Key.bangumi]: "Bangumi",
+
+  // Bangumi
+  [Key.bangumiTitle]: "My Bangumi",
+  [Key.bangumiSubtitle]: "Record my ACG journey",
 
   // Anime Page
   [Key.animeTitle]: "My Anime List",
-  [Key.animeSubtitle]: "Record my anime journey",
+  [Key.animeSubtitle]: "Record my ACG journey",
   [Key.animeList]: "Anime List",
   [Key.animeTotal]: "Total",
   [Key.animeWatching]: "Watching",

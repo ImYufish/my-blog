@@ -48,6 +48,11 @@ export const zh_TW: Translation = {
   [Key.publishedAt]: "發布於",
   [Key.license]: "許可協議",
   [Key.anime]: "追番",
+  [Key.bangumi]: "番組計劃",
+
+  // 番組計劃
+  [Key.bangumiTitle]: "我的番組計劃",
+  [Key.bangumiSubtitle]: "記錄我的二次元之旅",
 
   // 番劇頁面
   [Key.animeTitle]: "我的追番記錄",

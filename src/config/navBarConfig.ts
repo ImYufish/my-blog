@@ -44,6 +44,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
       ...(siteConfig.pages.anime ? [LinkPreset.Anime] : []), // 根据配置决定是否添加追番页面
       ...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []), // 根据配置决定是否添加赞助页面
       LinkPreset.About,
+      ...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []), // 根据配置决定是否添加番组计划页面
     ],
   });
   // 仅返回链接，其它导航搜索相关配置在模块顶层常量中独立导出

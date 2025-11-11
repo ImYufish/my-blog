@@ -48,6 +48,11 @@ export const ja: Translation = {
   [Key.publishedAt]: "公開日",
   [Key.license]: "ライセンス",
   [Key.anime]: "アニメ",
+  [Key.bangumi]: "バングミ",
+
+  // バングミ
+  [Key.bangumiTitle]: "私のバングミ",
+  [Key.bangumiSubtitle]: "私の二次元の旅を記録する",
 
   // アニメページ
   [Key.animeTitle]: "私のアニメリスト",

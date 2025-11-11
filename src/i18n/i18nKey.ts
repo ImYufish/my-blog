@@ -46,6 +46,11 @@ enum I18nKey {
   friends = "friends",
   guestbook = "guestbook",
   anime = "anime",
+  bangumi = "bangumi",
+
+  // 番组计划
+  bangumiTitle = "bangumiTitle",
+  bangumiSubtitle = "bangumiSubtitle",
 
   // 番剧页面
   animeTitle = "animeTitle",
