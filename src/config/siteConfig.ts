@@ -64,7 +64,7 @@ export const siteConfig: SiteConfig = {
 
   // anime和bangumi都是来源bangumi的数据，请配置bangumi.userId
   // anime是动态请求获取数据，所以是实时数据，目前缺点是需要手动F5刷新一次才加载数据
-  // bangumi的数据为编译时获取的，所以不是实时数据，且如果数据过多会导致页面访问变慢
+  // bangumi的数据为编译时获取的，所以不是实时数据
   pages: {
     anime: true, // 追番页面开关
     sponsor: true, // 赞助页面开关
