@@ -29,7 +29,7 @@ import mdx from "@astrojs/mdx";
 import searchIndexer from "./src/integrations/searchIndex.mts";
 // https://astro.build/config
 export default defineConfig({
-	site: "https://firefly.cuteleaf.cn/",
+	site: siteConfig.site_url,
 
 	base: "/",
 	trailingSlash: "always",
