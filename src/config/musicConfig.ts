@@ -75,8 +75,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
     // 是否互斥播放（同时只能播放一个播放器）
     mutex: true,
 
-    // 歌词类型：0=不显示, 1=显示（需要提供 lrc 字段）, 2=显示（从 HTML 内容读取）, 3=异步加载（从 API 获取）
-    lrcType: 3,
+    // local歌词类型：0=不显示, 1=显示（需要提供 lrc 字段）, 2=显示（从 HTML 内容读取）
+    lrcType: 1,
 
     // 歌词是否默认隐藏（当 lrcType 不为 0 时，可以通过此选项控制初始显示状态）
     // true=默认隐藏（用户可以通过歌词按钮手动显示）, false=默认显示

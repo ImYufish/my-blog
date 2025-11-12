@@ -9,34 +9,34 @@
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 列表展开时始终显示背景 */
-.aplayer.aplayer-fixed.aplayer-withlist:not(.aplayer-narrow) {
+/* 展开状态时始终显示背景（包括 local 模式和 meting 模式） */
+.aplayer.aplayer-fixed:not(.aplayer-narrow) {
   background: var(--card-bg, white) !important;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07), 0 1px 5px 0 rgba(0, 0, 0, 0.1) !important;
 }
 
-.aplayer.aplayer-fixed.aplayer-withlist:not(.aplayer-narrow) .aplayer-body {
+.aplayer.aplayer-fixed:not(.aplayer-narrow) .aplayer-body {
   background: var(--card-bg, white) !important;
 }
 
-/* 暗色主题：列表展开时显示背景 */
-:root.dark .aplayer.aplayer-fixed.aplayer-withlist:not(.aplayer-narrow) {
+/* 暗色主题：展开状态时显示背景 */
+:root.dark .aplayer.aplayer-fixed:not(.aplayer-narrow) {
   background: var(--card-bg, oklch(0.23 0.015 var(--hue))) !important;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 5px 0 rgba(0, 0, 0, 0.4) !important;
 }
 
-:root.dark .aplayer.aplayer-fixed.aplayer-withlist:not(.aplayer-narrow) .aplayer-body {
+:root.dark .aplayer.aplayer-fixed:not(.aplayer-narrow) .aplayer-body {
   background: var(--card-bg, oklch(0.23 0.015 var(--hue))) !important;
 }
 
-/* 鼠标悬浮时显示背景 */
-.aplayer.aplayer-fixed:hover {
+/* 收缩状态下鼠标悬浮时显示背景 */
+.aplayer.aplayer-fixed.aplayer-narrow:hover {
   background: var(--card-bg, white) !important;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07), 0 1px 5px 0 rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 暗色主题悬浮效果 */
-:root.dark .aplayer.aplayer-fixed:hover {
+:root.dark .aplayer.aplayer-fixed.aplayer-narrow:hover {
   background: var(--card-bg, oklch(0.23 0.015 var(--hue))) !important;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 5px 0 rgba(0, 0, 0, 0.4) !important;
 }
@@ -54,11 +54,6 @@
   padding-right: 0 !important;
   background: transparent !important;
   transition: background 0.3s ease;
-}
-
-/* 鼠标悬浮时显示主体背景 */
-.aplayer.aplayer-fixed:hover .aplayer-body {
-  background: transparent !important;
 }
 
 .aplayer.aplayer-fixed .aplayer-miniswitcher {
