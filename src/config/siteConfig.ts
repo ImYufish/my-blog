@@ -10,7 +10,7 @@ export const siteConfig: SiteConfig = {
   subtitle: "Demo site",
   site_url: "https://firefly.cuteleaf.cn",
   description:
-    "Firefly 是一款基于 Astro 框架开发的清新美观且现代化个人博客主题，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。",
+    "Firefly 是一款基于 Astro 框架和 Fuwari 模板开发的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。",
   keywords: [
     "Firefly",
     "Fuwari",
@@ -67,7 +67,7 @@ export const siteConfig: SiteConfig = {
   // anime是动态请求获取数据，所以是实时数据，目前缺点是需要手动F5刷新一次才加载数据
   // bangumi的数据为编译时获取的，所以不是实时数据
   pages: {
-    anime: true, // 追番页面开关
+    anime: false, // 追番页面开关
     sponsor: true, // 赞助页面开关
     guestbook: true, // 留言板页面开关，需要配置评论系统
     bangumi: true, // 番组计划页面开关，含追番和游戏
