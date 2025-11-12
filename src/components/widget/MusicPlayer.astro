@@ -20,11 +20,23 @@ const metingJsPath = config.meting?.jsPath
 
 // 预处理本地音乐列表的路径（如果使用本地模式）
 const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
-  ? config.local.playlist.map((song) => ({
-      ...song,
-      url: url(song.url),
-      cover: song.cover ? url(song.cover) : undefined,
-    }))
+  ? config.local.playlist.map((song) => {
+      // 辅助函数：判断是否为完整 URL
+      const isFullUrl = (path: string): boolean => {
+        return /^https?:\/\//.test(path);
+      };
+
+      return {
+        ...song,
+        // 仅对相对路径使用 url() 处理，完整 URL 直接使用
+        url: isFullUrl(song.url) ? song.url : url(song.url),
+        cover: song.cover
+          ? isFullUrl(song.cover)
+            ? song.cover
+            : url(song.cover)
+          : undefined,
+      };
+    })
   : null;
 ---
 
