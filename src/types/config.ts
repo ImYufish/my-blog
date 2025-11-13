@@ -334,15 +334,9 @@ export type SidebarLayoutConfig = {
     increment: number; // 每个组件递增的延迟时间（毫秒）
   };
   responsive: {
-    breakpoints: {
-      mobile: number; // 移动端断点（px）
-      tablet: number; // 平板端断点（px）
-      desktop: number; // 桌面端断点（px）
-      hideSidebar?: number; // 自动隐藏侧边栏断点（px），小于此宽度时隐藏指定侧边栏
-    };
     layout: {
       mobile: "hidden" | "bottom" | "drawer" | "sidebar"; // 移动端布局模式
-      tablet: "sidebar" | "bottom" | "drawer"; // 平板端布局模式
+      tablet: "hidden" | "sidebar" | "bottom" | "drawer"; // 平板端布局模式
       desktop: "sidebar"; // 桌面端布局模式
     };
   };

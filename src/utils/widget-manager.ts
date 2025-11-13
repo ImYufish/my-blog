@@ -95,6 +95,35 @@ export class WidgetManager {
   }
 
   /**
+   * 检查指定侧边栏在特定设备上是否有可见组件
+   * @param sidebar 侧边栏位置：'left' | 'right'
+   * @param deviceType 设备类型：'mobile' | 'tablet' | 'desktop'
+   * 注：tablet 对应 Tailwind 的 md 到 lg 之间 (768px-1023px)
+   */
+  hasVisibleComponentsInSidebar(sidebar: "left" | "right", deviceType: "mobile" | "tablet" | "desktop"): boolean {
+    if (this.config.position !== "both") {
+      return false;
+    }
+    
+    // 双侧边栏模式下，右侧边栏在平板端隐藏
+    if (deviceType === "tablet" && sidebar === "right") {
+      return false;
+    }
+    
+    return this.enabledComponents.some((component) => {
+      // 如果组件没有指定 sidebar 属性,默认分配到左侧
+      const componentSidebar = component.sidebar || "left";
+      if (componentSidebar !== sidebar) {
+        return false;
+      }
+      
+      // 检查组件是否在该设备上隐藏
+      const hiddenDevices = component.responsive?.hidden || [];
+      return !hiddenDevices.includes(deviceType);
+    });
+  }
+
+  /**
    * 获取组件的动画延迟时间
    * @param component 组件配置
    * @param index 组件在列表中的索引
@@ -127,7 +156,13 @@ export class WidgetManager {
       classes.push(component.class);
     }
 
-    // 添加响应式隐藏类名
+    // 双侧边栏模式下，右侧边栏的组件在平板端自动隐藏
+    // 使用 Tailwind 标准断点：md(768px) 到 lg(1024px) 之间隐藏
+    if (this.config.position === "both" && component.sidebar === "right") {
+      classes.push("md:hidden", "lg:block");
+    }
+
+    // 添加响应式隐藏类名（组件自定义配置）
     if (component.responsive?.hidden) {
       component.responsive.hidden.forEach((device) => {
         switch (device) {
@@ -200,13 +235,6 @@ export class WidgetManager {
 
     const layoutMode = this.config.responsive.layout[deviceType];
     return layoutMode === "sidebar";
-  }
-
-  /**
-   * 获取设备断点配置
-   */
-  getBreakpoints() {
-    return this.config.responsive.breakpoints;
   }
 
   /**

@@ -22,9 +22,7 @@ const topComponents = widgetManager.getComponentsByPosition("top");
 const stickyComponents = widgetManager.getComponentsByPosition("sticky");
 
 // 提取客户端需要的数据
-const breakpoints = widgetManager.getBreakpoints();
 const sidebarConfig = {
-  breakpoints: breakpoints,
   shouldShowSidebar: {
     mobile: widgetManager.shouldShowSidebar("mobile"),
     tablet: widgetManager.shouldShowSidebar("tablet"),

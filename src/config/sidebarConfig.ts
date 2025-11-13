@@ -8,7 +8,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   // 是否启用侧边栏功能
   enable: true,
 
-  // 侧边栏位置：left=左侧，right=右侧，both=双侧，开启双侧后网格（双列）模式将无法使用
+  // 侧边栏位置：left=左侧，right=右侧
+  // both=双侧，开启双侧后网格（双列）模式将无法使用，且右侧组件会在宽度低于1024px时隐藏
   position: "both",
 
   // 侧边栏组件配置列表
@@ -169,23 +170,15 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
   // 响应式布局配置
   responsive: {
-    // 断点配置（像素值）
-    breakpoints: {
-      // 移动端断点：屏幕宽度小于768px
-      mobile: 768,
-      // 平板端断点：屏幕宽度小于1024px
-      tablet: 1279,
-      // 桌面端断点：屏幕宽度小于1280px
-      desktop: 1280,
-    },
     // 不同设备的布局模式
-    //hidden:不显示侧边栏(桌面端)   drawer:抽屉模式(移动端不显示)   sidebar:显示侧边栏
+    // hidden:不显示侧边栏   drawer:抽屉模式(移动端不显示)   sidebar:显示侧边栏
+    // 使用 Tailwind 标准断点：mobile(<768px), tablet(768px-1023px), desktop(>=1024px)
     layout: {
-      // 移动端：抽屉模式
+      // 移动端：<768px
       mobile: "sidebar",
-      // 平板端：显示侧边栏
+      // 平板端：768px-1023px
       tablet: "sidebar",
-      // 桌面端：显示侧边栏
+      // 桌面端：>=1024px
       desktop: "sidebar",
     },
   },
