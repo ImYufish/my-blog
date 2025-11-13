@@ -50,11 +50,39 @@ export class WidgetManager {
   /**
    * 根据位置获取组件列表
    * @param position 组件位置：'top' | 'sticky'
+   * @param sidebar 侧边栏位置（可选）：'left' | 'right'
    */
-  getComponentsByPosition(position: "top" | "sticky"): WidgetComponentConfig[] {
-    return this.enabledComponents.filter(
+  getComponentsByPosition(position: "top" | "sticky", sidebar?: "left" | "right"): WidgetComponentConfig[] {
+    let components = this.enabledComponents.filter(
       (component) => component.position === position
     );
+    
+    // 如果指定了侧边栏位置，则进一步过滤
+    if (sidebar && this.config.position === "both") {
+      components = components.filter((component) => {
+        // 如果组件没有指定 sidebar 属性,默认分配到左侧
+        const componentSidebar = component.sidebar || "left";
+        return componentSidebar === sidebar;
+      });
+    }
+    
+    return components;
+  }
+
+  /**
+   * 检查指定侧边栏是否有组件
+   * @param sidebar 侧边栏位置：'left' | 'right'
+   */
+  hasComponentsInSidebar(sidebar: "left" | "right"): boolean {
+    if (this.config.position !== "both") {
+      return false;
+    }
+    
+    return this.enabledComponents.some((component) => {
+      // 如果组件没有指定 sidebar 属性,默认分配到左侧
+      const componentSidebar = component.sidebar || "left";
+      return componentSidebar === sidebar;
+    });
   }
 
   /**

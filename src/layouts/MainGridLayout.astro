@@ -3,6 +3,8 @@ import BackToTop from "@components/control/BackToTop.astro";
 import Footer from "@components/layout/Footer.astro";
 import Navbar from "@components/layout/Navbar.astro";
 import SideBar from "@components/layout/SideBar.astro";
+import LeftSideBar from "@components/layout/LeftSideBar.astro";
+import RightSideBar from "@components/layout/RightSideBar.astro";
 import SpineModel from "@components/widget/SpineModel.astro";
 import Live2DWidget from "@components/widget/Live2DWidget.astro";
 import type { MarkdownHeading } from "astro";
@@ -20,7 +22,7 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "@/constants/constants";
 import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
-import { getResponsiveSidebarConfig, generateGridClasses, generateSidebarClasses, generateMainContentClasses } from "@/utils/responsive-utils";
+import { getResponsiveSidebarConfig, generateGridClasses, generateSidebarClasses, generateRightSidebarClasses, generateMainContentClasses } from "@/utils/responsive-utils";
 import Layout from "./Layout.astro";
 
 interface Props {
@@ -103,6 +105,7 @@ const finalMainPanelTop = isBannerMode && isBackgroundEnabled ? mainPanelTop : "
 const sidebarConfig = getResponsiveSidebarConfig();
 const { gridCols } = generateGridClasses(sidebarConfig);
 const sidebarClass = generateSidebarClasses(sidebarConfig);
+const rightSidebarClass = sidebarConfig.isBothSidebars ? generateRightSidebarClasses(sidebarConfig) : "";
 const mainContentClass = generateMainContentClasses(sidebarConfig);
 
 // 检查是否应该启用半透明效果
@@ -310,18 +313,46 @@ const transparentClass = shouldEnableTransparency
             </a>}
 
 
-            {(sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && <SideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></SideBar>}
-
-            <main id="swup-container" class={`${mainContentClass} transition-main`}>
-                <div id="content-wrapper" class="onload-animation transition-leaving">
-                    <!-- the overflow-hidden here prevent long text break the layout-->
-                    <!-- make id different from windows.swup global property -->
-                    <slot></slot>
-                    <div class="footer col-span-2 onload-animation hidden lg:block">
-                        <Footer></Footer>
-                    </div>
-                </div>
-            </main>
+            {/* 渲染侧边栏 - 根据配置决定使用单侧或双侧边栏 */}
+            {sidebarConfig.isBothSidebars ? (
+                <>
+                    {/* 左侧边栏 */}
+                    {sidebarConfig.hasLeftComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                        <LeftSideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></LeftSideBar>
+                    )}
+                    
+                    {/* 主内容区 */}
+                    <main id="swup-container" class={`${mainContentClass} transition-main`}>
+                        <div id="content-wrapper" class="onload-animation transition-leaving">
+                            <slot></slot>
+                            <div class="footer col-span-2 onload-animation hidden lg:block">
+                                <Footer></Footer>
+                            </div>
+                        </div>
+                    </main>
+                    
+                    {/* 右侧边栏 */}
+                    {sidebarConfig.hasRightComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                        <RightSideBar class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></RightSideBar>
+                    )}
+                </>
+            ) : (
+                <>
+                    {/* 单侧边栏布局 */}
+                    {(sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                        <SideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></SideBar>
+                    )}
+                    
+                    <main id="swup-container" class={`${mainContentClass} transition-main`}>
+                        <div id="content-wrapper" class="onload-animation transition-leaving">
+                            <slot></slot>
+                            <div class="footer col-span-2 onload-animation hidden lg:block">
+                                <Footer></Footer>
+                            </div>
+                        </div>
+                    </main>
+                </>
+            )}
 
             <div class="footer col-span-2 onload-animation block lg:hidden">
                 <Footer></Footer>
