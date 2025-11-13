@@ -30,6 +30,9 @@ export type SiteConfig = {
   // 字体配置
   font: FontConfig;
 
+  // 站点开始日期，用于计算运行天数
+  siteStartDate?: string; // 格式: "YYYY-MM-DD"
+
   // 添加bangumi配置
   bangumi?: {
     userId?: string; // Bangumi用户ID

@@ -5,14 +5,17 @@ import { i18n } from "@/i18n/translation";
 import { getSortedPosts } from "@/utils/content-utils";
 import { getCategoryList, getTagList } from "@/utils/content-utils";
 import WidgetLayout from "./WidgetLayout.astro";
+import { siteConfig } from "@/config";
 
 interface Props {
   class?: string;
   style?: string;
-  siteStartDate?: string; // 站点开始日期，格式: "2024-01-01"
 }
 
-const { class: className, style, siteStartDate = "2024-01-01" } = Astro.props;
+const { class: className, style } = Astro.props;
+
+// 从配置中获取站点开始日期
+const siteStartDate = siteConfig.siteStartDate || "2024-01-01";
 
 // 获取所有文章
 const posts = await getSortedPosts();
