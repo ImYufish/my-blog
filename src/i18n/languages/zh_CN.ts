@@ -103,6 +103,7 @@ export const zh_CN: Translation = {
   // 番组数据更新
   [Key.bangumiLastUpdated]: "数据更新于",
   [Key.bangumiUpdatedAt]: "构建时间",
+  [Key.bangumiDataStatic]: "静态数据",
   
   // 动漫状态
   [Key.animeStatusAll]: "全部",
@@ -208,4 +209,15 @@ export const zh_CN: Translation = {
   [Key.sponsorGoTo]: "前往赞助",
   [Key.sponsorButton]: "赞助支持",
   [Key.sponsorButtonText]: "如果这篇文章对你有帮助，欢迎赞助支持！",
+
+  // 站点统计
+  [Key.siteStats]: "站点统计",
+  [Key.siteStatsPostCount]: "文章数目",
+  [Key.siteStatsCategoryCount]: "分类数目",
+  [Key.siteStatsTagCount]: "标签数目",
+  [Key.siteStatsTotalWords]: "博文字数",
+  [Key.siteStatsRunningDays]: "运行时长",
+  [Key.siteStatsLastUpdate]: "最后活动",
+  [Key.siteStatsDaysAgo]: "{days} 天前",
+  [Key.siteStatsDays]: "{days} 天",
 };

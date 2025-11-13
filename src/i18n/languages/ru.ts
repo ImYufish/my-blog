@@ -104,6 +104,7 @@ export const ru: Translation = {
   // Обновление данных Бангуми
   [Key.bangumiLastUpdated]: "Данные обновлены",
   [Key.bangumiUpdatedAt]: "Время сборки",
+  [Key.bangumiDataStatic]: "Статические данные",
   
   // Статус аниме
   [Key.animeStatusAll]: "Все",
@@ -213,5 +214,16 @@ export const ru: Translation = {
   [Key.sponsorGoTo]: "Перейти к спонсору",
   [Key.sponsorButton]: "Поддержка",
   [Key.sponsorButtonText]: "Если эта статья вам помогла, добро пожаловать поддержать!",
+
+  // Статистика сайта
+  [Key.siteStats]: "Статистика сайта",
+  [Key.siteStatsPostCount]: "Количество статей",
+  [Key.siteStatsCategoryCount]: "Количество категорий",
+  [Key.siteStatsTagCount]: "Количество тегов",
+  [Key.siteStatsTotalWords]: "Слов в блоге",
+  [Key.siteStatsRunningDays]: "Дней работы",
+  [Key.siteStatsLastUpdate]: "Последняя активность",
+  [Key.siteStatsDaysAgo]: "{days} дней назад",
+  [Key.siteStatsDays]: "{days} дней",
 };
 

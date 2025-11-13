@@ -205,6 +205,17 @@ enum I18nKey {
   sponsorGoTo = "sponsorGoTo",
   sponsorButton = "sponsorButton",
   sponsorButtonText = "sponsorButtonText",
+
+  // 站点统计
+  siteStats = "siteStats",
+  siteStatsPostCount = "siteStatsPostCount",
+  siteStatsCategoryCount = "siteStatsCategoryCount",
+  siteStatsTagCount = "siteStatsTagCount",
+  siteStatsTotalWords = "siteStatsTotalWords",
+  siteStatsRunningDays = "siteStatsRunningDays",
+  siteStatsLastUpdate = "siteStatsLastUpdate",
+  siteStatsDaysAgo = "siteStatsDaysAgo",
+  siteStatsDays = "siteStatsDays",
 }
 
 export default I18nKey;

@@ -106,6 +106,7 @@ export const zh_TW: Translation = {
   // 番組數據更新
   [Key.bangumiLastUpdated]: "數據更新於",
   [Key.bangumiUpdatedAt]: "構建時間",
+  [Key.bangumiDataStatic]: "靜態數據",
   
   // 動漫狀態
   [Key.animeStatusAll]: "全部",
@@ -210,4 +211,15 @@ export const zh_TW: Translation = {
   [Key.sponsorGoTo]: "前往贊助",
   [Key.sponsorButton]: "贊助支持",
   [Key.sponsorButtonText]: "如果這篇文章對你有幫助，歡迎贊助支持！",
+
+  // 站點統計
+  [Key.siteStats]: "站點統計",
+  [Key.siteStatsPostCount]: "文章數目",
+  [Key.siteStatsCategoryCount]: "分類數目",
+  [Key.siteStatsTagCount]: "標籤數目",
+  [Key.siteStatsTotalWords]: "博文字數",
+  [Key.siteStatsRunningDays]: "運行時長",
+  [Key.siteStatsLastUpdate]: "最後活動",
+  [Key.siteStatsDaysAgo]: "{days} 天前",
+  [Key.siteStatsDays]: "{days} 天",
 };

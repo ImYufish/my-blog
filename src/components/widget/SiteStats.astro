@@ -64,41 +64,41 @@ function formatNumber(num: number): string {
 const stats = [
   {
     icon: "material-symbols:article-outline",
-    label: "文章数目",
+    label: i18n(I18nKey.siteStatsPostCount),
     value: posts.length,
   },
   {
     icon: "material-symbols:folder-outline",
-    label: "分类数目",
+    label: i18n(I18nKey.siteStatsCategoryCount),
     value: categories.length,
   },
   {
     icon: "material-symbols:label-outline",
-    label: "标签数目",
+    label: i18n(I18nKey.siteStatsTagCount),
     value: tags.length,
   },
   {
     icon: "material-symbols:text-ad-outline-rounded",
-    label: "总字数",
+    label: i18n(I18nKey.siteStatsTotalWords),
     value: totalWords,
     formatted: true
   },
   {
     icon: "material-symbols:calendar-clock-outline",
-    label: "运行天数",
+    label: i18n(I18nKey.siteStatsRunningDays),
     value: diffDays,
-    suffix: " 天"
+    suffix: i18n(I18nKey.siteStatsDays).replace("{days}", "")
   },
   {
     icon: "material-symbols:ecg-heart-outline",
-    label: "最后活动",
+    label: i18n(I18nKey.siteStatsLastUpdate),
     value: daysSinceLastUpdate,
-    suffix: " 天前"
+    suffix: i18n(I18nKey.siteStatsDaysAgo).replace("{days}", "")
   }
 ];
 ---
 
-<WidgetLayout name="站点统计" id="site-stats" class={className} style={style}>
+<WidgetLayout name={i18n(I18nKey.siteStats)} id="site-stats" class={className} style={style}>
   <div class="flex flex-col gap-2">
     {stats.map((stat) => (
       <div class="flex items-center justify-between group hover:bg-[var(--btn-plain-bg-hover)] rounded-lg px-3 py-1.5 transition-colors">

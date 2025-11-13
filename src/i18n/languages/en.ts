@@ -104,6 +104,7 @@ export const en: Translation = {
   // Bangumi Data Update
   [Key.bangumiLastUpdated]: "Data updated at",
   [Key.bangumiUpdatedAt]: "Build time",
+  [Key.bangumiDataStatic]: "Static data",
   
   // Anime Status
   [Key.animeStatusAll]: "All",
@@ -213,4 +214,15 @@ export const en: Translation = {
   [Key.sponsorGoTo]: "Go to Sponsor",
   [Key.sponsorButton]: "Support",
   [Key.sponsorButtonText]: "If this article helped you, welcome to support!",
+
+  // Site Statistics
+  [Key.siteStats]: "Site Statistics",
+  [Key.siteStatsPostCount]: "Posts Count",
+  [Key.siteStatsCategoryCount]: "Categories Count",
+  [Key.siteStatsTagCount]: "Tags Count",
+  [Key.siteStatsTotalWords]: "Blog Words",
+  [Key.siteStatsRunningDays]: "Running Days",
+  [Key.siteStatsLastUpdate]: "Last Activity",
+  [Key.siteStatsDaysAgo]: "{days} days ago",
+  [Key.siteStatsDays]: "{days} days",
 };

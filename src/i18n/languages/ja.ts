@@ -105,6 +105,7 @@ export const ja: Translation = {
   // バングミデータ更新
   [Key.bangumiLastUpdated]: "データ更新",
   [Key.bangumiUpdatedAt]: "ビルド時間",
+  [Key.bangumiDataStatic]: "静的データ",
   
   // アニメ状態
   [Key.animeStatusAll]: "すべて",
@@ -212,4 +213,15 @@ export const ja: Translation = {
   [Key.sponsorGoTo]: "スポンサーへ",
   [Key.sponsorButton]: "サポート",
   [Key.sponsorButtonText]: "この記事が役に立ったなら、サポートをお願いします！",
+
+  // サイト統計
+  [Key.siteStats]: "サイト統計",
+  [Key.siteStatsPostCount]: "記事数",
+  [Key.siteStatsCategoryCount]: "カテゴリー数",
+  [Key.siteStatsTagCount]: "タグ数",
+  [Key.siteStatsTotalWords]: "ブログ文字数",
+  [Key.siteStatsRunningDays]: "運用日数",
+  [Key.siteStatsLastUpdate]: "最終活動",
+  [Key.siteStatsDaysAgo]: "{days} 日前",
+  [Key.siteStatsDays]: "{days} 日",
 };
