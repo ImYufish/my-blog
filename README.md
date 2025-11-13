@@ -24,12 +24,16 @@
 
 🔧 高度可配置: 大部分功能模块均可通过配置文件自定义
 
-<img alt="firefly" src="./docs/images/1.png" />
+<img alt="firefly" src="./docs/images/1.webp" />
 
 <table>
   <tr>
-    <td valign="top"><img src="./docs/images/2.png"></td>
-    <td valign="top"><img src="./docs/images/3.png"></td>
+    <td valign="top"><img src="./docs/images/left.webp"></td>
+    <td valign="top"><img src="./docs/images/right.webp"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="./docs/images/both.webp"></td>
+    <td valign="top"><img src="./docs/images/grid.webp"></td>
   </tr>
  </table>
 

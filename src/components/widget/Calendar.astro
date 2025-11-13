@@ -1,6 +1,8 @@
 ---
 import { getSortedPosts } from "@/utils/content-utils";
 import WidgetLayout from "./WidgetLayout.astro";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
 
 interface Props {
   class?: string;
@@ -32,11 +34,32 @@ const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 // 获取当月天数
 const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-// 月份名称
-const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+// 月份名称（使用 i18n）
+const monthNames = [
+  i18n(I18nKey.calendarJanuary),
+  i18n(I18nKey.calendarFebruary),
+  i18n(I18nKey.calendarMarch),
+  i18n(I18nKey.calendarApril),
+  i18n(I18nKey.calendarMay),
+  i18n(I18nKey.calendarJune),
+  i18n(I18nKey.calendarJuly),
+  i18n(I18nKey.calendarAugust),
+  i18n(I18nKey.calendarSeptember),
+  i18n(I18nKey.calendarOctober),
+  i18n(I18nKey.calendarNovember),
+  i18n(I18nKey.calendarDecember)
+];
 
-// 星期名称（简写）
-const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+// 星期名称（简写，使用 i18n）
+const weekDays = [
+  i18n(I18nKey.calendarSunday),
+  i18n(I18nKey.calendarMonday),
+  i18n(I18nKey.calendarTuesday),
+  i18n(I18nKey.calendarWednesday),
+  i18n(I18nKey.calendarThursday),
+  i18n(I18nKey.calendarFriday),
+  i18n(I18nKey.calendarSaturday)
+];
 
 // 生成日历格子数据
 const calendarDays: Array<{day: number | null, hasPost: boolean, count: number, dateKey: string}> = [];

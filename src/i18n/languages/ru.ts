@@ -225,5 +225,25 @@ export const ru: Translation = {
   [Key.siteStatsLastUpdate]: "Последняя активность",
   [Key.siteStatsDaysAgo]: "{days} дней назад",
   [Key.siteStatsDays]: "{days} дней",
-};
 
+  // Компонент календаря
+  [Key.calendarSunday]: "Вс",
+  [Key.calendarMonday]: "Пн",
+  [Key.calendarTuesday]: "Вт",
+  [Key.calendarWednesday]: "Ср",
+  [Key.calendarThursday]: "Чт",
+  [Key.calendarFriday]: "Пт",
+  [Key.calendarSaturday]: "Сб",
+  [Key.calendarJanuary]: "Янв",
+  [Key.calendarFebruary]: "Фев",
+  [Key.calendarMarch]: "Мар",
+  [Key.calendarApril]: "Апр",
+  [Key.calendarMay]: "Май",
+  [Key.calendarJune]: "Июн",
+  [Key.calendarJuly]: "Июл",
+  [Key.calendarAugust]: "Авг",
+  [Key.calendarSeptember]: "Сен",
+  [Key.calendarOctober]: "Окт",
+  [Key.calendarNovember]: "Ноя",
+  [Key.calendarDecember]: "Дек",
+};
