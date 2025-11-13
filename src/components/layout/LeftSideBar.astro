@@ -17,13 +17,9 @@ interface Props {
 
 const { class: className, headings } = Astro.props;
 
-// 判断当前是否为桌面端（通过 className 或其他方式）
-// 在小于1024px时，获取所有组件；在桌面端只获取左侧组件
-const isDesktopOnly = false; // 由于是服务端渲染，这里统一获取所有组件，通过CSS控制显示
-
-// 获取所有组件（移动端和平板端需要），桌面端通过CSS hidden类过滤
-const topComponents = widgetManager.getComponentsByPosition("top");
-const stickyComponents = widgetManager.getComponentsByPosition("sticky");
+// 获取左侧边栏的组件列表
+const topComponents = widgetManager.getComponentsByPosition("top", "left");
+const stickyComponents = widgetManager.getComponentsByPosition("sticky", "left");
 
 // 提取客户端需要的数据
 const sidebarConfig = {
@@ -52,19 +48,7 @@ function renderComponent(component: any, index: number, _components: any[]) {
     componentMap[component.type as keyof typeof componentMap];
   if (!ComponentToRender) return null;
 
-  let componentClass = widgetManager.getComponentClass(component, index);
-  
-  // 对于右侧组件，在桌面端隐藏，在移动端和平板端显示
-  // widgetManager已经自动添加了 "hidden lg:block"，我们需要反转这个逻辑
-  // 使其在移动端和平板端显示，在桌面端仅显示左侧组件
-  if (component.sidebar === "right") {
-    // 移除自动添加的 "hidden lg:block"，改为 "block lg:hidden"
-    componentClass = componentClass
-      .replace(/hidden\s+lg:block/g, 'block lg:hidden')
-      .replace(/\s+hidden\s+/g, ' ')
-      .trim();
-  }
-  
+  const componentClass = widgetManager.getComponentClass(component, index);
   const componentStyle = widgetManager.getComponentStyle(component, index);
 
   return {
