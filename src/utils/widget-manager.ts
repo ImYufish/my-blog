@@ -60,11 +60,18 @@ export class WidgetManager {
     );
     
     // 如果指定了侧边栏位置，则进一步过滤
-    if (sidebar && this.config.position === "both") {
+    if (sidebar) {
       components = components.filter((component) => {
         // 如果组件没有指定 sidebar 属性,默认分配到左侧
         const componentSidebar = component.sidebar || "left";
         return componentSidebar === sidebar;
+      });
+    } else if (this.config.position === "left" || this.config.position === "right") {
+      // 单侧边栏模式下，只显示对应侧的组件
+      const currentSidebar = this.config.position;
+      components = components.filter((component) => {
+        const componentSidebar = component.sidebar || "left";
+        return componentSidebar === currentSidebar;
       });
     }
     
