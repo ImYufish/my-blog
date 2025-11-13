@@ -320,21 +320,6 @@ const transparentClass = shouldEnableTransparency
                     {sidebarConfig.hasLeftComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
                         <LeftSideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></LeftSideBar>
                     )}
-                    
-                    {/* 主内容区 */}
-                    <main id="swup-container" class={`${mainContentClass} transition-main`}>
-                        <div id="content-wrapper" class="onload-animation transition-leaving">
-                            <slot></slot>
-                            <div class="footer col-span-2 onload-animation hidden lg:block">
-                                <Footer></Footer>
-                            </div>
-                        </div>
-                    </main>
-                    
-                    {/* 右侧边栏 */}
-                    {sidebarConfig.hasRightComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
-                        <RightSideBar class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></RightSideBar>
-                    )}
                 </>
             ) : (
                 <>
@@ -342,16 +327,22 @@ const transparentClass = shouldEnableTransparency
                     {(sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
                         <SideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></SideBar>
                     )}
-                    
-                    <main id="swup-container" class={`${mainContentClass} transition-main`}>
-                        <div id="content-wrapper" class="onload-animation transition-leaving">
-                            <slot></slot>
-                            <div class="footer col-span-2 onload-animation hidden lg:block">
-                                <Footer></Footer>
-                            </div>
-                        </div>
-                    </main>
                 </>
+            )}
+                    
+            {/* 主内容区 - 始终渲染，确保 Swup 容器存在 */}
+            <main id="swup-container" class={`${mainContentClass} transition-main`}>
+                <div id="content-wrapper" class="onload-animation transition-leaving">
+                    <slot></slot>
+                    <div class="footer col-span-2 onload-animation hidden lg:block">
+                        <Footer></Footer>
+                    </div>
+                </div>
+            </main>
+            
+            {/* 右侧边栏 - 仅双侧边栏模式 */}
+            {sidebarConfig.isBothSidebars && sidebarConfig.hasRightComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                <RightSideBar class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></RightSideBar>
             )}
 
             <div class="footer col-span-2 onload-animation block lg:hidden">
