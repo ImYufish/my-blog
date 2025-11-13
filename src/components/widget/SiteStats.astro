@@ -104,9 +104,9 @@ const stats = [
 <WidgetLayout name={i18n(I18nKey.siteStats)} id="site-stats" class={className} style={style}>
   <div class="flex flex-col gap-2">
     {stats.map((stat) => (
-      <div class="flex items-center justify-between group hover:bg-[var(--btn-plain-bg-hover)] rounded-lg px-3 py-1.5 transition-colors">
+      <div class="flex items-center justify-between px-3 py-1.5">
         <div class="flex items-center gap-2.5">
-          <div class="text-[var(--primary)] text-xl transition-transform group-hover:scale-110">
+          <div class="text-[var(--primary)] text-xl">
             <Icon name={stat.icon} />
           </div>
           <span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm">
@@ -127,10 +127,3 @@ const stats = [
     ))}
   </div>
 </WidgetLayout>
-
-<style>
-  /* 添加一些额外的样式 */
-  .flex:hover {
-    transform: translateX(2px);
-  }
-</style>
