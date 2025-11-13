@@ -7,6 +7,7 @@ import Profile from "@/components/content/Profile.astro";
 import Tags from "@/components/widget/Tags.astro";
 import TOC from "@/components/widget/TOC.astro";
 import Advertisement from "@/components/widget/Advertisement.astro";
+import SiteStats from "@/components/widget/SiteStats.astro";
 
 interface Props {
   class?: string;
@@ -38,6 +39,7 @@ const componentMap = {
   tags: Tags,
   toc: TOC,
   advertisement: Advertisement,
+  stats: SiteStats,
 };
 
 // 渲染组件的辅助函数

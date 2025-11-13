@@ -300,6 +300,7 @@ export type WidgetComponentType =
   | "tags"
   | "toc"
   | "advertisement"
+  | "stats"
   | "custom";
 
 export type WidgetComponentConfig = {
