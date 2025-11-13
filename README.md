@@ -26,16 +26,7 @@
 
 <img alt="firefly" src="./docs/images/1.webp" />
 
-<table>
-  <tr>
-    <td valign="top"><img src="./docs/images/left.webp"></td>
-    <td valign="top"><img src="./docs/images/right.webp"></td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="./docs/images/both.webp"></td>
-    <td valign="top"><img src="./docs/images/grid.webp"></td>
-  </tr>
- </table>
+**更多布局配置及演示请查看：[https://firefly.cuteleaf.cn/posts/layout/firefly-layout-system/](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 
 ## ✨ 功能特性
 
