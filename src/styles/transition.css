@@ -71,10 +71,18 @@ html.is-animating .transition-swup-fade {
     }
 }
 
-/* 页面加载动画 - yukina风格 */
+/* 页面加载动画  */
 .onload-animation {
     opacity: 0;
     animation: fade-in-up 300ms ease-out forwards;
+}
+
+/* 横幅模式下的侧边栏动画优化 - 禁用位移变换避免与动态top冲突 */
+.enable-banner #left-sidebar-sticky .onload-animation,
+.enable-banner #right-sidebar-sticky .onload-animation,
+.enable-banner #left-sidebar-sticky-desktop .onload-animation,
+.enable-banner #left-sidebar-sticky-mobile .onload-animation {
+    animation: fade-in 300ms ease-out forwards;
 }
 
 .onload-animation-fade-in {
