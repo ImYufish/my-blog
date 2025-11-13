@@ -157,26 +157,9 @@ export class WidgetManager {
     }
 
     // 双侧边栏模式下，右侧边栏的组件在平板端自动隐藏
-    // 使用 Tailwind 标准断点：md(768px) 到 lg(1024px) 之间隐藏
+    // 使用 Tailwind 标准断点：lg(1024px) 以下全部隐藏
     if (this.config.position === "both" && component.sidebar === "right") {
-      classes.push("md:hidden", "lg:block");
-    }
-
-    // 添加响应式隐藏类名（组件自定义配置）
-    if (component.responsive?.hidden) {
-      component.responsive.hidden.forEach((device) => {
-        switch (device) {
-          case "mobile":
-            classes.push("hidden", "md:block");
-            break;
-          case "tablet":
-            classes.push("md:hidden", "lg:block");
-            break;
-          case "desktop":
-            classes.push("lg:hidden");
-            break;
-        }
-      });
+      classes.push("hidden", "lg:block");
     }
 
     return classes.join(" ");
