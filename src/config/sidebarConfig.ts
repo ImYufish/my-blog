@@ -8,7 +8,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   // 是否启用侧边栏功能
   enable: true,
 
-  // 侧边栏位置：left=左侧，right=右侧，both=双侧，开启后网格（双列）模式将无法使用
+  // 侧边栏位置：left=左侧，right=右侧，both=双侧，开启双侧后网格（双列）模式将无法使用
   position: "both",
 
   // 侧边栏组件配置列表
@@ -94,8 +94,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       enable: true,
       // 组件显示顺序
       order: 6,
-      // 组件位置："sticky" 表示粘性定位
-      position: "sticky",
+      // 组件位置："top" 表示固定在顶部
+      position: "top",
       // 所在侧边栏：右侧
       sidebar: "right",
       // CSS 类名
@@ -187,6 +187,16 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       tablet: "sidebar",
       // 桌面端：显示侧边栏
       desktop: "sidebar",
+    },
+    // 自动隐藏配置
+    autoHide: {
+      // 是否启用自动隐藏功能
+      enable: true,
+      // 隐藏哪一侧的侧边栏：left=左侧，right=右侧
+      hideSide: "right",
+      // 触发隐藏的断点：lg=1024px, xl=1280px, 2xl=1536px
+      // 屏幕宽度小于此断点时隐藏指定侧边栏
+      breakpoint: "xl",
     },
   },
 };
