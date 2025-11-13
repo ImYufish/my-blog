@@ -304,6 +304,7 @@ export type WidgetComponentType =
   | "toc"
   | "advertisement"
   | "stats"
+  | "calendar"
   | "custom";
 
 export type WidgetComponentConfig = {

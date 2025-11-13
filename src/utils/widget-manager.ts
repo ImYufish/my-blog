@@ -16,6 +16,7 @@ export const WIDGET_COMPONENT_MAP = {
   toc: "../components/widget/TOC.astro",
   advertisement: "../components/widget/Advertisement.astro",
   stats: "../components/widget/SiteStats.astro",
+  calendar: "../components/widget/Calendar.astro",
   custom: null, // 自定义组件需要在配置中指定路径
 } as const;
 

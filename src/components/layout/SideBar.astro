@@ -8,6 +8,7 @@ import Tags from "@/components/widget/Tags.astro";
 import TOC from "@/components/widget/TOC.astro";
 import Advertisement from "@/components/widget/Advertisement.astro";
 import SiteStats from "@/components/widget/SiteStats.astro";
+import Calendar from "@/components/widget/Calendar.astro";
 
 interface Props {
   class?: string;
@@ -40,6 +41,7 @@ const componentMap = {
   toc: TOC,
   advertisement: Advertisement,
   stats: SiteStats,
+  calendar: Calendar,
 };
 
 // 渲染组件的辅助函数

@@ -1,0 +1,209 @@
+---
+import { getSortedPosts } from "@/utils/content-utils";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+  class?: string;
+  style?: string;
+}
+
+const { class: className, style } = Astro.props;
+
+// 获取所有文章
+const posts = await getSortedPosts();
+
+// 获取当前日期
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth();
+
+// 创建文章日期映射（格式：YYYY-MM-DD -> 文章列表）
+const postDateMap = new Map<string, typeof posts>();
+posts.forEach(post => {
+  const date = new Date(post.data.published);
+  const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const existingPosts = postDateMap.get(dateKey) || [];
+  postDateMap.set(dateKey, [...existingPosts, post]);
+});
+
+// 获取月份的第一天是星期几（0=周日，6=周六）
+const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+// 获取当月天数
+const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+// 月份名称
+const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+
+// 星期名称（简写）
+const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+
+// 生成日历格子数据
+const calendarDays: Array<{day: number | null, hasPost: boolean, count: number, dateKey: string}> = [];
+
+// 添加空白格子（月初空白）
+for (let i = 0; i < firstDayOfMonth; i++) {
+  calendarDays.push({ day: null, hasPost: false, count: 0, dateKey: "" });
+}
+
+// 添加每一天
+for (let day = 1; day <= daysInMonth; day++) {
+  const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const count = postDateMap.get(dateKey)?.length || 0;
+  calendarDays.push({
+    day,
+    hasPost: count > 0,
+    count,
+    dateKey
+  });
+}
+
+// 获取当月所有文章
+const currentMonthPosts = posts.filter(post => {
+  const date = new Date(post.data.published);
+  return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+});
+
+// 序列化当月文章数据供客户端使用
+const currentMonthPostsData = currentMonthPosts.map(post => ({
+  slug: post.slug,
+  title: post.data.title
+}));
+---
+
+<WidgetLayout name={`${currentYear}年${monthNames[currentMonth]}`} id="calendar-widget" class={className} style={style}>
+  <div class="calendar-container">
+    <!-- 星期标题 -->
+    <div class="weekdays grid grid-cols-7 gap-1 mb-2">
+      {weekDays.map(day => (
+        <div class="text-center text-xs text-neutral-500 dark:text-neutral-400 font-medium">
+          {day}
+        </div>
+      ))}
+    </div>
+    
+    <!-- 日历格子 -->
+    <div class="calendar-grid grid grid-cols-7 gap-1">
+      {calendarDays.map(({day, hasPost, count, dateKey}) => (
+        <div
+          class:list={[
+            "calendar-day aspect-square flex items-center justify-center rounded text-sm relative cursor-pointer",
+            {
+              "text-neutral-400 dark:text-neutral-600": !day,
+              "text-neutral-700 dark:text-neutral-300": day && !hasPost,
+              "text-neutral-900 dark:text-neutral-100 font-bold": hasPost,
+              "ring-2 ring-[var(--primary)]": day === now.getDate() && currentMonth === now.getMonth(),
+            }
+          ]}
+          data-date={dateKey}
+          data-has-post={hasPost}
+        >
+          {day || ''}
+          {hasPost && (
+            <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--primary)]"></span>
+          )}
+          {hasPost && count > 1 && (
+            <span class="absolute top-0 right-0 text-[10px] text-[var(--primary)] font-bold">
+              {count}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+    
+    <!-- 文章列表（默认显示当月所有文章） -->
+    <div id="calendar-posts" class="mt-3">
+      {currentMonthPosts.length > 0 && (
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mb-2" id="calendar-posts-divider"></div>
+      )}
+      <div class="flex flex-col gap-1" id="calendar-posts-list">
+        {currentMonthPosts.map(post => (
+          <a href={`/posts/${post.slug}/`} class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
+            {post.data.title}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</WidgetLayout>
+
+<script define:vars={{ postDateMap: Object.fromEntries(postDateMap), currentMonthPostsData }}>
+  // 日历交互逻辑
+  const calendarDays = document.querySelectorAll('.calendar-day[data-date]');
+  const postsContainer = document.getElementById('calendar-posts');
+  const postsList = document.getElementById('calendar-posts-list');
+  const divider = document.getElementById('calendar-posts-divider');
+  
+  let currentSelectedDay = null;
+  
+  // 恢复显示当月所有文章的函数
+  function showMonthlyPosts() {
+    if (postsList) {
+      postsList.innerHTML = currentMonthPostsData.map(post => `
+        <a href="/posts/${post.slug}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
+          ${post.title}
+        </a>
+      `).join('');
+      
+      // 显示分割线（如果有文章）
+      if (divider && currentMonthPostsData.length > 0) {
+        divider.style.display = 'block';
+      }
+    }
+  }
+  
+  calendarDays.forEach(dayElement => {
+    dayElement.addEventListener('click', () => {
+      const dateKey = dayElement.getAttribute('data-date');
+      const hasPost = dayElement.getAttribute('data-has-post') === 'true';
+      
+      if (!hasPost || !dateKey) return;
+      
+      // 切换选中状态
+      if (currentSelectedDay === dayElement) {
+        // 取消选中，恢复显示当月所有文章
+        dayElement.classList.remove('bg-[var(--primary)]', 'bg-opacity-10');
+        currentSelectedDay = null;
+        showMonthlyPosts();
+        return;
+      }
+      
+      // 移除之前选中的样式
+      if (currentSelectedDay) {
+        currentSelectedDay.classList.remove('bg-[var(--primary)]', 'bg-opacity-10');
+      }
+      
+      // 添加选中样式
+      dayElement.classList.add('bg-[var(--primary)]', 'bg-opacity-10');
+      currentSelectedDay = dayElement;
+      
+      // 获取该日期的文章
+      const posts = postDateMap[dateKey] || [];
+      
+      if (posts.length > 0 && postsList && postsContainer) {
+        // 渲染文章列表
+        postsList.innerHTML = posts.map(post => `
+          <a href="/posts/${post.slug}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
+            ${post.data.title}
+          </a>
+        `).join('');
+        
+        // 显示分割线
+        if (divider) {
+          divider.style.display = 'block';
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .calendar-day {
+    transition: all 0.2s ease;
+    min-height: 32px;
+  }
+  
+  .calendar-day[data-has-post="true"]:hover {
+    transform: translateY(-2px);
+  }
+</style>

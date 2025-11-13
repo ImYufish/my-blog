@@ -104,6 +104,22 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       animationDelay: 200,
     },
     {
+      // 组件类型：日历组件
+      type: "calendar",
+      // 是否启用该组件
+      enable: true,
+      // 组件显示顺序
+      order: 7,
+      // 组件位置："sticky" 表示粘性定位
+      position: "sticky",
+      // 所在侧边栏：右侧
+      sidebar: "right",
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 250,
+    },
+    {
       // 组件类型：广告栏组件 1
       type: "advertisement",
       // 是否启用该组件
