@@ -188,15 +188,5 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 桌面端：显示侧边栏
       desktop: "sidebar",
     },
-    // 自动隐藏配置
-    autoHide: {
-      // 是否启用自动隐藏功能
-      enable: true,
-      // 隐藏哪一侧的侧边栏：left=左侧，right=右侧
-      hideSide: "right",
-      // 触发隐藏的断点：lg=1024px, xl=1280px, 2xl=1536px
-      // 屏幕宽度小于此断点时隐藏指定侧边栏
-      breakpoint: "xl",
-    },
   },
 };

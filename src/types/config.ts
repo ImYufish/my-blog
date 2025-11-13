@@ -345,11 +345,6 @@ export type SidebarLayoutConfig = {
       tablet: "sidebar" | "bottom" | "drawer"; // 平板端布局模式
       desktop: "sidebar"; // 桌面端布局模式
     };
-    autoHide?: {
-      enable: boolean; // 是否启用自动隐藏
-      hideSide: "left" | "right"; // 隐藏哪一侧的侧边栏
-      breakpoint: "lg" | "xl" | "2xl"; // 触发隐藏的断点：lg=1024px, xl=1280px, 2xl=1536px
-    };
   };
 };
 
