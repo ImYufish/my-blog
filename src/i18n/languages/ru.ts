@@ -217,10 +217,10 @@ export const ru: Translation = {
 
   // Статистика сайта
   [Key.siteStats]: "Статистика сайта",
-  [Key.siteStatsPostCount]: "Количество статей",
-  [Key.siteStatsCategoryCount]: "Количество категорий",
-  [Key.siteStatsTagCount]: "Количество тегов",
-  [Key.siteStatsTotalWords]: "Слов в блоге",
+  [Key.siteStatsPostCount]: "Статьи",
+  [Key.siteStatsCategoryCount]: "Категории",
+  [Key.siteStatsTagCount]: "Теги",
+  [Key.siteStatsTotalWords]: "Всего слов",
   [Key.siteStatsRunningDays]: "Дней работы",
   [Key.siteStatsLastUpdate]: "Последняя активность",
   [Key.siteStatsDaysAgo]: "{days} дней назад",

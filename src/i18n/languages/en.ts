@@ -217,10 +217,10 @@ export const en: Translation = {
 
   // Site Statistics
   [Key.siteStats]: "Site Statistics",
-  [Key.siteStatsPostCount]: "Posts Count",
-  [Key.siteStatsCategoryCount]: "Categories Count",
-  [Key.siteStatsTagCount]: "Tags Count",
-  [Key.siteStatsTotalWords]: "Blog Words",
+  [Key.siteStatsPostCount]: "Posts",
+  [Key.siteStatsCategoryCount]: "Categories",
+  [Key.siteStatsTagCount]: "Tags",
+  [Key.siteStatsTotalWords]: "Total Words",
   [Key.siteStatsRunningDays]: "Running Days",
   [Key.siteStatsLastUpdate]: "Last Activity",
   [Key.siteStatsDaysAgo]: "{days} days ago",
