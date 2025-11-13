@@ -56,7 +56,8 @@
     }
     
     /* 主内容区域位置调整 - 向上移动以部分遮挡banner */
-    .absolute.w-full.z-30 {
+    /* 仅在 banner 模式下应用，其他模式（全屏壁纸/纯色）使用默认的 5.5rem */
+    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout) {
         top: 65vh !important; /* 向上移动5vh，部分遮挡banner */
         min-height: calc(100vh - 65vh) !important;
     }
@@ -110,7 +111,8 @@
     }
     
     /* 主内容区域位置调整 - 向上移动以部分遮挡banner */
-    .absolute.w-full.z-30 {
+    /* 仅在 banner 模式下应用，其他模式（全屏壁纸/纯色）使用默认的 5.5rem */
+    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout) {
         top: 70vh !important; /* 向上移动5vh，部分遮挡banner */
         min-height: calc(100vh - 70vh) !important;
     }
@@ -163,7 +165,8 @@
     }
     
     /* 主内容区域位置调整 - 向上移动以部分遮挡banner */
-    .absolute.w-full.z-30 {
+    /* 仅在 banner 模式下应用，其他模式（全屏壁纸/纯色）使用默认的 5.5rem */
+    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout) {
         top: 65vh !important; /* 向上移动5vh，部分遮挡banner */
         min-height: calc(100vh - 65vh) !important;
     }
@@ -415,7 +418,8 @@
     }
     
     /* 主内容区域位置调整 - 确保在banner下面，但不影响非首页 */
-    .absolute.w-full.z-30:not(.mobile-main-no-banner) {
+    /* 仅在 banner 模式下应用，其他模式（全屏壁纸/纯色）使用默认的 5.5rem */
+    body.enable-banner .absolute.w-full.z-30:not(.mobile-main-no-banner):not(.no-banner-layout) {
         top: 60vh !important; /* 与banner高度对应 */
         min-height: calc(100vh - 60vh) !important;
     }
