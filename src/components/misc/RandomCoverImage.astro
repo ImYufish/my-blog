@@ -125,8 +125,8 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
   'overflow-hidden relative',
   preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
 ]}> 
-  <!-- 加载指示器：只对随机图API显示 -->
-  {isRandomApiImage && (
+  <!-- 加载指示器：对所有文章封面图片显示 -->
+  {coverImageConfig.loadingIndicatorEnable !== false && (
     <div 
       class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
       style={`background-color: ${coverImageConfig.loading?.backgroundColor || '#fefefe'};`}
@@ -156,6 +156,35 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
       quality={preview ? 80 : 90}
       widths={preview ? [200, 400, 600] : [800, 1200, 1600, 2000]}
       sizes={preview ? "(max-width: 768px) 100vw, 28vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"}
+      onloadstart={`(function(img){
+        const container = img.parentElement;
+        if (container) {
+          const loadingIndicator = container.querySelector('.image-loading-indicator');
+          if (loadingIndicator) {
+            loadingIndicator.classList.remove('hidden');
+            loadingIndicator.style.removeProperty('opacity');
+            loadingIndicator.style.removeProperty('display');
+          }
+        }
+      })(this);`}
+      onload={`(function(img){
+        if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+          setTimeout(function() {
+            const container = img.parentElement;
+            if (container) {
+              const loadingIndicator = container.querySelector('.image-loading-indicator');
+              if (loadingIndicator) {
+                loadingIndicator.style.setProperty('opacity', '0', 'important');
+                loadingIndicator.style.setProperty('transition', 'opacity 0.3s ease-out', 'important');
+                setTimeout(function() {
+                  loadingIndicator.style.setProperty('display', 'none', 'important');
+                  loadingIndicator.classList.add('hidden');
+                }, 300);
+              }
+            }
+          }, 800);
+        }
+      })(this);`}
     />
   )}
   

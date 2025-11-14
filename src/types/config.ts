@@ -293,6 +293,8 @@ export type CoverImageConfig = {
     color?: string; // 文字颜色，默认为白色
     backgroundColor?: string; // 背景颜色，默认为半透明黑色
   };
+  // 加载指示器开关
+	loadingIndicatorEnable: boolean;
 };
 
 // 组件配置类型定义
