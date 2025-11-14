@@ -15,7 +15,7 @@ interface Props {
 const { class: className, style } = Astro.props;
 
 // 从配置中获取站点开始日期
-const siteStartDate = siteConfig.siteStartDate || "2024-01-01";
+const siteStartDate = siteConfig.siteStartDate || "2025-01-01";
 
 // 获取所有文章
 const posts = await getSortedPosts();
@@ -26,13 +26,8 @@ const tags = await getTagList();
 let totalWords = 0;
 for (const post of posts) {
   if (post.body) {
-    // 移除 Markdown 语法和空白字符后计算字数
+    // 移除 Markdown 空白字符后计算字数
     const text = post.body
-      .replace(/```[\s\S]*?```/g, '') // 移除代码块
-      .replace(/`[^`]*`/g, '') // 移除行内代码
-      .replace(/!\[.*?\]\(.*?\)/g, '') // 移除图片
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // 保留链接文本
-      .replace(/[#*_~`>\-+]/g, '') // 移除Markdown符号
       .replace(/\s+/g, ' ') // 合并空白
       .trim();
     
@@ -44,25 +39,13 @@ for (const post of posts) {
   }
 }
 
-// 计算运行天数
-const startDate = new Date(siteStartDate);
-const today = new Date();
-const diffTime = Math.abs(today.getTime() - startDate.getTime());
-const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-// 计算上次更新（最近一篇文章的日期）
-let daysSinceLastUpdate = 0;
-if (posts.length > 0) {
-  // posts已经按日期排序，第一篇是最新的
-  const lastPostDate = new Date(posts[0].data.published);
-  const timeSinceLastPost = Math.abs(today.getTime() - lastPostDate.getTime());
-  daysSinceLastUpdate = Math.floor(timeSinceLastPost / (1000 * 60 * 60 * 24));
-}
-
 // 格式化数字（添加千位分隔符）
 function formatNumber(num: number): string {
   return num.toLocaleString();
 }
+
+// 获取最新文章日期（用于客户端计算）
+const lastPostDate = posts.length > 0 ? posts[0].data.published.toISOString() : null;
 
 const stats = [
   {
@@ -89,14 +72,18 @@ const stats = [
   {
     icon: "material-symbols:calendar-clock-outline",
     label: i18n(I18nKey.siteStatsRunningDays),
-    value: diffDays,
-    suffix: i18n(I18nKey.siteStatsDays).replace("{days}", "")
+    value: 0, // 将由客户端更新
+    suffix: i18n(I18nKey.siteStatsDays).replace("{days}", ""),
+    dynamic: true,
+    id: "running-days"
   },
   {
     icon: "material-symbols:ecg-heart-outline",
     label: i18n(I18nKey.siteStatsLastUpdate),
-    value: daysSinceLastUpdate,
-    suffix: i18n(I18nKey.siteStatsDaysAgo).replace("{days}", "")
+    value: 0, // 将由客户端更新
+    suffix: i18n(I18nKey.siteStatsDaysAgo).replace("{days}", ""),
+    dynamic: true,
+    id: "last-update"
   }
 ];
 ---
@@ -114,7 +101,10 @@ const stats = [
           </span>
         </div>
         <div class="flex items-center">
-          <span class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+          <span 
+            class="text-base font-bold text-neutral-900 dark:text-neutral-100"
+            data-stat-id={stat.id}
+          >
             {stat.formatted ? formatNumber(stat.value) : stat.value}
           </span>
           {stat.suffix && (
@@ -127,3 +117,37 @@ const stats = [
     ))}
   </div>
 </WidgetLayout>
+
+<script define:vars={{ siteStartDate, lastPostDate }}>
+  function updateDynamicStats() {
+    const today = new Date();
+    
+    // 更新运行天数
+    const startDate = new Date(siteStartDate);
+    const diffTime = Math.abs(today.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const runningDaysElement = document.querySelector('[data-stat-id="running-days"]');
+    if (runningDaysElement) {
+      runningDaysElement.textContent = diffDays.toString();
+    }
+    
+    // 更新最后活动时间
+    if (lastPostDate) {
+      const lastPost = new Date(lastPostDate);
+      const timeSinceLastPost = Math.abs(today.getTime() - lastPost.getTime());
+      const daysSinceLastUpdate = Math.floor(timeSinceLastPost / (1000 * 60 * 60 * 24));
+      
+      const lastUpdateElement = document.querySelector('[data-stat-id="last-update"]');
+      if (lastUpdateElement) {
+        lastUpdateElement.textContent = daysSinceLastUpdate.toString();
+      }
+    }
+  }
+  
+  // 页面加载时更新
+  updateDynamicStats();
+  
+  // 每小时更新一次（可选，因为天数变化较慢）
+  setInterval(updateDynamicStats, 60 * 60 * 1000);
+</script>
