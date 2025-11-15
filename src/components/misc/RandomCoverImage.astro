@@ -126,7 +126,7 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
   preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
 ]}> 
   <!-- 加载指示器：对所有文章封面图片显示 -->
-  {coverImageConfig.loadingIndicatorEnable !== false && (
+  {coverImageConfig.loading?.enable !== false && (
     <div 
       class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
       style={`background-color: ${coverImageConfig.loading?.backgroundColor || '#fefefe'};`}

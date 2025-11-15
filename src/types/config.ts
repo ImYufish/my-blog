@@ -15,11 +15,11 @@ export type SiteConfig = {
   keywords?: string[]; // 站点关键词，用于生成 <meta name="keywords">
 
   lang:
-    | "en"
-    | "zh_CN"
-    | "zh_TW"
-    | "ja"
-    | "ru";
+  | "en"
+  | "zh_CN"
+  | "zh_TW"
+  | "ja"
+  | "ru";
 
   themeColor: {
     hue: number;
@@ -253,12 +253,12 @@ export type FontItem = {
   display?: "auto" | "block" | "swap" | "fallback" | "optional"; // font-display 属性
   unicodeRange?: string; // Unicode 范围，用于字体子集化
   format?:
-    | "woff"
-    | "woff2"
-    | "truetype"
-    | "opentype"
-    | "embedded-opentype"
-    | "svg"; // 字体格式，仅当 src 为本地文件时需要
+  | "woff"
+  | "woff2"
+  | "truetype"
+  | "opentype"
+  | "embedded-opentype"
+  | "svg"; // 字体格式，仅当 src 为本地文件时需要
 };
 
 // 字体配置
@@ -281,6 +281,8 @@ export type CoverImageConfig = {
   fallback?: string; // 当API请求失败时的备用图片路径
   // 加载指示器配置
   loading?: {
+    // 加载指示器开关
+    enable: boolean;
     image?: string; // 自定义加载图片路径（相对于public目录），默认 "/assets/images/loading.gif"
     backgroundColor?: string; // 加载指示器背景颜色，默认与loading.gif背景色一致 (#fefefe)
   };
@@ -293,8 +295,6 @@ export type CoverImageConfig = {
     color?: string; // 文字颜色，默认为白色
     backgroundColor?: string; // 背景颜色，默认为半透明黑色
   };
-  // 加载指示器开关
-	loadingIndicatorEnable: boolean;
 };
 
 // 组件配置类型定义
@@ -436,12 +436,12 @@ export type BackgroundWallpaperConfig = {
   mode: "banner" | "overlay" | "none"; // 壁纸模式：banner横幅模式、overlay全屏透明覆盖模式或none纯色背景
   switchable?: boolean; // 是否允许用户通过导航栏切换壁纸模式，默认true
   src:
-    | string
-    | string[]
-    | {
-        desktop?: string | string[];
-        mobile?: string | string[];
-      }; // 支持单个图片、图片数组或分别设置桌面端和移动端图片
+  | string
+  | string[]
+  | {
+    desktop?: string | string[];
+    mobile?: string | string[];
+  }; // 支持单个图片、图片数组或分别设置桌面端和移动端图片
 
   // Banner模式特有配置
   banner?: {
@@ -478,34 +478,34 @@ export type BackgroundWallpaperConfig = {
     };
     credit?: {
       enable:
-        | boolean
-        | {
-            desktop: boolean; // 桌面端是否显示横幅图片来源文本
-            mobile: boolean; // 移动端是否显示横幅图片来源文本
-          }; // 是否显示横幅图片来源文本，支持布尔值或分别设置桌面端和移动端
+      | boolean
+      | {
+        desktop: boolean; // 桌面端是否显示横幅图片来源文本
+        mobile: boolean; // 移动端是否显示横幅图片来源文本
+      }; // 是否显示横幅图片来源文本，支持布尔值或分别设置桌面端和移动端
       text:
-        | string
-        | {
-            desktop: string; // 桌面端显示的来源文本
-            mobile: string; // 移动端显示的来源文本
-          }; // 横幅图片来源文本，支持字符串或分别设置桌面端和移动端
+      | string
+      | {
+        desktop: string; // 桌面端显示的来源文本
+        mobile: string; // 移动端显示的来源文本
+      }; // 横幅图片来源文本，支持字符串或分别设置桌面端和移动端
       url?:
-        | string
-        | {
-            desktop: string; // 桌面端原始艺术品或艺术家页面的 URL 链接
-            mobile: string; // 移动端原始艺术品或艺术家页面的 URL 链接
-          }; // 原始艺术品或艺术家页面的 URL 链接，支持字符串或分别设置桌面端和移动端
+      | string
+      | {
+        desktop: string; // 桌面端原始艺术品或艺术家页面的 URL 链接
+        mobile: string; // 移动端原始艺术品或艺术家页面的 URL 链接
+      }; // 原始艺术品或艺术家页面的 URL 链接，支持字符串或分别设置桌面端和移动端
     };
     navbar?: {
       transparentMode?: "semi" | "full" | "semifull"; // 导航栏透明模式
     };
     waves?: {
       enable:
-        | boolean
-        | {
-            desktop: boolean; // 桌面端是否启用波浪动画效果
-            mobile: boolean; // 移动端是否启用波浪动画效果
-          }; // 是否启用波浪动画效果，支持布尔值或分别设置桌面端和移动端
+      | boolean
+      | {
+        desktop: boolean; // 桌面端是否启用波浪动画效果
+        mobile: boolean; // 移动端是否启用波浪动画效果
+      }; // 是否启用波浪动画效果，支持布尔值或分别设置桌面端和移动端
       performance?: {
         quality: "high" | "medium" | "low"; // 渲染质量：high=高质量，medium=中等质量，low=低质量
         hardwareAcceleration: boolean; // 是否启用硬件加速
