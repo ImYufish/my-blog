@@ -67,5 +67,7 @@ export const coverImageConfig: CoverImageConfig = {
     // 背景颜色
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
+  // 加载指示器开关
+	loadingIndicatorEnable: true,
 };
 
