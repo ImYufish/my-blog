@@ -18,7 +18,7 @@ import { url } from "@/utils/url-utils";
 import { getDefaultBackground, isHomePage } from "@/utils/layout-utils";
 
 import "katex/dist/katex.css";
-import "@/styles/navbar-unified.css";
+import "@/styles/navbar.css";
 import "@/styles/fancybox-custom.css";
 import "@/styles/layout-styles.css";
 import "@/styles/waves.css";
@@ -261,11 +261,14 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 					} else {
 						// banner模式：显示banner，隐藏全屏壁纸
 						if (bannerWrapper) {
-							bannerWrapper.style.display = 'block';
-							// 移动端非首页时隐藏banner
-							if (!isHomePage) {
+							const isMobile = window.innerWidth < 1024;
+							// 移动端非首页时隐藏banner（初始状态直接隐藏，不需要动画）
+							// 桌面端始终显示banner
+							if (isMobile && !isHomePage) {
+								bannerWrapper.style.display = 'none';
 								bannerWrapper.classList.add('mobile-hide-banner');
 							} else {
+								bannerWrapper.style.display = 'block';
 								bannerWrapper.classList.remove('mobile-hide-banner');
 							}
 						}
@@ -278,7 +281,9 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 					// 处理主内容区域位置
 					const mainContentWrapper = document.querySelector('.absolute.w-full.z-30');
 					if (mainContentWrapper) {
-						if (!isHomePage) {
+						const isMobile = window.innerWidth < 1024;
+						// 只在移动端非首页时调整主内容位置
+						if (isMobile && !isHomePage) {
 							mainContentWrapper.classList.add('mobile-main-no-banner');
 						} else {
 							mainContentWrapper.classList.remove('mobile-main-no-banner');
@@ -639,12 +644,15 @@ const setup = () => {
 		}
 
 		// Control mobile banner visibility based on page with improved staging animation
+		// 只在移动端（1024px以下）处理banner隐藏
+		const isMobile = window.innerWidth < 1024;
 		const bannerWrapper = document.getElementById('banner-wrapper')
 		const mainContentWrapper = document.querySelector('.absolute.w-full.z-30')
 		
-		if (bannerWrapper && mainContentWrapper) {
+		if (isMobile && bannerWrapper && mainContentWrapper) {
 			if (isHomePage) {
-				// 首页：延迟移除隐藏类，让banner和内容优雅地出现
+				// 首页：先显示banner，然后移除隐藏类让其优雅出现
+				bannerWrapper.style.display = '';
 				setTimeout(() => {
 					bannerWrapper.classList.remove('mobile-hide-banner')
 				}, 100)
@@ -652,12 +660,26 @@ const setup = () => {
 					mainContentWrapper.classList.remove('mobile-main-no-banner')
 				}, 150)
 			} else {
-				// 非首页：分阶段隐藏，先隐藏banner，再移动内容
-				bannerWrapper.classList.add('mobile-hide-banner')
-				// 延迟移动内容，让banner先完全消失
-				setTimeout(() => {
-					mainContentWrapper.classList.add('mobile-main-no-banner')
-				}, 100)
+				// 非首页：触发动画，banner向上移动消失，同时内容区域下移
+				// 使用 requestAnimationFrame 确保动画触发
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						bannerWrapper.classList.add('mobile-hide-banner')
+						mainContentWrapper.classList.add('mobile-main-no-banner')
+						
+						// 动画完成后设置 display: none 以完全移除
+						setTimeout(() => {
+							bannerWrapper.style.display = 'none';
+						}, 500) // 与 CSS transition 时间匹配
+					})
+				})
+			}
+		} else if (!isMobile && bannerWrapper) {
+			// 桌面端：确保banner正常显示
+			bannerWrapper.style.display = '';
+			bannerWrapper.classList.remove('mobile-hide-banner');
+			if (mainContentWrapper) {
+				mainContentWrapper.classList.remove('mobile-main-no-banner');
 			}
 		}
 

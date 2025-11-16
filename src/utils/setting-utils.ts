@@ -370,22 +370,23 @@ function showBannerMode() {
 	if (bannerWrapper) {
 		// 检查当前是否为首页
 		const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+		const isMobile = window.innerWidth < 1024;
 		
-		// 先设置display，然后使用requestAnimationFrame确保渲染
-		bannerWrapper.style.display = 'block';
-		bannerWrapper.style.setProperty('display', 'block', 'important');
-		requestAnimationFrame(() => {
-			bannerWrapper.classList.remove('hidden');
-			bannerWrapper.classList.remove('opacity-0');
-			bannerWrapper.classList.add('opacity-100');
-			
-			// 移动端非首页时隐藏banner
-			if (!isHomePage) {
-				bannerWrapper.classList.add('mobile-hide-banner');
-			} else {
+		// 移动端非首页时，不显示banner；桌面端始终显示
+		if (isMobile && !isHomePage) {
+			bannerWrapper.style.display = 'none';
+			bannerWrapper.classList.add('mobile-hide-banner');
+		} else {
+			// 首页或桌面端：先设置display，然后使用requestAnimationFrame确保渲染
+			bannerWrapper.style.display = 'block';
+			bannerWrapper.style.setProperty('display', 'block', 'important');
+			requestAnimationFrame(() => {
+				bannerWrapper.classList.remove('hidden');
+				bannerWrapper.classList.remove('opacity-0');
+				bannerWrapper.classList.add('opacity-100');
 				bannerWrapper.classList.remove('mobile-hide-banner');
-			}
-		});
+			});
+		}
 	}
 
 	// 显示横幅图片来源文本
@@ -418,7 +419,9 @@ function showBannerMode() {
 	const mainContentWrapper = document.querySelector('.absolute.w-full.z-30');
 	if (mainContentWrapper) {
 		const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
-		if (!isHomePage) {
+		const isMobile = window.innerWidth < 1024;
+		// 只在移动端非首页时调整主内容位置
+		if (isMobile && !isHomePage) {
 			mainContentWrapper.classList.add('mobile-main-no-banner');
 		} else {
 			mainContentWrapper.classList.remove('mobile-main-no-banner');
