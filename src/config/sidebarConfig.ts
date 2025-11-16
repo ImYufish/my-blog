@@ -10,7 +10,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
   // 侧边栏位置：left=左侧，right=右侧
   // both=双侧，开启双侧后网格（双列）模式将无法使用，且右侧组件会在宽度低于1024px时隐藏
-  position: "left",
+  position: "both",
 
   // 侧边栏组件配置列表
   components: [
