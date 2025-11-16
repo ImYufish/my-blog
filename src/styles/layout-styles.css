@@ -320,7 +320,7 @@
 /* 平板和手机端非首页隐藏banner - 改进的分阶段动画 (1024px以下) */
 @media (max-width: 1023px) {
     #banner-wrapper {
-        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease-out;
+        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease-out;
         transform-origin: top center;
         /* 硬件加速优化 */
         will-change: transform, opacity;
@@ -330,20 +330,30 @@
         -webkit-transform: translateZ(0);
     }
     
-    /* 在文章详情页隐藏banner - 使用向上移动动画而不是 display: none */
     .mobile-hide-banner {
         transform: translateY(-100%) translateZ(0) !important;
         opacity: 0 !important;
         pointer-events: none !important;
-        /* 平滑的上移消失动画 */
-        transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s ease-out !important;
+        /* 快速消失 */
+        transition: transform 0.3s ease-in, opacity 0.2s ease-in !important;
     }
     
-    /* 非首页时，主内容从顶部开始，使用平滑过渡 */
+    /* 手机端非首页时主内容区域从顶部开始 - 延迟出现的动画 */
+    .absolute.w-full.z-30 {
+        transition: top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+        /* 硬件加速优化 */
+        will-change: top;
+        /* 禁用transform以保证back to top 按钮可以显示
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        */
+    }
+    
     .absolute.w-full.z-30.mobile-main-no-banner {
         top: 5.5rem !important;
         min-height: calc(100vh - 5.5rem) !important;
-        transition: top 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+        /* 内容区域快速上移 */
+        transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s !important;
     }
 }
 

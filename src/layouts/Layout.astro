@@ -660,19 +660,12 @@ const setup = () => {
 					mainContentWrapper.classList.remove('mobile-main-no-banner')
 				}, 150)
 			} else {
-				// 非首页：触发动画，banner向上移动消失，同时内容区域下移
-				// 使用 requestAnimationFrame 确保动画触发
-				requestAnimationFrame(() => {
-					requestAnimationFrame(() => {
-						bannerWrapper.classList.add('mobile-hide-banner')
-						mainContentWrapper.classList.add('mobile-main-no-banner')
-						
-						// 动画完成后设置 display: none 以完全移除
-						setTimeout(() => {
-							bannerWrapper.style.display = 'none';
-						}, 500) // 与 CSS transition 时间匹配
-					})
-				})
+				// 非首页：分阶段隐藏，先隐藏banner，再移动内容
+				bannerWrapper.classList.add('mobile-hide-banner')
+				// 延迟移动内容，让banner先完全消失
+				setTimeout(() => {
+					mainContentWrapper.classList.add('mobile-main-no-banner')
+				}, 100)
 			}
 		} else if (!isMobile && bannerWrapper) {
 			// 桌面端：确保banner正常显示
