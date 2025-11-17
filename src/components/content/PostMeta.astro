@@ -15,7 +15,7 @@ export interface Props {
   hideTagsForMobile?: boolean;
   isHome?: boolean;
   className?: string;
-  slug?: string;
+  id?: string;
   words?: number;
   minutes?: number;
   showWordCount?: boolean; // 是否显示字数统计，默认false显示标签
@@ -31,14 +31,14 @@ const {
   hideTagsForMobile,
   isHome,
   className = "",
-  slug,
+  id,
   words,
   minutes,
   showWordCount = false,
   customPath
 } = Astro.props;
 
-const path = customPath || (slug ? `/posts/${slug}` : '');
+const path = customPath || (id ? `/posts/${id}` : '');
 ---
 
 <div
@@ -157,7 +157,7 @@ const path = customPath || (slug ? `/posts/${slug}` : '');
     !isHome &&
       commentConfig.type === 'twikoo' &&
       commentConfig.twikoo?.visitorCount &&
-      slug && (
+      id && (
         <div class="flex items-center">
           <div class="meta-icon">
             <Icon
@@ -179,7 +179,7 @@ const path = customPath || (slug ? `/posts/${slug}` : '');
     !isHome &&
       commentConfig.type === 'waline' &&
       commentConfig.waline?.visitorCount &&
-      slug && (
+      id && (
         <div class="flex items-center">
           <div class="meta-icon">
             <Icon name="material-symbols:visibility-outline-rounded" class="text-xl" />
