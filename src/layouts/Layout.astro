@@ -699,6 +699,11 @@ function disableAnimation() {
       // 只处理katex元素的容器，使用浏览器原生滚动条
       initCustomScrollbar();
 
+      // 重新初始化主题监听器（确保系统主题跟随在页面切换后仍然工作）
+      import("@/utils/setting-utils").then((module) => {
+        module.initThemeListener();
+      });
+
       // 检查当前页面是否为文章页面（有TOC元素）
       const tocWrapper = document.getElementById("toc-wrapper");
       const isArticlePage = tocWrapper !== null;
@@ -836,19 +841,23 @@ function disableAnimation() {
 
       // 同步主题状态 - 解决从首页进入文章页面时代码块渲染问题
       const storedTheme = localStorage.getItem("theme") || "light";
-      const isDark = storedTheme === "dark";
+      let isDark = false;
+      
+      // 处理 system 模式
+      if (storedTheme === "system") {
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      } else {
+        isDark = storedTheme === "dark";
+      }
+      
       const expectedTheme = isDark
         ? expressiveCodeConfig.darkTheme
         : expressiveCodeConfig.lightTheme;
       const currentTheme = document.documentElement.getAttribute("data-theme");
 
-      // 如果主题不匹配，强制重新应用
+      // 如果主题不匹配，静默更新（不触发事件，避免重新加载效果）
       if (currentTheme !== expectedTheme) {
         document.documentElement.setAttribute("data-theme", expectedTheme);
-        // 触发代码块重新渲染
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent("theme-change"));
-        }, 50);
       }
 
       // 检查当前页面是否为文章页面，如果是则触发自定义事件用于初始化评论系统

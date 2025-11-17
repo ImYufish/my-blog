@@ -112,46 +112,28 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
     return;
   }
 
-  // 只在需要主题切换时添加过渡保护
+  // 批量 DOM 操作，减少重绘
   if (needsThemeChange) {
-    document.documentElement.classList.add("is-theme-transitioning");
+    // 添加过渡保护类（但会导致大量重绘，所以使用更轻量的方式）
+    // document.documentElement.classList.add("is-theme-transitioning");
+    
+    // 直接切换主题，利用 CSS 变量的特性让浏览器优化过渡
+    if (targetIsDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }
 
-  // 使用 requestAnimationFrame 确保在下一帧执行，避免闪屏
-  requestAnimationFrame(() => {
-    // 应用主题变化
-    if (needsThemeChange) {
-      if (targetIsDark) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-
-    // Set the theme for Expressive Code based on current mode
-    const expressiveTheme = targetIsDark ? expressiveCodeConfig.darkTheme : expressiveCodeConfig.lightTheme;
-    document.documentElement.setAttribute("data-theme", expressiveTheme);
-
-    // 强制重新渲染代码块 - 解决从首页进入文章页面时的渲染问题
-    if (needsCodeThemeUpdate) {
-      // 触发 expressice code 重新渲染
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("theme-change"));
-      }, 0);
-    }
-
-    // 在下一帧快速移除保护类，使用微任务确保DOM更新完成
-    if (needsThemeChange) {
-      // 使用 requestAnimationFrame 确保在下一帧移除过渡保护类
-      requestAnimationFrame(() => {
-        document.documentElement.classList.remove("is-theme-transitioning");
-      });
-    }
-  });
+  // Set the theme for Expressive Code based on current mode
+  if (needsCodeThemeUpdate) {
+    document.documentElement.setAttribute("data-theme", expectedTheme);
+  }
 }
 
-// 系统主题监听器引用
+// 系统主题监听器引用和MediaQuery对象
 let systemThemeListener: ((e: MediaQueryListEvent | MediaQueryList) => void) | null = null;
+let systemThemeMediaQuery: MediaQueryList | null = null;
 
 export function setTheme(theme: LIGHT_DARK_MODE): void {
   // 检查是否在浏览器环境中
@@ -183,16 +165,27 @@ export function setupSystemThemeListener() {
     return;
   }
   
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  // 创建或重用 MediaQuery 对象
+  systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   
   // 处理系统主题变化的回调
   const handleSystemThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
+    // 检查当前存储的主题是否还是 system 模式
+    const currentStoredTheme = localStorage.getItem('theme');
+    if (currentStoredTheme !== 'system') {
+      // 如果用户已经切换到其他模式，不应该响应系统主题变化
+      return;
+    }
+    
     const isDark = e.matches;
+    const currentIsDark = document.documentElement.classList.contains("dark");
     
-    // 添加过渡保护以避免闪屏
-    document.documentElement.classList.add("is-theme-transitioning");
+    // 如果主题状态没有变化，直接返回
+    if (currentIsDark === isDark) {
+      return;
+    }
     
-    // 应用系统主题，但不保存到 localStorage
+    // 直接应用系统主题，不使用过渡保护类以避免大量重绘
     if (isDark) {
       document.documentElement.classList.add("dark");
     } else {
@@ -203,45 +196,49 @@ export function setupSystemThemeListener() {
     const expressiveTheme = isDark ? expressiveCodeConfig.darkTheme : expressiveCodeConfig.lightTheme;
     document.documentElement.setAttribute("data-theme", expressiveTheme);
     
-    // 移除过渡保护
-    requestAnimationFrame(() => {
-      document.documentElement.classList.remove("is-theme-transitioning");
-    });
-    
-    // 触发自定义事件通知其他组件
+    // 触发自定义事件通知其他组件（仅在真正切换时触发）
     window.dispatchEvent(new CustomEvent("theme-change"));
   };
   
-  // 立即调用一次以设置初始状态
-  handleSystemThemeChange(mediaQuery);
-  
-  // 监听系统主题变化（现代浏览器）
-  if (mediaQuery.addEventListener) {
-    mediaQuery.addEventListener('change', handleSystemThemeChange);
-  } else {
-    // 兼容旧浏览器
-    (mediaQuery as any).addListener(handleSystemThemeChange);
-  }
-  
+  // 保存监听器引用
   systemThemeListener = handleSystemThemeChange;
+  
+  // 立即调用一次以设置初始状态
+  handleSystemThemeChange(systemThemeMediaQuery);
+  
+  // 监听系统主题变化
+  // 优先使用现代 API，降级到旧 API
+  try {
+    if (systemThemeMediaQuery.addEventListener) {
+      systemThemeMediaQuery.addEventListener('change', handleSystemThemeChange);
+    } else if ((systemThemeMediaQuery as any).addListener) {
+      // 兼容旧浏览器（iOS Safari < 14）
+      (systemThemeMediaQuery as any).addListener(handleSystemThemeChange);
+    }
+  } catch (e) {
+    console.error('Failed to add system theme listener:', e);
+  }
 }
 
 // 清理系统主题监听器
 function cleanupSystemThemeListener() {
-  if (typeof window === 'undefined' || !systemThemeListener) {
+  if (typeof window === 'undefined' || !systemThemeListener || !systemThemeMediaQuery) {
     return;
   }
   
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  
-  if (mediaQuery.removeEventListener) {
-    mediaQuery.removeEventListener('change', systemThemeListener);
-  } else {
-    // 兼容旧浏览器
-    (mediaQuery as any).removeListener(systemThemeListener);
+  try {
+    if (systemThemeMediaQuery.removeEventListener) {
+      systemThemeMediaQuery.removeEventListener('change', systemThemeListener);
+    } else if ((systemThemeMediaQuery as any).removeListener) {
+      // 兼容旧浏览器
+      (systemThemeMediaQuery as any).removeListener(systemThemeListener);
+    }
+  } catch (e) {
+    console.error('Failed to remove system theme listener:', e);
   }
   
   systemThemeListener = null;
+  systemThemeMediaQuery = null;
 }
 
 
