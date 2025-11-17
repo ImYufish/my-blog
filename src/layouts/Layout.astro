@@ -699,11 +699,6 @@ function disableAnimation() {
       // 只处理katex元素的容器，使用浏览器原生滚动条
       initCustomScrollbar();
 
-      // 重新初始化主题监听器（确保系统主题跟随在页面切换后仍然工作）
-      import("@/utils/setting-utils").then((module) => {
-        module.initThemeListener();
-      });
-
       // 检查当前页面是否为文章页面（有TOC元素）
       const tocWrapper = document.getElementById("toc-wrapper");
       const isArticlePage = tocWrapper !== null;

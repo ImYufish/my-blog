@@ -131,9 +131,8 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
   }
 }
 
-// 系统主题监听器引用和MediaQuery对象
+// 系统主题监听器引用
 let systemThemeListener: ((e: MediaQueryListEvent | MediaQueryList) => void) | null = null;
-let systemThemeMediaQuery: MediaQueryList | null = null;
 
 export function setTheme(theme: LIGHT_DARK_MODE): void {
   // 检查是否在浏览器环境中
@@ -165,18 +164,10 @@ export function setupSystemThemeListener() {
     return;
   }
   
-  // 创建或重用 MediaQuery 对象
-  systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   
   // 处理系统主题变化的回调
   const handleSystemThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
-    // 检查当前存储的主题是否还是 system 模式
-    const currentStoredTheme = localStorage.getItem('theme');
-    if (currentStoredTheme !== 'system') {
-      // 如果用户已经切换到其他模式，不应该响应系统主题变化
-      return;
-    }
-    
     const isDark = e.matches;
     const currentIsDark = document.documentElement.classList.contains("dark");
     
@@ -200,45 +191,36 @@ export function setupSystemThemeListener() {
     window.dispatchEvent(new CustomEvent("theme-change"));
   };
   
-  // 保存监听器引用
-  systemThemeListener = handleSystemThemeChange;
-  
   // 立即调用一次以设置初始状态
-  handleSystemThemeChange(systemThemeMediaQuery);
+  handleSystemThemeChange(mediaQuery);
   
-  // 监听系统主题变化
-  // 优先使用现代 API，降级到旧 API
-  try {
-    if (systemThemeMediaQuery.addEventListener) {
-      systemThemeMediaQuery.addEventListener('change', handleSystemThemeChange);
-    } else if ((systemThemeMediaQuery as any).addListener) {
-      // 兼容旧浏览器（iOS Safari < 14）
-      (systemThemeMediaQuery as any).addListener(handleSystemThemeChange);
-    }
-  } catch (e) {
-    console.error('Failed to add system theme listener:', e);
+  // 监听系统主题变化（现代浏览器）
+  if (mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+  } else {
+    // 兼容旧浏览器
+    (mediaQuery as any).addListener(handleSystemThemeChange);
   }
+  
+  systemThemeListener = handleSystemThemeChange;
 }
 
 // 清理系统主题监听器
 function cleanupSystemThemeListener() {
-  if (typeof window === 'undefined' || !systemThemeListener || !systemThemeMediaQuery) {
+  if (typeof window === 'undefined' || !systemThemeListener) {
     return;
   }
   
-  try {
-    if (systemThemeMediaQuery.removeEventListener) {
-      systemThemeMediaQuery.removeEventListener('change', systemThemeListener);
-    } else if ((systemThemeMediaQuery as any).removeListener) {
-      // 兼容旧浏览器
-      (systemThemeMediaQuery as any).removeListener(systemThemeListener);
-    }
-  } catch (e) {
-    console.error('Failed to remove system theme listener:', e);
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  
+  if (mediaQuery.removeEventListener) {
+    mediaQuery.removeEventListener('change', systemThemeListener);
+  } else {
+    // 兼容旧浏览器
+    (mediaQuery as any).removeListener(systemThemeListener);
   }
   
   systemThemeListener = null;
-  systemThemeMediaQuery = null;
 }
 
 

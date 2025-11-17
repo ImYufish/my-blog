@@ -48,37 +48,10 @@ onMount(() => {
 	// 如果是system模式，监听系统主题变化
 	if (storedTheme === SYSTEM_MODE) {
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-		const handleSystemChange = (e: MediaQueryListEvent | MediaQueryList) => {
-			// 确保仍然是 system 模式
-			const currentMode = getStoredTheme();
-			if (currentMode === SYSTEM_MODE) {
-				updateDisplayedMode();
-			}
+		const handleSystemChange = () => {
+			updateDisplayedMode();
 		};
-		
-		// 使用兼容的监听器添加方式
-		if (mediaQuery.addEventListener) {
-			mediaQuery.addEventListener('change', handleSystemChange);
-		} else if ((mediaQuery as any).addListener) {
-			(mediaQuery as any).addListener(handleSystemChange);
-		}
-		
-		// 清理函数中也要处理移除
-		const cleanup = () => {
-			if (mediaQuery.removeEventListener) {
-				mediaQuery.removeEventListener('change', handleSystemChange);
-			} else if ((mediaQuery as any).removeListener) {
-				(mediaQuery as any).removeListener(handleSystemChange);
-			}
-		};
-		
-		// 返回清理函数的一部分
-		const originalCleanup = () => {
-			window.removeEventListener('theme-change', handleThemeChange);
-			cleanup();
-		};
-		
-		return originalCleanup;
+		mediaQuery.addEventListener('change', handleSystemChange);
 	}
 	
 	// 添加Swup监听
