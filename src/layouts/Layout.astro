@@ -793,13 +793,20 @@ function disableAnimation() {
 
       if (isMobile && bannerWrapper && mainContentWrapper) {
         if (isHomePage) {
-          // 首页：先显示banner，然后移除隐藏类让其优雅出现
+          // 首页：禁用主内容区域的过渡动画，防止文章列表下移
+          mainContentWrapper.style.transition = "none";
+          
+          // 先显示banner，然后移除隐藏类让其优雅出现
           bannerWrapper.style.display = "";
           setTimeout(() => {
             bannerWrapper.classList.remove("mobile-hide-banner");
           }, 100);
           setTimeout(() => {
             mainContentWrapper.classList.remove("mobile-main-no-banner");
+            // 在移除类之后立即恢复过渡动画（下次导航时使用）
+            setTimeout(() => {
+              mainContentWrapper.style.transition = "";
+            }, 50);
           }, 150);
         } else {
           // 非首页：分阶段隐藏，先隐藏banner，再移动内容
