@@ -231,12 +231,15 @@ const initialLayoutClass =
 <style>
   /* 布局切换动画 */
   #post-list-container {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 限制过渡属性为 opacity 和 transform，避免响应父元素位置变化 */
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* 文章卡片的过渡动画 */
   #post-list-container > :global(*) {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* 布局切换时的动画效果 */

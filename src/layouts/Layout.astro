@@ -777,6 +777,15 @@ function disableAnimation() {
       // Control mobile banner visibility based on page with improved staging animation
       // 只在移动端（1024px以下）处理banner隐藏
       const isMobile = window.innerWidth < 1024;
+      
+      // 在移动端禁用文章列表容器的过渡动画，防止与主内容区位置变化冲突
+      if (isMobile) {
+        const postListContainer = document.getElementById("post-list-container");
+        if (postListContainer) {
+          postListContainer.style.transition = "none";
+        }
+      }
+
       const bannerWrapper = document.getElementById("banner-wrapper");
       const mainContentWrapper = document.querySelector(
         ".absolute.w-full.z-30"
@@ -833,6 +842,17 @@ function disableAnimation() {
         top: 0,
         behavior: "instant",
       });
+
+      // 在移动端恢复文章列表容器的过渡动画（在主内容区位置动画完成后）
+      const isMobile = window.innerWidth < 1024;
+      if (isMobile) {
+        setTimeout(() => {
+          const postListContainer = document.getElementById("post-list-container");
+          if (postListContainer) {
+            postListContainer.style.transition = "";
+          }
+        }, 600); // 等待主内容区动画完成（0.4s + 0.1s delay + 100ms buffer）
+      }
 
       // 同步主题状态 - 解决从首页进入文章页面时代码块渲染问题
       const storedTheme = localStorage.getItem("theme") || "light";
