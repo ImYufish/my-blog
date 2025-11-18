@@ -45,7 +45,14 @@ function formatNumber(num: number): string {
 }
 
 // 获取最新文章日期（用于客户端计算）
-const lastPostDate = posts.length > 0 ? posts[0].data.published.toISOString() : null;
+const latestPost = posts.reduce((latest, post) => {
+	if (!latest) return post;
+	return post.data.published > latest.data.published ? post : latest;
+}, posts[0]);
+
+const lastPostDate = latestPost
+	? latestPost.data.published.toISOString()
+	: null;
 
 const stats = [
   {
