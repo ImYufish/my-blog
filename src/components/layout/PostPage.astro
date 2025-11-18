@@ -54,6 +54,9 @@ const initialLayoutClass =
 <script is:inline define:vars={{ defaultLayout, isBothSidebars }}>
   (function() {
     const savedLayout = localStorage.getItem('postListLayout');
+    const currentLayout = savedLayout || defaultLayout;
+    
+    // 如果有保存的布局且与默认布局不同，更新容器布局
     if (savedLayout && savedLayout !== defaultLayout) {
       const container = document.getElementById('post-list-container');
       
@@ -74,29 +77,30 @@ const initialLayoutClass =
         container.offsetHeight;
         container.style.transition = '';
       }
-      
-      // 处理侧边栏（这些元素可能还未渲染，延迟处理）
-      setTimeout(function() {
-        const rightSidebar = document.getElementById('right-sidebar');
-        const mainGrid = document.getElementById('main-grid');
-        
-        if (savedLayout === 'grid') {
-          if (isBothSidebars && rightSidebar) {
-            rightSidebar.style.display = 'none';
-          }
-          if (mainGrid) {
-            mainGrid.classList.add('grid-layout-active');
-          }
-        } else {
-          if (isBothSidebars && rightSidebar) {
-            rightSidebar.style.display = '';
-          }
-          if (mainGrid) {
-            mainGrid.classList.remove('grid-layout-active');
-          }
-        }
-      }, 0);
     }
+    
+    // 始终处理侧边栏显示状态（无论是否有保存的布局）
+    // 使用立即执行确保在页面渲染前应用
+    (function() {
+      const rightSidebar = document.getElementById('right-sidebar');
+      const mainGrid = document.getElementById('main-grid');
+      
+      if (currentLayout === 'grid') {
+        if (isBothSidebars && rightSidebar) {
+          rightSidebar.style.display = 'none';
+        }
+        if (mainGrid) {
+          mainGrid.classList.add('grid-layout-active');
+        }
+      } else {
+        if (isBothSidebars && rightSidebar) {
+          rightSidebar.style.display = '';
+        }
+        if (mainGrid) {
+          mainGrid.classList.remove('grid-layout-active');
+        }
+      }
+    })();
   })();
 </script>
 

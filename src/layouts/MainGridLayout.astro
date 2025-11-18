@@ -361,6 +361,34 @@ const transparentClass = shouldEnableTransparency
 
 <!-- #toc needs to exist for Swup to work normally -->
 {!siteConfig.toc.enable && <div id="toc"></div>}
+
+<!-- 立即执行脚本：防止刷新时右侧栏闪烁 -->
+<script is:inline define:vars={{ isBothSidebars: sidebarConfig.isBothSidebars }}>
+  (function() {
+    // 立即检查并应用保存的布局状态
+    const savedLayout = localStorage.getItem('postListLayout');
+    if (savedLayout) {
+      const rightSidebar = document.getElementById('right-sidebar');
+      const mainGrid = document.getElementById('main-grid');
+      
+      if (savedLayout === 'grid') {
+        if (isBothSidebars && rightSidebar) {
+          rightSidebar.style.display = 'none';
+        }
+        if (mainGrid) {
+          mainGrid.classList.add('grid-layout-active');
+        }
+      } else {
+        if (isBothSidebars && rightSidebar) {
+          rightSidebar.style.display = '';
+        }
+        if (mainGrid) {
+          mainGrid.classList.remove('grid-layout-active');
+        }
+      }
+    }
+  })();
+</script>
 </Layout>
 
 <style is:global>
@@ -393,6 +421,50 @@ const transparentClass = shouldEnableTransparency
     #main-grid {
       grid-template-columns: 17.5rem 1fr !important;
     }
+  }
+  
+  /* 文章详情页布局切换动画 - 简洁优雅的淡入淡出 */
+  #post-container {
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  }
+  
+  #post-container.layout-switching {
+    animation: gentleFade 0.4s ease-in-out;
+  }
+  
+  @keyframes gentleFade {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.92;
+      transform: scale(0.995);
+    }
+  }
+  
+  /* 主内容区布局切换动画 - 平滑宽度过渡 */
+  #swup-container {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  #swup-container.layout-transitioning {
+    animation: smoothWidth 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  @keyframes smoothWidth {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.96;
+    }
+  }
+  
+  /* 右侧栏平滑过渡 */
+  #right-sidebar {
+    transition: opacity 0.35s ease-in-out, 
+                transform 0.35s ease-in-out;
   }
 </style>
 
