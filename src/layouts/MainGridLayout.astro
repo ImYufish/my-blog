@@ -394,7 +394,7 @@ const transparentClass = shouldEnableTransparency
   
   /* 列表模式下的卡片动画 */
   #post-list-container:not(.grid-mode) .post-card-item {
-    animation: fadeInSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: fadeInSlideRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
   
   @keyframes fadeInScale {
@@ -408,14 +408,14 @@ const transparentClass = shouldEnableTransparency
     }
   }
   
-  @keyframes fadeInSlide {
+  @keyframes fadeInSlideRight {
     from {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateX(-20px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
     }
   }
   
