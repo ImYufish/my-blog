@@ -25,7 +25,7 @@ posts.forEach(post => {
 
 // 序列化所有文章数据供客户端使用
 const allPostsData = posts.map(post => ({
-  slug: post.slug,
+  id: post.id,
   title: post.data.title,
   published: post.data.published.toISOString()
 }));
@@ -184,7 +184,7 @@ const yearText = i18n(I18nKey.year);
     
     if (postsList) {
       postsList.innerHTML = currentMonthPosts.map(post => `
-        <a href="/posts/${post.slug}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
+        <a href="/posts/${post.id}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
           ${post.title}
         </a>
       `).join('');
@@ -235,7 +235,7 @@ const yearText = i18n(I18nKey.year);
         if (posts.length > 0 && postsList) {
           // 渲染文章列表
           postsList.innerHTML = posts.map(post => `
-            <a href="/posts/${post.slug}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
+            <a href="/posts/${post.id}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
               ${post.data.title}
             </a>
           `).join('');

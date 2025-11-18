@@ -7,7 +7,8 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
-import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+import { getDir, getPostUrlBySlug, removeFileExtension, getFileDirFromPath } from "@utils/url-utils";
+import { render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -22,19 +23,23 @@ import { url } from "@/utils/url-utils";
 import { processCoverImageSync } from "@/utils/image-utils";
 export async function getStaticPaths() {
   const blogEntries = await getSortedPosts();
-  return blogEntries.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+  return blogEntries.map((entry) => {
+    // 将 id 转换为 slug（移除扩展名）以匹配路由参数
+    const slug = removeFileExtension(entry.id);
+    return {
+      params: { slug },
+      props: { entry },
+    };
+  });
 }
 
 const { entry } = Astro.props;
-const { Content, headings } = await entry.render();
+const { Content, headings } = await render(entry);
 
-const { remarkPluginFrontmatter } = await entry.render();
+const { remarkPluginFrontmatter } = await render(entry);
 
 // 处理随机图：如果image为"api"，则从配置的API获取随机图
-const processedImage = processCoverImageSync(entry.data.image, entry.slug);
+const processedImage = processCoverImageSync(entry.data.image, entry.id);
 
 // ...existing code...
 
@@ -68,7 +73,7 @@ const jsonLd = {
   description={entry.data.description}
   lang={entry.data.lang}
   setOGTypeArticle={true}
-  postSlug={entry.slug}
+  postSlug={entry.id}
   headings={headings}
 >
   <script
@@ -145,8 +150,8 @@ const jsonLd = {
           published={entry.data.published}
           updated={entry.data.updated}
           tags={entry.data.tags}
-          category={entry.data.category}
-          slug={entry.slug}
+          category={entry.data.category || undefined}
+          id={entry.id}
         />
         {
           !processedImage && (
@@ -163,9 +168,9 @@ const jsonLd = {
             <RandomCoverImage
               id="post-cover"
               src={processedImage}
-              basePath={path.join("content/posts/", getDir(entry.id))}
+              basePath={getFileDirFromPath(entry.filePath || '')}
               class="mb-8 rounded-xl banner-container onload-animation"
-              seed={entry.slug}
+              seed={entry.id}
               preview={false}
             />
           </div>
@@ -212,7 +217,7 @@ const jsonLd = {
         licenseConfig.enable && (
           <License
             title={entry.data.title}
-            slug={entry.slug}
+            id={entry.id}
             pubDate={entry.data.published}
             author={entry.data.author}
             sourceLink={entry.data.sourceLink}

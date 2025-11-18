@@ -1,10 +1,11 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
 import * as path from "node:path";
 import { Icon } from "astro-icon/components";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import { getDir, getTagUrl } from "@/utils/url-utils";
+import { getDir, getTagUrl, getFileDirFromPath } from "@/utils/url-utils";
 import { processCoverImageSync } from "@/utils/image-utils";
 import RandomCoverImage from "@/components/misc/RandomCoverImage.astro";
 import PostMetadata from "./PostMeta.astro";
@@ -40,12 +41,12 @@ const {
 const className = Astro.props.class;
 
 // 处理随机图：如果image为"api"，则从配置的API获取随机图
-const processedImage = processCoverImageSync(image, entry.slug);
+const processedImage = processCoverImageSync(image, entry.id);
 const hasCover = processedImage !== undefined && processedImage !== null && processedImage !== "";
 
 const coverWidth = "28%";
 
-const { remarkPluginFrontmatter } = await entry.render();
+const { remarkPluginFrontmatter } = await render(entry);
 ---
 
 <div
@@ -180,10 +181,10 @@ const { remarkPluginFrontmatter } = await entry.render();
         </div>
         <RandomCoverImage
           src={processedImage}
-          basePath={path.join("content/posts/", getDir(entry.id))}
+          basePath={getFileDirFromPath(entry.filePath || '')}
           alt="Cover Image of the Post"
           class="w-full h-full"
-          seed={entry.slug}
+          seed={entry.id}
           preview={true}
         />
       </a>

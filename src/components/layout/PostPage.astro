@@ -32,7 +32,7 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
         category={entry.data.category}
         published={entry.data.published}
         updated={entry.data.updated}
-        url={getPostUrlBySlug(entry.slug)}
+        url={getPostUrlBySlug(entry.id)}
         image={entry.data.image}
         description={entry.data.description}
         draft={entry.data.draft}

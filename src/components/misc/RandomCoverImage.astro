@@ -47,8 +47,10 @@ if (isLocal) {
 		console.error(
 			`\n[ERROR] Image file not found: ${normalizedPath.replace("../../", "src/")}`,
 		);
+		img = null; // 设置为 null 而不是继续调用
+	} else {
+		img = await file();
 	}
-	img = await file();
 }
 // 如果是随机图API，生成所有API URL列表用于客户端重试
 let allApiUrls: string[] = [];
