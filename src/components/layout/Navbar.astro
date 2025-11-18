@@ -19,9 +19,8 @@ const className = Astro.props.class;
 // 检查是否允许切换壁纸模式
 const isWallpaperSwitchable = siteConfig.backgroundWallpaper.switchable ?? true;
 
-// 检查是否启用双侧边栏 - 双侧边栏时禁用网格布局切换
-const isBothSidebars = sidebarLayoutConfig.position === "both";
-const allowLayoutSwitch = siteConfig.postListLayout.allowSwitch && !isBothSidebars;
+// 检查是否允许切换布局（双侧栏模式下也允许切换，但切换到网格时会自动隐藏右侧边栏）
+const allowLayoutSwitch = siteConfig.postListLayout.allowSwitch;
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =

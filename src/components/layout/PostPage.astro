@@ -50,9 +50,6 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
     const postListContainer = document.getElementById("post-list-container");
     if (!postListContainer) return;
 
-    // 检查是否启用双侧边栏
-    const isBothSidebars = postListContainer.getAttribute("data-both-sidebars") === "true";
-
     // 检查屏幕宽度
     const screenWidth = window.innerWidth;
     const isSmallScreen = screenWidth < 1200;
@@ -63,8 +60,8 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
       postListContainer.getAttribute("data-default-layout") || "list";
     let currentLayout = savedLayout || defaultLayout;
 
-    // 如果启用双侧边栏或屏幕宽度小于1200px，强制使用列表模式
-    if (isBothSidebars || isSmallScreen) {
+    // 如果屏幕宽度小于1200px，强制使用列表模式
+    if (isSmallScreen) {
       currentLayout = "list";
     }
 
@@ -76,15 +73,57 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
     const postListContainer = document.getElementById("post-list-container");
     if (!postListContainer) return;
 
+    // 检查是否启用双侧边栏
+    const isBothSidebars = postListContainer.getAttribute("data-both-sidebars") === "true";
+    const rightSidebar = document.getElementById('right-sidebar');
+    const mainGrid = document.getElementById('main-grid');
+
+    // 添加过渡动画类
+    postListContainer.classList.add('layout-transitioning');
+
     if (layout === "grid") {
       // 切换到网格模式
       postListContainer.className =
-        "transition grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 grid-mode";
+        "transition-all duration-500 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 grid-mode layout-transitioning";
+      
+      // 如果是双侧栏模式，隐藏右侧边栏并调整主网格布局
+      if (isBothSidebars && rightSidebar) {
+        rightSidebar.style.transition = 'opacity 0.3s ease-out';
+        rightSidebar.style.opacity = '0';
+        setTimeout(() => {
+          rightSidebar.style.display = 'none';
+        }, 300);
+        
+        // 标记网格模式状态
+        if (mainGrid) {
+          mainGrid.classList.add('grid-layout-active');
+        }
+      }
     } else {
       // 切换到列表模式
       postListContainer.className =
-        "transition flex flex-col gap-4 md:gap-4 mb-4";
+        "transition-all duration-500 flex flex-col gap-4 md:gap-4 mb-4 layout-transitioning";
+      
+      // 如果是双侧栏模式，显示右侧边栏并恢复网格布局
+      if (isBothSidebars && rightSidebar) {
+        rightSidebar.style.display = '';
+        rightSidebar.style.transition = 'opacity 0.3s ease-in';
+        rightSidebar.style.opacity = '0';
+        setTimeout(() => {
+          rightSidebar.style.opacity = '1';
+        }, 10);
+        
+        // 移除网格模式标记
+        if (mainGrid) {
+          mainGrid.classList.remove('grid-layout-active');
+        }
+      }
     }
+
+    // 移除过渡类
+    setTimeout(() => {
+      postListContainer.classList.remove('layout-transitioning');
+    }, 500);
 
     // 布局应用后显示容器
     postListContainer.style.opacity = "1";
@@ -108,15 +147,12 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
     const newLayout = event.detail.layout;
     const postListContainer = document.getElementById("post-list-container");
     if (!postListContainer) return;
-
-    // 检查是否启用双侧边栏
-    const isBothSidebars = postListContainer.getAttribute("data-both-sidebars") === "true";
     
-    // 检查屏幕宽度，如果小于1200px或启用双侧边栏则强制使用列表模式
+    // 检查屏幕宽度，如果小于1200px则强制使用列表模式
     const screenWidth = window.innerWidth;
     const isSmallScreen = screenWidth < 1200;
 
-    if (isBothSidebars || isSmallScreen) {
+    if (isSmallScreen) {
       updatePostListLayout("list");
     } else {
       updatePostListLayout(newLayout);

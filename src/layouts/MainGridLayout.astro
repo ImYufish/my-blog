@@ -363,3 +363,79 @@ const transparentClass = shouldEnableTransparency
 {!siteConfig.toc.enable && <div id="toc"></div>}
 </Layout>
 
+<style is:global>
+  /* 网格布局激活时，调整主网格为两列布局 */
+  @media (min-width: 1024px) {
+    #main-grid.grid-layout-active {
+      grid-template-columns: 17.5rem 1fr !important;
+      transition: grid-template-columns 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+  
+  /* 主网格过渡动画 */
+  #main-grid {
+    transition: grid-template-columns 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* 确保在网格模式下右侧边栏完全不占空间 */
+  #main-grid.grid-layout-active #right-sidebar {
+    display: none !important;
+  }
+  
+  /* 布局切换时的动画 */
+  .layout-transitioning .post-card-item {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* 网格模式下的卡片动画 */
+  .grid-mode .post-card-item {
+    animation: fadeInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  /* 列表模式下的卡片动画 */
+  #post-list-container:not(.grid-mode) .post-card-item {
+    animation: fadeInSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* 在低于1200px时隐藏右侧边栏 */
+  @media (max-width: 1199px) {
+    #right-sidebar {
+      display: none !important;
+    }
+    
+    /* 同时调整网格布局为两列 */
+    #main-grid {
+      grid-template-columns: 17.5rem 1fr !important;
+    }
+  }
+  
+  /* 在1024px-1199px之间，确保平板端也正确显示 */
+  @media (min-width: 1024px) and (max-width: 1199px) {
+    #main-grid {
+      grid-template-columns: 17.5rem 1fr !important;
+    }
+  }
+</style>
+
