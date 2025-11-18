@@ -16,7 +16,7 @@ import type { CoverImageConfig } from "../types/config";
  */
 export const coverImageConfig: CoverImageConfig = {
   // 随机封面图功能开关
-  enable: true,
+  enable: false,
   // 封面图API列表
   apis: [
     "https://t.alcy.cc/pc",
@@ -33,7 +33,7 @@ export const coverImageConfig: CoverImageConfig = {
    */
   loading: {
     // 加载指示器开关
-    enable: true,
+    enable: false,
     // 自定义加载图片路径（相对于 public 目录）
     image: "/assets/images/loading.gif",
     // 加载指示器背景颜色，应与加载图片的背景色一致，避免在暗色模式下显得突兀
