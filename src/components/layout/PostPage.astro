@@ -78,22 +78,14 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
     const rightSidebar = document.getElementById('right-sidebar');
     const mainGrid = document.getElementById('main-grid');
 
-    // 添加过渡动画类
-    postListContainer.classList.add('layout-transitioning');
-
     if (layout === "grid") {
       // 切换到网格模式
       postListContainer.className =
-        "transition-all duration-500 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 grid-mode layout-transitioning";
+        "transition grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 grid-mode";
       
       // 如果是双侧栏模式，隐藏右侧边栏并调整主网格布局
       if (isBothSidebars && rightSidebar) {
-        rightSidebar.style.transition = 'opacity 0.3s ease-out';
-        rightSidebar.style.opacity = '0';
-        setTimeout(() => {
-          rightSidebar.style.display = 'none';
-        }, 300);
-        
+        rightSidebar.style.display = 'none';
         // 标记网格模式状态
         if (mainGrid) {
           mainGrid.classList.add('grid-layout-active');
@@ -102,28 +94,17 @@ const isBothSidebars = sidebarLayoutConfig.position === "both";
     } else {
       // 切换到列表模式
       postListContainer.className =
-        "transition-all duration-500 flex flex-col gap-4 md:gap-4 mb-4 layout-transitioning";
+        "transition flex flex-col gap-4 md:gap-4 mb-4";
       
       // 如果是双侧栏模式，显示右侧边栏并恢复网格布局
       if (isBothSidebars && rightSidebar) {
         rightSidebar.style.display = '';
-        rightSidebar.style.transition = 'opacity 0.3s ease-in';
-        rightSidebar.style.opacity = '0';
-        setTimeout(() => {
-          rightSidebar.style.opacity = '1';
-        }, 10);
-        
         // 移除网格模式标记
         if (mainGrid) {
           mainGrid.classList.remove('grid-layout-active');
         }
       }
     }
-
-    // 移除过渡类
-    setTimeout(() => {
-      postListContainer.classList.remove('layout-transitioning');
-    }, 500);
 
     // 布局应用后显示容器
     postListContainer.style.opacity = "1";
