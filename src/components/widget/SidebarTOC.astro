@@ -1,0 +1,465 @@
+---
+import type { MarkdownHeading } from "astro";
+import { i18n } from "@/i18n/translation";
+import I18nKey from "@/i18n/i18nKey";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+  class?: string;
+  style?: string;
+}
+
+const { headings = [], class: className, style } = Astro.props;
+
+let minDepth = 10;
+for (const heading of headings) {
+  minDepth = Math.min(minDepth, heading.depth);
+}
+---
+
+<WidgetLayout 
+  name={i18n(I18nKey.tableOfContents)} 
+  id="sidebar-toc"
+  class={className}
+  style={style}
+>
+  <div class="toc-scroll-container">
+    <div
+      class="toc-content"
+      id="sidebar-toc-content"
+    >
+      <!-- TOC内容将由JavaScript动态生成 -->
+    </div>
+  </div>
+</WidgetLayout>
+
+<style lang="stylus">
+.toc-scroll-container
+	overflow-y: auto
+	overflow-x: hidden
+	max-height: calc(100vh - 20rem)
+	-webkit-overflow-scrolling: touch
+	scroll-behavior: smooth
+
+.toc-content
+	display: flex
+	flex-direction: column
+	gap: 2px
+	position: relative
+	overflow: visible
+	width: 100%
+	max-width: 100%
+	box-sizing: border-box
+	contain: layout
+	align-items: flex-start
+
+/* 使用与FloatingTOC相同的样式 */
+.toc-content a
+	display: flex
+	align-items: center
+	text-decoration: none
+	color: inherit
+	border-radius: 0.75rem
+	transition: all 0.2s ease
+	width: 100%
+	min-width: 0
+	flex-shrink: 0
+	max-width: 100%
+	overflow: hidden
+	box-sizing: border-box
+	position: relative
+	
+	&:hover
+		background: var(--toc-btn-hover)
+		
+	&.visible
+		background: var(--toc-btn-active)
+
+/* 确保文本内容不会溢出 */
+.toc-content a div:last-child
+	overflow: hidden
+	text-overflow: ellipsis
+	white-space: nowrap
+	min-width: 0
+	flex: 1
+	max-width: calc(100% - 2rem)
+	box-sizing: border-box
+
+/* 徽章容器固定宽度 */
+.toc-content a div:first-child
+	flex-shrink: 0
+	width: 1.25rem
+	height: 1.25rem
+
+/* 活动指示器样式 */
+#sidebar-active-indicator
+	position: absolute
+	left: 0
+	right: 0
+	background: var(--toc-btn-hover)
+	border-radius: 0.75rem
+	transition: all 0.2s ease
+	z-index: -1
+
+/* 滚动条样式 */
+.toc-scroll-container::-webkit-scrollbar
+	width: 6px
+
+.toc-scroll-container::-webkit-scrollbar-track
+	background: transparent
+	border-radius: 3px
+
+.toc-scroll-container::-webkit-scrollbar-thumb
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%)
+	border-radius: 3px
+	border: 1px solid rgba(255, 255, 255, 0.1)
+	transition: all 0.2s ease
+
+.toc-scroll-container::-webkit-scrollbar-thumb:hover
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%)
+	border-color: rgba(255, 255, 255, 0.2)
+
+.toc-scroll-container::-webkit-scrollbar-thumb:active
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)
+
+/* 暗色主题滚动条 */
+:global(.dark) .toc-scroll-container::-webkit-scrollbar-thumb
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%)
+	border: 1px solid rgba(0, 0, 0, 0.1)
+
+:global(.dark) .toc-scroll-container::-webkit-scrollbar-thumb:hover
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.3) 100%)
+	border-color: rgba(0, 0, 0, 0.2)
+
+:global(.dark) .toc-scroll-container::-webkit-scrollbar-thumb:active
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.4) 100%)
+
+/* Firefox 滚动条样式 */
+.toc-scroll-container
+	scrollbar-width: thin
+	scrollbar-color: rgba(0, 0, 0, 0.2) transparent
+
+:global(.dark) .toc-scroll-container
+	scrollbar-color: rgba(255, 255, 255, 0.2) transparent
+</style>
+
+<script is:inline>
+  if (typeof window.sidebarTOC === "undefined") {
+    window.sidebarTOC = {
+      tocItems: [],
+      activeHeadingId: "",
+      observer: null,
+      minDepth: 10,
+      maxLevel: 3,
+      scrollTimeout: null
+    };
+  }
+
+  function initSidebarTOC() {
+    const tocContent = document.getElementById("sidebar-toc-content");
+    
+    if (!tocContent) return;
+
+    // 清理旧的 observer
+    if (window.sidebarTOC.observer) {
+      window.sidebarTOC.observer.disconnect();
+      window.sidebarTOC.observer = null;
+    }
+
+    // 生成TOC内容
+    generateSidebarTOCContent();
+
+    // 设置IntersectionObserver
+    setupSidebarIntersectionObserver();
+  }
+
+  function generateSidebarTOCContent() {
+    const tocContent = document.getElementById("sidebar-toc-content");
+    if (!tocContent) return;
+
+    // 尝试在文章内容容器内查找标题
+    const contentContainer =
+      document.querySelector(".custom-md") ||
+      document.querySelector(".prose") ||
+      document.querySelector(".markdown-content");
+
+    let headings;
+    if (contentContainer) {
+      headings = contentContainer.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    } else {
+      headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    }
+
+    if (headings.length === 0) {
+      tocContent.innerHTML =
+        '<div class="text-center py-8 text-gray-500 dark:text-gray-400"><p>当前页面没有目录</p></div>';
+      return;
+    }
+
+    // 计算最小深度
+    let currentMinDepth = 10;
+    headings.forEach((heading) => {
+      const depth = parseInt(heading.tagName.charAt(1));
+      currentMinDepth = Math.min(currentMinDepth, depth);
+    });
+    window.sidebarTOC.minDepth = currentMinDepth;
+
+    const filteredHeadings = Array.from(headings).filter((heading) => {
+      const depth = parseInt(heading.tagName.charAt(1));
+      return depth < currentMinDepth + window.sidebarTOC.maxLevel;
+    });
+
+    if (filteredHeadings.length === 0) {
+      tocContent.innerHTML =
+        '<div class="text-center py-8 text-gray-500 dark:text-gray-400"><p>当前页面没有目录</p></div>';
+      return;
+    }
+
+    let tocHTML = "";
+    let heading1Count = 1;
+    filteredHeadings.forEach((heading) => {
+      const depth = parseInt(heading.tagName.charAt(1));
+      const depthClass =
+        depth === currentMinDepth ? "" : depth === currentMinDepth + 1 ? "pl-4" : "pl-8";
+
+      // 确保标题有ID
+      if (!heading.id) {
+        return;
+      }
+
+      // 使用与FloatingTOC相同的徽章样式
+      const badgeContent =
+        depth === currentMinDepth
+          ? heading1Count++
+          : depth === currentMinDepth + 1
+            ? '<div class="transition w-2 h-2 rounded-[0.1875rem] bg-[var(--toc-badge-bg)]"></div>'
+            : '<div class="transition w-1.5 h-1.5 rounded-sm bg-black/5 dark:bg-white/10"></div>';
+
+      tocHTML += `
+       <a 
+         href="#${heading.id}" 
+         class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl hover:bg-[var(--toc-btn-hover)] active:bg-[var(--toc-btn-active)] py-2 ${depthClass}"
+         data-heading-id="${heading.id}"
+       >
+         <div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold ${depth === currentMinDepth ? "bg-[var(--toc-badge-bg)] text-[var(--btn-content)]" : ""}">
+           ${badgeContent}
+         </div>
+         <div class="transition text-sm ${depth <= currentMinDepth + 1 ? "text-50" : "text-30"} flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">${(heading.textContent || "").replace(/#+\s*$/, "")}</div>
+       </a>
+     `;
+    });
+
+    tocContent.innerHTML =
+      tocHTML +
+      '<div id="sidebar-active-indicator" style="opacity: 0;" class="-z-10 absolute bg-[var(--toc-btn-hover)] left-0 right-0 rounded-xl transition-all border-2 border-[var(--toc-btn-hover)] border-dashed"></div>';
+    
+    window.sidebarTOC.tocItems = Array.from(
+      document.querySelectorAll("#sidebar-toc-content a")
+    );
+
+    // 添加点击事件处理
+    window.sidebarTOC.tocItems.forEach((item) => {
+      item.addEventListener("click", handleSidebarTOCClick);
+    });
+  }
+
+  function handleSidebarTOCClick(event) {
+    event.preventDefault();
+    const id = decodeURIComponent(event.currentTarget.getAttribute("href").substring(1));
+    const targetElement = document.getElementById(id);
+
+    if (targetElement) {
+      const navbarHeight = 80;
+      const targetTop =
+        targetElement.getBoundingClientRect().top +
+        window.pageYOffset -
+        navbarHeight;
+
+      window.scrollTo({
+        top: targetTop,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  function updateSidebarTOCActiveState() {
+    if (!window.sidebarTOC.tocItems || window.sidebarTOC.tocItems.length === 0) return;
+
+    // 移除所有活动状态
+    window.sidebarTOC.tocItems.forEach((item) => {
+      item.classList.remove("visible");
+    });
+
+    // 获取所有在屏幕可视区域内的标题
+    const contentContainer =
+      document.querySelector(".custom-md") ||
+      document.querySelector(".prose") ||
+      document.querySelector(".markdown-content");
+
+    if (!contentContainer) return;
+
+    const headings = contentContainer.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    const visibleHeadingIds = [];
+    
+    headings.forEach((heading) => {
+      if (heading.id) {
+        const rect = heading.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+        if (isVisible) {
+          visibleHeadingIds.push(heading.id);
+        }
+      }
+    });
+
+    // 如果没有找到任何可见标题，选择最接近屏幕顶部的标题
+    if (visibleHeadingIds.length === 0 && headings.length > 0) {
+      let closestHeading = null;
+      let minDistance = Infinity;
+
+      headings.forEach((heading) => {
+        if (heading.id) {
+          const rect = heading.getBoundingClientRect();
+          const distance = Math.abs(rect.top);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestHeading = heading.id;
+          }
+        }
+      });
+
+      if (closestHeading) {
+        visibleHeadingIds.push(closestHeading);
+      }
+    }
+
+    // 找到对应的TOC项并添加活动状态
+    const activeItems = window.sidebarTOC.tocItems.filter((item) => {
+      const headingId = item.dataset.headingId;
+      return visibleHeadingIds.includes(headingId);
+    });
+
+    // 添加活动状态
+    activeItems.forEach((item) => {
+      item.classList.add("visible");
+    });
+
+    // 更新活动指示器
+    updateSidebarActiveIndicator(activeItems);
+  }
+
+  function updateSidebarActiveIndicator(activeItems) {
+    const indicator = document.getElementById("sidebar-active-indicator");
+    if (!indicator || !window.sidebarTOC.tocItems.length) return;
+
+    if (activeItems.length === 0) {
+      indicator.style.opacity = "0";
+      return;
+    }
+
+    const tocContent = document.getElementById("sidebar-toc-content");
+    if (!tocContent) return;
+
+    const contentRect = tocContent.getBoundingClientRect();
+
+    // 计算指示器位置
+    const firstActive = activeItems[0];
+    const lastActive = activeItems[activeItems.length - 1];
+
+    const firstRect = firstActive.getBoundingClientRect();
+    const lastRect = lastActive.getBoundingClientRect();
+
+    const top = firstRect.top - contentRect.top;
+    const height = lastRect.bottom - firstRect.top;
+
+    indicator.style.top = `${top}px`;
+    indicator.style.height = `${height}px`;
+    indicator.style.opacity = "1";
+
+    // 自动滚动到活动项
+    if (firstActive) {
+      scrollToSidebarActiveItem(firstActive);
+    }
+  }
+
+  function scrollToSidebarActiveItem(activeItem) {
+    if (!activeItem) return;
+
+    const tocContainer = document.querySelector('#sidebar-toc .toc-scroll-container');
+    if (!tocContainer) return;
+
+    // 清除之前的定时器
+    if (window.sidebarTOC.scrollTimeout) {
+      clearTimeout(window.sidebarTOC.scrollTimeout);
+    }
+
+    // 使用节流机制，避免滚动过于频繁
+    window.sidebarTOC.scrollTimeout = setTimeout(() => {
+      const containerRect = tocContainer.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+      
+      // 只在元素不在可视区域时才滚动
+      const isVisible = itemRect.top >= containerRect.top && itemRect.bottom <= containerRect.bottom;
+      
+      if (!isVisible) {
+        const scrollTop = tocContainer.scrollTop;
+        const itemOffsetTop = activeItem.offsetTop;
+        const containerHeight = tocContainer.clientHeight;
+        const itemHeight = activeItem.clientHeight;
+        
+        // 计算目标滚动位置，将元素居中显示
+        const targetScroll = itemOffsetTop - (containerHeight / 2) + (itemHeight / 2);
+        
+        tocContainer.scrollTo({
+          top: targetScroll,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
+  }
+
+  function setupSidebarIntersectionObserver() {
+    const contentContainer =
+      document.querySelector(".custom-md") ||
+      document.querySelector(".prose") ||
+      document.querySelector(".markdown-content");
+
+    if (!contentContainer) return;
+
+    const headings = contentContainer.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+    if (window.sidebarTOC.observer) {
+      window.sidebarTOC.observer.disconnect();
+    }
+
+    window.sidebarTOC.observer = new IntersectionObserver(
+      (entries) => {
+        updateSidebarTOCActiveState();
+      },
+      {
+        rootMargin: "0px 0px 0px 0px",
+        threshold: 0,
+      }
+    );
+
+    headings.forEach((heading) => {
+      if (heading.id) {
+        window.sidebarTOC.observer.observe(heading);
+      }
+    });
+  }
+
+  // 初始化
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSidebarTOC);
+  } else {
+    initSidebarTOC();
+  }
+
+  // 页面切换时重新初始化（添加延迟确保内容已加载）
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(initSidebarTOC, 100);
+  });
+</script>

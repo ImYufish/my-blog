@@ -9,6 +9,8 @@ import TOC from "@/components/widget/TOC.astro";
 import Advertisement from "@/components/widget/Advertisement.astro";
 import SiteStats from "@/components/widget/SiteStats.astro";
 import Calendar from "@/components/widget/Calendar.astro";
+import SidebarTOC from "@/components/widget/SidebarTOC.astro";
+import { siteConfig } from "@/config/siteConfig";
 
 interface Props {
   class?: string;
@@ -21,14 +23,26 @@ const { class: className, headings } = Astro.props;
 const topComponents = widgetManager.getComponentsByPosition("top", "right");
 const stickyComponents = widgetManager.getComponentsByPosition("sticky", "right");
 
-// 提取客户端需要的数据
-const sidebarConfig = {
-  shouldShowSidebar: {
-    mobile: widgetManager.shouldShowSidebar("mobile"),
-    tablet: widgetManager.shouldShowSidebar("tablet"),
-    desktop: widgetManager.shouldShowSidebar("desktop"),
-  },
+// 组件类型到ID的映射
+const componentTypeToId = {
+  stats: "site-stats",
+  calendar: "calendar-widget",
+  sidebarToc: "sidebar-toc",
+  toc: "toc",
+  profile: "profile",
+  announcement: "announcement",
+  categories: "categories",
+  tags: "tags",
+  advertisement: "advertisement",
 };
+
+// 提取客户端需要的数据 - 包含组件的 showOnPostPage 配置
+const rightComponentsConfig = widgetManager.getConfig().rightComponents
+  .filter(c => c.enable)
+  .map(c => ({
+    id: componentTypeToId[c.type as keyof typeof componentTypeToId],
+    showOnPostPage: c.showOnPostPage ?? true, // 默认为 true
+  }));
 
 // 组件映射表
 const componentMap = {
@@ -37,6 +51,7 @@ const componentMap = {
   categories: Categories,
   tags: Tags,
   toc: TOC,
+  sidebarToc: SidebarTOC,
   advertisement: Advertisement,
   stats: SiteStats,
   calendar: Calendar,
@@ -48,7 +63,7 @@ function renderComponent(component: any, index: number, _components: any[]) {
     componentMap[component.type as keyof typeof componentMap];
   if (!ComponentToRender) return null;
 
-  const componentClass = widgetManager.getComponentClass(component, index);
+  const componentClass = widgetManager.getComponentClass(component, "right", index);
   const componentStyle = widgetManager.getComponentStyle(component, index);
 
   return {
@@ -56,8 +71,9 @@ function renderComponent(component: any, index: number, _components: any[]) {
     props: {
       class: componentClass,
       style: componentStyle,
-      headings: component.type === "toc" ? headings : undefined,
+      headings: component.type === "toc" || component.type === "sidebarToc" ? headings : undefined,
       configId: component.configId,
+      showOnPostPage: component.showOnPostPage,
       ...component.customProps,
     },
   };
@@ -125,14 +141,52 @@ function renderComponent(component: any, index: number, _components: any[]) {
   }
 </style>
 
-<script define:vars={{ sidebarConfig }}>
-  // 响应式布局管理
-  class RightSidebarManager {
-    constructor() {
-      this.config = sidebarConfig;
-    }
+<script define:vars={{ rightComponentsConfig }}>
+  // 根据 showOnPostPage 配置控制组件显示
+  function toggleComponentsVisibility() {
+    const isPostPage = window.location.pathname.includes("/posts/");
+    
+    // 获取所有右侧边栏组件
+    const rightSidebar = document.getElementById('right-sidebar');
+    if (!rightSidebar) return;
+    
+    // 查找所有 widget-layout 元素
+    const widgets = rightSidebar.querySelectorAll('widget-layout');
+    
+    widgets.forEach((widget) => {
+      const widgetId = widget.getAttribute('data-id');
+      
+      // 从配置中查找该组件的 showOnPostPage 设置
+      const componentConfig = rightComponentsConfig.find(c => c.id === widgetId);
+      
+      if (componentConfig) {
+        // 特殊处理：侧边栏TOC只在文章详情页显示
+        if (widgetId === 'sidebar-toc') {
+          widget.style.display = isPostPage ? '' : 'none';
+        }
+        // 其他组件的 showOnPostPage 含义：
+        // true: 在文章页和非文章页都显示（默认行为）
+        // false: 只在非文章页显示，文章页隐藏
+        else if (isPostPage && !componentConfig.showOnPostPage) {
+          // 文章页 且 showOnPostPage 为 false：隐藏
+          widget.style.display = 'none';
+        } else {
+          // 其他情况：显示
+          widget.style.display = '';
+        }
+      }
+    });
   }
 
-  // 初始化右侧边栏管理器
-  new RightSidebarManager();
+  // 页面加载时执行
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', toggleComponentsVisibility);
+  } else {
+    toggleComponentsVisibility();
+  }
+
+  // 页面切换时重新检查
+  document.addEventListener('swup:contentReplaced', () => {
+    setTimeout(toggleComponentsVisibility, 100);
+  });
 </script>

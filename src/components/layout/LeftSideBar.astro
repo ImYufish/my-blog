@@ -48,7 +48,7 @@ function renderComponent(component: any, index: number, _components: any[]) {
     componentMap[component.type as keyof typeof componentMap];
   if (!ComponentToRender) return null;
 
-  const componentClass = widgetManager.getComponentClass(component, index);
+  const componentClass = widgetManager.getComponentClass(component, "left", index);
   const componentStyle = widgetManager.getComponentStyle(component, index);
 
   return {

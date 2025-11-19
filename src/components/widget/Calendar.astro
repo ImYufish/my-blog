@@ -262,6 +262,11 @@ const yearText = i18n(I18nKey.year);
     // 之后每24小时更新一次
     setInterval(renderCalendar, 24 * 60 * 60 * 1000);
   }, msUntilMidnight);
+
+  // 页面切换时重新渲染
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(renderCalendar, 100);
+  });
 </script>
 
 <style>

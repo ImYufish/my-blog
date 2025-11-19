@@ -42,6 +42,7 @@ export type SiteConfig = {
   toc: {
     enable: boolean;
     depth: 1 | 2 | 3;
+    sidebar: boolean; // 侧边栏目录开关
   };
   generateOgImages: boolean;
   favicon: Array<{
@@ -304,6 +305,7 @@ export type WidgetComponentType =
   | "categories"
   | "tags"
   | "toc"
+  | "sidebarToc"
   | "advertisement"
   | "stats"
   | "calendar"
@@ -313,12 +315,12 @@ export type WidgetComponentConfig = {
   type: WidgetComponentType; // 组件类型
   enable: boolean; // 是否启用该组件
   order: number; // 显示顺序，数字越小越靠前
-  position: "top" | "sticky"; // 组件位置：顶部固定区域或粘性区域
-  sidebar?: "left" | "right"; // 组件所在侧边栏：左侧或右侧（仅当启用双侧边栏时有效）
+  position: "top" | "sticky"; // 组件位置：top=固定在顶部，sticky=粘性定位（可滚动）
   class?: string; // 自定义CSS类名
   style?: string; // 自定义内联样式
   animationDelay?: number; // 动画延迟时间（毫秒）
   configId?: string; // 配置ID，用于广告组件指定使用哪个配置
+  showOnPostPage?: boolean; // 是否在文章详情页显示（仅右侧边栏组件有效）
   responsive?: {
     hidden?: ("mobile" | "tablet" | "desktop")[]; // 在指定设备上隐藏
     collapseThreshold?: number; // 折叠阈值
@@ -328,8 +330,9 @@ export type WidgetComponentConfig = {
 
 export type SidebarLayoutConfig = {
   enable: boolean; // 是否启用侧边栏
-  position: "left" | "right" | "both"; // 侧边栏位置：左侧、右侧或双侧
-  components: WidgetComponentConfig[]; // 组件配置列表
+  position: "left" | "both"; // 侧边栏位置：左侧或双侧
+  leftComponents: WidgetComponentConfig[]; // 左侧边栏组件配置列表
+  rightComponents: WidgetComponentConfig[]; // 右侧边栏组件配置列表
   defaultAnimation: {
     enable: boolean; // 是否启用默认动画
     baseDelay: number; // 基础延迟时间（毫秒）

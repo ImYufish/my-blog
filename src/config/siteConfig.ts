@@ -184,6 +184,8 @@ export const siteConfig: SiteConfig = {
     // 目录深度，1-3，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推
     // depth在新版已弃用
     depth: 3,
+    // 侧边栏目录开关，只在文章详情页显示
+    sidebar: true,
   },
 
   // 字体配置

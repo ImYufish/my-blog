@@ -151,10 +151,15 @@ const stats = [
       }
     }
   }
-  
+
   // 页面加载时更新
   updateDynamicStats();
   
   // 每小时更新一次（可选，因为天数变化较慢）
   setInterval(updateDynamicStats, 60 * 60 * 1000);
+
+  // 页面切换时重新更新
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(updateDynamicStats, 100);
+  });
 </script>
