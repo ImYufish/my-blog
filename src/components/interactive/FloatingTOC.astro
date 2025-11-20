@@ -4,12 +4,19 @@ import type { MarkdownHeading } from "astro";
 import { i18n } from "@/i18n/translation";
 import I18nKey from "@/i18n/i18nKey";
 import TOCStyles from "@/components/common/TOCStyles.astro";
+import { sidebarLayoutConfig } from "@/config/sidebarConfig";
 
 interface Props {
   headings: MarkdownHeading[];
 }
 
 let { headings = [] } = Astro.props;
+
+// 检查侧边栏目录组件是否启用
+const sidebarTocComponent = sidebarLayoutConfig.rightComponents?.find(
+  (c) => c.type === "sidebarToc"
+);
+const isSidebarTocEnabled = sidebarTocComponent?.enable ?? false;
 ---
 
 <!-- 悬浮TOC按钮 -->
@@ -245,7 +252,7 @@ let { headings = [] } = Astro.props;
 
 <TOCStyles />
 
-<script is:raw is:inline>
+<script is:raw is:inline define:vars={{ isSidebarTocEnabled }}>
   // 动态导入 TOCManager (需要在inline script中手动实现部分功能)
   if (typeof window.FloatingTOC === "undefined") {
     window.FloatingTOC = {
@@ -339,6 +346,37 @@ let { headings = [] } = Astro.props;
     };
   }
 
+  // 检查是否应该显示悬浮目录
+  function shouldShowFloatingTOC() {
+    // 检查是否为文章页面
+    if (!window.FloatingTOC.isPostPage()) {
+      return false;
+    }
+
+    // 获取当前布局模式
+    const currentLayout = localStorage.getItem('postListLayout') || 'list';
+    
+    // 检查屏幕宽度
+    const isSmallScreen = window.innerWidth < 1200;
+    
+    // 显示条件：网格模式 OR 小屏幕 OR 侧边栏目录未启用
+    return currentLayout === 'grid' || isSmallScreen || !isSidebarTocEnabled;
+  }
+
+  // 更新悬浮目录的显示状态
+  function updateFloatingTOCVisibility() {
+    const btn = window.FloatingTOC.btn;
+    if (!btn) return;
+
+    if (shouldShowFloatingTOC()) {
+      btn.classList.remove("hide");
+    } else {
+      btn.classList.add("hide");
+      // 同时关闭面板
+      closeTOC();
+    }
+  }
+
   // 初始化 FloatingTOC
   async function initFloatingTOC() {
     window.FloatingTOC.btn = document.getElementById("floating-toc-btn");
@@ -348,14 +386,8 @@ let { headings = [] } = Astro.props;
       return;
     }
 
-    // 检查是否为文章页面
-    if (!window.FloatingTOC.isPostPage()) {
-      window.FloatingTOC.btn.classList.add("hide");
-      return;
-    }
-
-    // 显示按钮
-    window.FloatingTOC.btn.classList.remove("hide");
+    // 更新显示状态
+    updateFloatingTOCVisibility();
 
     // 动态导入 TOCManager
     try {
@@ -406,6 +438,20 @@ let { headings = [] } = Astro.props;
   if (typeof window !== "undefined") {
     document.addEventListener("swup:contentReplaced", () => {
       setTimeout(initFloatingTOC, 100);
+    });
+
+    // 监听布局模式切换（通过自定义事件）
+    window.addEventListener('layoutChange', () => {
+      updateFloatingTOCVisibility();
+    });
+
+    // 监听窗口大小变化
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updateFloatingTOCVisibility();
+      }, 300);
     });
   }
 </script>
