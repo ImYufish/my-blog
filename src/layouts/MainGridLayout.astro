@@ -85,6 +85,17 @@ const hasBannerLink = !!(creditUrlDesktop || creditUrlMobile);
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 
+// 随机选择副标题（当打字机关闭且为数组时）
+const getRandomSubtitle = () => {
+  const subtitle = siteConfig.backgroundWallpaper.banner?.homeText?.subtitle;
+  if (Array.isArray(subtitle)) {
+    const randomIndex = Math.floor(Math.random() * subtitle.length);
+    return subtitle[randomIndex];
+  }
+  return subtitle;
+};
+const randomSubtitle = getRandomSubtitle();
+
 // 主页横幅文本只在首页且全局开关为 true 时显示，不区分设备
 const homeTextEnable = siteConfig.backgroundWallpaper.banner?.homeText?.enable;
 const showHomeText = isBannerMode && !!homeTextEnable && isHomePageCheck;
@@ -194,9 +205,7 @@ const transparentClass = shouldEnableTransparency
                                     pauseTime={siteConfig.backgroundWallpaper.banner.homeText.typewriter.pauseTime}
                                 />
                             ) : (
-                                Array.isArray(siteConfig.backgroundWallpaper.banner.homeText.subtitle) 
-                                    ? siteConfig.backgroundWallpaper.banner.homeText.subtitle[0] 
-                                    : siteConfig.backgroundWallpaper.banner.homeText.subtitle
+                                randomSubtitle
                             )}
                         </h2>
                     )}
