@@ -357,10 +357,7 @@ const transparentClass = shouldEnableTransparency
 </div>
 
 <!-- 悬浮TOC组件 -->
-{siteConfig.toc.enable && <FloatingTOC headings={headings}></FloatingTOC>}
-
-<!-- #toc needs to exist for Swup to work normally -->
-{!siteConfig.toc.enable && <div id="toc"></div>}
+<FloatingTOC headings={headings}></FloatingTOC>
 
 <!-- 立即执行脚本：防止刷新时右侧栏闪烁 -->
 <script is:inline define:vars={{ isBothSidebars: sidebarConfig.isBothSidebars }}>

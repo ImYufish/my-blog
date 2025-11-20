@@ -39,11 +39,6 @@ export type SiteConfig = {
   };
 
   backgroundWallpaper: BackgroundWallpaperConfig;
-  toc: {
-    enable: boolean;
-    depth: 1 | 2 | 3;
-    sidebar: boolean; // 侧边栏目录开关
-  };
   generateOgImages: boolean;
   favicon: Array<{
     src: string;
