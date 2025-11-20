@@ -38,7 +38,9 @@ const { headings = [], class: className, style } = Astro.props;
 	max-height: calc(100vh - 20rem)
 </style>
 
-<script is:inline>
+<script>
+  import { TOCManager } from "@/utils/tocUtils";
+
   if (typeof window.SidebarTOC === "undefined") {
     window.SidebarTOC = {
       manager: null
@@ -49,10 +51,24 @@ const { headings = [], class: className, style } = Astro.props;
     const tocContent = document.getElementById("sidebar-toc-content");
     if (!tocContent) return;
 
-    try {
-      // 动态导入 TOCManager
-      const { TOCManager } = await import("/src/utils/tocUtils.ts");
+    // 检查是否为文章页面
+    const isCurrentlyPostPage = window.location.pathname.includes("/posts/");
+    const sidebarTocWidget = document.getElementById("sidebar-toc");
+    
+    if (!isCurrentlyPostPage) {
+      // 非文章页，隐藏侧边栏目录
+      if (sidebarTocWidget) {
+        sidebarTocWidget.style.display = 'none';
+      }
+      return;
+    } else {
+      // 文章页，显示侧边栏目录
+      if (sidebarTocWidget) {
+        sidebarTocWidget.style.display = '';
+      }
+    }
 
+    try {
       // 清理旧实例
       if (window.SidebarTOC.manager) {
         window.SidebarTOC.manager.cleanup();
@@ -74,6 +90,7 @@ const { headings = [], class: className, style } = Astro.props;
   }
 
   // 初始化
+  // 确保 DOM 准备好后再执行
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initSidebarTOC);
   } else {
@@ -83,5 +100,23 @@ const { headings = [], class: className, style } = Astro.props;
   // 页面切换时重新初始化
   document.addEventListener("swup:contentReplaced", () => {
     setTimeout(initSidebarTOC, 100);
+  });
+  
+  // Astro 页面切换事件
+  document.addEventListener("astro:page-load", () => {
+    setTimeout(initSidebarTOC, 100);
+  });
+  
+  // 浏览器导航事件
+  window.addEventListener("popstate", () => {
+    setTimeout(initSidebarTOC, 200);
+  });
+  
+  // 监听 hashchange（但排除 TOC 内部导航）
+  window.addEventListener("hashchange", () => {
+    if (!window.tocInternalNavigation) {
+      setTimeout(initSidebarTOC, 100);
+    }
+    window.tocInternalNavigation = false;
   });
 </script>
