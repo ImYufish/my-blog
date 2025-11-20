@@ -127,7 +127,7 @@ export const siteConfig: SiteConfig = {
           "In Finalized Morrow, I Full Bloom",
         ],
         typewriter: {
-          enable: true, // 启用副标题打字机效果
+          enable: false, // 启用副标题打字机效果
           speed: 100, // 打字速度（毫秒）
           deleteSpeed: 50, // 删除速度（毫秒）
           pauseTime: 2000, // 完全显示后的暂停时间（毫秒）

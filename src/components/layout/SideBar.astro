@@ -5,7 +5,6 @@ import Announcement from "@/components/widget/Announcement.astro";
 import Categories from "@/components/widget/Categories.astro";
 import Profile from "@/components/content/Profile.astro";
 import Tags from "@/components/widget/Tags.astro";
-import TOC from "@/components/widget/TOC.astro";
 import Advertisement from "@/components/widget/Advertisement.astro";
 import SiteStats from "@/components/widget/SiteStats.astro";
 import Calendar from "@/components/widget/Calendar.astro";
@@ -73,7 +72,6 @@ const componentMap = {
   announcement: Announcement,
   categories: Categories,
   tags: Tags,
-  toc: TOC,
   sidebarToc: SidebarTOC,
   advertisement: Advertisement,
   stats: SiteStats,
@@ -96,7 +94,7 @@ function renderComponent(component: any, index: number, _components: any[]) {
     props: {
       class: componentClass,
       style: componentStyle,
-      headings: component.type === "toc" || component.type === "sidebarToc" ? headings : undefined,
+      headings: component.type === "sidebarToc" ? headings : undefined,
       configId: component.configId, // 传递configId给Advertisement组件
       ...component.customProps,
     },

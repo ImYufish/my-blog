@@ -56,7 +56,7 @@
 - `PioMessageBox.astro` - Pio 消息框组件
 - `SpineModel.astro` - Spine 模型组件
 - `Tags.astro` - 标签组件
-- `TOC.astro` - 目录组件
+- `SidebarTOC.astro` - 侧边栏目录组件
 - `WidgetLayout.astro` - 小部件布局组件
 
 ### 🔧 misc/ - 杂项组件

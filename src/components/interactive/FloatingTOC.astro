@@ -260,10 +260,7 @@ const isSidebarTocEnabled = sidebarTocComponent?.enable ?? false;
       panel: null,
       manager: null,
       isPostPage: function() {
-        return (
-          window.location.pathname.includes("/posts/") ||
-          document.querySelector(".custom-md, .markdown-content") !== null
-        );
+        return window.location.pathname.includes("/posts/");
       }
     };
   }
