@@ -18,8 +18,8 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.5",
-    "@astrojs/mdx": "^4.3.11",
-    "@astrojs/rss": "^4.0.13",
+    "@astrojs/mdx": "^4.3.12",
+    "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/svelte": "7.2.2",
     "@astrojs/tailwind": "^6.0.2",
@@ -32,7 +32,7 @@
     "@iconify-json/fa6-brands": "^1.2.6",
     "@iconify-json/fa6-regular": "^1.2.4",
     "@iconify-json/fa6-solid": "^1.2.4",
-    "@iconify-json/material-symbols": "^1.2.46",
+    "@iconify-json/material-symbols": "^1.2.47",
     "@iconify/svelte": "^4.2.0",
     "@swup/astro": "^1.7.0",
     "@tailwindcss/typography": "^0.5.16",
@@ -66,7 +66,7 @@
     "satori": "^0.18.2",
     "sharp": "^0.34.5",
     "stylus": "^0.64.0",
-    "svelte": "^5.43.12",
+    "svelte": "^5.43.14",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",
     "unist-util-visit": "^5.0.0"
