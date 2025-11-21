@@ -28,7 +28,13 @@
 
 <img alt="firefly" src="./docs/images/1.webp" />
 
-**更多布局配置及演示请查看：[https://firefly.cuteleaf.cn/posts/layout/firefly-layout-system/](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
+在重要的布局上，Firefly创新性地增加了左右双侧边栏、文章网格(二列)布局，
+
+增加了站点统计、日历组件、文章目录等小组件，让侧边栏更加丰富，
+
+同时也保留了 Furwai 的布局系统，可在配置文件中自由切换。
+
+**更多布局配置及演示请查看：[Firefly 布局系统详解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 
 ## ✨ 功能特性
 
@@ -41,58 +47,49 @@
 - [x] **全文搜索** - 基于 Pagefind 的客户端搜索，支持文章内容索引。同时支持 MeiliSearch 搜索引擎
 
 ### 个性化
-
-- [x] **主题色自定义** - 360° 色相调节，支持亮色/暗色/跟随系统三种模式
-- [x] **壁纸模式切换** - 横幅壁纸、全屏壁纸、纯色背景，前台自由切换
-- [x] **布局切换** - 列表/网格布局，前台自由切换
-- [x] **多侧边栏** - 支持配置单侧边栏，双侧边栏
+- [x] **侧边栏** - 支持配置单侧边栏、双侧边栏，支持前台自由切换
+- [x] **文章布局** - 支持配置(单列)列表、网格(二列)布局，支持前台自由切换
 - [x] **字体管理** - 支持自定义字体，丰富的字体选择器
-- [x] **樱花特效** - 可配置数量的樱花飘落动画
-- [x] **文章随机封面图** - 支持通过 API 获取随机封面图
+- [x] **页脚配置** - HTML 内容注入，完全自定义
+- [x] **导航栏自定义** - Logo、标题、链接全面自定义
+- [x] **壁纸模式切换** - 横幅壁纸、全屏壁纸、纯色背景，支持前台自由切换
+- [x] **主题色自定义** - 360° 色相调节，支持亮色/暗色/跟随系统三种模式，支持前台自由切换
 
 ### 页面组件
-
-- [x] **文章目录** - 自动生成，支持桌面端和移动端
-- [x] **导航栏定制** - Logo、标题、链接全面自定义
-- [x] **友情链接** - 精美的友链展示卡片
 - [x] **留言板** - 支持留言页面，集成评论系统
-- [x] **赞助页面** - 多种支付方式、收款码展示、赞助者列表、文章内赞助按钮
-- [x] **页脚配置** - HTML 内容注入，完全自定义
-- [x] **关于页面** - 自定义个人介绍
 - [x] **公告栏** - 顶部公告提示，支持关闭和自定义样式
-- [x] **站点统计** - 显示文章、分类、标签数目，全部文章总字数，站点运行时长及最后更新时间
-- [x] **站点日历** - 显示当月日历，以及当月的发布文章
-
-### 媒体功能
-
-- [x] **音乐播放器** - 基于 APlayer，支持本地音乐和 Meting API 在线音乐
 - [x] **看板娘** - 支持 Spine 和 Live2D 两种动画引擎
-- [x] **追番页** - 基于 Bangumi API 的追番记录展示
+- [x] **站点统计** - 显示文章、分类、标签数目、文章总字数、运行时长、最后更新时间
+- [x] **站点日历** - 显示当月日历，以及当月的发布文章
+- [x] **赞助页面** - 多种支付方式、收款码展示、赞助者列表、文章内赞助按钮
+- [x] **樱花特效** - 支持樱花特效，全屏樱花效果
+- [x] **友情链接** - 精美的友链展示卡片
+- [x] **广告组件** - 支持自定义侧边栏广告内容
 - [x] **番组计划** - 基于 Bangumi API 的追番和游戏记录展示
-
-### 交互功能
-
 - [x] **评论系统** - 集成 Twikoo、Waline、Giscus、Disqus 评论系统
-- [x] **访问量统计** - 支持调用Waline，Twikoo自带的访问量追踪
+- [x] **访问量统计** - 支持调用 Waline、Twikoo 自带的访问量追踪
+- [x] **音乐播放器** - 基于 APlayer，支持本地音乐和 Meting API 在线音乐
+
+### 内容增强
+- [x] **图片灯箱** - Fancybox 图片预览功能
+- [x] **浮动目录** - 动态显示文章目录，支持锚点跳转，在侧边栏目录隐藏后显示
+- [x] **侧边栏目录** - 动态显示文章目录，支持锚点跳转
 - [x] **增强代码块** - 基于 Expressive Code，支持代码折叠、行号、语言标识
 - [x] **数学公式支持** - KaTeX 渲染引擎，支持行内和块级公式
-- [x] **图片灯箱** - Fancybox 图片预览功能
+- [x] **Markdown扩展** - [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
+- [x] **文章随机封面图** - 支持通过 API 获取随机封面图
+
+### SEO
+- [x] **SEO 优化** - 完整的 meta 标签和结构化数据
 - [x] **RSS 订阅** - 自动生成 RSS Feed
 - [x] **站点地图** - 自动生成 XML Sitemap，支持页面过滤配置
 
-### 性能优化
-
-- [x] **图片优化** - Astro Image 自动处理
-- [x] **代码分割** - 自动按需加载
-- [x] **SEO 优化** - 完整的 meta 标签和结构化数据
-- [x] **懒加载** - 图片和组件按需加载
-- [x] **站点地图优化** - 自动生成 sitemap-index.xml 和多级站点地图
 
 ## 📝计划中...
 
 - [ ] **重构 Live2D 看板娘**
-- [ ] **修复追番页加载数据问题**
-- [ ] **优化动画流畅度**
+- [ ] **优化网格布局的文章封面**
+- [ ] **持续优化动画流畅度**
 - [ ] 更多功能持续完善中...
 
 如果你有好用的功能和优化，请提交 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls)
@@ -199,10 +196,12 @@ lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不�
 
 ## 🙏 致谢
 
-- 感谢原始 [Fuwari](https://github.com/saicaca/fuwari) 模板
-- 感谢b站up[公公的日常](https://space.bilibili.com/3546750017080050)提供的Q版 流萤 看板娘切片数据模型
-- 使用 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
-- 使用 [MetingJS](https://github.com/metowolf/MetingJS) 和 [APlayer](https://github.com/MoePlayer/APlayer) 音乐播放器
+- 非常感谢 [saicaca](https://github.com/saicaca) 开发的 [Fuwari](https://github.com/saicaca/fuwari) 模板，Firefly 就是基于这个模板二次开发
+- 参考了博主 [霞葉](https://kasuha.com) 分享的 [Bangumi 收藏展示页面方案](https://kasuha.com/posts/fuwari-enhance-ep2/)
+- 参考了 [Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 的横幅主副标题/Footer注入/自定义导航栏/公告组件/樱花特效/KaTeX/Fancybox方案
+- 使用了 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
+- 使用了 [MetingJS](https://github.com/metowolf/MetingJS) 和 [APlayer](https://github.com/MoePlayer/APlayer) 音乐播放器
+- 使用了b站up [公公的日常](https://space.bilibili.com/3546750017080050) 提供的Q版 `流萤` 看板娘切片数据模型
 - 图标来自 [Iconify](https://iconify.design/)
 
 ## 🍀 贡献者

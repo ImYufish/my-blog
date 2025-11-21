@@ -2,7 +2,7 @@
 import type { UserSubjectCollection } from "@/types/bangumi";
 import Card from "./Card.astro";
 import FilterControls from "./FilterControls.astro";
-import Pagination from "./Pagination.astro";
+import ClientPagination from "@/components/common/controls/ClientPagination.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 
@@ -67,7 +67,7 @@ const defaultFilter = "all"; // 默认显示全部，用户可以通过筛选器
         ))}
       </div>
 
-      <Pagination
+      <ClientPagination
         totalItems={items.length}
         itemsPerPage={itemsPerPage}
         currentPage={1}

@@ -63,69 +63,67 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
 {totalPages > 1 && (
   <div class="responsive-pagination flex justify-center items-center mt-8" data-pagination-section={sectionId}>
     <!-- 移动端简化版分页 -->
-    <div class="mobile-pagination items-center space-x-2">
+    <div class="mobile-pagination items-center gap-3">
       <button
         type="button"
-        class="p-1.5 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center justify-center"
+        class="btn-card overflow-hidden rounded-lg text-[var(--primary)] w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         data-page="prev"
         data-section={sectionId}
         disabled={currentPage === 1}
         aria-label={i18n(I18nKey.bangumiPrevPage)}
       >
-        <Icon name="material-symbols:chevron-left-rounded" class="text-base" />
+        <Icon name="material-symbols:chevron-left-rounded" class="text-[1.75rem]" />
       </button>
 
       <!-- 移动端页码信息 -->
-      <div class="flex items-center space-x-1">
-        <span class="text-sm text-gray-600 dark:text-gray-400">{i18n(I18nKey.bangumiCurrentPage)}</span>
-        <span class="mobile-current-page px-2 py-1 text-sm font-medium bg-[var(--primary)] text-white rounded">{currentPage}</span>
-        <span class="text-sm text-gray-600 dark:text-gray-400">{i18n(I18nKey.bangumiTotalPages)}</span>
-        <span class="mobile-total-pages text-sm font-medium text-gray-700 dark:text-gray-300">{totalPages}</span>
-        <span class="text-sm text-gray-600 dark:text-gray-400">{i18n(I18nKey.bangumiPage)}</span>
+      <div class="bg-[var(--card-bg)] flex items-center rounded-lg px-4 h-11 gap-1.5">
+        <span class="mobile-current-page text-base font-bold text-[var(--primary)]">{currentPage}</span>
+        <span class="text-sm text-neutral-500 dark:text-neutral-500">/</span>
+        <span class="mobile-total-pages text-base font-bold text-neutral-700 dark:text-neutral-300">{totalPages}</span>
       </div>
 
       <button
         type="button"
-        class="p-1.5 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center justify-center"
+        class="btn-card overflow-hidden rounded-lg text-[var(--primary)] w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         data-page="next"
         data-section={sectionId}
         disabled={currentPage === totalPages}
         aria-label={i18n(I18nKey.bangumiNextPage)}
       >
-        <Icon name="material-symbols:chevron-right-rounded" class="text-base" />
+        <Icon name="material-symbols:chevron-right-rounded" class="text-[1.75rem]" />
       </button>
     </div>
 
     <!-- 桌面端完整版分页 -->
-    <div class="desktop-pagination items-center space-x-2">
+    <div class="desktop-pagination items-center gap-3">
       <button
         type="button"
-        class="p-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+        class="btn-card overflow-hidden rounded-lg text-[var(--primary)] w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         data-page="prev"
         data-section={sectionId}
         disabled={currentPage === 1}
         aria-label={i18n(I18nKey.bangumiPrevPage)}
       >
-        <Icon name="material-symbols:chevron-left-rounded" class="text-lg" />
+        <Icon name="material-symbols:chevron-left-rounded" class="text-[1.75rem]" />
       </button>
 
-      <div class="desktop-page-numbers flex flex-wrap justify-center space-x-1" data-page-numbers={sectionId}>
+      <div class="bg-[var(--card-bg)] flex flex-row rounded-lg items-center text-neutral-700 dark:text-neutral-300 font-bold" data-page-numbers={sectionId}>
         {pageNumbers.map((pageItem) => (
           pageItem === '...' ? (
-            <span class="px-2 py-2 text-sm text-gray-500 dark:text-gray-400">...</span>
+            <Icon name="material-symbols:more-horiz" class="mx-1" />
           ) : (
             <button
               type="button"
               class:list={[
-                "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200",
+                "rounded-lg overflow-hidden w-11 h-11 flex items-center justify-center font-bold",
                 {
-                  "bg-[var(--primary)] text-white shadow-md": pageItem === currentPage,
-                  "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600": pageItem !== currentPage
+                  "bg-[var(--primary)] text-white dark:text-black/70": pageItem === currentPage,
+                  "btn-card active:scale-[0.85]": pageItem !== currentPage
                 }
               ]}
               data-page={pageItem}
               data-section={sectionId}
-              aria-label={`第${pageItem}页`}
+              aria-label={`${pageItem}`}
               aria-current={pageItem === currentPage ? "page" : undefined}
             >
               {pageItem}
@@ -136,13 +134,13 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
       <button
         type="button"
-        class="p-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+        class="btn-card overflow-hidden rounded-lg text-[var(--primary)] w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         data-page="next"
         data-section={sectionId}
         disabled={currentPage === totalPages}
         aria-label={i18n(I18nKey.bangumiNextPage)}
       >
-        <Icon name="material-symbols:chevron-right-rounded" class="text-lg" />
+        <Icon name="material-symbols:chevron-right-rounded" class="text-[1.75rem]" />
       </button>
     </div>
   </div>
@@ -257,17 +255,18 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
     }
 
     function updatePaginationButtons(totalPages) {
-      const prevButton = pagination.querySelector('[data-page="prev"]');
-      const nextButton = pagination.querySelector('[data-page="next"]');
+      // 更新所有的上一页和下一页按钮（移动端和桌面端）
+      const prevButtons = pagination.querySelectorAll('[data-page="prev"]');
+      const nextButtons = pagination.querySelectorAll('[data-page="next"]');
       const pageNumbersContainer = pagination.querySelector(`[data-page-numbers="${sectionId}"]`);
 
-      if (prevButton) {
-        prevButton.disabled = currentPage === 1;
-      }
+      prevButtons.forEach(btn => {
+        btn.disabled = currentPage === 1;
+      });
 
-      if (nextButton) {
-        nextButton.disabled = currentPage === totalPages;
-      }
+      nextButtons.forEach(btn => {
+        btn.disabled = currentPage === totalPages;
+      });
 
       if (pageNumbersContainer) {
         pageNumbersContainer.innerHTML = '';
@@ -275,23 +274,22 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
         pageNumbers.forEach(pageItem => {
           if (pageItem === '...') {
-            const span = document.createElement('span');
-            span.className = 'px-3 py-2 text-gray-500 dark:text-gray-400';
-            span.textContent = '...';
-            pageNumbersContainer.appendChild(span);
+            // 创建省略号图标
+            const iconContainer = document.createElement('span');
+            iconContainer.innerHTML = '<svg class="mx-1" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>';
+            pageNumbersContainer.appendChild(iconContainer.firstChild);
           } else {
             const button = document.createElement('button');
-            button.className = `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-              pageItem === currentPage
-                ? 'bg-[var(--primary)] text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-            }`;
+            button.className = pageItem === currentPage
+              ? 'rounded-lg overflow-hidden w-11 h-11 flex items-center justify-center font-bold bg-[var(--primary)] text-white dark:text-black/70'
+              : 'rounded-lg overflow-hidden w-11 h-11 flex items-center justify-center font-bold btn-card active:scale-[0.85]';
             button.dataset.page = pageItem.toString();
             button.dataset.section = sectionId;
             button.textContent = pageItem.toString();
             button.addEventListener('click', function() {
               currentPage = pageItem;
               updatePage();
+              updateMobileDisplay();
             });
             pageNumbersContainer.appendChild(button);
           }

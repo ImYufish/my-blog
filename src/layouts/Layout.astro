@@ -713,14 +713,6 @@ function disableAnimation() {
         }
       }
 
-      // 移动端 TOC 组件需要在所有页面都重新初始化
-      // 因为它在首页显示文章列表，在其他页面显示目录
-      if (typeof (window as any).mobileTOCInit === "function") {
-        setTimeout(() => {
-          (window as any).mobileTOCInit();
-        }, 100);
-      }
-
       // 重新初始化semifull模式的滚动检测
       const navbar = document.getElementById("navbar");
       if (navbar) {

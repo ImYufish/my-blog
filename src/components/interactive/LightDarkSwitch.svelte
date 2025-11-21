@@ -10,6 +10,8 @@ import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 import { onMount } from 'svelte';
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+import DropdownPanel from "@/components/common/base/DropdownPanel.svelte";
+import DropdownItem from "@/components/common/base/DropdownItem.svelte";
 
 let mode: LIGHT_DARK_MODE = $state(LIGHT_MODE);
 let displayedMode: LIGHT_DARK_MODE = $state(LIGHT_MODE); // 显示的实际主题（在system模式下会随系统变化）
@@ -105,28 +107,31 @@ onMount(() => {
         </div>
     </button>
     <div id="theme-mode-panel" class="absolute transition float-panel-closed top-11 -right-2 pt-5 z-50">
-        <div class="card-base float-panel p-2">
-            <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
-                    class:current-theme-btn={mode === LIGHT_MODE}
-                    onclick={() => switchScheme(LIGHT_MODE)}
+        <DropdownPanel>
+            <DropdownItem
+                isActive={mode === LIGHT_MODE}
+                isLast={false}
+                onclick={() => switchScheme(LIGHT_MODE)}
             >
                 <Icon icon="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.lightMode)}
-            </button>
-            <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
-                    class:current-theme-btn={mode === DARK_MODE}
-                    onclick={() => switchScheme(DARK_MODE)}
+            </DropdownItem>
+            <DropdownItem
+                isActive={mode === DARK_MODE}
+                isLast={false}
+                onclick={() => switchScheme(DARK_MODE)}
             >
                 <Icon icon="material-symbols:dark-mode-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.darkMode)}
-            </button>
-            <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95"
-                    class:current-theme-btn={mode === SYSTEM_MODE}
-                    onclick={() => switchScheme(SYSTEM_MODE)}
+            </DropdownItem>
+            <DropdownItem
+                isActive={mode === SYSTEM_MODE}
+                isLast={true}
+                onclick={() => switchScheme(SYSTEM_MODE)}
             >
                 <Icon icon="material-symbols:brightness-auto-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.systemMode)}
-            </button>
-        </div>
+            </DropdownItem>
+        </DropdownPanel>
     </div>
 </div>

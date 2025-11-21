@@ -3,6 +3,8 @@ import { Icon } from "astro-icon/components";
 import { LinkPresets } from "@/constants/link-presets";
 import { LinkPreset, type NavBarLink } from "@/types/config";
 import { url } from "@/utils/url-utils";
+import DropdownPanel from "@/components/common/base/DropdownPanel.astro";
+import DropdownItem from "@/components/common/base/DropdownItem.astro";
 
 interface Props {
 	link: NavBarLink;
@@ -32,6 +34,7 @@ const processedLink = {
 };
 
 const hasChildren = processedLink.children && processedLink.children.length > 0;
+
 ---
 
 <div class:list={["dropdown-container", className]} data-dropdown>
@@ -49,24 +52,22 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 			</div>
 		</button>
 		<div class="dropdown-menu" data-dropdown-menu>
-			<div class="dropdown-content">
-				{processedLink.children?.map((child) => (
-					<a 
-						href={child.external ? child.url : url(child.url)} 
-						target={child.external ? "_blank" : null}
+			<DropdownPanel class="dropdown-content">
+				{processedLink.children?.map((child, index) => (
+					<DropdownItem
+						href={child.external ? child.url : url(child.url)}
+						target={child.external ? "_blank" : undefined}
+						isLast={index === (processedLink.children?.length || 0) - 1}
 						class="dropdown-item"
-						aria-label={child.name}
 					>
-						<div class="flex items-center">
-							{child.icon && <Icon name={child.icon} class="text-[1rem] mr-2 navbar-icon" />}
-							<span>{child.name}</span>
-						</div>
+						{child.icon && <Icon name={child.icon} class="text-[1.25rem] mr-3 navbar-icon" />}
+						<span>{child.name}</span>
 						{child.external && (
-							<Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.75rem] text-black/25 dark:text-white/25" />
+							<Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.75rem] text-black/25 dark:text-white/25 ml-auto" />
 						)}
-					</a>
+					</DropdownItem>
 				))}
-			</div>
+			</DropdownPanel>
 		</div>
 	) : (
 		<a 
@@ -104,19 +105,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 	}
 
 	.dropdown-content {
-		@apply bg-[var(--float-panel-bg)] rounded-[var(--radius-large)] shadow-xl dark:shadow-none border border-black/5 dark:border-white/10 py-2 min-w-[12rem];
-	}
-
-	.dropdown-item {
-		@apply flex items-center justify-between px-4 py-2.5 text-black/75 dark:text-white/75 hover:text-[var(--primary)] hover:bg-[var(--btn-plain-bg-hover)] transition-colors duration-150 font-medium;
-	}
-
-	.dropdown-item:first-child {
-		@apply rounded-t-[calc(var(--radius-large)-0.5rem)];
-	}
-
-	.dropdown-item:last-child {
-		@apply rounded-b-[calc(var(--radius-large)-0.5rem)];
+		@apply min-w-[12rem];
 	}
 
 	/* 移动端隐藏下拉菜单 */

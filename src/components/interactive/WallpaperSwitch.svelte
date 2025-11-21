@@ -10,6 +10,8 @@ import type { WALLPAPER_MODE } from "@/types/config";
 import { siteConfig } from "@/config";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+import DropdownPanel from "@/components/common/base/DropdownPanel.svelte";
+import DropdownItem from "@/components/common/base/DropdownItem.svelte";
 
 let mode: WALLPAPER_MODE = $state(siteConfig.backgroundWallpaper.mode);
 
@@ -38,28 +40,31 @@ function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 		</div>
 	</button>
 	<div id="wallpaper-mode-panel" class="absolute transition float-panel-closed top-11 -right-2 pt-5 z-50">
-		<div class="card-base float-panel p-2">
-			<button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
-					class:current-theme-btn={mode === WALLPAPER_BANNER}
-					onclick={() => switchWallpaperMode(WALLPAPER_BANNER)}
+		<DropdownPanel>
+			<DropdownItem
+				isActive={mode === WALLPAPER_BANNER}
+				isLast={false}
+				onclick={() => switchWallpaperMode(WALLPAPER_BANNER)}
 			>
 				<Icon icon="material-symbols:image-outline" class="text-[1.25rem] mr-3"></Icon>
 				{i18n(I18nKey.wallpaperBannerMode)}
-			</button>
-			<button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
-					class:current-theme-btn={mode === WALLPAPER_OVERLAY}
-					onclick={() => switchWallpaperMode(WALLPAPER_OVERLAY)}
+			</DropdownItem>
+			<DropdownItem
+				isActive={mode === WALLPAPER_OVERLAY}
+				isLast={false}
+				onclick={() => switchWallpaperMode(WALLPAPER_OVERLAY)}
 			>
 				<Icon icon="material-symbols:wallpaper" class="text-[1.25rem] mr-3"></Icon>
 				{i18n(I18nKey.wallpaperOverlayMode)}
-			</button>
-			<button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95"
-					class:current-theme-btn={mode === WALLPAPER_NONE}
-					onclick={() => switchWallpaperMode(WALLPAPER_NONE)}
+			</DropdownItem>
+			<DropdownItem
+				isActive={mode === WALLPAPER_NONE}
+				isLast={true}
+				onclick={() => switchWallpaperMode(WALLPAPER_NONE)}
 			>
 				<Icon icon="material-symbols:hide-image-outline" class="text-[1.25rem] mr-3"></Icon>
 				{i18n(I18nKey.wallpaperNoneMode)}
-			</button>
-		</div>
+			</DropdownItem>
+		</DropdownPanel>
 	</div>
 </div>

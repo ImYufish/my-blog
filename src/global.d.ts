@@ -18,8 +18,6 @@ declare global {
         }>;
       }>;
     };
-
-    mobileTOCInit?: () => void;
   }
 }
 
