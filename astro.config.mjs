@@ -110,10 +110,6 @@ export default defineConfig({
 				const url = new URL(page);
 				const pathname = url.pathname;
 
-				// 检查各个页面是否启用
-				if (pathname === '/anime/' && !siteConfig.pages.anime) {
-					return false;
-				}
 				if (pathname === '/sponsor/' && !siteConfig.pages.sponsor) {
 					return false;
 				}

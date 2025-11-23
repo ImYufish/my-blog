@@ -55,11 +55,21 @@ async function fetchBangumiData(username: string, subjectType: number) {
     let allData: UserSubjectCollection[] = [];
     let hasMore = true;
 
+    // 开发模式下只获取一页数据，加快调试速度
+    const isDev = import.meta.env.DEV;
+    const maxPages = isDev ? 1 : 0; // 0 表示不限制
+
     console.log(
-      `[Bangumi] 开始获取用户 ${username} 的 subjectType ${subjectType} 数据...`,
+      `[Bangumi] ${isDev ? '🔧 开发模式' : '🌐 生产模式'} - 开始获取用户 ${username} 的 subjectType ${subjectType} 数据...`,
     );
 
     while (hasMore) {
+      // 开发模式限制：只获取一页
+      if (isDev && maxPages > 0 && allData.length >= limit * maxPages) {
+        console.log(`[Bangumi] 开发模式：已获取 ${maxPages} 页数据，停止获取`);
+        break;
+      }
+
       // 检查是否超过最大获取限制
       if (maxTotal > 0 && allData.length >= maxTotal) {
         console.log(`[Bangumi] 已达到最大获取限制 ${maxTotal}，停止获取`);
@@ -118,9 +128,20 @@ async function fetchBangumiData(username: string, subjectType: number) {
 const bangumiData: Record<string, UserSubjectCollection[]> = {};
 const tabs: Array<{ id: string; name: string; count: number }> = [];
 
-console.log("[Bangumi] 🌐 从 API 获取数据");
+// 检查是否已配置 Bangumi 用户ID
+const isUserIdConfigured = bangumiConfig.username && bangumiConfig.username !== "you-user-id" && bangumiConfig.username.trim() !== "";
+
+if (!isUserIdConfigured) {
+  console.log("[Bangumi] ⚠️ 未配置 Bangumi 用户ID，跳过数据获取");
+} else {
+  console.log("[Bangumi] 🌐 从 API 获取数据");
+}
 
 for (const [categoryKey, enabled] of Object.entries(bangumiConfig.categories)) {
+  // 如果未配置用户ID，跳过数据获取
+  if (!isUserIdConfigured) {
+    break;
+  }
   if (enabled && categoryMap[categoryKey as keyof typeof categoryMap]) {
     const categoryInfo = categoryMap[categoryKey as keyof typeof categoryMap];
     try {
@@ -190,20 +211,16 @@ const buildTime = new Date().toLocaleString();
           ))}
         </>
       ) : (
-        <div class="text-center py-12">
-          <h2 class="text-xl font-medium text-gray-600 dark:text-gray-400 mb-2">
-            {i18n(I18nKey.bangumiEmpty)}
-          </h2>
-          <p class="text-gray-500 dark:text-gray-400 mb-4">
-            {i18n(I18nKey.bangumiEmptyReason)}
-          </p>
-          <div class="text-sm text-gray-400 dark:text-gray-500 space-y-1">
-            <div>{i18n(I18nKey.bangumiUsername)}: {bangumiConfig.username}</div>
-            <div>{i18n(I18nKey.bangumiApi)}: {bangumiConfig.apiUrl}</div>
-            <div class="mt-3 text-xs">
-              {i18n(I18nKey.bangumiConfigTip)}
-            </div>
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-[var(--btn-regular-bg)] rounded-full mb-6 border border-[var(--line-divider)]">
+            <Icon icon="material-symbols:settings" class="text-[2rem] text-[var(--btn-content)]" />
           </div>
+          <h2 class="text-xl font-semibold text-black/80 dark:text-white/80 mb-3">
+            {isUserIdConfigured ? i18n(I18nKey.bangumiEmpty) : "未配置 Bangumi 用户ID"}
+          </h2>
+          <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">
+            {isUserIdConfigured ? i18n(I18nKey.bangumiEmptyReason) : "请在 src/config/siteConfig.ts 中配置你的 Bangumi 用户ID"}
+          </p>
         </div>
       )}
     </div>

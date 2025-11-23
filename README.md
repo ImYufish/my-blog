@@ -13,10 +13,13 @@
 
 
 ---
-
+🚀 快速指南：
 [**🖥️在线预览**](https://firefly.cuteleaf.cn/) /
 [**📝使用文档**](https://docs-firefly.cuteleaf.cn/) /
 [**🍀我的博客**](https://blog.cuteleaf.cn) 
+
+📖 README：
+**[简体中文](README.md)** | **[繁體中文](README.zh-TW.md)** | **[English](README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)**
 
 ⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
 
@@ -28,7 +31,7 @@
 
 <img alt="firefly" src="./docs/images/1.webp" />
 
-在重要的布局上，Firefly创新性地增加了左右双侧边栏、文章网格(二列)布局，
+在重要的布局上，Firefly 创新性地增加了左右双侧边栏、文章网格(二列)布局，
 
 增加了站点统计、日历组件、文章目录等小组件，让侧边栏更加丰富，
 
@@ -138,6 +141,23 @@
 
 > 📚 **详细配置文档**: 查看 [Firefly使用文档](https://docs-firefly.cuteleaf.cn/) 获取完整的配置指南
 
+### 设置网站语言
+
+要设置博客的默认语言，请编辑 `src/config/siteConfig.ts` 文件：
+
+```typescript
+// 定义站点语言
+const SITE_LANG = "zh_CN";
+```
+
+**支持的语言代码：**
+- `zh_CN` - 简体中文
+- `zh_TW` - 繁体中文
+- `en` - 英文
+- `ja` - 日文
+- `ru` - 俄文
+
+
 ### 配置文件结构
 
 ```
@@ -198,7 +218,7 @@ lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不�
 
 - 非常感谢 [saicaca](https://github.com/saicaca) 开发的 [Fuwari](https://github.com/saicaca/fuwari) 模板，Firefly 就是基于这个模板二次开发
 - 参考了博主 [霞葉](https://kasuha.com) 分享的 [Bangumi 收藏展示页面方案](https://kasuha.com/posts/fuwari-enhance-ep2/)
-- 参考了 [Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 的横幅主副标题/Footer注入/自定义导航栏/公告组件/樱花特效/KaTeX/Fancybox方案
+- 参考了 [Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 的横幅标题/多级菜单导航栏/樱花特效/KaTeX/Fancybox方案
 - 使用了 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
 - 使用了 [MetingJS](https://github.com/metowolf/MetingJS) 和 [APlayer](https://github.com/MoePlayer/APlayer) 音乐播放器
 - 使用了b站up [公公的日常](https://space.bilibili.com/3546750017080050) 提供的Q版 `流萤` 看板娘切片数据模型

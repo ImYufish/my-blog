@@ -53,7 +53,7 @@ export const siteConfig: SiteConfig = {
   // 站点开始日期，用于统计运行天数
   siteStartDate: "2025-01-01", // 请修改为你的站点实际开始日期，格式：YYYY-MM-DD
 
-  // 追番配置
+  // bangumi配置
   bangumi: {
     userId: "1163581", // 在此处设置你的Bangumi用户ID
   },
@@ -69,7 +69,7 @@ export const siteConfig: SiteConfig = {
   pages: {
     sponsor: true, // 赞助页面开关
     guestbook: true, // 留言板页面开关，需要配置评论系统
-    bangumi: true, // 番组计划页面开关，含追番和游戏
+    bangumi: true, // 番组计划页面开关，含追番和游戏，dev调试时只获取一页数据，build才会获取全部数据
   },
 
   // 文章列表布局配置
@@ -98,7 +98,7 @@ export const siteConfig: SiteConfig = {
       // 桌面背景图片
       desktop: "/assets/images/d1.webp",
       // 移动背景图片
-      mobile: "/assets/images/m1.webp",
+      mobile: "/assets/images/m3.webp",
     },
 
     // Banner模式特有配置
@@ -134,15 +134,15 @@ export const siteConfig: SiteConfig = {
       credit: {
         enable: {
           desktop: true, // 桌面端显示横幅图片来源文本
-          mobile: false, // 移动端显示横幅图片来源文本
+          mobile: true, // 移动端显示横幅图片来源文本
         },
         text: {
           desktop: "Pixiv - 晚晚喵", // 桌面端要显示的来源文本
-          mobile: "Mobile Credit", // 移动端要显示的来源文本
+          mobile: "Pixiv - KiraraShss", // 移动端要显示的来源文本
         },
         url: {
           desktop: "https://www.pixiv.net/artworks/135490046", // 桌面端原始艺术品或艺术家页面的 URL 链接
-          mobile: "", // 移动端原始艺术品或艺术家页面的 URL 链接
+          mobile: "https://www.pixiv.net/users/42715864", // 移动端原始艺术品或艺术家页面的 URL 链接
         },
       },
       navbar: {
