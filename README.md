@@ -31,13 +31,14 @@
 
 <img alt="firefly" src="./docs/images/1.webp" />
 
-在重要的布局上，Firefly 创新性地增加了左右双侧边栏、文章网格(二列)布局，
-
-增加了站点统计、日历组件、文章目录等小组件，让侧边栏更加丰富，
-
-同时也保留了 Furwai 的布局系统，可在配置文件中自由切换。
-
-**更多布局配置及演示请查看：[Firefly 布局系统详解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
+>[!TIP]
+>在重要的布局上，Firefly 创新性地增加了左右双侧边栏、文章网格(双列)布局，
+>
+>增加了站点统计、日历组件、文章目录等小组件，让侧边栏更加丰富，
+>
+>同时也保留了 Furwai 的布局，可在配置文件中自由切换。
+>
+>**更多布局配置及演示请查看：[Firefly 布局系统详解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 
 ## ✨ 功能特性
 
