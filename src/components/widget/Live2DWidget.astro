@@ -21,7 +21,7 @@ const size = config.size || { width: 280, height: 250 };
 <div
   id="live2d-widget"
   class="live2d-widget"
-  style={` 
+  style={`
     width: ${size.width}px;
     height: ${size.height}px;
     ${position.corner?.includes("right") ? "right" : "left"}: ${position.offsetX}px;
@@ -34,7 +34,7 @@ const size = config.size || { width: 280, height: 250 };
 <!-- 引入消息框组件 -->
 <MessageBox />
 
-<script define:vars={{ config, modelPath: url(config.model.path), sdkPath: url("/pio/static/live2d-sdk/live2d.min.js") }}>
+<script define:vars={{ config, modelPathUrl: url(config.model.path), sdkPath: url("/pio/static/live2d-sdk/live2d.min.js") }}>
   let modelData = null;
   let motionGroups = {};
   let hitAreas = {};
@@ -53,7 +53,7 @@ const size = config.size || { width: 280, height: 250 };
       return;
     }
 
-    const modelPath = modelPath;
+    const modelPath = modelPathUrl; // 使用重命名后的变量
 
     // Load model data first to get motion groups and hit areas
     fetch(modelPath)
