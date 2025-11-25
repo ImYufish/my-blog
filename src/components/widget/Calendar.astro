@@ -3,6 +3,7 @@ import { getSortedPosts } from "@/utils/content-utils";
 import WidgetLayout from "./WidgetLayout.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
+import { siteConfig } from "@/config/siteConfig";
 
 interface Props {
   class?: string;
@@ -59,6 +60,9 @@ const weekDays = [
 
 // 年份文本
 const yearText = i18n(I18nKey.year);
+
+// 获取当前语言
+const currentLang = siteConfig.lang || "en";
 ---
 
 <WidgetLayout id="calendar-widget" class={className} style={style}>
@@ -88,7 +92,7 @@ const yearText = i18n(I18nKey.year);
   </div>
 </WidgetLayout>
 
-<script define:vars={{ postDateMap: Object.fromEntries(postDateMap), allPostsData, monthNames, weekDays, yearText }}>
+<script define:vars={{ postDateMap: Object.fromEntries(postDateMap), allPostsData, monthNames, weekDays, yearText, currentLang }}>
   // 客户端动态渲染日历
   function renderCalendar() {
     const now = new Date();
@@ -99,7 +103,14 @@ const yearText = i18n(I18nKey.year);
     // 更新 Widget 标题
     const titleElement = document.getElementById('calendar-widget-title');
     if (titleElement) {
-      titleElement.textContent = `${currentYear}${yearText}${monthNames[currentMonth]}`;
+      // 根据语言使用不同的标题格式
+      if (currentLang.startsWith('zh') || currentLang.startsWith('ja')) {
+        // 中文/日文格式：2025年11月
+        titleElement.textContent = `${currentYear}${yearText}${monthNames[currentMonth]}`;
+      } else {
+        // 英文/俄文格式：November 2025 / Ноя 2025
+        titleElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      }
     }
     
     // 获取月份的第一天是星期几
