@@ -2,7 +2,7 @@ import type { SpineModelConfig, Live2DModelConfig } from "../types/config";
 
 // Spine 看板娘配置
 export const spineModelConfig: SpineModelConfig = {
-  enable: true, // 启用 Spine 看板娘
+  enable: false, // 启用 Spine 看板娘
   model: {
     // Spine模型文件路径
     path: "/pio/models/spine/firefly/1310.json",
