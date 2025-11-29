@@ -1,11 +1,11 @@
 
-<img src="./images/1131.png" width = "405" height = "511" alt="NapCat" align=right />
+<img src="./docs/images/1131.png" width = "405" height = "511" alt="NapCat" align=right />
 
 <div align="center">
 
 # Firefly
 
-**[简体中文](../README.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[繁體中文](README.zh-TW.md)** | **[Русский](README.ru.md)**
+**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)**
 
 > 美しくモダンな Astro ブログテーマテンプレート
 > 
@@ -22,7 +22,7 @@
 [**🍀私のブログ**](https://blog.cuteleaf.cn)
 
 📖 README：
-**[简体中文](../README.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[繁體中文](README.zh-TW.md)** | **[Русский](README.ru.md)** 
+**[简体中文](README.md)** | **[繁體中文](README.zh-TW.md)** | **[English](README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)** 
 
 ⚡ 静的サイト生成：Astroベースの超高速読み込み速度とSEO最適化
 
@@ -32,7 +32,7 @@
 
 🔧 高度にカスタマイズ可能：ほとんどの機能モジュールは設定ファイルでカスタマイズ可能
 
-<img alt="firefly" src="./images/1.webp" />
+<img alt="firefly" src="./docs/images/1.webp" />
 
 >[!TIP]
 >重要なレイアウトでは、Fireflyは革新的に左右のデュアルサイドバー、記事グリッド（2列）レイアウトを追加し、
@@ -73,7 +73,7 @@
 - [x] **友人リンク** - 美しい友人リンク表示カード
 - [x] **広告コンポーネント** - カスタムサイドバー広告コンテンツをサポート
 - [x] **Bangumi** - Bangumi APIベースのアニメとゲーム記録表示
-- [x] **コメントシステム** - Twikoo、Waline、Giscus、Disqus、Artalkコメントシステムを統合
+- [x] **コメントシステム** - Twikoo、Waline、Giscus、Disqusコメントシステムを統合
 - [x] **訪問者数統計** - Waline、Twikoo組み込みの訪問追跡を呼び出し可能
 - [x] **音楽プレーヤー** - APlayerベース、ローカル音楽とMeting APIオンライン音楽をサポート
 
@@ -140,16 +140,6 @@
 
 ### プラットフォームホスティングデプロイ
 - **[公式ガイド](https://docs.astro.build/ja/guides/deploy/)を参照して、Vercel、Netlify、GitHub Pages、Cloudflare Pages、EdgeOne Pagesなどにブログをデプロイしてください。**
-
-   フレームワークプリセット： `Astro`
-
-   ルートディレクトリ： `./`
-
-   出力ディレクトリ： `dist`
-
-   ビルドコマンド： `pnpm run build`
-
-   インストールコマンド： `pnpm install`
 
 ## 📖 設定説明
 
@@ -237,7 +227,6 @@ lang: zh-CN      # 記事の言語が`siteConfig.ts`のサイト言語と異な�
 - [MetingJS](https://github.com/metowolf/MetingJS)と[APlayer](https://github.com/MoePlayer/APlayer)音楽プレーヤーを使用
 - Bilibili UP主[公公的日常](https://space.bilibili.com/3546750017080050)が提供するQ版`蛍`マスコットスライスデータモデルを使用
 - アイコンは[Iconify](https://iconify.design/)から
-- 蛍関連の画像素材の著作権はゲーム[「崩壊：スターレイル」](https://sr.mihoyo.com/)の開発元[miHoYo](https://www.mihoyo.com/)に帰属します。
 
 ## 🍀 貢献者
 
