@@ -5,7 +5,7 @@
 
 # Firefly
 
-**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)**
+**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[繁體中文](docs/README.zh-TW.md)** | **[Русский](docs/README.ru.md)**
 
 > A Fresh and Beautiful Astro Blog Theme Template
 > 
@@ -22,7 +22,7 @@
 [**🍀My Blog**](https://blog.cuteleaf.cn)
 
 📖 README:
-**[简体中文](README.md)** | **[繁體中文](README.zh-TW.md)** | **[English](README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)** 
+**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[繁體中文](docs/README.zh-TW.md)** | **[Русский](docs/README.ru.md)** 
 
 ⚡ Static Site Generation: Ultra-fast loading speed and SEO optimization based on Astro
 
@@ -73,7 +73,7 @@
 - [x] **Friend Links** - Beautiful friend link display cards
 - [x] **Ad Component** - Supports custom sidebar advertising content
 - [x] **Bangumi** - Display anime and game tracking based on Bangumi API
-- [x] **Comment System** - Integrates Twikoo, Waline, Giscus, Disqus comment systems
+- [x] **Comment System** - Integrates Twikoo, Waline, Giscus, Disqus, Artalk comment systems
 - [x] **Visit Counter** - Supports calling Waline, Twikoo built-in visit tracking
 - [x] **Music Player** - Based on APlayer, supports local music and Meting API online music
 
@@ -140,6 +140,16 @@ If you have useful features and optimizations, please submit a [Pull Request](ht
 
 ### Platform Hosting Deployment
 - **Refer to the [official guide](https://docs.astro.build/en/guides/deploy/) to deploy your blog to Vercel, Netlify, GitHub Pages, Cloudflare Pages, EdgeOne Pages, etc.**
+
+   Framework Preset: `Astro`
+
+   Root Directory: `./`
+
+   Output Directory: `dist`
+
+   Build Command: `pnpm run build`
+
+   Install Command: `pnpm install`
 
 ## 📖 Configuration
 
@@ -227,6 +237,7 @@ All commands need to be executed in the project root directory:
 - Uses [MetingJS](https://github.com/metowolf/MetingJS) and [APlayer](https://github.com/MoePlayer/APlayer) music player
 - Uses Chibi `Firefly` mascot spine model provided by Bilibili creator [公公的日常](https://space.bilibili.com/3546750017080050)
 - Icons from [Iconify](https://iconify.design/)
+- Firefly-related image assets are copyrighted by [miHoYo](https://www.mihoyo.com/), the developer of ["Honkai: Star Rail"](https://sr.mihoyo.com/).
 
 ## 🍀 Contributors
 

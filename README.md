@@ -19,7 +19,7 @@
 [**🍀我的博客**](https://blog.cuteleaf.cn) 
 
 📖 README：
-**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)**
+**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[繁體中文](docs/README.zh-TW.md)** | **[Русский](docs/README.ru.md)**
 
 ⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
 
@@ -70,7 +70,7 @@
 - [x] **友情链接** - 精美的友链展示卡片
 - [x] **广告组件** - 支持自定义侧边栏广告内容
 - [x] **番组计划** - 基于 Bangumi API 的追番和游戏记录展示
-- [x] **评论系统** - 集成 Twikoo、Waline、Giscus、Disqus 评论系统
+- [x] **评论系统** - 集成 Twikoo、Waline、Giscus、Disqus、Artalk 评论系统
 - [x] **访问量统计** - 支持调用 Waline、Twikoo 自带的访问量追踪
 - [x] **音乐播放器** - 基于 APlayer，支持本地音乐和 Meting API 在线音乐
 
@@ -137,6 +137,17 @@
 
 ### 平台托管部署
 - **参考[官方指南](https://docs.astro.build/zh-cn/guides/deploy/)将博客部署至 Vercel, Netlify, GitHub Pages, Cloudflare Pages, EdgeOne Pages 等。**
+
+   框架预设： `Astro`
+
+   根目录： `./`
+
+   输出目录： `dist`
+
+   构建命令： `pnpm run build`
+
+   安装命令： `pnpm install`
+
 
 ## 📖 配置说明
 
@@ -224,6 +235,7 @@ lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不�
 - 使用了 [MetingJS](https://github.com/metowolf/MetingJS) 和 [APlayer](https://github.com/MoePlayer/APlayer) 音乐播放器
 - 使用了b站up [公公的日常](https://space.bilibili.com/3546750017080050) 提供的Q版 `流萤` 看板娘切片数据模型
 - 图标来自 [Iconify](https://iconify.design/)
+- 流萤部分相关图片素材版权归游戏 [《崩坏：星穹铁道》](https://sr.mihoyo.com/) 开发商 [米哈游](https://www.mihoyo.com/) 所有。
 
 ## 🍀 贡献者
 
