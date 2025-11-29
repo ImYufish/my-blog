@@ -4,9 +4,6 @@
 <div align="center">
 
 # Firefly
-
-**[简体中文](../README.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[繁體中文](README.zh-TW.md)** | **[Русский](README.ru.md)**
-
 > Свежая и красивая тема для блога на Astro
 > 
 > ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
