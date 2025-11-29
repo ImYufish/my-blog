@@ -16,7 +16,7 @@ interface Props {
 }
 
 const { post, customPath } = Astro.props;
-const { id, data } = post;
+const { id } = post;
 
 // 根据页面类型确定路径
 const slug = removeFileExtension(id);

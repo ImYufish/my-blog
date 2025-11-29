@@ -229,7 +229,7 @@ import { url } from "@/utils/url-utils";
       window.spineModelInitialized = true;
 
       // 创建 SpinePlayer
-      const player = new window.spine.SpinePlayer("spine-player-container", {
+      new window.spine.SpinePlayer("spine-player-container", {
         skeleton: modelPath,
         atlas: atlasPath,
         animation: "idle",

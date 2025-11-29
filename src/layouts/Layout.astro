@@ -512,12 +512,6 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 </style>
 
 <script>
-  import {
-    getHue,
-    getStoredTheme,
-    setHue,
-    setTheme,
-  } from "@/utils/setting-utils";
   import { pathsEqual, url } from "@/utils/url-utils";
   import {
     BANNER_HEIGHT,
@@ -608,15 +602,6 @@ function disableAnimation() {
     "theme-mode-panel",
     "scheme-switch",
   ]);
-
-  function _loadTheme() {
-    const theme = getStoredTheme();
-    setTheme(theme);
-  }
-
-  function _loadHue() {
-    setHue(getHue());
-  }
 
   function initCustomScrollbar() {
     // 只处理katex元素的滚动条，使用浏览器原生滚动条

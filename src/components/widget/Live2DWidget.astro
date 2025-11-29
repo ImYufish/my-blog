@@ -35,7 +35,6 @@ const size = config.size || { width: 280, height: 250 };
 <MessageBox />
 
 <script is:inline define:vars={{ config, modelPathUrl: url(config.model.path), sdkPath: url("/pio/static/live2d-sdk/live2d.min.js") }}>
-  let _modelData = null;
   let motionGroups = {};
   let hitAreas = {};
   let currentMotionGroup = "idle";
@@ -59,7 +58,6 @@ const size = config.size || { width: 280, height: 250 };
     fetch(modelPath)
       .then((response) => response.json())
       .then((data) => {
-        _modelData = data;
         motionGroups = data.motions || {};
         hitAreas = data.hit_areas_custom || data.hit_areas || {};
 

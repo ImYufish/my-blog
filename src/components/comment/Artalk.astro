@@ -38,7 +38,7 @@ const config = {
 
         updateTheme();
 
-        const observer = new MutationObserver((mutations) => {
+        const observer = new MutationObserver((_mutations) => {
             updateTheme();
         });
 

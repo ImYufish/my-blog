@@ -177,22 +177,22 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		});
 	});
 	
-	function toggleDropdown(dropdown: Element, trigger: Element, menu: Element) {
+	function toggleDropdown(_dropdown: Element, trigger: Element, menu: Element) {
 		const isOpen = trigger.getAttribute('aria-expanded') === 'true';
 		if (isOpen) {
-			closeDropdown(dropdown, trigger, menu);
+			closeDropdown(_dropdown, trigger, menu);
 		} else {
-			openDropdown(dropdown, trigger, menu);
+			openDropdown(_dropdown, trigger, menu);
 		}
 	}
 	
-	function openDropdown(dropdown: Element, trigger: Element, menu: Element) {
+	function openDropdown(_dropdown: Element, trigger: Element, menu: Element) {
 		trigger.setAttribute('aria-expanded', 'true');
 		menu.classList.remove('opacity-0', 'invisible', 'pointer-events-none', 'translate-y-[-8px]');
 		menu.classList.add('opacity-100', 'visible', 'pointer-events-auto', 'translate-y-0');
 	}
 	
-	function closeDropdown(dropdown: Element, trigger: Element, menu: Element) {
+	function closeDropdown(_dropdown: Element, trigger: Element, menu: Element) {
 		trigger.setAttribute('aria-expanded', 'false');
 		menu.classList.add('opacity-0', 'invisible', 'pointer-events-none', 'translate-y-[-8px]');
 		menu.classList.remove('opacity-100', 'visible', 'pointer-events-auto', 'translate-y-0');

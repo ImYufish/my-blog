@@ -16,19 +16,19 @@ const { class: className, style } = Astro.props;
 const posts = await getSortedPosts();
 
 // 创建文章日期映射（格式：YYYY-MM-DD -> 文章列表）
-const postDateMap = new Map<string, typeof posts>();
+const postDateMap = new Map<string, { id: string; title: string; }[]>();
 posts.forEach(post => {
   const date = new Date(post.data.published);
   const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   const existingPosts = postDateMap.get(dateKey) || [];
-  postDateMap.set(dateKey, [...existingPosts, post]);
+  postDateMap.set(dateKey, [...existingPosts, { id: post.id, title: post.data.title }]);
 });
 
 // 序列化所有文章数据供客户端使用
 const allPostsData = posts.map(post => ({
   id: post.id,
   title: post.data.title,
-  published: post.data.published.toISOString()
+  published: post.data.published.getTime()
 }));
 
 // 月份名称（使用 i18n）
@@ -247,7 +247,7 @@ const currentLang = siteConfig.lang || "en";
           // 渲染文章列表
           postsList.innerHTML = posts.map(post => `
             <a href="/posts/${post.id}/" class="block text-sm text-neutral-700 dark:text-neutral-300 hover:text-[var(--primary)] dark:hover:text-[var(--primary)] transition-colors truncate px-2 py-1 rounded hover:bg-[var(--btn-plain-bg-hover)]">
-              ${post.data.title}
+              ${post.title}
             </a>
           `).join('');
           
