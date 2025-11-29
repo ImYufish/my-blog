@@ -5,10 +5,6 @@ interface ImportMetaEnv {
   readonly MEILI_MASTER_KEY: string;
 }
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
-
 declare global {
   interface Window {
     SidebarTOC: {
@@ -25,5 +21,13 @@ declare global {
     iconifyLoaded: boolean;
     swup: any;
     spine: any;
+    closeAnnouncement: () => void;
+    __iconifyLoader: any;
+    __iconifyLoaderInitialized: boolean;
+    loadIconify: () => Promise<void>;
+    preloadIcons: (icons: string | string[]) => void;
+    onIconifyReady: (callback: () => void) => void;
   }
 }
+
+export {};

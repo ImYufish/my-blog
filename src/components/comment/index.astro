@@ -52,7 +52,7 @@ let commentService: string = commentConfig?.type || "none";
         {commentService === "twikoo" && <Twikoo path={path} />}
         {commentService === "waline" && <Waline path={path} />}
         {commentService === "giscus" && <Giscus />}
-        {commentService === "disqus" && <Disqus identifier={slug} url={url} title={post.data.title} />}
+        {commentService === "disqus" && <Disqus identifier={slug} url={url} title={'title' in post.data ? post.data.title : slug} />}
           {commentService === "artalk" && <Artalk path={path} />}
         {commentService === "none" && (
           <div class="text-center py-8 text-[var(--content-meta)]">
