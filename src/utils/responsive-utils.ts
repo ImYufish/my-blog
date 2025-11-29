@@ -31,7 +31,7 @@ export const getResponsiveSidebarConfig = () => {
 export const generateGridClasses = (config: ReturnType<typeof getResponsiveSidebarConfig>) => {
 	const { 
 		mobileShowSidebar, tabletShowSidebar, desktopShowSidebar, 
-		sidebarPosition, isBothSidebars,
+		isBothSidebars,
 		hasLeftComponentsMobile, hasLeftComponentsTablet, hasLeftComponentsDesktop,
 		hasRightComponentsMobile, hasRightComponentsTablet, hasRightComponentsDesktop
 	} = config;
@@ -70,11 +70,11 @@ export const generateGridClasses = (config: ReturnType<typeof getResponsiveSideb
 		
 		gridCols = `${mobileGrid} ${tabletGrid} ${desktopGrid}`.trim();
 	} else {
-		// 单侧边栏布局
+		// 单侧边栏布局（左侧）
 		gridCols = `
-			${mobileShowSidebar ? "grid-cols-1" : "grid-cols-1"}
-			${tabletShowSidebar ? (sidebarPosition === "right" ? "md:grid-cols-[1fr_17.5rem]" : "md:grid-cols-[17.5rem_1fr]") : "md:grid-cols-1"}
-			${desktopShowSidebar ? (sidebarPosition === "right" ? "lg:grid-cols-[1fr_17.5rem]" : "lg:grid-cols-[17.5rem_1fr]") : "lg:grid-cols-1"}
+			grid-cols-1
+			${tabletShowSidebar ? "md:grid-cols-[17.5rem_1fr]" : "md:grid-cols-1"}
+			${desktopShowSidebar ? "lg:grid-cols-[17.5rem_1fr]" : "lg:grid-cols-1"}
 		`.trim().replace(/\s+/g, " ");
 	}
 
@@ -83,7 +83,7 @@ export const generateGridClasses = (config: ReturnType<typeof getResponsiveSideb
 
 // 生成侧边栏类名（用于单侧边栏或双侧边栏中的左侧）
 export const generateSidebarClasses = (config: ReturnType<typeof getResponsiveSidebarConfig>) => {
-	const { mobileShowSidebar, tabletShowSidebar, desktopShowSidebar, sidebarPosition, isBothSidebars } = config;
+	const { mobileShowSidebar, tabletShowSidebar, desktopShowSidebar, isBothSidebars } = config;
 	
 	if (isBothSidebars) {
 		// 左侧边栏
@@ -95,11 +95,12 @@ export const generateSidebarClasses = (config: ReturnType<typeof getResponsiveSi
 		`.trim().replace(/\s+/g, " ");
 	}
 	
+	// 单侧边栏（左侧）
 	return `
 		mb-4 row-start-2 row-end-3 col-span-2 onload-animation
 		${mobileShowSidebar ? "block" : "hidden"}
-		${tabletShowSidebar ? `md:block md:row-start-1 md:row-end-2 md:max-w-[17.5rem] ${sidebarPosition === "right" ? "md:col-start-2 md:col-end-3" : "md:col-start-1 md:col-end-2"}` : "md:hidden"}
-		${desktopShowSidebar ? `lg:block lg:row-start-1 lg:row-end-2 lg:max-w-[17.5rem] ${sidebarPosition === "right" ? "lg:col-start-2 lg:col-end-3" : "lg:col-start-1 lg:col-end-2"}` : "lg:hidden"}
+		${tabletShowSidebar ? "md:block md:row-start-1 md:row-end-2 md:max-w-[17.5rem] md:col-start-1 md:col-end-2" : "md:hidden"}
+		${desktopShowSidebar ? "lg:block lg:row-start-1 lg:row-end-2 lg:max-w-[17.5rem] lg:col-start-1 lg:col-end-2" : "lg:hidden"}
 	`.trim().replace(/\s+/g, " ");
 };
 
@@ -107,7 +108,7 @@ export const generateSidebarClasses = (config: ReturnType<typeof getResponsiveSi
 export const generateRightSidebarClasses = (config: ReturnType<typeof getResponsiveSidebarConfig>) => {
 	const { 
 		mobileShowSidebar, tabletShowSidebar, desktopShowSidebar,
-		hasLeftComponentsMobile, hasLeftComponentsTablet, hasLeftComponentsDesktop,
+		hasLeftComponentsTablet, hasLeftComponentsDesktop,
 		hasRightComponentsMobile, hasRightComponentsTablet, hasRightComponentsDesktop
 	} = config;
 	
@@ -132,7 +133,7 @@ export const generateRightSidebarClasses = (config: ReturnType<typeof getRespons
 export const generateMainContentClasses = (config: ReturnType<typeof getResponsiveSidebarConfig>) => {
 	const { 
 		mobileShowSidebar, tabletShowSidebar, desktopShowSidebar, 
-		sidebarPosition, isBothSidebars,
+		isBothSidebars,
 		hasLeftComponentsMobile, hasLeftComponentsTablet, hasLeftComponentsDesktop,
 		hasRightComponentsMobile, hasRightComponentsTablet, hasRightComponentsDesktop
 	} = config;
@@ -177,10 +178,11 @@ export const generateMainContentClasses = (config: ReturnType<typeof getResponsi
 		return `transition-swup-fade overflow-hidden w-full ${mobileCol} ${tabletCol} ${desktopCol}`.trim();
 	}
 	
+	// 单侧边栏（左侧）：主内容在右边
 	return `
 		transition-swup-fade overflow-hidden w-full
 		${mobileShowSidebar ? "col-span-2" : "col-span-1"}
-		${tabletShowSidebar ? `${sidebarPosition === "right" ? "md:col-start-1 md:col-end-2" : "md:col-start-2 md:col-end-3"}` : "md:col-span-1"}
-		${desktopShowSidebar ? `${sidebarPosition === "right" ? "lg:col-start-1 lg:col-end-2" : "lg:col-start-2 lg:col-end-3"}` : "lg:col-span-1"}
+		${tabletShowSidebar ? "md:col-start-2 md:col-end-3" : "md:col-span-1"}
+		${desktopShowSidebar ? "lg:col-start-2 lg:col-end-3" : "lg:col-span-1"}
 	`.trim().replace(/\s+/g, " ");
 };

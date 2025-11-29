@@ -9,7 +9,6 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
-// TOC 相关的全局类型声明
 declare global {
   interface Window {
     SidebarTOC: {
@@ -23,5 +22,8 @@ declare global {
     };
     toggleFloatingTOC: () => void;
     tocInternalNavigation: boolean;
+    iconifyLoaded: boolean;
+    swup: any;
+    spine: any;
   }
 }

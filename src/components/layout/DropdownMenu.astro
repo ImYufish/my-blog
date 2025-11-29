@@ -122,14 +122,14 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		const dropdowns = document.querySelectorAll('[data-dropdown]');
 		
 		dropdowns.forEach(dropdown => {
-			const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+			const trigger = dropdown.querySelector('[data-dropdown-trigger]') as HTMLElement | null;
 			const menu = dropdown.querySelector('[data-dropdown-menu]');
-			const items = dropdown.querySelectorAll('.dropdown-item');
+			const items = dropdown.querySelectorAll('.dropdown-item') as NodeListOf<HTMLElement>;
 			
 			if (!trigger || !menu) return;
 			
 			// 键盘事件处理
-			trigger.addEventListener('keydown', function(e) {
+			trigger.addEventListener('keydown', function(e: KeyboardEvent) {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
 					toggleDropdown(dropdown, trigger, menu);
@@ -146,7 +146,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 			
 			// 菜单项键盘导航
 			items.forEach((item, index) => {
-				item.addEventListener('keydown', function(e) {
+				item.addEventListener('keydown', function(e: KeyboardEvent) {
 					if (e.key === 'ArrowDown') {
 						e.preventDefault();
 						const nextIndex = (index + 1) % items.length;
@@ -166,7 +166,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		// 点击外部关闭下拉菜单
 		document.addEventListener('click', function(e) {
 			dropdowns.forEach(dropdown => {
-				if (!dropdown.contains(e.target)) {
+				if (!dropdown.contains(e.target as Node)) {
 					const trigger = dropdown.querySelector('[data-dropdown-trigger]');
 					const menu = dropdown.querySelector('[data-dropdown-menu]');
 					if (trigger && menu) {
@@ -177,7 +177,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		});
 	});
 	
-	function toggleDropdown(dropdown, trigger, menu) {
+	function toggleDropdown(dropdown: Element, trigger: Element, menu: Element) {
 		const isOpen = trigger.getAttribute('aria-expanded') === 'true';
 		if (isOpen) {
 			closeDropdown(dropdown, trigger, menu);
@@ -186,13 +186,13 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		}
 	}
 	
-	function openDropdown(dropdown, trigger, menu) {
+	function openDropdown(dropdown: Element, trigger: Element, menu: Element) {
 		trigger.setAttribute('aria-expanded', 'true');
 		menu.classList.remove('opacity-0', 'invisible', 'pointer-events-none', 'translate-y-[-8px]');
 		menu.classList.add('opacity-100', 'visible', 'pointer-events-auto', 'translate-y-0');
 	}
 	
-	function closeDropdown(dropdown, trigger, menu) {
+	function closeDropdown(dropdown: Element, trigger: Element, menu: Element) {
 		trigger.setAttribute('aria-expanded', 'false');
 		menu.classList.add('opacity-0', 'invisible', 'pointer-events-none', 'translate-y-[-8px]');
 		menu.classList.remove('opacity-100', 'visible', 'pointer-events-auto', 'translate-y-0');
