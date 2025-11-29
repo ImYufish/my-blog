@@ -35,6 +35,9 @@ jobs:
       
       - name: Build site
         run: pnpm run build
+
+      - name: Create .nojekyll file
+        run: touch dist/.nojekyll
       
       - name: Deploy to pages branch
         uses: JamesIves/github-pages-deploy-action@v4
