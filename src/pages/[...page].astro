@@ -41,7 +41,7 @@ const len = page.data.length;
       document.body.classList.add(`device-${deviceType}`);
 
       // 监听窗口大小变化
-      let resizeTimeout;
+      let resizeTimeout: any;
       window.addEventListener("resize", function () {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function () {

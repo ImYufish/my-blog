@@ -292,7 +292,6 @@ export class TOCManager {
         itemRect.bottom <= containerRect.bottom;
 
       if (!isVisible) {
-        const scrollTop = tocContainer.scrollTop;
         const itemOffsetTop = (activeItem as HTMLElement).offsetTop;
         const containerHeight = tocContainer.clientHeight;
         const itemHeight = activeItem.clientHeight;

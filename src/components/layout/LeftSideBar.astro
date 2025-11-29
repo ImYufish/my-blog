@@ -14,7 +14,7 @@ interface Props {
   headings?: MarkdownHeading[];
 }
 
-const { class: className, headings } = Astro.props;
+const { class: className, headings: _headings } = Astro.props;
 
 // 获取左侧边栏的组件列表
 const topComponents = widgetManager.getComponentsByPosition("top", "left");
@@ -123,7 +123,7 @@ function renderComponent(component: any, index: number, _components: any[]) {
   }
 </style>
 
-<script define:vars={{ sidebarConfig }}>
+<script is:inline define:vars={{ sidebarConfig }}>
   // 响应式布局管理
   class LeftSidebarManager {
     constructor() {

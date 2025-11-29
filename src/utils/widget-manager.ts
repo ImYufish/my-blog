@@ -26,11 +26,9 @@ export const WIDGET_COMPONENT_MAP = {
  */
 export class WidgetManager {
   private config: SidebarLayoutConfig;
-  private enabledComponents: WidgetComponentConfig[];
 
   constructor(config: SidebarLayoutConfig = sidebarLayoutConfig) {
     this.config = config;
-    this.enabledComponents = this.getEnabledComponents();
   }
 
   /**
@@ -233,7 +231,6 @@ export class WidgetManager {
    */
   updateConfig(newConfig: Partial<SidebarLayoutConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    this.enabledComponents = this.getEnabledComponents();
   }
 
   /**
@@ -247,7 +244,6 @@ export class WidgetManager {
     } else {
       this.config.rightComponents.push(component);
     }
-    this.enabledComponents = this.getEnabledComponents();
   }
 
   /**
@@ -266,7 +262,6 @@ export class WidgetManager {
         (component) => component.type !== componentType
       );
     }
-    this.enabledComponents = this.getEnabledComponents();
   }
 
   /**
@@ -275,7 +270,7 @@ export class WidgetManager {
    * @param enable 是否启用
    * @param sidebar 侧边栏位置（可选）
    */
-  toggleComponent(componentType: WidgetComponentType, enable: boolean, sidebar?: "left" | "right"): void {
+  toggleComponent(componentType: WidgetComponentType, enable: boolean, _sidebar?: "left" | "right"): void {
     const allComponents = [
       ...this.config.leftComponents,
       ...this.config.rightComponents
@@ -284,7 +279,6 @@ export class WidgetManager {
     const component = allComponents.find((c) => c.type === componentType);
     if (component) {
       component.enable = enable;
-      this.enabledComponents = this.getEnabledComponents();
     }
   }
 
@@ -302,7 +296,6 @@ export class WidgetManager {
     const component = allComponents.find((c) => c.type === componentType);
     if (component) {
       component.order = newOrder;
-      this.enabledComponents = this.getEnabledComponents();
     }
   }
 
@@ -310,7 +303,7 @@ export class WidgetManager {
    * 检查组件是否应该在侧边栏中渲染
    * @param componentType 组件类型
    */
-  isSidebarComponent(componentType: WidgetComponentType): boolean {
+  isSidebarComponent(_componentType: WidgetComponentType): boolean {
     // 过滤组件
     return true;
   }

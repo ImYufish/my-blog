@@ -94,6 +94,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
         textArea.select();
         
         try {
+            // @ts-ignore
             const successful = document.execCommand('copy');
             if (!successful) {
                 throw new Error('execCommand 返回 false');

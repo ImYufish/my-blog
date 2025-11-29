@@ -92,7 +92,7 @@ const currentLang = siteConfig.lang || "en";
   </div>
 </WidgetLayout>
 
-<script define:vars={{ postDateMap: Object.fromEntries(postDateMap), allPostsData, monthNames, weekDays, yearText, currentLang }}>
+<script is:inline define:vars={{ postDateMap: Object.fromEntries(postDateMap), allPostsData, monthNames, weekDays, yearText, currentLang }}>
   // 客户端动态渲染日历
   function renderCalendar() {
     const now = new Date();

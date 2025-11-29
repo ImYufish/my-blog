@@ -54,7 +54,6 @@ const isWallpaperSwitchable = siteConfig.backgroundWallpaper.switchable ?? true;
 
 // 检查是否启用波浪动画效果
 const wavesConfig = siteConfig.backgroundWallpaper.banner?.waves?.enable;
-const isWavesEnabled = isBannerMode && isBackgroundEnabled && wavesConfig;
 // 处理分设备控制的波浪动画
 const wavesEnabledOnDesktop = typeof wavesConfig === 'object' ? wavesConfig.desktop : wavesConfig;
 const wavesEnabledOnMobile = typeof wavesConfig === 'object' ? wavesConfig.mobile : wavesConfig;
@@ -79,8 +78,6 @@ const creditTextMobile = typeof creditTextConfig === 'object' ? creditTextConfig
 const creditUrlConfig = siteConfig.backgroundWallpaper.banner?.credit?.url;
 const creditUrlDesktop = typeof creditUrlConfig === 'object' ? creditUrlConfig.desktop : creditUrlConfig;
 const creditUrlMobile = typeof creditUrlConfig === 'object' ? creditUrlConfig.mobile : creditUrlConfig;
-
-const hasBannerLink = !!(creditUrlDesktop || creditUrlMobile);
 
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);

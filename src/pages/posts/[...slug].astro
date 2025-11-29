@@ -1,5 +1,4 @@
 ---
-import path from "node:path";
 import Comment from "@components/comment/index.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
@@ -7,7 +6,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
-import { getDir, getPostUrlBySlug, removeFileExtension, getFileDirFromPath } from "@utils/url-utils";
+import { getPostUrlBySlug, removeFileExtension, getFileDirFromPath } from "@utils/url-utils";
 import { render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
@@ -44,9 +43,6 @@ const processedImage = processCoverImageSync(entry.data.image, entry.id);
 // ...existing code...
 
 dayjs.extend(utc);
-const lastModified = dayjs(entry.data.updated || entry.data.published)
-  .utc()
-  .format("YYYY-MM-DDTHH:mm:ss");
 
 const jsonLd = {
   "@context": "https://schema.org",

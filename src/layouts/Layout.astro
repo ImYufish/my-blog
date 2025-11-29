@@ -91,7 +91,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 <html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]">
   <head>
     <!-- Google Tag Manager -->
-    <script data-swup-ignore-script>
+    <script is:inline data-swup-ignore-script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
         w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
@@ -105,7 +105,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
     </script>
     <!-- End Google Tag Manager -->
     <!-- Microsoft Clarity -->
-    <script data-swup-ignore-script type="text/javascript">
+    <script is:inline data-swup-ignore-script type="text/javascript">
       (function (c, l, a, r, i, t, y) {
         c[a] =
           c[a] ||
@@ -523,7 +523,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
     BANNER_HEIGHT,
     BANNER_HEIGHT_HOME,
     BANNER_HEIGHT_EXTEND,
-    MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+    // MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
   } from "@/constants/constants";
   import { siteConfig, expressiveCodeConfig } from "@/config";
 
@@ -609,12 +609,12 @@ function disableAnimation() {
     "scheme-switch",
   ]);
 
-  function loadTheme() {
+  function _loadTheme() {
     const theme = getStoredTheme();
     setTheme(theme);
   }
 
-  function loadHue() {
+  function _loadHue() {
     setHue(getHue());
   }
 

@@ -146,7 +146,7 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
   </div>
 )}
 
-<script define:vars={{ itemsPerPage, sectionId }}>
+<script is:inline define:vars={{ itemsPerPage, sectionId }}>
   function initPagination() {
     let currentPage = 1;
 
@@ -184,7 +184,7 @@ const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
     // Listen for filter updates
     if (pagination) {
-      pagination.addEventListener('updatePagination', function(event) {
+      pagination.addEventListener('updatePagination', function(_event) {
         currentPage = 1;
         updatePage();
         updateMobileDisplay();

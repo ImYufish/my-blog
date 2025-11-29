@@ -125,7 +125,7 @@ const stats = [
   </div>
 </WidgetLayout>
 
-<script define:vars={{ siteStartDate, lastPostDate }}>
+<script is:inline define:vars={{ siteStartDate, lastPostDate }}>
   function updateDynamicStats() {
     const today = new Date();
     

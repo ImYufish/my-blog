@@ -27,7 +27,7 @@ import { url } from "@/utils/url-utils";
 <!-- 引入消息框组件 -->
 <MessageBox />
 
-<script define:vars={{ spineModelConfig, modelPath: url(spineModelConfig.model.path), atlasPath: url(spineModelConfig.model.path.replace(".json", ".atlas")), cssPath: url("/pio/static/spine-player.min.css"), jsPath: url("/pio/static/spine-player.min.js") }}>
+<script is:inline define:vars={{ spineModelConfig, modelPath: url(spineModelConfig.model.path), atlasPath: url(spineModelConfig.model.path.replace(".json", ".atlas")), cssPath: url("/pio/static/spine-player.min.css"), jsPath: url("/pio/static/spine-player.min.js") }}>
   // 动态加载 Spine CSS（带本地备用）
   function loadSpineCSS() {
     if (!spineModelConfig.enable) return;
@@ -178,7 +178,7 @@ import { url } from "@/utils/url-utils";
           console.log("✅ Spine runtime loaded from CDN");
           resolve();
         };
-        script.onerror = (error) => {
+        script.onerror = (_error) => {
           console.warn("⚠️ CDN failed, trying local fallback...");
 
           // 尝试本地回退
@@ -330,7 +330,7 @@ import { url } from "@/utils/url-utils";
 
           console.log("✅ Spine model setup complete!");
         },
-        error: (player, reason) => {
+        error: (_player, reason) => {
           console.error("❌ Spine model loading error:", reason);
 
           const errorDiv = document.getElementById("spine-error");

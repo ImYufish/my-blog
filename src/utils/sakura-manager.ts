@@ -164,7 +164,7 @@ function getRandom(option: string, config: SakuraConfig): any {
         config.speed.horizontal.min +
         Math.random() *
           (config.speed.horizontal.max - config.speed.horizontal.min);
-      ret = function (x: number, y: number) {
+      ret = function (x: number, _y: number) {
         return x + random;
       };
       break;
@@ -172,7 +172,7 @@ function getRandom(option: string, config: SakuraConfig): any {
       random =
         config.speed.vertical.min +
         Math.random() * (config.speed.vertical.max - config.speed.vertical.min);
-      ret = function (x: number, y: number) {
+      ret = function (_x: number, y: number) {
         return y + random;
       };
       break;
