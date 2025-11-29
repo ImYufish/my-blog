@@ -212,7 +212,7 @@ const initialLayoutClass =
   });
 
   // 监听窗口大小变化
-  let resizeTimeout;
+  let resizeTimeout: any;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {

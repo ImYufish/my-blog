@@ -34,7 +34,7 @@ const isRandomApiImage = (src.startsWith("http://") || src.startsWith("https://"
 // TODO temporary workaround for images dynamic import
 // https://github.com/withastro/astro/issues/3373
 // biome-ignore lint/suspicious/noImplicitAnyLet: <check later>
-let img;
+let img: ImageMetadata | null = null;
 if (isLocal) {
 	const files = import.meta.glob<ImageMetadata>("../../**", {
 		import: "default",
@@ -429,8 +429,10 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
           }
         }
         if (window.performance && window.performance.navigation) {
+          // @ts-ignore
           const navType = window.performance.navigation.type;
-          if (navType === 1 || navType === 0) {
+          // @ts-ignore
+          if (navType === window.performance.navigation.TYPE_RELOAD) {
             return true;
           }
           if (navType === 2) {
