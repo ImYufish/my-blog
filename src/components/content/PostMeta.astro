@@ -191,4 +191,21 @@ const path = customPath || (id ? `/posts/${id}` : '');
         </div>
       )
   }
+    <!-- artalk访问量统计（首页不显示、仅type为artalk时显示） -->
+    {
+        !isHome &&
+        commentConfig.type === 'artalk' &&
+        commentConfig.waline?.visitorCount &&
+        id && (
+                    <div class="flex items-center">
+                        <div class="meta-icon">
+                            <Icon name="material-symbols:visibility-outline-rounded" class="text-xl" />
+                        </div>
+                        <span class="text-50 text-sm font-medium mr-1">
+                            {i18n(I18nKey.pageViews)}
+                        </span>
+                        <span class="text-50 text-sm font-medium artalk-pv-count" data-path={path}>{i18n(I18nKey.pageViewsLoading)}</span>
+                    </div>
+        )
+    }
 </div>

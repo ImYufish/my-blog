@@ -1,7 +1,7 @@
 import type { CommentConfig } from "../types/config";
 
 export const commentConfig: CommentConfig = {
-  type: 'none', // 当前启用的评论系统类型: none, twikoo, waline, giscus, disqus，默认为none，即不启用评论系统。
+  type: 'none', // 当前启用的评论系统类型: none, twikoo, waline, giscus, disqus, artalk，默认为none，即不启用评论系统。
   //twikoo评论系统配置
   twikoo: {
     envId: "https://twikoo.vercel.app",
@@ -18,6 +18,12 @@ export const commentConfig: CommentConfig = {
     //   'disable'  —— 禁止所有登录和 OAuth，仅允许匿名评论（填写昵称/邮箱），适用于极简留言。
     visitorCount: true, // 文章访问量统计功能。
   },
+    // artalk评论系统配置，artalk 站点名称使用 SiteConfig 中的 title。
+    artalk: {
+        server: "https://artalk.example.com/", // 后端程序 API 地址
+        locale: "zh-CN", // 设置 Artalk 语言
+        visitorCount: true, // 文章访问量统计功能。
+    },
   //giscus评论系统配置（还未测试）
   giscus: {
     repo: 'CuteLeaf/Firefly', // 设置 Giscus 评论系统仓库
