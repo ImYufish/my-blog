@@ -862,10 +862,10 @@ function disableAnimation() {
         heightExtend.classList.remove("hidden");
       }
 
-      // 确保页面滚动到顶部，特别是移动端banner关闭时
+      // 确保页面滚动到顶部，使用平滑滚动避免侧边栏闪烁
       window.scrollTo({
         top: 0,
-        behavior: "instant",
+        behavior: "smooth",
       });
 
       // 在移动端恢复文章列表容器的过渡动画（在主内容区位置动画完成后）
