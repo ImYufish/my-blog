@@ -19,7 +19,7 @@
 [**🍀我的博客**](https://blog.cuteleaf.cn) 
 
 📖 README：
-**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[繁體中文](docs/README.zh-TW.md)** | **[Русский](docs/README.ru.md)**
+**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[Русский](docs/README.ru.md)**
 
 ⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
 
