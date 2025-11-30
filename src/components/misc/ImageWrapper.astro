@@ -1,6 +1,6 @@
 ---
-import * as path from "node:path";
 import { Image } from "astro:assets";
+import * as path from "node:path";
 import type { ImageMetadata } from "astro";
 import { url } from "@/utils/url-utils";
 
@@ -26,7 +26,6 @@ const isPublic = src.startsWith("/");
 
 // TODO temporary workaround for images dynamic import
 // https://github.com/withastro/astro/issues/3373
-// biome-ignore lint/suspicious/noImplicitAnyLet: <check later>
 let img: ImageMetadata | null = null;
 if (isLocal) {
 	const files = import.meta.glob<ImageMetadata>("../../**", {
