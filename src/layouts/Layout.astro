@@ -683,6 +683,11 @@ function disableAnimation() {
     window.swup.hooks.on("content:replace", () => {
       // 只处理katex元素的容器，使用浏览器原生滚动条
       initCustomScrollbar();
+      
+      // 重新初始化图标加载器
+      import("@/utils/icon-loader").then(({ initIconLoader }) => {
+        initIconLoader();
+      });
 
       // 检查当前页面是否为文章页面（有TOC元素）
       const tocWrapper = document.getElementById("toc-wrapper");
@@ -1080,13 +1085,16 @@ function disableAnimation() {
 
   // Initialize wallpaper mode
   import { initWallpaperMode, initThemeListener } from "@/utils/setting-utils";
+  import { initIconLoader } from "@/utils/icon-loader";
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       initWallpaperMode();
       initThemeListener();
+      initIconLoader();
     });
   } else {
     initWallpaperMode();
     initThemeListener();
+    initIconLoader();
   }
 </script>
