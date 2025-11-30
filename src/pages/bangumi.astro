@@ -157,6 +157,7 @@ for (const [categoryKey, enabled] of Object.entries(bangumiConfig.categories)) {
 		const categoryInfo = categoryMap[categoryKey as keyof typeof categoryMap];
 		try {
 			const data = await fetchBangumiData(
+				// biome-ignore lint/style/noNonNullAssertion: Checked by isUserIdConfigured
 				bangumiConfig.username!,
 				categoryInfo.subjectType,
 			);

@@ -19,7 +19,7 @@ const shortname = commentConfig.disqus.shortname;
 
 <script is:inline define:vars={{ shortname, identifier, url, title }}>
   // @ts-ignore
-  var disqus_config = function () {
+  window.disqus_config = function () {
     this.page.url = url
     this.page.identifier = identifier
     this.page.title = title

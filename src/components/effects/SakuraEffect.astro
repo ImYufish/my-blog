@@ -129,13 +129,13 @@ const config = sakuraConfig;
 					break;
 				case 'fnx':
 					random = config.speed.horizontal.min + Math.random() * (config.speed.horizontal.max - config.speed.horizontal.min);
-					ret = function (x, y) {
+					ret = function (x, _y) {
 						return x + random;
 					};
 					break;
 				case 'fny':
 					random = config.speed.vertical.min + Math.random() * (config.speed.vertical.max - config.speed.vertical.min);
-					ret = function (x, y) {
+					ret = function (_x, y) {
 						return y + random;
 					};
 					break;

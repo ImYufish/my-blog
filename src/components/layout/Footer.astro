@@ -2,7 +2,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { footerConfig, profileConfig } from "@/config";
-import { navigateToPage } from "@/utils/navigation-utils";
 import { url } from "@/utils/url-utils";
 
 const currentYear = new Date().getFullYear();
@@ -42,7 +41,7 @@ if (footerConfig.enable) {
     <a
       class="transition link text-[var(--primary)] font-medium"
       href={url("rss/")}
-      onclick={`event.preventDefault(); navigateToPage('${url("rss/")}')`}
+      onclick={`event.preventDefault(); window.location.href = '${url("rss/")}'`}
       >RSS</a
     > /
     <a

@@ -1,27 +1,34 @@
 /// <reference types="astro/client" />
 /// <reference path="../.astro/types.d.ts" />
 
-interface ImportMetaEnv {
-	readonly MEILI_MASTER_KEY: string;
-}
-
 declare global {
+	interface ImportMetaEnv {
+		readonly MEILI_MASTER_KEY: string;
+	}
+
+	interface ITOCManager {
+		init: () => void;
+		cleanup: () => void;
+	}
+
 	interface Window {
 		SidebarTOC: {
-			manager: any;
+			manager: ITOCManager | null;
 		};
 		FloatingTOC: {
 			btn: HTMLElement | null;
 			panel: HTMLElement | null;
-			manager: any;
+			manager: ITOCManager | null;
 			isPostPage: () => boolean;
 		};
 		toggleFloatingTOC: () => void;
 		tocInternalNavigation: boolean;
 		iconifyLoaded: boolean;
-		swup: any;
+		// swup is defined in global.d.ts
+		// biome-ignore lint/suspicious/noExplicitAny: External library without types
 		spine: any;
 		closeAnnouncement: () => void;
+		// biome-ignore lint/suspicious/noExplicitAny: External library without types
 		__iconifyLoader: any;
 		__iconifyLoaderInitialized: boolean;
 		loadIconify: () => Promise<void>;

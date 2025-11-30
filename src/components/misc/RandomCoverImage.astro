@@ -44,7 +44,6 @@ const isRandomApiImage =
 
 // TODO temporary workaround for images dynamic import
 // https://github.com/withastro/astro/issues/3373
-// biome-ignore lint/suspicious/noImplicitAnyLet: <check later>
 let img: ImageMetadata | null = null;
 if (isLocal) {
 	const files = import.meta.glob<ImageMetadata>("../../**", {
@@ -448,11 +447,10 @@ const watermarkStyles = showWatermark
             }
           }
         }
-        if (window.performance && window.performance.navigation) {
-          // @ts-ignore
-          const navType = window.performance.navigation.type;
-          // @ts-ignore
-          if (navType === window.performance.navigation.TYPE_RELOAD) {
+        const perf = /** @type {any} */ (window.performance);
+        if (perf && perf.navigation) {
+          const navType = perf.navigation.type;
+          if (navType === perf.navigation.TYPE_RELOAD) {
             return true;
           }
           if (navType === 2) {

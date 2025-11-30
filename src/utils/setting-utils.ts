@@ -207,7 +207,7 @@ export function setupSystemThemeListener() {
 		mediaQuery.addEventListener("change", handleSystemThemeChange);
 	} else {
 		// 兼容旧浏览器
-		(mediaQuery as any).addListener(handleSystemThemeChange);
+		mediaQuery.addListener(handleSystemThemeChange);
 	}
 
 	systemThemeListener = handleSystemThemeChange;
@@ -225,7 +225,7 @@ function cleanupSystemThemeListener() {
 		mediaQuery.removeEventListener("change", systemThemeListener);
 	} else {
 		// 兼容旧浏览器
-		(mediaQuery as any).removeListener(systemThemeListener);
+		mediaQuery.removeListener(systemThemeListener);
 	}
 
 	systemThemeListener = null;

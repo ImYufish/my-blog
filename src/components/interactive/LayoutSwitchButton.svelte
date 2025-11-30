@@ -57,8 +57,9 @@ function switchLayout() {
 
 // 监听布局变化事件
 onMount(() => {
-	const handleCustomEvent = (event: any) => {
-		currentLayout = event.detail.layout;
+	const handleCustomEvent = (event: Event) => {
+		const customEvent = event as CustomEvent<{ layout: "list" | "grid" }>;
+		currentLayout = customEvent.detail.layout;
 	};
 
 	window.addEventListener("layoutChange", handleCustomEvent);

@@ -6,10 +6,11 @@ declare global {
 	}
 
 	interface Window {
-		// Define swup type directly since @swup/astro doesn't export AstroIntegration
+		// biome-ignore lint/suspicious/noExplicitAny: External library
 		swup: any;
 		live2dModelInitialized?: boolean;
 		spineModelInitialized?: boolean;
+		// biome-ignore lint/suspicious/noExplicitAny: External library
 		spinePlayerInstance?: any;
 		pagefind: {
 			search: (query: string) => Promise<{
@@ -18,6 +19,11 @@ declare global {
 				}>;
 			}>;
 		};
+	}
+
+	interface MediaQueryList {
+		addListener(listener: (e: MediaQueryListEvent) => void): void;
+		removeListener(listener: (e: MediaQueryListEvent) => void): void;
 	}
 }
 
@@ -47,4 +53,4 @@ interface SearchResult {
 	sub_results?: SearchResult[];
 }
 
-export { SearchResult };
+export type { SearchResult };
