@@ -1,19 +1,19 @@
 ---
-import {commentConfig, siteConfig} from '@/config'
+import { commentConfig, siteConfig } from "@/config";
 
 interface Props {
-    path: string
+	path: string;
 }
 
 const config = {
-    ...commentConfig.artalk,
-    el: '#artalk',
-    site: siteConfig.title,
-    pageKey: Astro.props.path,
-    dark: 'html.dark',
-    pageTitle: "",
-    ...(commentConfig.artalk?.visitorCount ? {pageview: true} : {})
-}
+	...commentConfig.artalk,
+	el: "#artalk",
+	site: siteConfig.title,
+	pageKey: Astro.props.path,
+	dark: "html.dark",
+	pageTitle: "",
+	...(commentConfig.artalk?.visitorCount ? { pageview: true } : {}),
+};
 ---
 <!-- Artalk -->
 <div class="relative w-full">
