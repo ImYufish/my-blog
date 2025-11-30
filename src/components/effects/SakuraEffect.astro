@@ -6,6 +6,9 @@ const config = sakuraConfig;
 
 {sakuraConfig?.enable && (
 	<script is:inline define:vars={{ sakuraConfig: config }}>
+		let windowWidth = window.innerWidth;
+		let windowHeight = window.innerHeight;
+
 		// 樱花对象类
 		class Sakura {
 			constructor(x, y, s, r, a, fn, idx, img, limitArray, config) {
@@ -37,9 +40,9 @@ const config = sakuraConfig;
 				this.a = this.fn.a(this.a);
 				// 如果樱花越界，重新调整位置
 				if (
-					this.x > window.innerWidth ||
+					this.x > windowWidth ||
 					this.x < 0 ||
-					this.y > window.innerHeight ||
+					this.y > windowHeight ||
 					this.y < 0 ||
 					this.a <= 0
 				) {
@@ -66,7 +69,7 @@ const config = sakuraConfig;
 					this.r = getRandom('r', this.config);
 					this.a = getRandom('a', this.config);
 				} else {
-					this.x = window.innerWidth;
+					this.x = windowWidth;
 					this.y = getRandom('y', this.config);
 					this.s = getRandom('s', this.config);
 					this.r = getRandom('r', this.config);
@@ -113,10 +116,10 @@ const config = sakuraConfig;
 
 			switch (option) {
 				case 'x':
-					ret = Math.random() * window.innerWidth;
+					ret = Math.random() * windowWidth;
 					break;
 				case 'y':
-					ret = Math.random() * window.innerHeight;
+					ret = Math.random() * windowHeight;
 					break;
 				case 's':
 					ret = config.size.min + Math.random() * (config.size.max - config.size.min);
@@ -192,9 +195,9 @@ const config = sakuraConfig;
 			// 创建画布
 			createCanvas() {
 				this.canvas = document.createElement('canvas');
-				this.canvas.height = window.innerHeight;
-				this.canvas.width = window.innerWidth;
-				this.canvas.setAttribute('style', `position: fixed; left: 0; top: 0; pointer-events: none; z-index: ${this.config.zIndex};`);
+				this.canvas.height = windowHeight;
+				this.canvas.width = windowWidth;
+				this.canvas.setAttribute('style', `position: fixed; left: 0; top: 0; pointer-events: none; z-index: ${this.config.zIndex}; transform: translateZ(0);`);
 				this.canvas.setAttribute('id', 'canvas_sakura');
 				document.body.appendChild(this.canvas);
 				this.ctx = this.canvas.getContext('2d');
@@ -262,9 +265,11 @@ const config = sakuraConfig;
 
 			// 处理窗口大小变化
 			handleResize() {
+				windowWidth = window.innerWidth;
+				windowHeight = window.innerHeight;
 				if (this.canvas) {
-					this.canvas.width = window.innerWidth;
-					this.canvas.height = window.innerHeight;
+					this.canvas.width = windowWidth;
+					this.canvas.height = windowHeight;
 				}
 			}
 
