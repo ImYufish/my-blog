@@ -77,6 +77,7 @@
 ### コンテンツ拡張
 - [x] **画像ライトボックス** - Fancybox画像プレビュー機能
 - [x] **フローティング目次** - 記事の目次を動的に表示、アンカージャンプをサポート、サイドバー目次非表示時に表示
+- [x] **メールアドレス保護** - 自動クローラーによるメールアドレスの収集を防ぎ、スパムメールを回避
 - [x] **サイドバー目次** - 記事の目次を動的に表示、アンカージャンプをサポート
 - [x] **強化されたコードブロック** - Expressive Codeベース、コード折りたたみ、行番号、言語識別をサポート
 - [x] **数式サポート** - KaTeXレンダリングエンジン、インラインとブロック数式をサポート
@@ -228,7 +229,7 @@ lang: zh-CN      # 記事の言語が`siteConfig.ts`のサイト言語と異な�
 ## 🙏 謝辞
 
 - [Fuwari](https://github.com/saicaca/fuwari)テンプレートを開発した[saicaca](https://github.com/saicaca)に深く感謝します。Fireflyはこのテンプレートをベースに開発されています
-- ブロガー[霞葉](https://kasuha.com)の[Bangumiコレクション表示ページソリューション](https://kasuha.com/posts/fuwari-enhance-ep2/)を参考にしました
+- ブロガー[霞葉](https://kasuha.com)の[Bangumiコレクション表示](https://kasuha.com/posts/fuwari-enhance-ep2/)と[メール保護・画像タイトル](https://kasuha.com/posts/fuwari-enhance-ep1/)案を参考にしました
 - [Mizuki](https://github.com/matsuzaka-yuki/Mizuki)のバナータイトル/多階層メニューナビゲーションバー/桜エフェクト/KaTeX/Fancyboxソリューションを参考にしました
 - [Astro](https://astro.build)と[Tailwind CSS](https://tailwindcss.com)を使用して構築
 - [MetingJS](https://github.com/metowolf/MetingJS)と[APlayer](https://github.com/MoePlayer/APlayer)音楽プレーヤーを使用

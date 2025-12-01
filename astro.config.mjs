@@ -27,6 +27,9 @@ import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import mdx from "@astrojs/mdx";
 import searchIndexer from "./src/integrations/searchIndex.mts";
+import rehypeEmailProtection from "./src/plugins/rehype-email-protection.mjs";
+import rehypeFigure from "./src/plugins/rehype-figure.mjs";
+
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.site_url,
@@ -91,8 +94,7 @@ export default defineConfig({
 				codeFontFamily:
 					"'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 				codeLineHeight: "1.5rem",
-				frames: {
-				},
+				frames: {},
 				textMarkers: {
 					delHue: 0,
 					insHue: 180,
@@ -110,21 +112,21 @@ export default defineConfig({
 				const url = new URL(page);
 				const pathname = url.pathname;
 
-				if (pathname === '/sponsor/' && !siteConfig.pages.sponsor) {
+				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {
 					return false;
 				}
-				if (pathname === '/guestbook/' && !siteConfig.pages.guestbook) {
+				if (pathname === "/guestbook/" && !siteConfig.pages.guestbook) {
 					return false;
 				}
-				if (pathname === '/bangumi/' && !siteConfig.pages.bangumi) {
+				if (pathname === "/bangumi/" && !siteConfig.pages.bangumi) {
 					return false;
 				}
 
 				return true;
 			},
 		}),
-    searchIndexer(),
-    mdx()
+		searchIndexer(),
+		mdx(),
 	],
 	markdown: {
 		remarkPlugins: [
@@ -141,6 +143,8 @@ export default defineConfig({
 			rehypeKatex,
 			rehypeSlug,
 			rehypeMermaid,
+			rehypeFigure,
+			[rehypeEmailProtection, { method: "base64" }], // 邮箱保护插件，支持 'base64' 或 'rot13'
 			[
 				rehypeComponents,
 				{

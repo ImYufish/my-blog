@@ -77,6 +77,7 @@
 ### 内容增强
 - [x] **图片灯箱** - Fancybox 图片预览功能
 - [x] **浮动目录** - 动态显示文章目录，支持锚点跳转，在侧边栏目录隐藏后显示
+- [x] **邮箱保护** - 让自动化爬虫程序无法直接爬到邮箱地址，被垃圾邮件骚扰
 - [x] **侧边栏目录** - 动态显示文章目录，支持锚点跳转
 - [x] **增强代码块** - 基于 Expressive Code，支持代码折叠、行号、语言标识
 - [x] **数学公式支持** - KaTeX 渲染引擎，支持行内和块级公式
@@ -229,7 +230,7 @@ lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不�
 ## 🙏 致谢
 
 - 非常感谢 [saicaca](https://github.com/saicaca) 开发的 [Fuwari](https://github.com/saicaca/fuwari) 模板，Firefly 就是基于这个模板二次开发
-- 参考了博主 [霞葉](https://kasuha.com) 分享的 [Bangumi 收藏展示页面方案](https://kasuha.com/posts/fuwari-enhance-ep2/)
+- 参考了博主 [霞葉](https://kasuha.com) 分享的 [Bangumi 收藏展示](https://kasuha.com/posts/fuwari-enhance-ep2/) 和 [邮箱保护/图片标题](https://kasuha.com/posts/fuwari-enhance-ep1/) 方案
 - 参考了 [Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 的横幅标题/多级菜单导航栏/樱花特效/KaTeX/Fancybox方案
 - 使用了 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
 - 使用了 [MetingJS](https://github.com/metowolf/MetingJS) 和 [APlayer](https://github.com/MoePlayer/APlayer) 音乐播放器

@@ -40,35 +40,67 @@ import { url } from "@/utils/url-utils";
     <div class="text-center text-neutral-400 mb-2.5 transition">
       {profileConfig.bio}
     </div>
-    <div class="flex gap-2 justify-center mb-1">
-      {
-        profileConfig.links.length > 1 &&
-          profileConfig.links.map((item) => (
-            <a
-              rel="me"
-              aria-label={item.name}
-              href={item.url}
-              target="_blank"
-              class="btn-regular rounded-lg h-10 w-10 active:scale-90"
-            >
-              <Icon name={item.icon} class="text-[1.5rem]" />
-            </a>
-          ))
-      }
-      {
-        profileConfig.links.length == 1 && (
-          <a
-            rel="me"
-            aria-label={profileConfig.links[0].name}
-            href={profileConfig.links[0].url}
-            target="_blank"
-            class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95"
-          >
-            <Icon name={profileConfig.links[0].icon} class="text-[1.5rem]" />
-            {profileConfig.links[0].name}
-          </a>
-        )
-      }
-    </div>
+        <div class="flex flex-wrap gap-2 justify-center mb-1">
+            {profileConfig.links.length > 1 && profileConfig.links.map(item =>
+                    {
+                    const showName = item.showName;
+                    const className = showName 
+                        ? "btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95" 
+                        : "btn-regular rounded-lg h-10 w-10 active:scale-90";
+
+                    if (item.url.startsWith("mailto:")) {
+                        const encodedEmail = btoa(item.url.replace("mailto:", ""));
+                        return <a rel="me" aria-label={item.name} href="#" data-encoded-email={encodedEmail} onclick={`
+                                            (function() {
+                                                const encodedEmail = this.getAttribute('data-encoded-email');
+                                                const decodedEmail = atob(encodedEmail);
+                                                this.href = 'mailto:' + decodedEmail;
+                                                this.removeAttribute('data-encoded-email');
+                                                this.removeAttribute('onclick');
+                                                this.click();
+                                                return false;
+                                            }).call(this);
+                                        `.replace(/\s+/g, " ").trim()
+                                    },
+                                    class={className}>
+                            <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                            {showName && item.name}
+                        </a>
+                    } else {
+                        return <a rel="me" aria-label={item.name} href={item.url} target="_blank" class={className}>
+                            <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                            {showName && item.name}
+                        </a>
+                    }
+                    }
+            )}
+            {profileConfig.links.length == 1 && (function(item){
+                if (item.url.startsWith("mailto:")) {
+                        const encodedEmail = btoa(item.url.replace("mailto:", ""));
+                        return <a rel="me" aria-label={item.name} href="#" data-encoded-email={encodedEmail} onclick={`
+                                            (function() {
+                                                const encodedEmail = this.getAttribute('data-encoded-email');
+                                                const decodedEmail = atob(encodedEmail);
+                                                this.href = 'mailto:' + decodedEmail;
+                                                this.removeAttribute('data-encoded-email');
+                                                this.removeAttribute('onclick');
+                                                this.click();
+                                                return false;
+                                            }).call(this);
+                                        `.replace(/\s+/g, " ").trim()
+                                    },
+                                    class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
+                            <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                            {item.name}
+                        </a>
+                    } else {
+                        return <a rel="me" aria-label={item.name} href={item.url} target="_blank"
+                                            class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
+                                <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                                {item.name}
+                            </a>
+                    }
+            })(profileConfig.links[0])}
+        </div>
   </div>
 </div>

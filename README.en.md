@@ -77,6 +77,7 @@
 ### Content Enhancement
 - [x] **Image Lightbox** - Fancybox image preview functionality
 - [x] **Floating TOC** - Dynamically displays article table of contents, supports anchor jumping, shown when sidebar TOC is hidden
+- [x] **Email Protection** - Prevent automated crawlers from directly scraping email addresses to avoid spam
 - [x] **Sidebar TOC** - Dynamically displays article table of contents, supports anchor jumping
 - [x] **Enhanced Code Blocks** - Based on Expressive Code, supports code folding, line numbers, language identification
 - [x] **Math Formula Support** - KaTeX rendering engine, supports inline and block formulas
@@ -228,7 +229,7 @@ All commands need to be executed in the project root directory:
 ## 🙏 Acknowledgments
 
 - Special thanks to [saicaca](https://github.com/saicaca) for developing the [Fuwari](https://github.com/saicaca/fuwari) template, which Firefly is based on
-- Referenced blogger [Kasuka](https://kasuha.com)'s [Bangumi Collection Display Page Solution](https://kasuha.com/posts/fuwari-enhance-ep2/)
+- Referenced blogger [Kasuka](https://kasuha.com)'s [Bangumi Collection Display](https://kasuha.com/posts/fuwari-enhance-ep2/) and [Email Protection/Image Title](https://kasuha.com/posts/fuwari-enhance-ep1/) solutions
 - Referenced [Mizuki](https://github.com/matsuzaka-yuki/Mizuki)'s banner title, multi-level menu navbar, sakura effect, KaTeX, and Fancybox solutions
 - Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com)
 - Uses [MetingJS](https://github.com/metowolf/MetingJS) and [APlayer](https://github.com/MoePlayer/APlayer) music player
