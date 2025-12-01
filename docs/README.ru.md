@@ -19,7 +19,7 @@
 [**🍀Мой блог**](https://blog.cuteleaf.cn)
 
 📖 README:
-**[简体中文](../README.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[繁體中文](README.zh-TW.md)** | **[Русский](README.ru.md)** 
+**[简体中文](../README.md)** | **[繁體中文](README.zh-TW.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)** 
 
 ⚡ Генерация статического сайта: Сверхбыстрая загрузка и SEO-оптимизация на основе Astro
 

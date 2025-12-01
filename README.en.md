@@ -19,7 +19,7 @@
 [**🍀My Blog**](https://blog.cuteleaf.cn)
 
 📖 README:
-**[简体中文](README.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[繁體中文](docs/README.zh-TW.md)** | **[Русский](docs/README.ru.md)** 
+**[简体中文](README.md)** | **[繁體中文](docs/README.zh-TW.md)** | **[English](README.en.md)** | **[日本語](docs/README.ja.md)** | **[Русский](docs/README.ru.md)** 
 
 ⚡ Static Site Generation: Ultra-fast loading speed and SEO optimization based on Astro
 

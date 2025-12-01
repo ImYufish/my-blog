@@ -19,7 +19,7 @@
 [**🍀私のブログ**](https://blog.cuteleaf.cn)
 
 📖 README：
-**[简体中文](../README.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[繁體中文](README.zh-TW.md)** | **[Русский](README.ru.md)** 
+**[简体中文](../README.md)** | **[繁體中文](README.zh-TW.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)** 
 
 ⚡ 静的サイト生成：Astroベースの超高速読み込み速度とSEO最適化
 
