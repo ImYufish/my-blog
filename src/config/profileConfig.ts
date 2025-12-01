@@ -35,7 +35,7 @@ export const profileConfig: ProfileConfig = {
 		},
 		{
 			name: "RSS",
-			icon: "material-symbols:rss-feed-rounded",
+			icon: "fa6-solid:rss",
 			url: "/rss/",
 			showName: false,
 		},
