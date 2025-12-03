@@ -155,10 +155,12 @@ const shouldEnableTransparency = isOverlayMode && isBackgroundEnabled;
 const transparentClass = shouldEnableTransparency
 	? "wallpaper-transparent"
 	: "";
+
+const navbarWidthFull = siteConfig.navbarWidthFull ?? false;
+
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
-
 
 
 <!-- 全屏透明覆盖壁纸 - 如果允许切换则始终渲染，否则只渲染当前模式 -->
@@ -187,7 +189,7 @@ const transparentClass = shouldEnableTransparency
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>
-<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
+<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 mx-auto" class:list={[navbarWidthFull ? "" : "max-w-[var(--page-width)] px-0 md:px-4"]}>
     <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
         <Navbar></Navbar>
     </div>
