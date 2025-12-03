@@ -73,7 +73,8 @@ export default function rehypeEmailProtection(options = {}) {
 			const encodedEmail = encode(email);
 
 			// 创建加密的链接元素（移除原始的 href 属性，避免重复定义）
-			const { href: originalHref, ...otherProperties } = node.properties;
+			const otherProperties = { ...node.properties };
+			delete otherProperties.href;
 			const protectedLink = h(
 				"a",
 				{
