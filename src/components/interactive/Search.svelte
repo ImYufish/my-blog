@@ -11,7 +11,7 @@ import { url as formatUrl } from "@/utils/url-utils";
 
 // --- Props from Astro ---
 export let searchMethod: NavBarSearchMethod;
-export let meiliSearchConfig: MeiliSearchConfig;
+export let meiliSearchConfig: MeiliSearchConfig | undefined = undefined;
 
 // --- State ---
 let keywordDesktop = "";

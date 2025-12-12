@@ -49,7 +49,7 @@ import { url } from "@/utils/url-utils";
                         : "btn-regular rounded-lg h-10 w-10 active:scale-90";
 
                     if (item.url.startsWith("mailto:")) {
-                        const encodedEmail = btoa(item.url.replace("mailto:", ""));
+                        const encodedEmail = Buffer.from(item.url.replace("mailto:", "")).toString("base64");
                         return <a rel="me" aria-label={item.name} href="#" data-encoded-email={encodedEmail} onclick={`
                                             (function() {
                                                 const encodedEmail = this.getAttribute('data-encoded-email');
@@ -76,7 +76,7 @@ import { url } from "@/utils/url-utils";
             )}
             {profileConfig.links.length == 1 && (function(item){
                 if (item.url.startsWith("mailto:")) {
-                        const encodedEmail = btoa(item.url.replace("mailto:", ""));
+                        const encodedEmail = Buffer.from(item.url.replace("mailto:", "")).toString("base64");
                         return <a rel="me" aria-label={item.name} href="#" data-encoded-email={encodedEmail} onclick={`
                                             (function() {
                                                 const encodedEmail = this.getAttribute('data-encoded-email');
