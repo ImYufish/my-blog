@@ -1,5 +1,5 @@
 
-<img src="./images/1131.png" width = "405" height = "511" alt="NapCat" align=right />
+<img src="./images/1131.png" width = "405" height = "511" alt="Firefly" align=right />
 
 <div align="center">
 
@@ -8,7 +8,8 @@
 > 
 > ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
-![Astro](https://img.shields.io/badge/Astro-5.16.3-orange)
+![Astro](https://img.shields.io/badge/Astro-5.16.5-orange)
+![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 </div>
 
 
@@ -236,6 +237,10 @@ lang: zh-CN      # Устанавливайте только если язык �
 - Использует модель маскота в стиле Чиби `Firefly` spine, предоставленную создателем Bilibili [公公的日常](https://space.bilibili.com/3546750017080050)
 - Иконки от [Iconify](https://iconify.design/)
 - Авторские права на изображения Firefly принадлежат компании [miHoYo](https://www.mihoyo.com/), разработчику игры ["Honkai: Star Rail"](https://sr.mihoyo.com/).
+
+## 📝 Лицензия
+
+Этот проект распространяется под лицензией [MIT license](https://mit-license.org/), подробности см. в файле [LICENSE](../LICENSE). Изначально он был форкнут от [saicaca/fuwari](https://github.com/saicaca/fuwari). Спасибо оригинальному автору за вклад. Оригинальный проект также использует [MIT license](https://mit-license.org/).
 
 ## 🍀 Участники
 

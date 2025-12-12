@@ -1,5 +1,5 @@
 
-<img src="./docs/images/1131.png" width = "405" height = "511" alt="NapCat" align=right />
+<img src="./docs/images/1131.png" width = "405" height = "511" alt="Firefly" align=right />
 
 <div align="center">
 
@@ -8,7 +8,8 @@
 > 
 > ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
-![Astro](https://img.shields.io/badge/Astro-5.16.3-orange)
+![Astro](https://img.shields.io/badge/Astro-5.16.5-orange)
+![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 </div>
 
 
@@ -236,7 +237,13 @@ lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不�
 - 使用了 [MetingJS](https://github.com/metowolf/MetingJS) 和 [APlayer](https://github.com/MoePlayer/APlayer) 音乐播放器
 - 使用了b站up [公公的日常](https://space.bilibili.com/3546750017080050) 提供的Q版 `流萤` 看板娘切片数据模型
 - 图标来自 [Iconify](https://iconify.design/)
-- 流萤部分相关图片素材版权归游戏 [《崩坏：星穹铁道》](https://sr.mihoyo.com/) 开发商 [米哈游](https://www.mihoyo.com/) 所有。
+- 流萤部分相关图片素材版权归游戏 [《崩坏：星穹铁道》](https://sr.mihoyo.com/) 开发商 [米哈游](https://www.mihoyo.com/) 所有
+
+## 📝 许可协议
+
+本项目遵循 [MIT license](https://mit-license.org/) 开源协议，详细查看 [LICENSE](./LICENSE) 文件，
+
+最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感谢原作者的贡献，原项目采用 [MIT license](https://mit-license.org/)。
 
 ## 🍀 贡献者
 

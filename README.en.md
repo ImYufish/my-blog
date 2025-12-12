@@ -1,5 +1,5 @@
 
-<img src="./docs/images/1131.png" width = "405" height = "511" alt="NapCat" align=right />
+<img src="./docs/images/1131.png" width = "405" height = "511" alt="Firefly" align=right />
 
 <div align="center">
 
@@ -8,7 +8,8 @@
 > 
 > ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
-![Astro](https://img.shields.io/badge/Astro-5.16.3-orange)
+![Astro](https://img.shields.io/badge/Astro-5.16.5-orange)
+![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 </div>
 
 
@@ -236,6 +237,10 @@ All commands need to be executed in the project root directory:
 - Uses Chibi `Firefly` mascot spine model provided by Bilibili creator [公公的日常](https://space.bilibili.com/3546750017080050)
 - Icons from [Iconify](https://iconify.design/)
 - Firefly-related image assets are copyrighted by [miHoYo](https://www.mihoyo.com/), the developer of ["Honkai: Star Rail"](https://sr.mihoyo.com/).
+
+## 📝 License
+
+This project is licensed under the [MIT license](https://mit-license.org/), see the [LICENSE](./LICENSE) file for details. It was originally forked from [saicaca/fuwari](https://github.com/saicaca/fuwari). Thanks to the original author for their contribution. The original project is also licensed under the [MIT license](https://mit-license.org/).
 
 ## 🍀 Contributors
 
