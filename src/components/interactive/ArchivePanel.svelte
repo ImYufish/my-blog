@@ -5,14 +5,9 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { getPostUrlBySlug } from "@/utils/url-utils";
 
-export let tags: string[];
-export let categories: string[];
+export let tags: string[] = [];
+export let categories: string[] = [];
 export let sortedPosts: Post[] = [];
-
-const params = new URLSearchParams(window.location.search);
-tags = params.has("tag") ? params.getAll("tag") : [];
-categories = params.has("category") ? params.getAll("category") : [];
-const uncategorized = params.get("uncategorized");
 
 interface Post {
 	id: string;
@@ -41,7 +36,12 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
-onMount(async () => {
+function init() {
+	const params = new URLSearchParams(window.location.search);
+	tags = params.has("tag") ? params.getAll("tag") : [];
+	categories = params.has("category") ? params.getAll("category") : [];
+	const uncategorized = params.get("uncategorized");
+
 	let filteredPosts: Post[] = sortedPosts;
 
 	if (tags.length > 0) {
@@ -87,7 +87,19 @@ onMount(async () => {
 	groupedPostsArray.sort((a, b) => b.year - a.year);
 
 	groups = groupedPostsArray;
+}
+
+onMount(() => {
+	init();
+	
+	// 监听自定义事件，以便在需要时重新初始化
+	document.addEventListener("firefly:page:loaded", init);
+	
+	return () => {
+		document.removeEventListener("firefly:page:loaded", init);
+	};
 });
+
 </script>
 
 <div class="card-base px-8 py-6">
