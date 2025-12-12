@@ -12,7 +12,7 @@ const minimalPostsList = sortedPostsList.map((post) => ({
 	data: {
 		title: post.data.title,
 		tags: post.data.tags,
-		category: post.data.category || undefined,
+		category: post.data.category ?? undefined,
 		published: post.data.published,
 	},
 }));

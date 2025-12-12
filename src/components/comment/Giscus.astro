@@ -60,18 +60,4 @@ const darkTheme = "dark";
   });
 
   window.giscusThemeObserver.observe(document.documentElement, { attributes: true });
-
-  // Swup 页面切换后重新设置主题
-  if (window.swup && window.swup.hooks) {
-    window.swup.hooks.on("content:replace", updateGiscusTheme);
-  } else {
-    document.addEventListener("swup:enable", function () {
-      if (window.swup && window.swup.hooks) {
-        window.swup.hooks.on("content:replace", updateGiscusTheme);
-      }
-    });
-  }
-
-  // 自定义事件监听
-  document.addEventListener("firefly:page:loaded", updateGiscusTheme);
 </script>

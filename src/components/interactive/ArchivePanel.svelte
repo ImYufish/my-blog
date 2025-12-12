@@ -9,6 +9,11 @@ export let tags: string[] = [];
 export let categories: string[] = [];
 export let sortedPosts: Post[] = [];
 
+const params = new URLSearchParams(window.location.search);
+tags = params.has("tag") ? params.getAll("tag") : [];
+categories = params.has("category") ? params.getAll("category") : [];
+const uncategorized = params.get("uncategorized");
+
 interface Post {
 	id: string;
 	data: {
@@ -36,12 +41,7 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
-function init() {
-	const params = new URLSearchParams(window.location.search);
-	tags = params.has("tag") ? params.getAll("tag") : [];
-	categories = params.has("category") ? params.getAll("category") : [];
-	const uncategorized = params.get("uncategorized");
-
+onMount(async () => {
 	let filteredPosts: Post[] = sortedPosts;
 
 	if (tags.length > 0) {
@@ -87,17 +87,6 @@ function init() {
 	groupedPostsArray.sort((a, b) => b.year - a.year);
 
 	groups = groupedPostsArray;
-}
-
-onMount(() => {
-	init();
-
-	// 监听自定义事件，以便在需要时重新初始化
-	document.addEventListener("firefly:page:loaded", init);
-
-	return () => {
-		document.removeEventListener("firefly:page:loaded", init);
-	};
 });
 </script>
 
