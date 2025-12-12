@@ -34,21 +34,29 @@ const statusCounts = items.reduce(
 	{} as Record<string, number>,
 );
 
+const isGame = sectionId === "game";
+
 const filters = [
 	{ value: "all", label: i18n(I18nKey.bangumiFilterAll), count: items.length },
 	{
 		value: "collect",
-		label: i18n(I18nKey.bangumiFilterWatched),
+		label: isGame
+			? i18n(I18nKey.bangumiFilterGamePlayed)
+			: i18n(I18nKey.bangumiFilterWatched),
 		count: statusCounts.collect || 0,
 	},
 	{
 		value: "doing",
-		label: i18n(I18nKey.bangumiFilterWatching),
+		label: isGame
+			? i18n(I18nKey.bangumiFilterGamePlaying)
+			: i18n(I18nKey.bangumiFilterWatching),
 		count: statusCounts.doing || 0,
 	},
 	{
 		value: "wish",
-		label: i18n(I18nKey.bangumiFilterWish),
+		label: isGame
+			? i18n(I18nKey.bangumiFilterGameWish)
+			: i18n(I18nKey.bangumiFilterWish),
 		count: statusCounts.wish || 0,
 	},
 	{

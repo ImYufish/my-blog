@@ -29,13 +29,20 @@ const getStatusColor = (type: number) => {
 };
 
 const getStatusText = (type: number) => {
+	const isGame = item.subject.type === 4;
 	switch (type) {
 		case 1:
-			return i18n(I18nKey.bangumiStatusWish);
+			return isGame
+				? i18n(I18nKey.bangumiStatusGameWish)
+				: i18n(I18nKey.bangumiStatusWish);
 		case 2:
-			return i18n(I18nKey.bangumiStatusWatched);
+			return isGame
+				? i18n(I18nKey.bangumiStatusGamePlayed)
+				: i18n(I18nKey.bangumiStatusWatched);
 		case 3:
-			return i18n(I18nKey.bangumiStatusWatching);
+			return isGame
+				? i18n(I18nKey.bangumiStatusGamePlaying)
+				: i18n(I18nKey.bangumiStatusWatching);
 		case 4:
 			return i18n(I18nKey.bangumiStatusOnHold);
 		case 5:
