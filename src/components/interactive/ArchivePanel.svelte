@@ -91,15 +91,14 @@ function init() {
 
 onMount(() => {
 	init();
-	
+
 	// 监听自定义事件，以便在需要时重新初始化
 	document.addEventListener("firefly:page:loaded", init);
-	
+
 	return () => {
 		document.removeEventListener("firefly:page:loaded", init);
 	};
 });
-
 </script>
 
 <div class="card-base px-8 py-6">
