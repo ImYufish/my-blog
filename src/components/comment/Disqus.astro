@@ -25,13 +25,49 @@ const shortname = commentConfig.disqus.shortname;
     this.page.title = title
   }
 
-  ;(function () {
+  function loadDisqus() {
     var d = document,
       s = d.createElement('script')
     s.src = 'https://' + shortname + '.disqus.com/embed.js'
     s.setAttribute('data-timestamp', new Date().toString())
     ;(d.head || d.body).appendChild(s)
-  })()
+  }
+
+  function resetDisqus() {
+    if (typeof DISQUS !== 'undefined') {
+      DISQUS.reset({
+        reload: true,
+        config: function () {
+          this.page.identifier = identifier;
+          this.page.url = window.location.href;
+          this.page.title = document.title;
+        }
+      });
+    } else {
+      loadDisqus();
+    }
+  }
+
+  // 初始加载
+  if (typeof DISQUS === 'undefined') {
+    loadDisqus();
+  } else {
+    resetDisqus();
+  }
+
+  // Swup 页面切换后重新初始化
+  if (window.swup && window.swup.hooks) {
+    window.swup.hooks.on("content:replace", resetDisqus);
+  } else {
+    document.addEventListener("swup:enable", function () {
+      if (window.swup && window.swup.hooks) {
+        window.swup.hooks.on("content:replace", resetDisqus);
+      }
+    });
+  }
+
+  // 自定义事件监听
+  document.addEventListener("firefly:page:loaded", resetDisqus);
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <style is:global></style>

@@ -20,6 +20,37 @@ const config = {
   <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
   <script type="module" is:inline define:vars={{ config }}>
     import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-    init(config);
+
+    function initWaline() {
+      const walineEl = document.getElementById("waline");
+      if (walineEl) {
+        // 销毁旧实例（如果存在）- Waline 似乎没有显式的 destroy 方法，但重新 init 会覆盖
+        // 重新获取当前路径，防止 SPA 跳转后路径不更新
+        const currentPath = window.location.pathname;
+        const newConfig = {
+          ...config,
+          path: currentPath
+        };
+        
+        init(newConfig);
+      }
+    }
+
+    // 初始加载
+    initWaline();
+
+    // Swup 页面切换后重新初始化
+    if (window.swup && window.swup.hooks) {
+      window.swup.hooks.on("content:replace", initWaline);
+    } else {
+      document.addEventListener("swup:enable", function () {
+        if (window.swup && window.swup.hooks) {
+          window.swup.hooks.on("content:replace", initWaline);
+        }
+      });
+    }
+
+    // 自定义事件监听
+    document.addEventListener("firefly:page:loaded", initWaline);
   </script>
 </div>

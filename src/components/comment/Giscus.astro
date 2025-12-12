@@ -6,6 +6,8 @@ if (!commentConfig || !commentConfig.giscus) {
 }
 
 const giscus = commentConfig.giscus;
+const lightTheme = "light";
+const darkTheme = "dark";
 ---
 
 <script is:inline type="module" src="https://esm.sh/giscus"></script>
@@ -25,7 +27,51 @@ const giscus = commentConfig.giscus;
   reactionsEnabled={giscus.reactionsEnabled}
   emitMetadata={giscus.emitMetadata}
   inputPosition={giscus.inputPosition}
-  theme={giscus.theme}
+  theme={lightTheme}
   lang={giscus.lang}
   loading={giscus.loading}
 />
+
+<script is:inline define:vars={{ lightTheme, darkTheme }}>
+  function updateGiscusTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? darkTheme : lightTheme;
+    const widget = document.querySelector('giscus-widget');
+    if (widget) {
+      widget.setAttribute('theme', theme);
+    }
+  }
+
+  // Initial update
+  updateGiscusTheme();
+
+  // Clean up previous observer if exists
+  if (window.giscusThemeObserver) {
+    window.giscusThemeObserver.disconnect();
+  }
+
+  // Create new observer
+  window.giscusThemeObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        updateGiscusTheme();
+      }
+    });
+  });
+
+  window.giscusThemeObserver.observe(document.documentElement, { attributes: true });
+
+  // Swup 页面切换后重新设置主题
+  if (window.swup && window.swup.hooks) {
+    window.swup.hooks.on("content:replace", updateGiscusTheme);
+  } else {
+    document.addEventListener("swup:enable", function () {
+      if (window.swup && window.swup.hooks) {
+        window.swup.hooks.on("content:replace", updateGiscusTheme);
+      }
+    });
+  }
+
+  // 自定义事件监听
+  document.addEventListener("firefly:page:loaded", updateGiscusTheme);
+</script>

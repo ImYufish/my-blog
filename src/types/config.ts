@@ -190,7 +190,6 @@ export type CommentConfig = {
 		reactionsEnabled: string;
 		emitMetadata: string;
 		inputPosition: string;
-		theme: string;
 		lang: string;
 		loading: string;
 	};
