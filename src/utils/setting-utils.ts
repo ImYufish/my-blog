@@ -363,7 +363,7 @@ function ensureWallpaperState(mode: WALLPAPER_MODE) {
 function showBannerMode() {
 	// 隐藏全屏壁纸（通过CSS类和display控制）
 	const fullscreenContainer = document.querySelector(
-		"[data-fullscreen-wallpaper]",
+		"[data-overlay-wallpaper]",
 	) as HTMLElement;
 	if (fullscreenContainer) {
 		fullscreenContainer.style.display = "none";
@@ -463,7 +463,7 @@ function showBannerMode() {
 function showOverlayMode() {
 	// 显示全屏壁纸（通过CSS类和display控制）
 	const fullscreenContainer = document.querySelector(
-		"[data-fullscreen-wallpaper]",
+		"[data-overlay-wallpaper]",
 	) as HTMLElement;
 	if (fullscreenContainer) {
 		// 先设置display，然后使用requestAnimationFrame确保渲染
@@ -508,7 +508,7 @@ function hideAllWallpapers() {
 	// 隐藏所有壁纸（通过CSS类和display控制）
 	const bannerWrapper = document.getElementById("banner-wrapper");
 	const fullscreenContainer = document.querySelector(
-		"[data-fullscreen-wallpaper]",
+		"[data-overlay-wallpaper]",
 	) as HTMLElement;
 
 	if (bannerWrapper) {
