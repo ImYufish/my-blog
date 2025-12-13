@@ -362,14 +362,14 @@ function ensureWallpaperState(mode: WALLPAPER_MODE) {
 
 function showBannerMode() {
 	// 隐藏全屏壁纸（通过CSS类和display控制）
-	const fullscreenContainer = document.querySelector(
+	const overlayContainer = document.querySelector(
 		"[data-overlay-wallpaper]",
 	) as HTMLElement;
-	if (fullscreenContainer) {
-		fullscreenContainer.style.display = "none";
-		fullscreenContainer.classList.add("hidden");
-		fullscreenContainer.classList.add("opacity-0");
-		fullscreenContainer.classList.remove("opacity-100");
+	if (overlayContainer) {
+		overlayContainer.style.display = "none";
+		overlayContainer.classList.add("hidden");
+		overlayContainer.classList.add("opacity-0");
+		overlayContainer.classList.remove("opacity-100");
 	}
 
 	// 显示banner壁纸（通过CSS类和display控制）
@@ -462,17 +462,17 @@ function showBannerMode() {
 
 function showOverlayMode() {
 	// 显示全屏壁纸（通过CSS类和display控制）
-	const fullscreenContainer = document.querySelector(
+	const overlayContainer = document.querySelector(
 		"[data-overlay-wallpaper]",
 	) as HTMLElement;
-	if (fullscreenContainer) {
+	if (overlayContainer) {
 		// 先设置display，然后使用requestAnimationFrame确保渲染
-		fullscreenContainer.style.display = "block";
-		fullscreenContainer.style.setProperty("display", "block", "important");
+		overlayContainer.style.display = "block";
+		overlayContainer.style.setProperty("display", "block", "important");
 		requestAnimationFrame(() => {
-			fullscreenContainer.classList.remove("hidden");
-			fullscreenContainer.classList.remove("opacity-0");
-			fullscreenContainer.classList.add("opacity-100");
+			overlayContainer.classList.remove("hidden");
+			overlayContainer.classList.remove("opacity-0");
+			overlayContainer.classList.add("opacity-100");
 		});
 	}
 
@@ -507,7 +507,7 @@ function showOverlayMode() {
 function hideAllWallpapers() {
 	// 隐藏所有壁纸（通过CSS类和display控制）
 	const bannerWrapper = document.getElementById("banner-wrapper");
-	const fullscreenContainer = document.querySelector(
+	const overlayContainer = document.querySelector(
 		"[data-overlay-wallpaper]",
 	) as HTMLElement;
 
@@ -517,11 +517,11 @@ function hideAllWallpapers() {
 		bannerWrapper.classList.add("opacity-0");
 	}
 
-	if (fullscreenContainer) {
-		fullscreenContainer.style.display = "none";
-		fullscreenContainer.classList.add("hidden");
-		fullscreenContainer.classList.add("opacity-0");
-		fullscreenContainer.classList.remove("opacity-100");
+	if (overlayContainer) {
+		overlayContainer.style.display = "none";
+		overlayContainer.classList.add("hidden");
+		overlayContainer.classList.add("opacity-0");
+		overlayContainer.classList.remove("opacity-100");
 	}
 
 	// 隐藏横幅图片来源文本
