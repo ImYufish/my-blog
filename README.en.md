@@ -94,7 +94,6 @@
 ## 📝 Planned...
 
 - [ ] **Refactor Live2D Mascot**
-- [ ] **Optimize Grid Layout Article Covers**
 - [ ] **Continuous Animation Smoothness Optimization**
 - [ ] More features in continuous development...
 

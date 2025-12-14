@@ -55,11 +55,31 @@ const { remarkPluginFrontmatter } = await render(entry);
   class:list={[
     "post-card-wrapper",
     hasCover ? "has-cover" : "no-cover",
+    pinned ? "pinned" : "",
     "card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative",
     className,
   ]}
   style={style}
 >
+  <!-- pinned icon -->
+  {
+    pinned && (
+      <div
+        class:list={[
+          "pinned-btn",
+          "flex items-center gap-1 absolute top-2 left-3 z-10",
+        ]}
+      >
+        <Icon
+          name="material-symbols:pinboard"
+          class="text-[var(--primary)] text-xl"
+        />
+        <span class="text-[var(--primary)] text-sm">
+          {i18n(I18nKey.pinned)}
+        </span>
+      </div>
+    )
+  }
   <div
     class:list={[
       "post-card-content",
@@ -70,24 +90,11 @@ const { remarkPluginFrontmatter } = await render(entry);
       },
     ]}
   >
-    <!-- pinned icon -->
-    {
-      pinned && (
-        <div class="flex items-center gap-0.5 mb-2 md:absolute md:top-2 md:left-3 md:z-10 md:mb-0">
-          <Icon
-            name="material-symbols:pinboard"
-            class="text-[var(--primary)] text-xl"
-          />
-          <span class="text-[var(--primary)] text-sm">
-            {i18n(I18nKey.pinned)}
-          </span>
-        </div>
-      )
-    }
+
 
     <a
       href={url}
-      class="transition group w-full block font-bold mb-3 text-3xl text-90
+      class="post-card-title transition group w-full block font-bold mb-3 text-3xl text-90
         hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
         active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
         before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
@@ -174,8 +181,10 @@ const { remarkPluginFrontmatter } = await render(entry);
         class:list={[
           "post-card-image",
           "group",
-          "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
-          "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95",
+          "w-full md:w-[var(--coverWidth)]",
+          "aspect-[2/1] md:aspect-auto",
+          "relative md:absolute md:top-3 md:bottom-3 md:right-3",
+          "rounded-t-[var(--radius-large)] md:rounded-xl overflow-hidden active:scale-95",
         ]}
       >
         <div class="absolute pointer-events-none z-10 w-full h-full group-hover:bg-black/30 group-active:bg-black/50 transition" />
@@ -241,11 +250,11 @@ const { remarkPluginFrontmatter } = await render(entry);
     top: auto !important;
     bottom: auto !important;
     right: auto !important;
-    width: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
     border-radius: var(--radius-large) var(--radius-large) 0 0 !important;
-    /*margin: 1rem 1rem -0.5rem 1rem !important;*/
-    max-height: 20vh !important;
-    /*aspect-ratio: 16/9 !important;*/
+    max-height: none !important;
+    aspect-ratio: 2/1 !important;
   }
 
   :global(.grid-mode) .description {
@@ -254,5 +263,51 @@ const { remarkPluginFrontmatter } = await render(entry);
 
   :global(.grid-mode) .stats {
     margin-top: auto !important;
+  }
+
+  :global(.grid-mode) .post-card-content {
+    padding-top: 1rem !important;
+  }
+
+  :global(.grid-mode) .post-card-title::before {
+    top: 1.3rem !important;
+  }
+
+  :global(.grid-mode) .pinned.no-cover .post-card-content {
+    padding-top: 1.7rem !important;
+  }
+
+  :global(.grid-mode) .pinned.no-cover .post-card-title::before {
+    top: 2rem !important;
+  }
+
+  /* Pinned Button Background Logic */
+  .post-card-wrapper.has-cover .pinned-btn {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  :global(.dark) .post-card-wrapper.has-cover .pinned-btn {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  @media (min-width: 768px) {
+    .post-card-wrapper.has-cover .pinned-btn {
+      background: transparent;
+      backdrop-filter: none;
+      padding: 0;
+    }
+  }
+
+  :global(.grid-mode) .post-card-wrapper.has-cover .pinned-btn {
+    background: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(4px) !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  :global(.dark .grid-mode) .post-card-wrapper.has-cover .pinned-btn {
+     background: rgba(0, 0, 0, 0.5) !important;
   }
 </style>
