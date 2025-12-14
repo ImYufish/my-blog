@@ -265,23 +265,13 @@ const { remarkPluginFrontmatter } = await render(entry);
     margin-top: auto !important;
   }
 
-  :global(.grid-mode) .post-card-content {
-    padding-top: 1rem !important;
-    padding-bottom: 1rem !important;
+  :global(.grid-mode) .pinned.has-cover .post-card-content {
+    padding-top: 0.8rem !important;
   }
-
-  :global(.grid-mode) .post-card-title::before {
-    top: 1.5rem !important;
+  :global(.grid-mode) .pinned.has-cover .post-card-title::before {
+    top: 1.3rem !important;
   }
-
-  :global(.grid-mode) .pinned.no-cover .post-card-content {
-    padding-top: 1.7rem !important;
-  }
-
-  :global(.grid-mode) .pinned.no-cover .post-card-title::before {
-    top: 2.2rem !important;
-  }
-
+ 
   /* Pinned Button Background Logic */
   .post-card-wrapper.has-cover .pinned-btn {
     background: rgba(255, 255, 255, 0.5);
