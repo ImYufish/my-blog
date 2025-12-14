@@ -53,6 +53,8 @@ const { remarkPluginFrontmatter } = await render(entry);
 
 <div
   class:list={[
+    "post-card-wrapper",
+    hasCover ? "has-cover" : "no-cover",
     "card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative",
     className,
   ]}
@@ -60,6 +62,7 @@ const { remarkPluginFrontmatter } = await render(entry);
 >
   <div
     class:list={[
+      "post-card-content",
       "pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative flex flex-col h-full",
       {
         "w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover,
@@ -169,6 +172,7 @@ const { remarkPluginFrontmatter } = await render(entry);
         href={url}
         aria-label={title}
         class:list={[
+          "post-card-image",
           "group",
           "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
           "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95",
@@ -198,10 +202,12 @@ const { remarkPluginFrontmatter } = await render(entry);
       <a
         href={url}
         aria-label={title}
-        class="!hidden md:!flex btn-regular w-[3.25rem]
-         absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
-         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
-        "
+        class:list={[
+          "post-card-enter-btn",
+          "!hidden md:!flex btn-regular w-[3.25rem]",
+          "absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]",
+          "hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95",
+        ]}
       >
         <Icon
           name="material-symbols:chevron-right-rounded"
@@ -212,4 +218,41 @@ const { remarkPluginFrontmatter } = await render(entry);
   }
 </div>
 
-<style define:vars={{ coverWidth }}></style>
+<style define:vars={{ coverWidth }}>
+  :global(.grid-mode) .post-card-wrapper {
+    flex-direction: column-reverse !important;
+    height: 100% !important;
+    justify-content: flex-end !important;
+  }
+
+  :global(.grid-mode) .post-card-content {
+    width: 100% !important;
+    padding-right: 1.5rem !important;
+    height: auto !important;
+    flex-grow: 1 !important;
+  }
+
+  :global(.grid-mode) .no-cover .post-card-content {
+    padding-right: 4.5rem !important;
+  }
+
+  :global(.grid-mode) .post-card-image {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    right: auto !important;
+    width: auto !important;
+    border-radius: var(--radius-large) var(--radius-large) 0 0 !important;
+    /*margin: 1rem 1rem -0.5rem 1rem !important;*/
+    max-height: 20vh !important;
+    /*aspect-ratio: 16/9 !important;*/
+  }
+
+  :global(.grid-mode) .description {
+    flex-grow: 0 !important;
+  }
+
+  :global(.grid-mode) .stats {
+    margin-top: auto !important;
+  }
+</style>
