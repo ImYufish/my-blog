@@ -28,6 +28,7 @@
 - `FontManager.astro` - 字体管理组件
 - `DisplaySettings.svelte` - 显示设置组件
 - `FloatingTOC.astro` - 浮动目录组件
+- `OverlayWallpaper.astro` - 覆盖层壁纸组件
 - `WallpaperSwitch.svelte` - 壁纸模式切换组件
 
 ### 📄 content/ - 内容组件
@@ -75,18 +76,22 @@
 ### 🔧 misc/ - 杂项组件
 各种辅助和工具组件。
 
-- `FullscreenWallpaper.astro` - 全屏壁纸组件
 - `Icon.astro` - 图标组件
 - `IconifyLoader.astro` - Iconify 加载器组件
 - `ImageWrapper.astro` - 图片包装器组件
 - `License.astro` - 许可证组件
 - `Markdown.astro` - Markdown 渲染组件
+- `RandomCoverImage.astro` - 随机封面图组件
 
 ### 💬 comment/ - 评论组件
 评论系统相关组件。
 
 - `index.astro` - 评论主组件
+- `Artalk.astro` - Artalk 评论组件
+- `Disqus.astro` - Disqus 评论组件
+- `Giscus.astro` - Giscus 评论组件
 - `Twikoo.astro` - Twikoo 评论组件
+- `Waline.astro` - Waline 评论组件
 
 ### 📃 pages/ - 页面组件 
 页面的相关组件
