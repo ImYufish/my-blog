@@ -83,7 +83,7 @@ const { remarkPluginFrontmatter } = await render(entry);
   <div
     class:list={[
       "post-card-content",
-      "pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative flex flex-col h-full",
+      "pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 md:pb-7 relative flex flex-col h-full",
       {
         "w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover,
         "w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]": hasCover,
@@ -267,6 +267,7 @@ const { remarkPluginFrontmatter } = await render(entry);
 
   :global(.grid-mode) .post-card-content {
     padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
   }
 
   :global(.grid-mode) .post-card-title::before {
