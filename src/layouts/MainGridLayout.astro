@@ -227,7 +227,7 @@ const navbarWidthFull = siteConfig.navbarWidthFull ?? false;
                         </h1>
                     )}
                     {siteConfig.backgroundWallpaper.banner?.homeText?.subtitle && (
-                        <h2 class="banner-subtitle text-xl lg:text-3xl text-white/90 drop-shadow-md">
+                        <h2 id="banner-subtitle" class="banner-subtitle text-xl lg:text-3xl text-white/90 drop-shadow-md" data-subtitles={JSON.stringify(siteConfig.backgroundWallpaper.banner.homeText.subtitle)}>
                             {siteConfig.backgroundWallpaper.banner.homeText.typewriter?.enable ? (
                                 <TypewriterText 
                                     text={siteConfig.backgroundWallpaper.banner.homeText.subtitle}
@@ -244,6 +244,35 @@ const navbarWidthFull = siteConfig.navbarWidthFull ?? false;
             </div>
         </div>
     )}
+    
+    <script is:inline>
+        function setRandomSubtitle() {
+            const subtitleElement = document.getElementById('banner-subtitle');
+            if (!subtitleElement) return;
+            
+            const subtitlesData = subtitleElement.dataset.subtitles;
+            if (!subtitlesData) return;
+            
+            try {
+                const subtitles = JSON.parse(subtitlesData);
+                // Only randomize if it's an array and typewriter is NOT enabled (check for typewriter class)
+                if (Array.isArray(subtitles) && subtitles.length > 0 && !subtitleElement.querySelector('.typewriter')) {
+                    // Use a global variable to persist the subtitle across Swup navigations
+                    // This variable will be reset on full page reload (F5), meeting the requirement
+                    if (!window.fireflyCachedSubtitle) {
+                        const randomIndex = Math.floor(Math.random() * subtitles.length);
+                        window.fireflyCachedSubtitle = subtitles[randomIndex];
+                    }
+                    subtitleElement.textContent = window.fireflyCachedSubtitle;
+                }
+            } catch (e) {
+                console.error("Failed to parse subtitles", e);
+            }
+        }
+
+        // Run on initial load
+        setRandomSubtitle();
+    </script>
     
     <!-- Water waves effect - 始终渲染以便动态切换 -->
     {(wavesEnabledOnDesktop || wavesEnabledOnMobile) ? (
