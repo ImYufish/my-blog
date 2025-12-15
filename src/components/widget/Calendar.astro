@@ -4,13 +4,13 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { getSortedPosts } from "@/utils/content-utils";
 import WidgetLayout from "./WidgetLayout.astro";
+import { Icon } from "astro-icon/components";
 
 interface Props {
-	class?: string;
 	style?: string;
 }
 
-const { class: className, style } = Astro.props;
+const { style } = Astro.props;
 
 // 获取所有文章
 const posts = await getSortedPosts();
@@ -68,9 +68,22 @@ const yearText = i18n(I18nKey.year);
 const currentLang = siteConfig.lang || "en";
 ---
 
-<WidgetLayout id="calendar-widget" class={className} style={style}>
-  <span slot="title-icon" id="calendar-widget-title" class="flex-1 text-left"></span>
+<WidgetLayout id="calendar-widget" class="!pt-4 [&>.widget-title]:hidden" style={style}>
   <div class="calendar-container">
+    <div class="flex justify-between items-center mb-4">
+        <button id="prev-month-btn" class="btn-plain rounded-lg w-8 h-8 flex items-center justify-center hover:bg-[var(--btn-plain-bg-hover)] transition-colors" aria-label="Previous Month">
+            <Icon name="fa6-solid:chevron-left" class="text-sm" />
+        </button>
+        <div id="current-month-display" class="text-lg font-bold text-neutral-900 dark:text-neutral-100"></div>
+        <div class="flex gap-2">
+            <button id="reset-month-btn" class="btn-plain rounded-lg w-8 h-8 flex items-center justify-center hover:bg-[var(--btn-plain-bg-hover)] transition-colors" aria-label="Back to Today">
+                <Icon name="fa6-solid:arrow-rotate-left" class="text-sm" />
+            </button>
+            <button id="next-month-btn" class="btn-plain rounded-lg w-8 h-8 flex items-center justify-center hover:bg-[var(--btn-plain-bg-hover)] transition-colors" aria-label="Next Month">
+                <Icon name="fa6-solid:chevron-right" class="text-sm" />
+            </button>
+        </div>
+    </div>
     <!-- 星期标题 -->
     <div class="weekdays grid grid-cols-7 gap-1 mb-2">
       {weekDays.map(day => (
@@ -96,24 +109,32 @@ const currentLang = siteConfig.lang || "en";
 </WidgetLayout>
 
 <script is:inline define:vars={{ postDateMap: Object.fromEntries(postDateMap), allPostsData, monthNames, weekDays, yearText, currentLang }}>
+  // State variables
+  let displayYear = new Date().getFullYear();
+  let displayMonth = new Date().getMonth();
+
   // 客户端动态渲染日历
   function renderCalendar() {
     const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth();
+    const currentYear = displayYear;
+    const currentMonth = displayMonth;
     const currentDate = now.getDate();
-    
-    // 更新 Widget 标题
-    const titleElement = document.getElementById('calendar-widget-title');
-    if (titleElement) {
-      // 根据语言使用不同的标题格式
-      if (currentLang.startsWith('zh') || currentLang.startsWith('ja')) {
-        // 中文/日文格式：2025年11月
-        titleElement.textContent = `${currentYear}${yearText}${monthNames[currentMonth]}`;
-      } else {
-        // 英文/俄文格式：November 2025 / Ноя 2025
-        titleElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-      }
+    const isCurrentMonth = currentYear === now.getFullYear() && currentMonth === now.getMonth();
+
+    // Toggle Reset Button Visibility
+    const resetBtn = document.getElementById('reset-month-btn');
+    if (resetBtn) {
+        resetBtn.style.display = isCurrentMonth ? 'none' : 'flex';
+    }
+
+    // Update Navigation Display (Center)
+    const navDisplay = document.getElementById('current-month-display');
+    if (navDisplay) {
+        if (currentLang.startsWith('zh') || currentLang.startsWith('ja')) {
+            navDisplay.textContent = `${currentYear}${yearText}${monthNames[currentMonth]}`;
+        } else {
+            navDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        }
     }
     
     // 获取月份的第一天是星期几
@@ -148,7 +169,7 @@ const currentLang = siteConfig.lang || "en";
     
     // 渲染日历格子
     calendarGrid.innerHTML = calendarDays.map(({day, hasPost, count, dateKey}) => {
-      const isToday = day === currentDate;
+      const isToday = day === currentDate && isCurrentMonth;
       const classes = [
         "calendar-day aspect-square flex items-center justify-center rounded text-sm relative cursor-pointer"
       ];
@@ -262,9 +283,46 @@ const currentLang = siteConfig.lang || "en";
       });
     });
   }
+
+  function changeMonth(delta) {
+      displayMonth += delta;
+      if (displayMonth > 11) {
+          displayMonth = 0;
+          displayYear++;
+      } else if (displayMonth < 0) {
+          displayMonth = 11;
+          displayYear--;
+      }
+      renderCalendar();
+  }
+
+  function resetToToday() {
+      const now = new Date();
+      displayYear = now.getFullYear();
+      displayMonth = now.getMonth();
+      renderCalendar();
+  }
+
+  function initCalendar() {
+      // Reset to current date on init
+      const now = new Date();
+      displayYear = now.getFullYear();
+      displayMonth = now.getMonth();
+      
+      renderCalendar();
+      
+      // Bind events
+      const prevBtn = document.getElementById('prev-month-btn');
+      const nextBtn = document.getElementById('next-month-btn');
+      const resetBtn = document.getElementById('reset-month-btn');
+      
+      if (prevBtn) prevBtn.onclick = () => changeMonth(-1);
+      if (nextBtn) nextBtn.onclick = () => changeMonth(1);
+      if (resetBtn) resetBtn.onclick = () => resetToToday();
+  }
   
   // 页面加载时渲染日历
-  renderCalendar();
+  initCalendar();
   
   // 每天午夜更新一次日历（可选）
   const now = new Date();
@@ -279,7 +337,7 @@ const currentLang = siteConfig.lang || "en";
 
   // 页面切换时重新渲染
   document.addEventListener("swup:contentReplaced", () => {
-    setTimeout(renderCalendar, 100);
+    setTimeout(initCalendar, 100);
   });
 </script>
 
