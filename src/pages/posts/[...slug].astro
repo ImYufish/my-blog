@@ -21,6 +21,7 @@ import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
 import { sponsorConfig } from "@/config/sponsorConfig";
+import { coverImageConfig } from "@/config/coverImageConfig";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { processCoverImageSync } from "@/utils/image-utils";
 import { url } from "@/utils/url-utils";
@@ -163,7 +164,7 @@ const jsonLd = {
       <!-- always show cover as long as it has one -->
 
       {
-        processedImage && (
+        processedImage && coverImageConfig.enableInPost && (
           <div style="margin-top:1rem;">
             <RandomCoverImage
               id="post-cover"
