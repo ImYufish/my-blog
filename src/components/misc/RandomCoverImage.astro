@@ -103,7 +103,8 @@ const imageStyle = `object-position: ${position || "center"}; image-rendering: -
 
 // 水印配置
 const watermark = randomCoverImage.watermark;
-const showWatermark = isRandomApiImage && watermark?.enable;
+const showWatermark =
+	isRandomApiImage && randomCoverImage.enable && watermark?.enable;
 
 // 生成水印位置样式和类名
 const getWatermarkStyles = (
@@ -149,7 +150,7 @@ const watermarkStyles = showWatermark
   preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
 ]}> 
   <!-- 加载指示器：对所有文章封面图片显示 -->
-  {randomCoverImage.loading?.enable !== false && (
+  {randomCoverImage.enable && randomCoverImage.loading?.enable !== false && (
     <div 
       class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
       style={`background-color: ${randomCoverImage.loading?.backgroundColor || '#fefefe'};`}
