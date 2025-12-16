@@ -5,6 +5,8 @@ import { coverImageConfig } from "@/config/coverImageConfig";
 import { generateApiUrls } from "@/utils/image-utils";
 import { url } from "@/utils/url-utils";
 
+const { randomCoverImage } = coverImageConfig;
+
 interface Props {
 	id?: string;
 	src: string;
@@ -66,9 +68,9 @@ if (isLocal) {
 let allApiUrls: string[] = [];
 if (
 	isRandomApiImage &&
-	coverImageConfig.enable &&
-	coverImageConfig.apis &&
-	coverImageConfig.apis.length > 0
+	randomCoverImage.enable &&
+	randomCoverImage.apis &&
+	randomCoverImage.apis.length > 0
 ) {
 	allApiUrls = generateApiUrls(seed);
 }
@@ -76,8 +78,8 @@ if (
 // 确定fallback图片路径
 let fallbackSrc = "";
 if (isRandomApiImage) {
-	if (coverImageConfig.enable) {
-		fallbackSrc = fallback || coverImageConfig.fallback || "";
+	if (randomCoverImage.enable) {
+		fallbackSrc = fallback || randomCoverImage.fallback || "";
 	}
 } else {
 	fallbackSrc = fallback || "";
@@ -100,7 +102,7 @@ const imageClass = "w-full h-full object-cover";
 const imageStyle = `object-position: ${position || "center"}; image-rendering: -webkit-optimize-contrast;`;
 
 // 水印配置
-const watermark = coverImageConfig.watermark;
+const watermark = randomCoverImage.watermark;
 const showWatermark = isRandomApiImage && watermark?.enable;
 
 // 生成水印位置样式和类名
@@ -147,13 +149,13 @@ const watermarkStyles = showWatermark
   preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
 ]}> 
   <!-- 加载指示器：对所有文章封面图片显示 -->
-  {coverImageConfig.loading?.enable !== false && (
+  {randomCoverImage.loading?.enable !== false && (
     <div 
       class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
-      style={`background-color: ${coverImageConfig.loading?.backgroundColor || '#fefefe'};`}
+      style={`background-color: ${randomCoverImage.loading?.backgroundColor || '#fefefe'};`}
     >
       <img 
-        src={url(coverImageConfig.loading?.image || "/assets/images/loading.gif")} 
+        src={url(randomCoverImage.loading?.image || "/assets/images/loading.gif")} 
         alt="Loading..." 
         class="w-24 h-24 md:w-32 md:h-32 opacity-80" 
       />
@@ -226,7 +228,7 @@ const watermarkStyles = showWatermark
       data-api-urls={allApiUrls.length > 0 ? JSON.stringify(allApiUrls) : ""}
       data-fallback={fallbackSrc ? getFallbackUrl(fallbackSrc) : ""}
       data-api-index={allApiUrls.length > 0 ? "0" : ""}
-      data-enable={isRandomApiImage ? (coverImageConfig.enable ? "true" : "false") : ""}
+      data-enable={isRandomApiImage ? (randomCoverImage.enable ? "true" : "false") : ""}
       data-need-check-fallback="true"
     onloadstart={`(function(img){
       const container = img.parentElement;

@@ -1,5 +1,7 @@
 import { coverImageConfig } from "@/config/coverImageConfig";
 
+const { randomCoverImage } = coverImageConfig;
+
 /**
  * 处理文章封面图
  * 当image字段为"api"时，从配置的随机图API获取图片
@@ -23,9 +25,9 @@ export async function processCoverImage(
 
 	// 如果未启用随机图功能，直接返回空字符串（不显示封面，也不显示备用图）
 	if (
-		!coverImageConfig.enable ||
-		!coverImageConfig.apis ||
-		coverImageConfig.apis.length === 0
+		!randomCoverImage.enable ||
+		!randomCoverImage.apis ||
+		randomCoverImage.apis.length === 0
 	) {
 		return "";
 	}
@@ -33,8 +35,8 @@ export async function processCoverImage(
 	try {
 		// 随机选择一个API
 		const randomApi =
-			coverImageConfig.apis[
-				Math.floor(Math.random() * coverImageConfig.apis.length)
+			randomCoverImage.apis[
+				Math.floor(Math.random() * randomCoverImage.apis.length)
 			];
 
 		// 生成seed值：使用文章slug或时间戳
@@ -63,10 +65,10 @@ export async function processCoverImage(
 	} catch (error) {
 		console.warn("Failed to process random image API:", error);
 		// 即使出错，如果enable为false也不返回fallback，直接返回空字符串
-		if (!coverImageConfig.enable) {
+		if (!randomCoverImage.enable) {
 			return "";
 		}
-		return coverImageConfig.fallback || "";
+		return randomCoverImage.fallback || "";
 	}
 }
 
@@ -90,16 +92,16 @@ export function processCoverImageSync(
 
 	// 如果未启用随机图功能，直接返回空字符串（不显示封面，也不显示备用图）
 	if (
-		!coverImageConfig.enable ||
-		!coverImageConfig.apis ||
-		coverImageConfig.apis.length === 0
+		!randomCoverImage.enable ||
+		!randomCoverImage.apis ||
+		randomCoverImage.apis.length === 0
 	) {
 		return "";
 	}
 
 	try {
 		// 返回第一个API，客户端脚本会依次尝试所有API
-		const firstApi = coverImageConfig.apis[0];
+		const firstApi = randomCoverImage.apis[0];
 
 		// 生成seed值：使用文章slug或时间戳
 		const seedValue = seed || Date.now().toString();
@@ -125,10 +127,10 @@ export function processCoverImageSync(
 	} catch (error) {
 		console.warn("Failed to process random image API:", error);
 		// 即使出错，如果enable为false也不返回fallback，直接返回空字符串
-		if (!coverImageConfig.enable) {
+		if (!randomCoverImage.enable) {
 			return "";
 		}
-		return coverImageConfig.fallback || "";
+		return randomCoverImage.fallback || "";
 	}
 }
 
@@ -137,9 +139,9 @@ export function processCoverImageSync(
  */
 export function generateApiUrls(seed?: string): string[] {
 	if (
-		!coverImageConfig.enable ||
-		!coverImageConfig.apis ||
-		coverImageConfig.apis.length === 0
+		!randomCoverImage.enable ||
+		!randomCoverImage.apis ||
+		randomCoverImage.apis.length === 0
 	) {
 		return [];
 	}
@@ -149,7 +151,7 @@ export function generateApiUrls(seed?: string): string[] {
 		return ((acc << 5) - acc + char.charCodeAt(0)) | 0;
 	}, 0);
 
-	return coverImageConfig.apis.map((api) => {
+	return randomCoverImage.apis.map((api) => {
 		let apiUrl = api.replace(/{seed}/g, seedValue);
 
 		if (!api.includes("{seed}")) {
