@@ -80,9 +80,10 @@ export const siteConfig: SiteConfig = {
 		defaultMode: "list",
 		// 是否允许用户切换布局
 		allowSwitch: true,
+
+		// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 		grid: {
-			// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
-			// 是否开启瀑布流布局
+			// 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
 			masonry: true,
 		},
 	},
