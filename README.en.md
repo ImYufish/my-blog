@@ -33,7 +33,7 @@
 <img alt="firefly" src="./docs/images/1.webp" />
 
 >[!TIP]
->In important layouts, Firefly innovatively adds dual sidebars, article grid (two-column) layout,
+>In important layouts, Firefly innovatively adds dual sidebars, article grid (two-column) layout, masonry layout,
 >
 >Includes site statistics, calendar component, table of contents and other widgets to enrich the sidebar,
 >
@@ -53,7 +53,7 @@
 
 ### Personalization
 - [x] **Sidebar** - Supports single sidebar, dual sidebar configuration, freely switchable in frontend
-- [x] **Article Layout** - Supports list (single column) and grid (two-column) layout, freely switchable in frontend
+- [x] **Article Layout** - Supports list (single column) and grid (two-column/masonry) layout, freely switchable in frontend
 - [x] **Font Management** - Custom font support with rich font selector
 - [x] **Footer Configuration** - HTML content injection, fully customizable
 - [x] **Navbar Customization** - Logo, title, links fully customizable
@@ -193,7 +193,7 @@ src/
 │   ├── adConfig.ts           # Ad configuration
 │   ├── friendsConfig.ts      # Friend links configuration
 │   ├── sponsorConfig.ts      # Sponsor configuration
-│   └── coverImageConfig.ts   # Article random cover image configuration
+│   └── coverImageConfig.ts   # Article cover image configuration
 ```
 
 

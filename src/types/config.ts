@@ -61,6 +61,11 @@ export type SiteConfig = {
 	postListLayout: {
 		defaultMode: "list" | "grid"; // 默认布局模式：list=列表模式，grid=网格模式
 		allowSwitch: boolean; // 是否允许用户切换布局
+		grid: {
+			// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
+			// 是否开启瀑布流布局
+			masonry: boolean;
+		};
 	};
 
 	// 分页配置

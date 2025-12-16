@@ -14,6 +14,7 @@ type PostEntry = CollectionEntry<"posts">;
 
 // 检查是否启用双侧边栏
 const isBothSidebars = sidebarLayoutConfig.position === "both";
+const masonryEnabled = siteConfig.postListLayout.grid.masonry;
 
 // 根据配置设置初始布局模式，避免闪烁
 const defaultLayout = siteConfig.postListLayout.defaultMode || "list";
@@ -28,6 +29,7 @@ const initialLayoutClass =
   class={`transition-all duration-500 ease-in-out mb-4 ${initialLayoutClass}`}
   data-default-layout={defaultLayout}
   data-both-sidebars={isBothSidebars}
+  data-masonry-enabled={masonryEnabled}
 >
   {
     page.data.map((entry: PostEntry) => (
@@ -141,6 +143,7 @@ const initialLayoutClass =
     
     // 检查是否启用双侧边栏
     const isBothSidebars = postListContainer.getAttribute("data-both-sidebars") === "true";
+    const masonryEnabled = postListContainer.getAttribute("data-masonry-enabled") === "true";
     const rightSidebar = document.getElementById('right-sidebar');
     const mainGrid = document.getElementById('main-grid');
 
@@ -159,12 +162,23 @@ const initialLayoutClass =
           mainGrid.classList.add('grid-layout-active');
         }
       }
+      
+      // 应用瀑布流布局
+      if (masonryEnabled) {
+        setTimeout(() => {
+          applyMasonryLayout();
+        }, 0);
+      }
+
     } else {
       postListContainer.classList.add("list-mode");
       // 列表模式：单列布局
       postListContainer.classList.add("flex", "flex-col", "gap-4", "md:gap-4");
       postListContainer.classList.remove("grid", "grid-cols-1", "md:grid-cols-2");
       
+      // 重置瀑布流样式
+      resetMasonryLayout();
+
       // 如果是双侧栏模式，显示右侧边栏并恢复网格布局
       if (isBothSidebars && rightSidebar) {
         rightSidebar.style.display = '';
@@ -178,13 +192,103 @@ const initialLayoutClass =
     // 移除切换动画类
     setTimeout(() => {
       postListContainer.classList.remove("layout-switching");
+      // 动画结束后重新计算瀑布流布局，确保准确（解决scale导致的计算误差）
+      if (layout === "grid" && masonryEnabled) {
+        applyMasonryLayout();
+      }
     }, 500);
+  }
+
+  function resetMasonryLayout() {
+    const container = document.getElementById("post-list-container");
+    if (!container) return;
+    
+    container.style.height = "";
+    container.style.position = "";
+    container.style.display = "";
+    
+    const items = container.querySelectorAll(".post-card-item");
+    items.forEach((item) => {
+      // @ts-ignore
+      item.style.position = "";
+      // @ts-ignore
+      item.style.top = "";
+      // @ts-ignore
+      item.style.left = "";
+      // @ts-ignore
+      item.style.width = "";
+    });
+  }
+
+  function applyMasonryLayout() {
+    const container = document.getElementById("post-list-container");
+    if (!container) return;
+    
+    const masonryEnabled = container.getAttribute("data-masonry-enabled") === "true";
+    if (!masonryEnabled) return;
+    
+    // 仅在 grid 模式下应用
+    if (!container.classList.contains("grid-mode")) return;
+
+    const items = Array.from(container.querySelectorAll(".post-card-item"));
+    if (items.length === 0) return;
+
+    // 瀑布流配置
+    const gap = 16; // 1rem = 16px
+    const colCount = 2; // 固定双列
+    
+    // 重置容器样式以允许绝对定位
+    container.style.position = "relative";
+    container.style.display = "block"; // 覆盖 grid display
+
+    // 使用 offsetWidth 避免 transform: scale 的影响
+    const containerWidth = container.offsetWidth;
+    const itemWidth = (containerWidth - (colCount - 1) * gap) / colCount;
+    
+    const colHeights = new Array(colCount).fill(0);
+    
+    items.forEach((item, index) => {
+      const colIndex = index % colCount; // Z字形分布：左右交替
+      
+      // @ts-ignore
+      item.style.position = "absolute";
+      // @ts-ignore
+      item.style.width = `${itemWidth}px`;
+      // @ts-ignore
+      item.style.setProperty('height', 'auto', 'important');
+      
+      // 获取高度，优先使用 offsetHeight 避免 transform 影响
+      // @ts-ignore
+      const height = item.offsetHeight;
+      
+      const top = colHeights[colIndex];
+      const left = colIndex * (itemWidth + gap);
+      
+      // @ts-ignore
+      item.style.top = `${top}px`;
+      // @ts-ignore
+      item.style.left = `${left}px`;
+      
+      colHeights[colIndex] += height + gap;
+    });
+    
+    container.style.height = `${Math.max(...colHeights)}px`;
   }
 
   // 页面加载时初始化布局
   document.addEventListener("DOMContentLoaded", function () {
     // 延迟一点确保DOM完全加载
     setTimeout(initLayout, 50);
+    
+    // 监听图片加载以重新计算布局
+    const imgs = document.querySelectorAll('#post-list-container img');
+    imgs.forEach(img => {
+        // @ts-ignore
+        if(img.complete) return;
+        img.addEventListener('load', () => {
+            applyMasonryLayout();
+        });
+    });
   });
 
   // 页面显示时也初始化布局（处理页面切换）
@@ -195,7 +299,8 @@ const initialLayoutClass =
   });
 
   // 监听布局变化事件
-  window.addEventListener("layoutChange", function (event: CustomEvent) {
+  window.addEventListener("layoutChange", function (event) {
+    // @ts-ignore
     const newLayout = event.detail.layout;
     const postListContainer = document.getElementById("post-list-container");
     if (!postListContainer) return;
@@ -223,7 +328,18 @@ const initialLayoutClass =
   // 监听页面导航事件（Astro的客户端路由）
   document.addEventListener("astro:page-load", function () {
     setTimeout(initLayout, 50);
+    
+    // 监听图片加载
+    const imgs = document.querySelectorAll('#post-list-container img');
+    imgs.forEach(img => {
+        // @ts-ignore
+        if(img.complete) return;
+        img.addEventListener('load', () => {
+            applyMasonryLayout();
+        });
+    });
   });
+  
   document.addEventListener("astro:after-swap", function () {
     setTimeout(initLayout, 50);
   });
