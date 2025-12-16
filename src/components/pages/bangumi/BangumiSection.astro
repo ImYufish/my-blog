@@ -41,28 +41,42 @@ const isMusic = sectionId === "music";
 const getFilterLabel = (type: "collect" | "doing" | "wish") => {
 	if (isGame) {
 		switch (type) {
-			case "collect": return i18n(I18nKey.bangumiFilterGamePlayed);
-			case "doing": return i18n(I18nKey.bangumiFilterGamePlaying);
-			case "wish": return i18n(I18nKey.bangumiFilterGameWish);
+			case "collect":
+				return i18n(I18nKey.bangumiFilterGamePlayed);
+			case "doing":
+				return i18n(I18nKey.bangumiFilterGamePlaying);
+			case "wish":
+				return i18n(I18nKey.bangumiFilterGameWish);
 		}
-	} else if (isBook) {
+	}
+	if (isBook) {
 		switch (type) {
-			case "collect": return i18n(I18nKey.bangumiFilterBookRead);
-			case "doing": return i18n(I18nKey.bangumiFilterBookReading);
-			case "wish": return i18n(I18nKey.bangumiFilterBookWish);
+			case "collect":
+				return i18n(I18nKey.bangumiFilterBookRead);
+			case "doing":
+				return i18n(I18nKey.bangumiFilterBookReading);
+			case "wish":
+				return i18n(I18nKey.bangumiFilterBookWish);
 		}
-	} else if (isMusic) {
+	}
+	if (isMusic) {
 		switch (type) {
-			case "collect": return i18n(I18nKey.bangumiFilterMusicListened);
-			case "doing": return i18n(I18nKey.bangumiFilterMusicListening);
-			case "wish": return i18n(I18nKey.bangumiFilterMusicWish);
+			case "collect":
+				return i18n(I18nKey.bangumiFilterMusicListened);
+			case "doing":
+				return i18n(I18nKey.bangumiFilterMusicListening);
+			case "wish":
+				return i18n(I18nKey.bangumiFilterMusicWish);
 		}
 	}
 	// Default (Anime/Real)
 	switch (type) {
-		case "collect": return i18n(I18nKey.bangumiFilterWatched);
-		case "doing": return i18n(I18nKey.bangumiFilterWatching);
-		case "wish": return i18n(I18nKey.bangumiFilterWish);
+		case "collect":
+			return i18n(I18nKey.bangumiFilterWatched);
+		case "doing":
+			return i18n(I18nKey.bangumiFilterWatching);
+		case "wish":
+			return i18n(I18nKey.bangumiFilterWish);
 	}
 };
 

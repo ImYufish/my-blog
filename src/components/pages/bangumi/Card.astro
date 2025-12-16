@@ -31,7 +31,7 @@ const getStatusColor = (type: number) => {
 const getStatusText = (type: number) => {
 	const subjectType = item.subject.type;
 	// 1: Book, 2: Anime, 3: Music, 4: Game, 6: Real
-	
+
 	switch (type) {
 		case 1: // Wish
 			if (subjectType === 1) return i18n(I18nKey.bangumiStatusBookWish);
