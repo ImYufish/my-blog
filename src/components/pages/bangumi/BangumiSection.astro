@@ -35,28 +35,52 @@ const statusCounts = items.reduce(
 );
 
 const isGame = sectionId === "game";
+const isBook = sectionId === "book";
+const isMusic = sectionId === "music";
+
+const getFilterLabel = (type: "collect" | "doing" | "wish") => {
+	if (isGame) {
+		switch (type) {
+			case "collect": return i18n(I18nKey.bangumiFilterGamePlayed);
+			case "doing": return i18n(I18nKey.bangumiFilterGamePlaying);
+			case "wish": return i18n(I18nKey.bangumiFilterGameWish);
+		}
+	} else if (isBook) {
+		switch (type) {
+			case "collect": return i18n(I18nKey.bangumiFilterBookRead);
+			case "doing": return i18n(I18nKey.bangumiFilterBookReading);
+			case "wish": return i18n(I18nKey.bangumiFilterBookWish);
+		}
+	} else if (isMusic) {
+		switch (type) {
+			case "collect": return i18n(I18nKey.bangumiFilterMusicListened);
+			case "doing": return i18n(I18nKey.bangumiFilterMusicListening);
+			case "wish": return i18n(I18nKey.bangumiFilterMusicWish);
+		}
+	}
+	// Default (Anime/Real)
+	switch (type) {
+		case "collect": return i18n(I18nKey.bangumiFilterWatched);
+		case "doing": return i18n(I18nKey.bangumiFilterWatching);
+		case "wish": return i18n(I18nKey.bangumiFilterWish);
+	}
+};
 
 const filters = [
 	{ value: "all", label: i18n(I18nKey.bangumiFilterAll), count: items.length },
 	{
 		value: "collect",
-		label: isGame
-			? i18n(I18nKey.bangumiFilterGamePlayed)
-			: i18n(I18nKey.bangumiFilterWatched),
+		label: getFilterLabel("collect"),
 		count: statusCounts.collect || 0,
 	},
 	{
 		value: "doing",
-		label: isGame
-			? i18n(I18nKey.bangumiFilterGamePlaying)
-			: i18n(I18nKey.bangumiFilterWatching),
+		label: getFilterLabel("doing"),
 		count: statusCounts.doing || 0,
 	},
 	{
 		value: "wish",
-		label: isGame
-			? i18n(I18nKey.bangumiFilterGameWish)
-			: i18n(I18nKey.bangumiFilterWish),
+		label: getFilterLabel("wish"),
 		count: statusCounts.wish || 0,
 	},
 	{

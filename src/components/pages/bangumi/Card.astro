@@ -29,20 +29,25 @@ const getStatusColor = (type: number) => {
 };
 
 const getStatusText = (type: number) => {
-	const isGame = item.subject.type === 4;
+	const subjectType = item.subject.type;
+	// 1: Book, 2: Anime, 3: Music, 4: Game, 6: Real
+	
 	switch (type) {
-		case 1:
-			return isGame
-				? i18n(I18nKey.bangumiStatusGameWish)
-				: i18n(I18nKey.bangumiStatusWish);
-		case 2:
-			return isGame
-				? i18n(I18nKey.bangumiStatusGamePlayed)
-				: i18n(I18nKey.bangumiStatusWatched);
-		case 3:
-			return isGame
-				? i18n(I18nKey.bangumiStatusGamePlaying)
-				: i18n(I18nKey.bangumiStatusWatching);
+		case 1: // Wish
+			if (subjectType === 1) return i18n(I18nKey.bangumiStatusBookWish);
+			if (subjectType === 3) return i18n(I18nKey.bangumiStatusMusicWish);
+			if (subjectType === 4) return i18n(I18nKey.bangumiStatusGameWish);
+			return i18n(I18nKey.bangumiStatusWish);
+		case 2: // Collect (Played/Watched/Read/Listened)
+			if (subjectType === 1) return i18n(I18nKey.bangumiStatusBookRead);
+			if (subjectType === 3) return i18n(I18nKey.bangumiStatusMusicListened);
+			if (subjectType === 4) return i18n(I18nKey.bangumiStatusGamePlayed);
+			return i18n(I18nKey.bangumiStatusWatched);
+		case 3: // Doing (Playing/Watching/Reading/Listening)
+			if (subjectType === 1) return i18n(I18nKey.bangumiStatusBookReading);
+			if (subjectType === 3) return i18n(I18nKey.bangumiStatusMusicListening);
+			if (subjectType === 4) return i18n(I18nKey.bangumiStatusGamePlaying);
+			return i18n(I18nKey.bangumiStatusWatching);
 		case 4:
 			return i18n(I18nKey.bangumiStatusOnHold);
 		case 5:
