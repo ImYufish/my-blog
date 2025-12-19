@@ -193,9 +193,9 @@ export const ru: Translation = {
 	[Key.sponsorAnonymous]: "Анонимно",
 	[Key.scanToSponsor]: "Сканировать для поддержки",
 	[Key.sponsorGoTo]: "Перейти к спонсору",
-	[Key.sponsorButton]: "Поддержка",
+	[Key.sponsorButton]: "Поддержка и Поделиться",
 	[Key.sponsorButtonText]:
-		"Если эта статья вам помогла, добро пожаловать поддержать!",
+		"Если эта статья помогла вам, пожалуйста, поделитесь или поддержите!",
 
 	// Статистика сайта
 	[Key.siteStats]: "Статистика сайта",
@@ -228,4 +228,11 @@ export const ru: Translation = {
 	[Key.calendarOctober]: "Окт",
 	[Key.calendarNovember]: "Ноя",
 	[Key.calendarDecember]: "Дек",
+
+	[Key.shareArticle]: "Поделиться",
+	[Key.generatingPoster]: "Создание постера...",
+	[Key.copied]: "Скопировано",
+	[Key.copyLink]: "Копировать ссылку",
+	[Key.savePoster]: "Сохранить постер",
+	[Key.scanToRead]: "Сканируйте, чтобы прочитать",
 };

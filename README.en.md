@@ -67,6 +67,7 @@
 - [x] **Site Statistics** - Displays article, category, tag counts, total word count, running time, last update time
 - [x] **Site Calendar** - Displays current month calendar and published articles for the month
 - [x] **Sponsor Page** - Multiple payment methods, payment QR codes, sponsor list, in-article sponsor button
+- [x] **Share Poster** - Supports generating beautiful article share posters containing article summary, QR code, etc.
 - [x] **Sakura Effect** - Supports sakura effect, fullscreen sakura animation
 - [x] **Friend Links** - Beautiful friend link display cards
 - [x] **Ad Component** - Supports custom sidebar advertising content

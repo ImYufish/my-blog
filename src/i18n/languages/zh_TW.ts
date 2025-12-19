@@ -186,8 +186,9 @@ export const zh_TW: Translation = {
 	[Key.sponsorAnonymous]: "匿名",
 	[Key.scanToSponsor]: "掃碼贊助",
 	[Key.sponsorGoTo]: "前往贊助",
-	[Key.sponsorButton]: "贊助支持",
-	[Key.sponsorButtonText]: "如果這篇文章對你有幫助，歡迎贊助支持！",
+	[Key.sponsorButton]: "支持與分享",
+	[Key.sponsorButtonText]:
+		"如果這篇文章對你有幫助，歡迎分享給更多人或贊助支持！",
 
 	// 站點統計
 	[Key.siteStats]: "站點統計",
@@ -220,4 +221,11 @@ export const zh_TW: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+
+	[Key.shareArticle]: "分享",
+	[Key.generatingPoster]: "海報生成中...",
+	[Key.copied]: "已複製",
+	[Key.copyLink]: "複製連結",
+	[Key.savePoster]: "保存海報",
+	[Key.scanToRead]: "掃碼閱讀文章",
 };

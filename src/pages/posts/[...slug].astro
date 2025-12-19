@@ -1,5 +1,6 @@
 ---
 import { render } from "astro:content";
+import * as path from "node:path";
 import Comment from "@components/comment/index.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
@@ -17,6 +18,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import PostMetadata from "@/components/content/PostMeta.astro";
 import RandomCoverImage from "@/components/misc/RandomCoverImage.astro";
+import SharePoster from "@/components/misc/SharePoster.svelte";
 import { coverImageConfig } from "@/config/coverImageConfig";
 import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
@@ -25,6 +27,7 @@ import { sponsorConfig } from "@/config/sponsorConfig";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { processCoverImageSync } from "@/utils/image-utils";
 import { url } from "@/utils/url-utils";
+
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
 	return blogEntries.map((entry) => {
@@ -45,7 +48,29 @@ const { remarkPluginFrontmatter } = await render(entry);
 // 处理随机图：如果image为"api"，则从配置的API获取随机图
 const processedImage = processCoverImageSync(entry.data.image, entry.id);
 
-// ...existing code...
+let posterCoverUrl = processedImage;
+if (processedImage) {
+	const isLocal = !(
+		processedImage.startsWith("/") ||
+		processedImage.startsWith("http") ||
+		processedImage.startsWith("https") ||
+		processedImage.startsWith("data:")
+	);
+	if (isLocal) {
+		const basePath = getFileDirFromPath(entry.filePath || "");
+		const files = import.meta.glob<ImageMetadata>("../../**", {
+			import: "default",
+		});
+		let normalizedPath = path
+			.normalize(path.join("../../", basePath, processedImage))
+			.replace(/\\/g, "/");
+		const file = files[normalizedPath];
+		if (file) {
+			const img = await file();
+			posterCoverUrl = img.src;
+		}
+	}
+}
 
 dayjs.extend(utc);
 
@@ -182,10 +207,10 @@ const jsonLd = {
         <Content />
       </Markdown>
 
-      {/* 赞助按钮 */}
-      {
-        sponsorConfig.showButtonInPost && siteConfig.pages.sponsor && (
-          <div class="mb-6 rounded-xl onload-animation">
+      {/* 赞助按钮 & 分享按钮 */}
+      <div class="mb-6 rounded-xl onload-animation">
+        {
+          sponsorConfig.showButtonInPost && siteConfig.pages.sponsor ? (
             <div class="p-6 bg-[var(--license-block-bg)] rounded-xl">
               <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3 flex-1">
@@ -201,18 +226,47 @@ const jsonLd = {
                     </p>
                   </div>
                 </div>
-                <a
-                  href={url("/sponsor/")}
-                  class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white dark:text-black/70 rounded-lg font-medium hover:bg-[var(--primary)]/80 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
-                >
-                  <span>{i18n(I18nKey.sponsor)}</span>
-                  <Icon name="fa6-solid:arrow-right" class="text-sm" />
-                </a>
+                <div class="flex items-center gap-3">
+                  <SharePoster
+                    client:load
+                    title={entry.data.title}
+                    author={profileConfig.name}
+                    description={entry.data.description || entry.data.title}
+                    pubDate={formatDateToYYYYMMDD(entry.data.published)}
+                    coverImage={posterCoverUrl}
+                    url={Astro.url.href}
+                    siteTitle={siteConfig.title}
+                    category={entry.data.category || undefined}
+                    avatar={profileConfig.avatar}
+                  />
+                  <a
+                    href={url("/sponsor/")}
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white dark:text-black/70 rounded-lg font-medium hover:bg-[var(--primary)]/80 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+                  >
+                    <span>{i18n(I18nKey.sponsor)}</span>
+                    <Icon name="fa6-solid:arrow-right" class="text-sm" />
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        )
-      }
+          ) : (
+            <div class="flex justify-end">
+              <SharePoster
+                client:load
+                title={entry.data.title}
+                author={profileConfig.name}
+                description={entry.data.description || entry.data.title}
+                pubDate={formatDateToYYYYMMDD(entry.data.published)}
+                coverImage={posterCoverUrl}
+                url={Astro.url.href}
+                siteTitle={siteConfig.title}
+                category={entry.data.category || undefined}
+                avatar={profileConfig.avatar}
+              />
+            </div>
+          )
+        }
+      </div>
 
       {
         licenseConfig.enable && (

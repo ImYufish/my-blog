@@ -191,8 +191,9 @@ export const ja: Translation = {
 	[Key.sponsorAnonymous]: "匿名",
 	[Key.scanToSponsor]: "スキャンしてスポンサー",
 	[Key.sponsorGoTo]: "スポンサーへ",
-	[Key.sponsorButton]: "サポート",
-	[Key.sponsorButtonText]: "この記事が役に立ったなら、サポートをお願いします！",
+	[Key.sponsorButton]: "サポートと共有",
+	[Key.sponsorButtonText]:
+		"この記事が役に立ったなら、共有またはサポートをお願いします！",
 
 	// サイト統計
 	[Key.siteStats]: "サイト統計",
@@ -225,4 +226,11 @@ export const ja: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+
+	[Key.shareArticle]: "共有する",
+	[Key.generatingPoster]: "ポスター生成中...",
+	[Key.copied]: "コピーしました",
+	[Key.copyLink]: "リンクをコピー",
+	[Key.savePoster]: "ポスターを保存",
+	[Key.scanToRead]: "QRコードで読む",
 };
