@@ -120,7 +120,7 @@ async function generatePoster() {
 	generating = true;
 	try {
 		const scale = 2;
-		const width = 375 * scale;
+		const width = 425 * scale;
 		const padding = 24 * scale;
 
 		// 1. Prepare resources
