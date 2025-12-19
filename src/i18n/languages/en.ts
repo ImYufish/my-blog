@@ -196,6 +196,10 @@ export const en: Translation = {
 	[Key.sponsorButtonText]:
 		"If this article helped you, please share or support!",
 
+	[Key.shareOnSocial]: "Share",
+	[Key.shareOnSocialDescription]:
+		"If this article helped you, please share it with others!",
+
 	// Site Statistics
 	[Key.siteStats]: "Site Statistics",
 	[Key.siteStatsPostCount]: "Posts",

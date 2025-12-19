@@ -197,6 +197,10 @@ export const ru: Translation = {
 	[Key.sponsorButtonText]:
 		"Если эта статья помогла вам, пожалуйста, поделитесь или поддержите!",
 
+	[Key.shareOnSocial]: "Поделиться",
+	[Key.shareOnSocialDescription]:
+		"Если эта статья помогла вам, пожалуйста, поделитесь ею с другими!",
+
 	// Статистика сайта
 	[Key.siteStats]: "Статистика сайта",
 	[Key.siteStatsPostCount]: "Статьи",

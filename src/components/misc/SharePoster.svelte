@@ -12,7 +12,6 @@ export let pubDate: string;
 export let coverImage: string | null = null;
 export let url: string;
 export let siteTitle: string;
-export let category: string | undefined = undefined;
 export let avatar: string | null = null;
 
 let showModal = false;
@@ -40,12 +39,29 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 		img.crossOrigin = "anonymous";
 		img.onload = () => resolve(img);
 		img.onerror = () => {
-			console.warn(`Failed to load image: ${src}`);
-			// Return a 1x1 transparent image to prevent crash
-			const fallback = new Image();
-			fallback.src =
-				"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-			fallback.onload = () => resolve(fallback);
+			if (!src.includes("images.weserv.nl")) {
+				console.warn(
+					`Failed to load image directly, retrying with proxy: ${src}`,
+				);
+				const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(src)}&output=png`;
+				const proxyImg = new Image();
+				proxyImg.crossOrigin = "anonymous";
+				proxyImg.onload = () => resolve(proxyImg);
+				proxyImg.onerror = () => {
+					console.warn(`Failed to load image with proxy: ${src}`);
+					const fallback = new Image();
+					fallback.src =
+						"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+					fallback.onload = () => resolve(fallback);
+				};
+				proxyImg.src = proxyUrl;
+			} else {
+				console.warn(`Failed to load image: ${src}`);
+				const fallback = new Image();
+				fallback.src =
+					"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+				fallback.onload = () => resolve(fallback);
+			}
 		};
 		img.src = src;
 	});

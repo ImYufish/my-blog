@@ -195,6 +195,10 @@ export const ja: Translation = {
 	[Key.sponsorButtonText]:
 		"この記事が役に立ったなら、共有またはサポートをお願いします！",
 
+	[Key.shareOnSocial]: "共有",
+	[Key.shareOnSocialDescription]:
+		"この記事が役に立ったなら、ぜひ他の人と共有してください！",
+
 	// サイト統計
 	[Key.siteStats]: "サイト統計",
 	[Key.siteStatsPostCount]: "記事",
@@ -227,7 +231,7 @@ export const ja: Translation = {
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
 
-	[Key.shareArticle]: "共有する",
+	[Key.shareArticle]: "共有",
 	[Key.generatingPoster]: "ポスター生成中...",
 	[Key.copied]: "コピーしました",
 	[Key.copyLink]: "リンクをコピー",

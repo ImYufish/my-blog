@@ -182,6 +182,9 @@ enum I18nKey {
 	sponsorButton = "sponsorButton",
 	sponsorButtonText = "sponsorButtonText",
 
+	shareOnSocial = "shareOnSocial",
+	shareOnSocialDescription = "shareOnSocialDescription",
+
 	// 站点统计
 	siteStats = "siteStats",
 	siteStatsPostCount = "siteStatsPostCount",
