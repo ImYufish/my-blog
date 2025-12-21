@@ -285,45 +285,51 @@ const jsonLd = {
 
   <!-- 上次编辑时间 -->
   {
-    siteConfig.showLastModified && (
-      <div class="card-base p-6 mb-4">
-        <div class="flex items-center gap-2">
-          <div class="transition h-9 w-9 rounded-lg overflow-hidden relative flex items-center justify-center mr-0">
-            <Icon
-              name="material-symbols:history-rounded"
-              class="text-4xl text-[var(--primary)] transition-transform group-hover:translate-x-0.5 bg-[var(--enter-btn-bg)] p-2 rounded-md"
-            />
-          </div>
+    siteConfig.showLastModified && (() => {
+      const lastModified = dayjs(
+        entry.data.updated || entry.data.published
+      );
+      const now = dayjs();
+      const daysDiff = now.diff(lastModified, "day");
+      // 使用用户定义的阈值，如果没有定义则默认为1天
+      const outdatedThreshold = siteConfig.outdatedThreshold ?? 1;
+      const shouldShowOutdatedCard = daysDiff >= outdatedThreshold;
 
-          {(() => {
-            const lastModified = dayjs(
-              entry.data.updated || entry.data.published
-            );
-            const now = dayjs();
-            const daysDiff = now.diff(lastModified, "day");
-            const dateStr = lastModified.format("YYYY-MM-DD");
-            const isOutdated = daysDiff >= 1;
+      return shouldShowOutdatedCard ? (
+        <div class="card-base p-6 mb-4">
+          <div class="flex items-center gap-2">
+            <div class="transition h-9 w-9 rounded-lg overflow-hidden relative flex items-center justify-center mr-0">
+              <Icon
+                name="material-symbols:history-rounded"
+                class="text-4xl text-[var(--primary)] transition-transform group-hover:translate-x-0.5 bg-[var(--enter-btn-bg)] p-2 rounded-md"
+              />
+            </div>
 
-            return (
-              <div class="flex flex-col gap-0.1">
-                <div class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75">
-                  {`${i18n(I18nKey.lastModifiedPrefix)}${dateStr}${
-                    isOutdated
-                      ? `，${i18n(I18nKey.lastModifiedDaysAgo).replace("{days}", daysDiff.toString())}`
-                      : ""
-                  }`}
+            {(() => {
+              const dateStr = lastModified.format("YYYY-MM-DD");
+              const isOutdated = daysDiff >= 1;
+
+              return (
+                <div class="flex flex-col gap-0.1">
+                  <div class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75">
+                    {`${i18n(I18nKey.lastModifiedPrefix)}${dateStr}${
+                      isOutdated
+                        ? `，${i18n(I18nKey.lastModifiedDaysAgo).replace("{days}", daysDiff.toString())}`
+                        : ""
+                    }`}
+                  </div>
+                  {isOutdated && (
+                    <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
+                      {i18n(I18nKey.lastModifiedOutdated)}
+                    </p>
+                  )}
                 </div>
-                {isOutdated && (
-                  <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
-                    {i18n(I18nKey.lastModifiedOutdated)}
-                  </p>
-                )}
-              </div>
-            );
-          })()}
+              );
+            })()}
+          </div>
         </div>
-      </div>
-    )
+      ) : null;
+    })()
   }
 
   <div

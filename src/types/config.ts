@@ -49,6 +49,7 @@ export type SiteConfig = {
 	navbarTitle?: string; // 导航栏标题，如果不设置则使用 title
 	navbarWidthFull?: boolean; // 导航栏是否占满屏幕宽度
 	showLastModified: boolean; // 控制"上次编辑"卡片显示的开关
+	outdatedThreshold?: number; // 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
 
 	// 页面开关配置
 	pages: {
