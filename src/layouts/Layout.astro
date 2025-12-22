@@ -1,5 +1,6 @@
 ---
 import FancyboxManager from "@components/effects/FancyboxManager.astro";
+import KatexManager from "@components/effects/KatexManager.astro";
 import SakuraEffect from "@components/effects/SakuraEffect.astro";
 import FontManager from "@components/interactive/FontManager.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
@@ -17,9 +18,7 @@ import type { Favicon } from "@/types/config";
 import { getDefaultBackground, isHomePage } from "@/utils/layout-utils";
 import { url } from "@/utils/url-utils";
 
-import "katex/dist/katex.css";
 import "@/styles/navbar.css";
-import "@/styles/fancybox-custom.css";
 import "@/styles/layout-styles.css";
 import "@/styles/waves.css";
 
@@ -464,6 +463,9 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 
     <!-- Fancybox Manager -->
     <FancyboxManager />
+    
+    <!-- KaTeX Manager -->
+    <KatexManager />
   </body>
 </html>
 
