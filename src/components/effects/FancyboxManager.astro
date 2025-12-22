@@ -1,4 +1,6 @@
 ---
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import "@/styles/fancybox-custom.css";
 // Fancybox 管理器组件
 ---
 
@@ -21,8 +23,6 @@
     if (!Fancybox) {
       const mod = await import("@fancyapps/ui");
       Fancybox = mod.Fancybox;
-      await import("@fancyapps/ui/dist/fancybox/fancybox.css");
-      await import("@/styles/fancybox-custom.css");
     }
 
     // 通用配置
