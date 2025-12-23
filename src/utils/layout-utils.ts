@@ -65,12 +65,15 @@ export const getDefaultBackground = (): string => {
 export const isHomePage = (pathname: string): boolean => {
 	// 获取 base URL
 	const baseUrl = import.meta.env.BASE_URL || "/";
+	const baseUrlNoSlash = baseUrl.endsWith("/")
+		? baseUrl.slice(0, -1)
+		: baseUrl;
 
-	// 标准化路径：移除 base URL 前缀
-	const normalizedPath = pathname.replace(baseUrl, "/");
+	if (pathname === baseUrl) return true;
+	if (pathname === baseUrlNoSlash) return true;
+	if (pathname === "/") return true;
 
-	// 检查是否为根路径
-	return normalizedPath === "/" || normalizedPath === "";
+	return false;
 };
 
 // 获取横幅偏移量

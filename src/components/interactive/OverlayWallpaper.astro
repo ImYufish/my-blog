@@ -1,4 +1,6 @@
 ---
+import { url } from "@/utils/url-utils";
+
 interface Props {
 	config: {
 		src: {
@@ -43,7 +45,7 @@ const blur = config.blur || 0;
 	{desktopSrc && (
 		<div class="hidden lg:block w-full h-full relative">
 			<img
-				src={desktopSrc}
+				src={desktopSrc.startsWith('/') ? url(desktopSrc) : desktopSrc}
 				alt="Desktop wallpaper"
 				class="absolute inset-0 w-full h-full object-cover"
 				style={`object-position: ${position};${blur > 0 ? ` filter: blur(${blur}px);` : ''}`}
@@ -55,7 +57,7 @@ const blur = config.blur || 0;
 	{mobileSrc && (
 		<div class="block lg:hidden w-full h-full relative">
 			<img
-				src={mobileSrc}
+				src={mobileSrc.startsWith('/') ? url(mobileSrc) : mobileSrc}
 				alt="Mobile wallpaper"
 				class="absolute inset-0 w-full h-full object-cover"
 				style={`object-position: ${position};${blur > 0 ? ` filter: blur(${blur}px);` : ''}`}

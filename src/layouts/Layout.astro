@@ -184,6 +184,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
           siteConfig.backgroundWallpaper.switchable ?? true,
         darkTheme: expressiveCodeConfig.darkTheme,
         lightTheme: expressiveCodeConfig.lightTheme,
+        baseUrl: import.meta.env.BASE_URL,
       }}
     >
       // 主题初始化 - 与setting-utils.ts保持一致
@@ -319,7 +320,9 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 
           // 检查当前是否为首页
           const isHomePage =
-            window.location.pathname === "/" || window.location.pathname === "";
+            window.location.pathname === baseUrl || 
+            (baseUrl !== '/' && window.location.pathname === baseUrl.replace(/\/$/, '')) ||
+            window.location.pathname === "/";
 
           if (wallpaperMode === WALLPAPER_OVERLAY) {
             // 全屏壁纸透明模式：显示全屏壁纸，隐藏banner
@@ -396,8 +399,9 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
           );
           if (bannerTextOverlay) {
             const isHomePage =
-              window.location.pathname === "/" ||
-              window.location.pathname === "";
+              window.location.pathname === baseUrl || 
+              (baseUrl !== '/' && window.location.pathname === baseUrl.replace(/\/$/, '')) ||
+              window.location.pathname === "/";
             if (wallpaperMode === WALLPAPER_BANNER && isHomePage) {
               bannerTextOverlay.classList.remove("hidden");
             } else {

@@ -9,6 +9,7 @@ import {
 } from "@constants/constants";
 import type { LIGHT_DARK_MODE, WALLPAPER_MODE } from "@/types/config";
 import { expressiveCodeConfig, siteConfig } from "../config";
+import { isHomePage as checkIsHomePage } from "./layout-utils";
 
 // Declare global functions
 declare global {
@@ -376,8 +377,7 @@ function showBannerMode() {
 	const bannerWrapper = document.getElementById("banner-wrapper");
 	if (bannerWrapper) {
 		// 检查当前是否为首页
-		const isHomePage =
-			window.location.pathname === "/" || window.location.pathname === "";
+		const isHomePage = checkIsHomePage(window.location.pathname);
 		const isMobile = window.innerWidth < 1024;
 
 		// 移动端非首页时，不显示banner；桌面端始终显示
@@ -411,8 +411,7 @@ function showBannerMode() {
 			siteConfig.backgroundWallpaper.banner?.homeText?.enable;
 
 		// 检查当前是否为首页
-		const isHomePage =
-			window.location.pathname === "/" || window.location.pathname === "";
+		const isHomePage = checkIsHomePage(window.location.pathname);
 
 		// 只有在启用且在首页时才显示
 		if (homeTextEnabled && isHomePage) {
@@ -428,8 +427,7 @@ function showBannerMode() {
 	// 处理移动端非首页主内容区域位置
 	const mainContentWrapper = document.querySelector(".absolute.w-full.z-30");
 	if (mainContentWrapper) {
-		const isHomePage =
-			window.location.pathname === "/" || window.location.pathname === "";
+		const isHomePage = checkIsHomePage(window.location.pathname);
 		const isMobile = window.innerWidth < 1024;
 		// 只在移动端非首页时调整主内容位置
 		if (isMobile && !isHomePage) {

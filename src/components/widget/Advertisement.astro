@@ -1,6 +1,7 @@
 ---
 import { adConfig1, adConfig2 } from "@/config/adConfig";
 import type { AdConfig } from "@/types/config";
+import { url } from "@/utils/url-utils";
 
 export interface Props {
 	class?: string;
@@ -126,7 +127,7 @@ const paddingClass = getPaddingStyle();
               class="block group"
             >
               <img
-                src={currentAdConfig.image.src}
+                src={currentAdConfig.image.src.startsWith('/') ? url(currentAdConfig.image.src) : currentAdConfig.image.src}
                 alt={currentAdConfig.image.alt || "广告图片"}
                 class={`w-full h-auto transition-transform duration-300 group-hover:scale-105 ${
                   paddingClass === "p-0"
@@ -138,7 +139,7 @@ const paddingClass = getPaddingStyle();
             </a>
           ) : (
             <img
-              src={currentAdConfig.image.src}
+              src={currentAdConfig.image.src.startsWith('/') ? url(currentAdConfig.image.src) : currentAdConfig.image.src}
               alt={currentAdConfig.image.alt || "广告图片"}
               class={`w-full h-auto ${
                 paddingClass === "p-0"
