@@ -6,6 +6,12 @@ export const ru: Translation = {
 	[Key.about]: "О нас",
 	[Key.archive]: "Архив",
 	[Key.search]: "Поиск",
+	[Key.searchNoResults]: "Результаты не найдены.",
+	[Key.searchTypeSomething]: "Введите ключевое слово для поиска...",
+	[Key.searchLoading]: "Поиск...",
+	[Key.searchSummary]: "Резюме",
+	[Key.searchContent]: "Содержание",
+	[Key.searchViewMore]: "Показать еще ({count} шт)",
 	[Key.other]: "Прочее",
 
 	[Key.tags]: "Теги",

@@ -212,7 +212,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
   ">
         <Icon icon="material-symbols:search"
               class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-        <input placeholder="Search" bind:value={keywordMobile}
+        <input placeholder={i18n(I18nKey.search)} bind:value={keywordMobile}
                class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
                focus:w-60 text-black/50 dark:text-white/50"
         >
@@ -221,10 +221,10 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
     <!-- search results -->
     {#if isSearching}
         <div class="transition first-of-type:mt-2 lg:first-of-type:mt-0 block rounded-xl text-lg px-3 py-2 text-50">
-            正在搜索...
+            {i18n(I18nKey.searchLoading)}
         </div>
     {:else if result.length > 0}
-        {#each result as item}
+        {#each result.slice(0, 5) as item}
             <a href={item.url}
                on:click={(e) => handleResultClick(e, item.url)}
                class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
@@ -237,7 +237,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
                 {#if item.excerpt.includes('<mark>')}
                     <div class="transition text-sm text-50" style="display: flex; align-items: flex-start; margin-top: 0.1rem">
                         <span style="display: inline-block; background-color: var(--btn-plain-bg-hover); color: var(--primary); padding: 0.1em 0.4em; border-radius: 5px; font-size: 0.75em; font-weight: 600; margin-right: 0.5em; flex-shrink: 0;">
-                            摘要
+                            {i18n(I18nKey.searchSummary)}
                         </span>
                         <div>
                             {@html item.excerpt}
@@ -248,7 +248,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
                 {#if item.content && item.content.includes('<mark>')}
                     <div class="transition text-sm text-30" style="display: flex; align-items: flex-start; margin-top: 0.1rem">
                         <span style="display: inline-block; background-color: var(--btn-plain-bg-active); color: var(--primary); padding: 0.1em 0.4em; border-radius: 5px; font-size: 0.75em; font-weight: 600; margin-right: 0.5em; flex-shrink: 0;">
-                            内容
+                            {i18n(I18nKey.searchContent)}
                         </span>
                         <div>
                             {@html item.content}
@@ -257,13 +257,23 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
                 {/if}
             </a>
         {/each}
+        {#if result.length > 5}
+            <a href="/search/?q={encodeURIComponent(keywordDesktop || keywordMobile)}"
+               on:click={(e) => handleResultClick(e, `/search/?q=${encodeURIComponent(keywordDesktop || keywordMobile)}`)}
+               class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] text-[var(--primary)] font-bold text-center">
+                <span class="inline-flex items-center">
+                    {i18n(I18nKey.searchViewMore).replace('{count}', (result.length - 5).toString())}
+                    <Icon icon="fa6-solid:arrow-right" class="transition text-[0.75rem] ml-1"></Icon>
+                </span>
+            </a>
+        {/if}
     {:else if result.length === 0}
         <div class="transition first-of-type:mt-2 lg:first-of-type:mt-0 block rounded-xl text-lg px-3 py-2 text-50">
-            找不到相关结果。
+            {i18n(I18nKey.searchNoResults)}
         </div>
     {:else if keywordDesktop || keywordMobile}
         <div class="transition first-of-type:mt-2 lg:first-of-type:mt-0 block rounded-xl text-lg px-3 py-2 text-50">
-            请输入搜索关键词。
+            {i18n(I18nKey.searchTypeSomething)}
         </div>
     {/if}
 </div>
@@ -278,3 +288,4 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
         overflow-y: auto;
     }
 </style>
+

@@ -3,6 +3,12 @@ enum I18nKey {
 	about = "about",
 	archive = "archive",
 	search = "search",
+	searchNoResults = "searchNoResults",
+	searchTypeSomething = "searchTypeSomething",
+	searchLoading = "searchLoading",
+	searchSummary = "searchSummary",
+	searchContent = "searchContent",
+	searchViewMore = "searchViewMore",
 	other = "other",
 
 	tags = "tags",

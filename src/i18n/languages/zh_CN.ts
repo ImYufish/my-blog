@@ -6,6 +6,12 @@ export const zh_CN: Translation = {
 	[Key.about]: "关于我",
 	[Key.archive]: "归档",
 	[Key.search]: "搜索",
+	[Key.searchNoResults]: "找不到相关结果。",
+	[Key.searchTypeSomething]: "请输入搜索关键词。",
+	[Key.searchLoading]: "正在搜索...",
+	[Key.searchSummary]: "摘要",
+	[Key.searchContent]: "内容",
+	[Key.searchViewMore]: "查看更多结果 ({count} 个更多)",
 	[Key.other]: "其他",
 
 	[Key.tags]: "标签",
