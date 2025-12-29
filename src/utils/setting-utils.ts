@@ -54,11 +54,8 @@ export function resolveTheme(theme: LIGHT_DARK_MODE): LIGHT_DARK_MODE {
 }
 
 export function getHue(): number {
-	// 检查是否在浏览器环境中
-	if (
-		typeof localStorage === "undefined" ||
-		typeof localStorage.getItem !== "function"
-	) {
+	// 先检查全局对象
+	if (typeof window === "undefined" || !window.localStorage) {
 		return getDefaultHue();
 	}
 	const stored = localStorage.getItem("hue");
@@ -66,12 +63,8 @@ export function getHue(): number {
 }
 
 export function setHue(hue: number): void {
-	// 检查是否在浏览器环境中
-	if (
-		typeof localStorage === "undefined" ||
-		typeof localStorage.setItem !== "function" ||
-		typeof document === "undefined"
-	) {
+	// 先检查是否在浏览器环境
+	if (typeof window === "undefined" || !window.localStorage || typeof document === "undefined") {
 		return;
 	}
 	localStorage.setItem("hue", String(hue));
