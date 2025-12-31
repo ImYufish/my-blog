@@ -278,14 +278,14 @@ const { remarkPluginFrontmatter } = await render(entry);
   }
 
   /* Pinned Button Background Logic */
-  .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
+  :global(.grid-mode) .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(4px);
     border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
   }
   
-  :global(.dark) .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
+  :global(.grid-mode .dark) .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
     background: rgba(0, 0, 0, 0.5);
   }
 
