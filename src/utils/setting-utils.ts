@@ -64,7 +64,11 @@ export function getHue(): number {
 
 export function setHue(hue: number): void {
 	// 先检查是否在浏览器环境
-	if (typeof window === "undefined" || !window.localStorage || typeof document === "undefined") {
+	if (
+		typeof window === "undefined" ||
+		!window.localStorage ||
+		typeof document === "undefined"
+	) {
 		return;
 	}
 	localStorage.setItem("hue", String(hue));

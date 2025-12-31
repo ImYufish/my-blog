@@ -10,6 +10,7 @@ import type {
 	UserSubjectCollection,
 	UserSubjectCollectionResponse,
 } from "@/types/bangumi";
+import { formatDateI18nWithTime } from "@/utils/date-utils";
 
 //参考：霞葉 https://kasuha.com/posts/fuwari-enhance-ep2/
 
@@ -18,7 +19,10 @@ if (!siteConfig.pages.bangumi) {
 	return Astro.redirect("/404/");
 }
 
-//////////////// Bangumi 配置 ////////////////////////
+// 获取构建时间
+const buildTime = formatDateI18nWithTime(new Date());
+
+////////////// Bangumi 配置 ////////////////////////
 const bangumiConfig = {
 	username: siteConfig.bangumi?.userId, // 在这里配置你的Bangumi用户名
 	apiUrl: "https://api.bgm.tv",
@@ -36,7 +40,7 @@ const bangumiConfig = {
 		maxTotal: 1000, // 最大获取总数，防止无限循环（0=无限制）
 	},
 };
-////////////////////////////////////////////////////
+//////////////////////////////////////////////////
 
 // 分类映射
 const categoryMap = {
@@ -180,9 +184,6 @@ for (const [categoryKey, enabled] of Object.entries(bangumiConfig.categories)) {
 }
 
 const activeTab = tabs[0]?.id || "anime";
-
-// 获取构建时间
-const buildTime = new Date().toLocaleString();
 ---
 
 <MainGridLayout title={i18n(I18nKey.bangumi)} description={i18n(I18nKey.bangumiSubtitle)}>
