@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import RandomCoverImage from "@/components/misc/RandomCoverImage.astro";
+import { siteConfig } from "@/config/siteConfig";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { processCoverImageSync } from "@/utils/image-utils";
@@ -48,12 +49,15 @@ const hasCover =
 
 const coverWidth = "28%";
 
+const coverPosition = siteConfig.postListLayout.grid.coverPosition;
+
 const { remarkPluginFrontmatter } = await render(entry);
 ---
 
 <div
   class:list={[
     "post-card-wrapper",
+    `cover-position-${coverPosition}`,
     hasCover ? "has-cover" : "no-cover",
     pinned ? "pinned" : "",
     "card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative",
@@ -228,24 +232,25 @@ const { remarkPluginFrontmatter } = await render(entry);
 </div>
 
 <style define:vars={{ coverWidth }}>
-  :global(.grid-mode) .post-card-wrapper {
+  /* 封面位置为顶部时的样式 */
+  :global(.grid-mode) .cover-position-top.post-card-wrapper {
     flex-direction: column-reverse !important;
     height: 100% !important;
     justify-content: flex-end !important;
   }
 
-  :global(.grid-mode) .post-card-content {
+  :global(.grid-mode) .cover-position-top .post-card-content {
     width: 100% !important;
     padding-right: 1.5rem !important;
     height: auto !important;
     flex-grow: 1 !important;
   }
 
-  :global(.grid-mode) .no-cover .post-card-content {
+  :global(.grid-mode) .cover-position-top.no-cover .post-card-content {
     padding-right: 4.5rem !important;
   }
 
-  :global(.grid-mode) .post-card-image {
+  :global(.grid-mode) .cover-position-top .post-card-image {
     position: relative !important;
     top: auto !important;
     bottom: auto !important;
@@ -257,48 +262,61 @@ const { remarkPluginFrontmatter } = await render(entry);
     aspect-ratio: 2/1 !important;
   }
 
-  :global(.grid-mode) .description {
+  :global(.grid-mode) .cover-position-top .description {
     flex-grow: 0 !important;
   }
 
-  :global(.grid-mode) .stats {
+  :global(.grid-mode) .cover-position-top .stats {
     margin-top: auto !important;
   }
 
-  :global(.grid-mode) .has-cover .post-card-content {
+  :global(.grid-mode) .cover-position-top.has-cover .post-card-content {
     padding-top: 0.8rem !important;
   }
-  :global(.grid-mode) .has-cover .post-card-title::before {
+  :global(.grid-mode) .cover-position-top.has-cover .post-card-title::before {
     top: 1.3rem !important;
   }
- 
+
   /* Pinned Button Background Logic */
-  .post-card-wrapper.has-cover .pinned-btn {
+  .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(4px);
     border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
   }
   
-  :global(.dark) .post-card-wrapper.has-cover .pinned-btn {
+  :global(.dark) .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
     background: rgba(0, 0, 0, 0.5);
   }
 
-  @media (min-width: 768px) {
-    .post-card-wrapper.has-cover .pinned-btn {
-      background: transparent;
-      backdrop-filter: none;
-      padding: 0;
-    }
-  }
 
-  :global(.grid-mode) .post-card-wrapper.has-cover .pinned-btn {
+  :global(.grid-mode) .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
     background: rgba(255, 255, 255, 0.5) !important;
     backdrop-filter: blur(4px) !important;
     padding: 0.25rem 0.5rem !important;
   }
 
-  :global(.dark .grid-mode) .post-card-wrapper.has-cover .pinned-btn {
+  :global(.dark .grid-mode) .cover-position-top.post-card-wrapper.has-cover .pinned-btn {
      background: rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  @media (max-width: 768px) {
+    .post-card-wrapper.has-cover .pinned-btn {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+    }
+    :global(.dark) .post-card-wrapper.has-cover .pinned-btn {
+      background: rgba(0, 0, 0, 0.5);
+    }
+    :global(.grid-mode) .post-card-wrapper.has-cover .pinned-btn {
+      background: rgba(255, 255, 255, 0.5) !important;
+      backdrop-filter: blur(4px) !important;
+      padding: 0.25rem 0.5rem !important;
+    }
+    :global(.dark .grid-mode) .post-card-wrapper.has-cover .pinned-btn {
+      background: rgba(0, 0, 0, 0.5) !important;
+    }
   }
 </style>

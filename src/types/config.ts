@@ -66,6 +66,8 @@ export type SiteConfig = {
 			// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 			// 是否开启瀑布流布局
 			masonry: boolean;
+			// 网格模式下封面位置："top" 顶部，"right" 右侧
+			coverPosition: "top" | "right";
 		};
 	};
 

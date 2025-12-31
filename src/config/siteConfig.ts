@@ -88,6 +88,8 @@ export const siteConfig: SiteConfig = {
 		grid: {
 			// 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
 			masonry: true,
+			// 网格模式下封面位置："top" 顶部，"right" 右侧
+			coverPosition: "top",
 		},
 	},
 
