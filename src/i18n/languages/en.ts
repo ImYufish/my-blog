@@ -13,6 +13,7 @@ export const en: Translation = {
 	[Key.searchContent]: "Content",
 	[Key.searchViewMore]: "View more results ({count} more)",
 	[Key.other]: "Other",
+	[Key.all]: "All",
 
 	[Key.tags]: "Tags",
 	[Key.categories]: "Categories",

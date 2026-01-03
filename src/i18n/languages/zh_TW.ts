@@ -13,6 +13,7 @@ export const zh_TW: Translation = {
 	[Key.searchContent]: "內容",
 	[Key.searchViewMore]: "查看更多結果 ({count} 個更多)",
 	[Key.other]: "其他",
+	[Key.all]: "全部",
 
 	[Key.tags]: "標籤",
 	[Key.categories]: "分類",

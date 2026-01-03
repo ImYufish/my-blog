@@ -13,6 +13,7 @@ export const ja: Translation = {
 	[Key.searchContent]: "内容",
 	[Key.searchViewMore]: "さらに結果を表示 ({count} 件)",
 	[Key.other]: "その他",
+	[Key.all]: "すべて",
 
 	[Key.tags]: "タグ",
 	[Key.categories]: "カテゴリ",

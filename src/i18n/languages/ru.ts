@@ -13,6 +13,7 @@ export const ru: Translation = {
 	[Key.searchContent]: "Содержание",
 	[Key.searchViewMore]: "Показать еще ({count} шт)",
 	[Key.other]: "Прочее",
+	[Key.all]: "Все",
 
 	[Key.tags]: "Теги",
 	[Key.categories]: "Категории",
