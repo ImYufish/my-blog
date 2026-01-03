@@ -249,7 +249,7 @@ lang: zh-CN      # 僅當文章語言與 `siteConfig.ts` 中的網站語言不�
 
 ## 📝 許可協議
 
-本專案遵循 [MIT license](https://mit-license.org/) 開源協議，詳細查看 [LICENSE](../LICENSE) 文件，
+本專案遵循 [MIT license](https://mit-license.org/) 開源協議，詳細查看 [LICENSE](../LICENSE) 文件
 
 **版權聲明：**
 - Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)

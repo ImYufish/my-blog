@@ -39,14 +39,19 @@ export type SiteConfig = {
 		theme?: "light" | "dark";
 		sizes?: string;
 	}>;
-	/** 导航栏Logo图标，可选类型：icon库、图片链接、本地图片 */
-	navbarLogo?: {
-		type: "icon" | "image";
-		value: string; // icon名或图片url
-		alt?: string; // 图片alt文本
+
+	navbar: {
+		/** 导航栏Logo图标，可选类型：icon库、图片链接、本地图片 */
+		logo?: {
+			type: "icon" | "image";
+			value: string; // icon名或图片url
+			alt?: string; // 图片alt文本
+		};
+		title?: string; // 导航栏标题，如果不设置则使用 title
+		widthFull?: boolean; // 导航栏是否占满屏幕宽度
+		followTheme?: boolean; // 导航栏图标和标题是否跟随主题色
 	};
-	navbarTitle?: string; // 导航栏标题，如果不设置则使用 title
-	navbarWidthFull?: boolean; // 导航栏是否占满屏幕宽度
+
 	showLastModified: boolean; // 控制"上次编辑"卡片显示的开关
 	outdatedThreshold?: number; // 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
 

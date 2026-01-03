@@ -52,22 +52,25 @@ export const siteConfig: SiteConfig = {
 		},
 	],
 
-	// 导航栏Logo
-	// navbarLogo 支持三种类型：Astro图标库，本地图片，网络图片
-	// { type: "icon", value: "material-symbols:home-pin-outline" }
-	// { type: "image", value: "/assets/images/logo.webp", alt: "Firefly Logo" }
-	// { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
-	navbarLogo: {
-		type: "image",
-		value: "/assets/images/firefly.png",
-		alt: "🍀",
+	// 导航栏配置
+	navbar: {
+		// 导航栏Logo
+		// 支持三种类型：Astro图标库，本地图片，网络图片
+		// { type: "icon", value: "material-symbols:home-pin-outline" }
+		// { type: "image", value: "/assets/images/logo.webp", alt: "Firefly Logo" }
+		// { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
+		logo: {
+			type: "image",
+			value: "/assets/images/firefly.png",
+			alt: "🍀",
+		},
+		// 导航栏标题
+		title: "Firefly",
+		// 全宽导航栏，导航栏是否占满屏幕宽度，true：占满，false：不占满
+		widthFull: false,
+		// 导航栏图标和标题是否跟随主题色
+		followTheme: false,
 	},
-
-	// 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
-	navbarTitle: "Firefly",
-
-	// 全宽导航栏，导航栏是否占满屏幕宽度，true：占满，false：不占满
-	navbarWidthFull: false,
 
 	// 站点开始日期，用于统计运行天数
 	siteStartDate: "2025-01-01",
