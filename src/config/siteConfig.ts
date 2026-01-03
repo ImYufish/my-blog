@@ -187,6 +187,12 @@ export const siteConfig: SiteConfig = {
 		},
 	},
 
+	// 统计分析
+	analytics: {
+		// Microsoft Clarity ID
+		clarityId: "tx9equrgr6",
+	},
+
 	// 字体配置
 	// 在src/config/fontConfig.ts中配置具体字体
 	font: fontConfig,

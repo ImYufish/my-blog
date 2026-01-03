@@ -75,6 +75,11 @@ export type SiteConfig = {
 	pagination: {
 		postsPerPage: number; // 每页显示的文章数量
 	};
+
+	// 统计分析
+	analytics?: {
+		clarityId?: string; // Microsoft Clarity ID
+	};
 };
 
 export type Favicon = {
