@@ -3,7 +3,7 @@ import { getEntry, render } from "astro:content";
 import Comment from "@components/comment/index.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import Icon from "@/components/misc/Icon.astro";
-import { getEnabledFriends } from "@/config";
+import { friendsPageConfig, getEnabledFriends } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -71,7 +71,7 @@ const description = i18n(I18nKey.friendsDescription);
         }
       </friend-filter>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 my-4">
+      <div class={`grid grid-cols-1 sm:grid-cols-2 ${friendsPageConfig.columns === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-3 my-4`}>
         {
           items.map((item) => (
             <a

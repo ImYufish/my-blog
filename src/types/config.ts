@@ -585,6 +585,10 @@ export type FriendLink = {
 	enabled: boolean; // 是否启用
 };
 
+export type FriendsPageConfig = {
+	columns: 2 | 3; // 显示列数：2列或3列
+};
+
 // 音乐播放器配置
 export type MusicPlayerConfig = {
 	// 基础功能开关
