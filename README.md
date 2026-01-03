@@ -191,6 +191,7 @@ src/
 ├── config/
 │   ├── index.ts              # 配置索引文件
 │   ├── siteConfig.ts         # 站点基础配置
+│   ├── backgroundWallpaper.ts # 背景壁纸配置
 │   ├── profileConfig.ts      # 用户资料配置
 │   ├── commentConfig.ts      # 评论系统配置
 │   ├── announcementConfig.ts # 公告配置
@@ -255,7 +256,11 @@ lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不�
 
 本项目遵循 [MIT license](https://mit-license.org/) 开源协议，详细查看 [LICENSE](./LICENSE) 文件，
 
-最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感谢原作者的贡献，原项目采用 [MIT license](https://mit-license.org/)。
+**版权声明：**
+- Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
+- Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly) 
+
+根据 MIT 开源协议，你可以自由使用、修改、分发代码，但需保留上述版权声明。
 
 ## 🍀 贡献者
 

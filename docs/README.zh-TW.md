@@ -186,6 +186,7 @@ src/
 ├── config/
 │   ├── index.ts              # 配置索引檔案
 │   ├── siteConfig.ts         # 站點基礎配置
+│   ├── backgroundWallpaper.ts # 背景桌布配置
 │   ├── profileConfig.ts      # 使用者資料配置
 │   ├── commentConfig.ts      # 留言系統配置
 │   ├── announcementConfig.ts # 公告配置
@@ -248,9 +249,13 @@ lang: zh-CN      # 僅當文章語言與 `siteConfig.ts` 中的網站語言不�
 
 ## 📝 許可協議
 
-本項目遵循 [MIT license](https://mit-license.org/) 開源協議，詳細查看 [LICENSE](./LICENSE) 文件，
+本專案遵循 [MIT license](https://mit-license.org/) 開源協議，詳細查看 [LICENSE](../LICENSE) 文件，
 
-最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感謝原作者的貢獻，原項目採用 [MIT license](https://mit-license.org/)。
+**版權聲明：**
+- Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
+- Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly)
+
+根據 MIT 開源協議，你可以自由使用、修改、分發程式碼，但需保留上述版權聲明。
 
 ## 🍀 貢獻者
 

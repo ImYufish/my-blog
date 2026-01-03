@@ -186,6 +186,7 @@ src/
 ├── config/
 │   ├── index.ts              # 設定インデックスファイル
 │   ├── siteConfig.ts         # サイト基本設定
+│   ├── backgroundWallpaper.ts # 背景壁紙設定
 │   ├── profileConfig.ts      # ユーザープロフィール設定
 │   ├── commentConfig.ts      # コメントシステム設定
 │   ├── announcementConfig.ts # お知らせ設定
@@ -248,7 +249,13 @@ lang: zh-CN      # 記事の言語が`siteConfig.ts`のサイト言語と異な�
 
 ## 📝 ライセンス
 
-本プロジェクトは [MIT license](https://mit-license.org/) の下で公開されています。詳細は [LICENSE](../LICENSE) ファイルをご覧ください。[saicaca/fuwari](https://github.com/saicaca/fuwari) からフォークされました。原作者の貢献に感謝します。元のプロジェクトも [MIT license](https://mit-license.org/) を採用しています。
+本プロジェクトは [MIT license](https://mit-license.org/) の下で公開されています。詳細は [LICENSE](../LICENSE) ファイルをご覧ください。
+
+**著作権表示：**
+- Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
+- Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly)
+
+MITライセンスに基づき、コードの自由な使用、変更、配布が許可されていますが、上記の著作権表示を保持する必要があります。
 
 ## 🍀 貢献者
 

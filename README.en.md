@@ -186,6 +186,7 @@ src/
 ├── config/
 │   ├── index.ts              # Configuration index file
 │   ├── siteConfig.ts         # Site basic configuration
+│   ├── backgroundWallpaper.ts # Background wallpaper configuration
 │   ├── profileConfig.ts      # User profile configuration
 │   ├── commentConfig.ts      # Comment system configuration
 │   ├── announcementConfig.ts # Announcement configuration
@@ -248,7 +249,13 @@ All commands need to be executed in the project root directory:
 
 ## 📝 License
 
-This project is licensed under the [MIT license](https://mit-license.org/), see the [LICENSE](./LICENSE) file for details. It was originally forked from [saicaca/fuwari](https://github.com/saicaca/fuwari). Thanks to the original author for their contribution. The original project is also licensed under the [MIT license](https://mit-license.org/).
+This project is licensed under the [MIT license](https://mit-license.org/). See the [LICENSE](./LICENSE) file for details.
+
+**Copyright Notice:**
+- Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
+- Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly)
+
+Under the MIT license, you are free to use, modify, and distribute the code, but you must retain the above copyright notice.
 
 ## 🍀 Contributors
 
