@@ -33,7 +33,6 @@ export type SiteConfig = {
 		userId?: string; // Bangumi用户ID
 	};
 
-	backgroundWallpaper: BackgroundWallpaperConfig;
 	generateOgImages: boolean;
 	favicon: Array<{
 		src: string;

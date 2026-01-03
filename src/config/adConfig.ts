@@ -10,15 +10,32 @@ export const adConfig1: AdConfig = {
 		link: "#",
 		external: true,
 	},
-	closable: true, // 是否可关闭
+
+	// 是否允许关闭广告
+	closable: true,
+
+	// 显示次数限制，-1为无限制
 	displayCount: -1,
+
+	// 组件内边距配置，可通过取消注释生效
 	padding: {
-		all: "0", // 零边距，图片占满整个组件
-		// all: "1rem", // 默认边距
-		// top: "0", // 仅顶部无边距
-		// right: "1rem", // 仅右侧无边距
-		// bottom: "1rem", // 仅底部无边距
-		// left: "1rem", // 仅左侧无边距
+		// 零边距，图片占满整个组件
+		all: "0",
+
+		// 四边1rem边距
+		// all: "1rem",
+
+		// 顶部无边距
+		// top: "0",
+
+		// 右侧无边距
+		// right: "1rem",
+
+		// 底部无边距
+		// bottom: "1rem",
+
+		// 左侧无边距
+		// left: "1rem",
 	},
 };
 

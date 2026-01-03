@@ -11,10 +11,10 @@ import { getStoredWallpaperMode, setWallpaperMode } from "@utils/setting-utils";
 import { onMount } from "svelte";
 import DropdownItem from "@/components/common/base/DropdownItem.svelte";
 import DropdownPanel from "@/components/common/base/DropdownPanel.svelte";
-import { siteConfig } from "@/config";
+import { backgroundWallpaper } from "@/config";
 import type { WALLPAPER_MODE } from "@/types/config";
 
-let mode: WALLPAPER_MODE = $state(siteConfig.backgroundWallpaper.mode);
+let mode: WALLPAPER_MODE = $state(backgroundWallpaper.mode);
 
 // 在组件挂载时从localStorage读取保存的模式
 onMount(() => {

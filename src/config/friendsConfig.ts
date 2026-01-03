@@ -37,5 +37,5 @@ export const friendsConfig: FriendLink[] = [
 export const getEnabledFriends = (): FriendLink[] => {
 	return friendsConfig
 		.filter((friend) => friend.enabled)
-		.sort((a, b) => b.weight - a.weight); // 按权重降序排序
+		.sort((a, b) => b.weight - a.weight);
 };

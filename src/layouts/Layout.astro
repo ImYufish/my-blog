@@ -6,7 +6,12 @@ import FontManager from "@components/interactive/FontManager.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 import MusicPlayer from "@components/widget/MusicPlayer.astro";
 
-import { expressiveCodeConfig, profileConfig, siteConfig } from "@/config";
+import {
+	backgroundWallpaper,
+	expressiveCodeConfig,
+	profileConfig,
+	siteConfig,
+} from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
@@ -45,7 +50,7 @@ const configHue = siteConfig.themeColor.hue;
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =
-	siteConfig.backgroundWallpaper?.banner?.navbar?.transparentMode || "semi";
+	backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
 // 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
 const shouldShowTopHighlight =
 	navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
@@ -57,7 +62,7 @@ if (!banner || typeof banner !== "string" || banner.trim() === "") {
 // TODO don't use post cover as banner for now
 banner = getDefaultBackground();
 
-const enableBanner = siteConfig.backgroundWallpaper.mode === "banner";
+const enableBanner = backgroundWallpaper.mode === "banner";
 
 let pageTitle: string;
 if (title) {
@@ -174,9 +179,9 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
         PAGE_WIDTH,
         configHue,
         defaultMode: siteConfig.themeColor.defaultMode ?? "light",
-        defaultWallpaperMode: siteConfig.backgroundWallpaper.mode,
+        defaultWallpaperMode: backgroundWallpaper.mode,
         isWallpaperSwitchable:
-          siteConfig.backgroundWallpaper.switchable ?? true,
+          backgroundWallpaper.switchable ?? true,
         darkTheme: expressiveCodeConfig.darkTheme,
         lightTheme: expressiveCodeConfig.lightTheme,
         baseUrl: import.meta.env.BASE_URL,
@@ -513,7 +518,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
     BANNER_HEIGHT_EXTEND,
     // MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
   } from "@/constants/constants";
-  import { siteConfig, expressiveCodeConfig } from "@/config";
+  import { backgroundWallpaper, expressiveCodeConfig } from "@/config";
 
   /* Preload fonts */
   // (async function() {
@@ -620,7 +625,7 @@ function disableAnimation() {
   }
 
   function showBanner() {
-    const isBannerMode = siteConfig.backgroundWallpaper.mode === "banner";
+    const isBannerMode = backgroundWallpaper.mode === "banner";
     if (!isBannerMode) return;
 
     // 使用requestAnimationFrame优化DOM操作

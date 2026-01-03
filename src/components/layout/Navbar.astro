@@ -5,7 +5,12 @@ import LayoutSwitchButton from "@/components/interactive/LayoutSwitchButton.svel
 import LightDarkSwitch from "@/components/interactive/LightDarkSwitch.svelte";
 import Search from "@/components/interactive/Search.svelte";
 import WallpaperSwitch from "@/components/interactive/WallpaperSwitch.svelte";
-import { navBarConfig, navBarSearchConfig, siteConfig } from "@/config";
+import {
+	backgroundWallpaper,
+	navBarConfig,
+	navBarSearchConfig,
+	siteConfig,
+} from "@/config";
 import { LinkPresets } from "@/constants/link-presets";
 import {
 	LinkPreset,
@@ -20,14 +25,14 @@ import NavMenuPanel from "./NavMenuPanel.astro";
 const className = Astro.props.class;
 
 // 检查是否允许切换壁纸模式
-const isWallpaperSwitchable = siteConfig.backgroundWallpaper.switchable ?? true;
+const isWallpaperSwitchable = backgroundWallpaper.switchable ?? true;
 
 // 检查是否允许切换布局（双侧栏模式下也允许切换，但切换到网格时会自动隐藏右侧边栏）
 const allowLayoutSwitch = siteConfig.postListLayout.allowSwitch;
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =
-	siteConfig.backgroundWallpaper?.banner?.navbar?.transparentMode || "semi";
+	backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
 
 // 获取导航栏标题，如果没有设置则使用 siteConfig.title
 const navbarTitle = siteConfig.navbarTitle || siteConfig.title;
