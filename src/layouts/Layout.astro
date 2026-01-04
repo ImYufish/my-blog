@@ -722,8 +722,8 @@ function disableAnimation() {
       setTimeout(() => {
         const savedLayout = localStorage.getItem("postListLayout");
         if (savedLayout) {
-          const rightSidebar = document.getElementById("right-sidebar");
-          const mainGrid = document.getElementById("main-grid");
+          // const rightSidebar = document.getElementById("right-sidebar");
+          // const mainGrid = document.getElementById("main-grid");
           
           // 根据保存的布局状态调整侧边栏显示
           /* if (savedLayout === "grid") {
@@ -927,10 +927,10 @@ function disableAnimation() {
     });
 
     // 全局布局切换监听器 - 支持在任何页面（包括文章详情页）切换布局
-    window.addEventListener("layoutChange", (event: CustomEvent) => {
-      const newLayout = event.detail.layout;
-      const rightSidebar = document.getElementById("right-sidebar");
-      const mainGrid = document.getElementById("main-grid");
+    window.addEventListener("layoutChange", () => {
+      // const newLayout = event.detail.layout;
+      // const rightSidebar = document.getElementById("right-sidebar");
+      // const mainGrid = document.getElementById("main-grid");
       const postContainer = document.getElementById("post-container");
       const swupContainer = document.getElementById("swup-container");
       

@@ -20,7 +20,7 @@ export interface Props {
 	minutes?: number;
 	showWordCount?: boolean; // 是否显示字数统计，默认false显示标签
 	customPath?: string;
-  pinned?: boolean;
+	pinned?: boolean;
 }
 
 const {
@@ -37,7 +37,7 @@ const {
 	minutes,
 	showWordCount = false,
 	customPath,
-  pinned,
+	pinned,
 } = Astro.props;
 
 const path = customPath || (id ? `/posts/${id}` : "");

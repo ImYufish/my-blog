@@ -19,7 +19,10 @@ const gridColumns = siteConfig.postListLayout.grid.columns || 2;
 
 // 根据配置设置初始布局模式，避免闪烁
 const defaultLayout = siteConfig.postListLayout.defaultMode || "list";
-const gridCols = (!isBothSidebars && gridColumns === 3) ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2";
+const gridCols =
+	!isBothSidebars && gridColumns === 3
+		? "md:grid-cols-2 lg:grid-cols-3"
+		: "md:grid-cols-2";
 const initialLayoutClass =
 	defaultLayout === "grid"
 		? `grid grid-cols-1 ${gridCols} gap-4 grid-mode`
@@ -87,8 +90,8 @@ const initialLayoutClass =
     // 始终处理侧边栏显示状态（无论是否有保存的布局）
     // 使用立即执行确保在页面渲染前应用
     (function() {
-      const rightSidebar = document.getElementById('right-sidebar');
-      const mainGrid = document.getElementById('main-grid');
+      // const rightSidebar = document.getElementById('right-sidebar');
+      // const mainGrid = document.getElementById('main-grid');
       
       if (currentLayout === 'grid') {
         /* if (isBothSidebars && rightSidebar) {
@@ -148,8 +151,8 @@ const initialLayoutClass =
     const isBothSidebars = postListContainer.getAttribute("data-both-sidebars") === "true";
     const masonryEnabled = postListContainer.getAttribute("data-masonry-enabled") === "true";
     const gridColumns = parseInt(postListContainer.getAttribute("data-grid-columns") || "2");
-    const rightSidebar = document.getElementById('right-sidebar');
-    const mainGrid = document.getElementById('main-grid');
+    // const rightSidebar = document.getElementById('right-sidebar');
+    // const mainGrid = document.getElementById('main-grid');
 
     // 添加新布局类
     if (layout === "grid") {
