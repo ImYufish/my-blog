@@ -726,7 +726,7 @@ function disableAnimation() {
           const mainGrid = document.getElementById("main-grid");
           
           // 根据保存的布局状态调整侧边栏显示
-          if (savedLayout === "grid") {
+          /* if (savedLayout === "grid") {
             if (rightSidebar) {
               rightSidebar.style.display = "none";
             }
@@ -740,7 +740,7 @@ function disableAnimation() {
             if (mainGrid) {
               mainGrid.classList.remove("grid-layout-active");
             }
-          }
+          } */
         }
       }, 50);
     });
@@ -951,7 +951,7 @@ function disableAnimation() {
       }
       
       // 根据新布局状态调整侧边栏显示
-      if (newLayout === "grid") {
+      /* if (newLayout === "grid") {
         if (rightSidebar) {
           // 简洁的淡出动画
           rightSidebar.style.transition = "opacity 0.35s ease-in-out, transform 0.35s ease-in-out";
@@ -984,7 +984,7 @@ function disableAnimation() {
         if (mainGrid) {
           mainGrid.classList.remove("grid-layout-active");
         }
-      }
+      } */
     });
   };
   if (window?.swup?.hooks) {

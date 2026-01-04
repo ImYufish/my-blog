@@ -70,8 +70,8 @@ export type SiteConfig = {
 			// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 			// 是否开启瀑布流布局
 			masonry: boolean;
-			// 网格模式下封面位置："top" 顶部，"right" 右侧
-			coverPosition: "top" | "right";
+			// 网格模式列数：2 或 3，默认为 2。注意：3列模式仅在单侧边栏（或无侧边栏）且屏幕宽度足够时生效
+			columns?: 2 | 3;
 		};
 	};
 

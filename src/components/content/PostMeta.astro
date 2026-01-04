@@ -20,6 +20,7 @@ export interface Props {
 	minutes?: number;
 	showWordCount?: boolean; // 是否显示字数统计，默认false显示标签
 	customPath?: string;
+  pinned?: boolean;
 }
 
 const {
@@ -36,6 +37,7 @@ const {
 	minutes,
 	showWordCount = false,
 	customPath,
+  pinned,
 } = Astro.props;
 
 const path = customPath || (id ? `/posts/${id}` : "");
@@ -47,6 +49,16 @@ const path = customPath || (id ? `/posts/${id}` : "");
     className,
   ]}
 >
+  <!-- pinned -->
+  {
+    pinned && (
+      <div class="pinned-btn flex items-center gap-1 bg-[var(--btn-regular-bg)] text-[var(--btn-content)] rounded-md px-2 py-1.5 font-bold">
+        <Icon name="material-symbols:pinboard" class="text-xl" />
+        <span class="text-sm">{i18n(I18nKey.pinned)}</span>
+      </div>
+    )
+  }
+
   <!-- publish date -->
   <div class="flex items-center">
     <div class="meta-icon">

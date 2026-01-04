@@ -435,19 +435,19 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
       const mainGrid = document.getElementById('main-grid');
       
       if (savedLayout === 'grid') {
-        if (isBothSidebars && rightSidebar) {
+        /* if (isBothSidebars && rightSidebar) {
           rightSidebar.style.display = 'none';
         }
         if (mainGrid) {
           mainGrid.classList.add('grid-layout-active');
-        }
+        } */
       } else {
-        if (isBothSidebars && rightSidebar) {
+        /* if (isBothSidebars && rightSidebar) {
           rightSidebar.style.display = '';
         }
         if (mainGrid) {
           mainGrid.classList.remove('grid-layout-active');
-        }
+        } */
       }
     }
   })();
@@ -456,16 +456,16 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 
 <style is:global>
   /* 网格布局激活时，调整主网格为两列布局 */
-  @media (min-width: 1024px) {
+  /* @media (min-width: 1024px) {
     #main-grid.grid-layout-active {
       grid-template-columns: 17.5rem 1fr !important;
     }
-  }
+  } */
   
   /* 确保在网格模式下右侧边栏完全不占空间 */
-  #main-grid.grid-layout-active #right-sidebar {
+  /* #main-grid.grid-layout-active #right-sidebar {
     display: none !important;
-  }
+  } */
   
   /* 在低于1200px时隐藏右侧边栏 */
   @media (max-width: 1199px) {
