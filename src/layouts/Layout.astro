@@ -926,66 +926,7 @@ function disableAnimation() {
       }, 200);
     });
 
-    // 全局布局切换监听器 - 支持在任何页面（包括文章详情页）切换布局
-    window.addEventListener("layoutChange", () => {
-      // const newLayout = event.detail.layout;
-      // const rightSidebar = document.getElementById("right-sidebar");
-      // const mainGrid = document.getElementById("main-grid");
-      const postContainer = document.getElementById("post-container");
-      const swupContainer = document.getElementById("swup-container");
-      
-      // 为文章详情页容器添加切换动画
-      if (postContainer) {
-        postContainer.classList.add("layout-switching");
-        setTimeout(() => {
-          postContainer.classList.remove("layout-switching");
-        }, 400);
-      }
-      
-      // 为主内容区添加切换动画
-      if (swupContainer) {
-        swupContainer.classList.add("layout-transitioning");
-        setTimeout(() => {
-          swupContainer.classList.remove("layout-transitioning");
-        }, 500);
-      }
-      
-      // 根据新布局状态调整侧边栏显示
-      /* if (newLayout === "grid") {
-        if (rightSidebar) {
-          // 简洁的淡出动画
-          rightSidebar.style.transition = "opacity 0.35s ease-in-out, transform 0.35s ease-in-out";
-          rightSidebar.style.opacity = "0";
-          rightSidebar.style.transform = "translateX(15px)";
-          setTimeout(() => {
-            rightSidebar.style.display = "none";
-            rightSidebar.style.opacity = "";
-            rightSidebar.style.transform = "";
-          }, 350);
-        }
-        if (mainGrid) {
-          mainGrid.classList.add("grid-layout-active");
-        }
-      } else {
-        if (rightSidebar) {
-          // 简洁的淡入动画
-          rightSidebar.style.display = "";
-          rightSidebar.style.transition = "opacity 0.35s ease-in-out, transform 0.35s ease-in-out";
-          rightSidebar.style.opacity = "0";
-          rightSidebar.style.transform = "translateX(15px)";
-          setTimeout(() => {
-            rightSidebar.style.opacity = "1";
-            rightSidebar.style.transform = "translateX(0)";
-          }, 50);
-          setTimeout(() => {
-            rightSidebar.style.transition = "";
-          }, 400);
-        }
-        if (mainGrid) {
-          mainGrid.classList.remove("grid-layout-active");
-        }
-      } */
-    });
+
   };
   if (window?.swup?.hooks) {
     setup();
