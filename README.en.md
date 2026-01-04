@@ -45,7 +45,7 @@
 >
 >Includes site statistics, calendar component, table of contents and other widgets to enrich the sidebar,
 >
->While also retaining Furwai's layout system, freely switchable in the configuration file.
+>While also retaining fuwari layout system, freely switchable in the configuration file.
 >
 >**For more layout configurations and demos, please see: [Firefly Layout System Details](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 

@@ -49,7 +49,7 @@
 >
 >增加了站点统计、日历组件、文章目录等小组件，让侧边栏更加丰富，
 >
->同时也保留了 Furwai 的布局，可在配置文件中自由切换。
+>同时也保留了 fuwari 的布局，可在配置文件中自由切换。
 >
 >**更多布局配置及演示请查看：[Firefly 布局系统详解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 

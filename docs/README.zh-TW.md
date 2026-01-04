@@ -45,7 +45,7 @@
 >
 >增加了站點統計、日曆元件、文章目錄等小元件，讓側邊欄更加豐富，
 >
->同時也保留了 Furwai 的版面配置系統，可在配置檔案中自由切換。
+>同時也保留了 fuwari 的版面配置系統，可在配置檔案中自由切換。
 >
 >**更多版面配置及示範請查看：[Firefly 版面配置系統詳解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 
