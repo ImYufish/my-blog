@@ -216,6 +216,7 @@ export const ja: Translation = {
 	[Key.siteStatsLastUpdate]: "最終活動",
 	[Key.siteStatsDaysAgo]: "{days} 日前",
 	[Key.siteStatsDays]: "{days} 日",
+	[Key.today]: "今日",
 
 	// カレンダーコンポーネント
 	[Key.calendarSunday]: "日",

@@ -202,6 +202,7 @@ enum I18nKey {
 	siteStatsLastUpdate = "siteStatsLastUpdate",
 	siteStatsDaysAgo = "siteStatsDaysAgo",
 	siteStatsDays = "siteStatsDays",
+	today = "today",
 
 	// 日历组件
 	calendarSunday = "calendarSunday",
