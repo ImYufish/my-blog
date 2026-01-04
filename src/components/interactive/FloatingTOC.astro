@@ -363,15 +363,12 @@ const sidebarPosition = sidebarLayoutConfig.position;
     if (sidebarPosition === 'left') {
         return true;
     }
-
-    // 获取当前布局模式
-    const currentLayout = localStorage.getItem('postListLayout') || 'list';
     
     // 检查屏幕宽度
     const isSmallScreen = window.innerWidth < 1200;
     
     // 显示条件：网格模式 OR 小屏幕 OR 侧边栏目录未启用
-    return currentLayout === 'grid' || isSmallScreen || !isSidebarTocEnabled;
+    return  isSmallScreen || !isSidebarTocEnabled;
   }
 
   // 更新悬浮目录的显示状态
