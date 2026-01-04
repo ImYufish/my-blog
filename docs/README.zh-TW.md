@@ -6,7 +6,7 @@
 # Firefly
 > 一款清新美觀的 Astro 部落格主題模板
 > 
-> ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
+> ![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
 ![Astro](https://img.shields.io/badge/Astro-5.16.6-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
@@ -41,7 +41,7 @@
 <img alt="firefly" src="./images/1.webp" />
 
 >[!TIP]
->在重要的版面配置上，Firefly創新性地增加了左右雙側邊欄、文章網格(雙列)版面配置，
+>在重要的版面配置上，Firefly創新性地增加了左右雙側邊欄、文章網格(多列)版面配置，
 >
 >增加了站點統計、日曆元件、文章目錄等小元件，讓側邊欄更加豐富，
 >
@@ -61,7 +61,7 @@
 
 ### 個性化
 - [x] **側邊欄** - 支援配置單側邊欄、雙側邊欄，支援前台自由切換
-- [x] **文章版面配置** - 支援配置(單列)列表、網格(二列)版面配置，支援前台自由切換
+- [x] **文章版面配置** - 支援配置(單列)列表、網格(多列/瀑布流)版面配置，支援前台自由切換
 - [x] **字型管理** - 支援自訂字型，豐富的字型選擇器
 - [x] **頁尾配置** - HTML 內容注入，完全自訂
 - [x] **導覽列自訂** - Logo、標題、連結全面自訂
@@ -91,7 +91,7 @@
 - [x] **側邊欄目錄** - 動態顯示文章目錄，支援錨點跳轉
 - [x] **增強程式碼區塊** - 基於 Expressive Code，支援程式碼摺疊、行號、語言標識
 - [x] **數學公式支援** - KaTeX 渲染引擎，支援行內和區塊級公式
-- [x] **Markdown擴充** - [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
+- [x] **Markdown擴充** - 預設支援[GitHub Flavored Markdown](https://github.github.com/gfm/)，還包括了[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 - [x] **文章隨機封面圖** - 支援透過 API 獲取隨機封面圖
 
 ### SEO
@@ -226,15 +226,17 @@ lang: zh-CN      # 僅當文章語言與 `siteConfig.ts` 中的網站語言不�
 
 下列指令均需要在專案根目錄執行：
 
-| Command                           | Action                            |
-|:----------------------------------|:----------------------------------|
-| `pnpm install` 並 `pnpm add sharp` | 安裝依賴                              |
-| `pnpm dev`                        | 在 `localhost:4321` 啟動本地開發伺服器      |
-| `pnpm build`                      | 建置網站至 `./dist/`                   |
-| `pnpm preview`                    | 本地預覽已建置的網站                        |
-| `pnpm new-post <filename>`        | 建立新文章                             |
-| `pnpm astro ...`                  | 執行 `astro add`, `astro check` 等指令 |
-| `pnpm astro --help`               | 顯示 Astro CLI 說明                   |
+| Command                    | Action                                              |
+|:---------------------------|:----------------------------------------------------|
+| `pnpm install`             | 安裝依賴                                            |
+| `pnpm dev`                 | 在 `localhost:4321` 啟動本地開發伺服器              |
+| `pnpm build`               | 建置網站至 `./dist/`                                |
+| `pnpm preview`             | 本地預覽已建置的網站                                |
+| `pnpm check`               | 檢查程式碼中的錯誤                                  |
+| `pnpm format`              | 使用 Biome 格式化您的程式碼                         |
+| `pnpm new-post <filename>` | 建立新文章                                          |
+| `pnpm astro ...`           | 執行 `astro add`, `astro check` 等指令              |
+| `pnpm astro --help`        | 顯示 Astro CLI 說明                                 |
 
 ## 🙏 致謝
 

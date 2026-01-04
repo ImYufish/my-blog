@@ -6,7 +6,7 @@
 # Firefly
 > 美しくモダンな Astro ブログテーマテンプレート
 > 
-> ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
+> ![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
 ![Astro](https://img.shields.io/badge/Astro-5.16.6-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
@@ -41,7 +41,7 @@
 <img alt="firefly" src="./images/1.webp" />
 
 >[!TIP]
->重要なレイアウトでは、Fireflyは革新的に左右のデュアルサイドバー、記事グリッド（2列）レイアウト、メーソンリーレイアウトを追加し、
+>重要なレイアウトでは、Fireflyは革新的に左右のデュアルサイドバー、記事グリッド（多列）レイアウト、メーソンリーレイアウトを追加し、
 >
 >サイト統計、カレンダーコンポーネント、記事目次などの小さなウィジェットを追加してサイドバーをより豊かにし、
 >
@@ -61,7 +61,7 @@
 
 ### パーソナライゼーション
 - [x] **サイドバー** - シングルサイドバー、デュアルサイドバー設定をサポート、フロントエンドで自由に切り替え可能
-- [x] **記事レイアウト** - リスト（単列）、グリッド（2列/メーソンリー）レイアウトをサポート、フロントエンドで自由に切り替え可能
+- [x] **記事レイアウト** - リスト（単列）、グリッド（多列/メーソンリー）レイアウトをサポート、フロントエンドで自由に切り替え可能
 - [x] **フォント管理** - カスタムフォントをサポート、豊富なフォントセレクター
 - [x] **フッター設定** - HTMLコンテンツ注入、完全カスタマイズ可能
 - [x] **ナビゲーションバーのカスタマイズ** - ロゴ、タイトル、リンクを完全カスタマイズ
@@ -91,7 +91,7 @@
 - [x] **サイドバー目次** - 記事の目次を動的に表示、アンカージャンプをサポート
 - [x] **強化されたコードブロック** - Expressive Codeベース、コード折りたたみ、行番号、言語識別をサポート
 - [x] **数式サポート** - KaTeXレンダリングエンジン、インラインとブロック数式をサポート
-- [x] **Markdown拡張** - [Markdown拡張機能](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
+- [x] **Markdown拡張** - [Markdown拡張機能](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)、[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHubリポジトリカード](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)も含まれています
 - [x] **ランダムカバー画像** - APIを介してランダムカバー画像の取得をサポート
 
 ### SEO
@@ -226,15 +226,17 @@ lang: zh-CN      # 記事の言語が`siteConfig.ts`のサイト言語と異な�
 
 すべてのコマンドはプロジェクトルートディレクトリで実行する必要があります：
 
-| Command                           | Action                            |
-|:----------------------------------|:----------------------------------|
-| `pnpm install`と`pnpm add sharp` | 依存関係をインストール                              |
-| `pnpm dev`                        | `localhost:4321`でローカル開発サーバーを起動      |
-| `pnpm build`                      | `./dist/`にサイトをビルド                   |
-| `pnpm preview`                    | ビルドされたサイトをローカルでプレビュー                        |
-| `pnpm new-post <filename>`        | 新しい記事を作成                             |
-| `pnpm astro ...`                  | `astro add`、`astro check`などのコマンドを実行 |
-| `pnpm astro --help`               | Astro CLIヘルプを表示                   |
+| Command                    | Action                                              |
+|:---------------------------|:----------------------------------------------------|
+| `pnpm install`             | 依存関係をインストール                               |
+| `pnpm dev`                 | `localhost:4321`でローカル開発サーバーを起動        |
+| `pnpm build`               | `./dist/`にサイトをビルド                           |
+| `pnpm preview`             | ビルドされたサイトをローカルでプレビュー            |
+| `pnpm check`               | コード内のエラーをチェック                          |
+| `pnpm format`              | Biomeを使用してコードをフォーマット                 |
+| `pnpm new-post <filename>` | 新しい記事を作成                                    |
+| `pnpm astro ...`           | `astro add`、`astro check`などのコマンドを実行      |
+| `pnpm astro --help`        | Astro CLIヘルプを表示                               |
 
 ## 🙏 謝辞
 

@@ -6,7 +6,7 @@
 # Firefly
 > A Fresh and Beautiful Astro Blog Theme Template
 > 
-> ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
+> ![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
 ![Astro](https://img.shields.io/badge/Astro-5.16.6-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
@@ -41,7 +41,7 @@
 <img alt="firefly" src="./docs/images/1.webp" />
 
 >[!TIP]
->In important layouts, Firefly innovatively adds dual sidebars, article grid (two-column) layout, masonry layout,
+>In important layouts, Firefly innovatively adds dual sidebars, article grid (multi-column) layout, masonry layout,
 >
 >Includes site statistics, calendar component, table of contents and other widgets to enrich the sidebar,
 >
@@ -61,7 +61,7 @@
 
 ### Personalization
 - [x] **Sidebar** - Supports single sidebar, dual sidebar configuration, freely switchable in frontend
-- [x] **Article Layout** - Supports list (single column) and grid (two-column/masonry) layout, freely switchable in frontend
+- [x] **Article Layout** - Supports list (single column) and grid (multi-column/masonry) layout, freely switchable in frontend
 - [x] **Font Management** - Custom font support with rich font selector
 - [x] **Footer Configuration** - HTML content injection, fully customizable
 - [x] **Navbar Customization** - Logo, title, links fully customizable
@@ -91,7 +91,7 @@
 - [x] **Sidebar TOC** - Dynamically displays article table of contents, supports anchor jumping
 - [x] **Enhanced Code Blocks** - Based on Expressive Code, supports code folding, line numbers, language identification
 - [x] **Math Formula Support** - KaTeX rendering engine, supports inline and block formulas
-- [x] **Markdown Extensions** - [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
+- [x] **Markdown Extensions** - [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax), also includes [Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86), [GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87), [Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 - [x] **Random Cover Images** - Supports fetching random cover images via API
 
 ### SEO
@@ -226,15 +226,17 @@ lang: zh-CN      # Only set when article language differs from site language in 
 
 All commands need to be executed in the project root directory:
 
-| Command                           | Action                            |
-|:----------------------------------|:----------------------------------|
-| `pnpm install` and `pnpm add sharp` | Install dependencies                              |
-| `pnpm dev`                        | Start local development server at `localhost:4321`      |
-| `pnpm build`                      | Build site to `./dist/`                   |
-| `pnpm preview`                    | Preview built site locally                        |
-| `pnpm new-post <filename>`        | Create new article                             |
-| `pnpm astro ...`                  | Execute `astro add`, `astro check` and other commands |
-| `pnpm astro --help`               | Display Astro CLI help                   |
+| Command                    | Action                                              |
+|:---------------------------|:----------------------------------------------------|
+| `pnpm install`             | Install dependencies                                |
+| `pnpm dev`                 | Start local development server at `localhost:4321`  |
+| `pnpm build`               | Build site to `./dist/`                             |
+| `pnpm preview`             | Preview built site locally                          |
+| `pnpm check`               | Check for errors in code                            |
+| `pnpm format`              | Format your code using Biome                        |
+| `pnpm new-post <filename>` | Create new article                                  |
+| `pnpm astro ...`           | Execute `astro add`, `astro check` and other commands |
+| `pnpm astro --help`        | Display Astro CLI help                              |
 
 ## 🙏 Acknowledgments
 
