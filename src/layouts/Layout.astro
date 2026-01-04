@@ -718,31 +718,6 @@ function disableAnimation() {
         }
       }
 
-      // 在页面切换后恢复布局状态（支持文章详情页的布局切换）
-      setTimeout(() => {
-        const savedLayout = localStorage.getItem("postListLayout");
-        if (savedLayout) {
-          // const rightSidebar = document.getElementById("right-sidebar");
-          // const mainGrid = document.getElementById("main-grid");
-          
-          // 根据保存的布局状态调整侧边栏显示
-          /* if (savedLayout === "grid") {
-            if (rightSidebar) {
-              rightSidebar.style.display = "none";
-            }
-            if (mainGrid) {
-              mainGrid.classList.add("grid-layout-active");
-            }
-          } else {
-            if (rightSidebar) {
-              rightSidebar.style.display = "";
-            }
-            if (mainGrid) {
-              mainGrid.classList.remove("grid-layout-active");
-            }
-          } */
-        }
-      }, 50);
     });
     window.swup.hooks.on("visit:start", (visit: { to: { url: string } }) => {
       // change banner height immediately when a link is clicked

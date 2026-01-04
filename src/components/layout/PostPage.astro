@@ -62,7 +62,6 @@ const initialLayoutClass =
 <script is:inline define:vars={{ defaultLayout, isBothSidebars }}>
   (function() {
     const savedLayout = localStorage.getItem('postListLayout');
-    const currentLayout = savedLayout || defaultLayout;
     
     // 如果有保存的布局且与默认布局不同，更新容器布局
     if (savedLayout && savedLayout !== defaultLayout) {
@@ -86,29 +85,6 @@ const initialLayoutClass =
         container.style.transition = '';
       }
     }
-    
-    // 始终处理侧边栏显示状态（无论是否有保存的布局）
-    // 使用立即执行确保在页面渲染前应用
-    (function() {
-      // const rightSidebar = document.getElementById('right-sidebar');
-      // const mainGrid = document.getElementById('main-grid');
-      
-      if (currentLayout === 'grid') {
-        /* if (isBothSidebars && rightSidebar) {
-          rightSidebar.style.display = 'none';
-        }
-        if (mainGrid) {
-          mainGrid.classList.add('grid-layout-active');
-        } */
-      } else {
-        /* if (isBothSidebars && rightSidebar) {
-          rightSidebar.style.display = '';
-        }
-        if (mainGrid) {
-          mainGrid.classList.remove('grid-layout-active');
-        } */
-      }
-    })();
   })();
 </script>
 
@@ -151,22 +127,11 @@ const initialLayoutClass =
     const isBothSidebars = postListContainer.getAttribute("data-both-sidebars") === "true";
     const masonryEnabled = postListContainer.getAttribute("data-masonry-enabled") === "true";
     const gridColumns = parseInt(postListContainer.getAttribute("data-grid-columns") || "2");
-    // const rightSidebar = document.getElementById('right-sidebar');
-    // const mainGrid = document.getElementById('main-grid');
 
     // 添加新布局类
     if (layout === "grid") {
       postListContainer.classList.add("grid-mode");
       postListContainer.classList.remove("flex", "flex-col");
-      
-      // 如果是双侧栏模式，隐藏右侧边栏并调整主网格布局
-      /* if (isBothSidebars && rightSidebar) {
-        rightSidebar.style.display = 'none';
-        // 标记网格模式状态
-        if (mainGrid) {
-          mainGrid.classList.add('grid-layout-active');
-        }
-      } */
       
       // 应用瀑布流布局
       if (masonryEnabled) {
@@ -190,15 +155,6 @@ const initialLayoutClass =
       
       // 重置瀑布流样式
       resetMasonryLayout();
-
-      // 如果是双侧栏模式，显示右侧边栏并恢复网格布局
-      /* if (isBothSidebars && rightSidebar) {
-        rightSidebar.style.display = '';
-        // 移除网格模式标记
-        if (mainGrid) {
-          mainGrid.classList.remove('grid-layout-active');
-        }
-      } */
     }
 
     // 移除切换动画类
