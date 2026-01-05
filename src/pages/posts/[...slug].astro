@@ -389,5 +389,5 @@ const jsonLd = {
   </div>
 
   <!-- 评论 -->
-  <Comment post={entry} />
+  {entry.data.comment && <Comment post={entry} />}
 </MainGridLayout>
