@@ -14,7 +14,12 @@ import TypewriterText from "@/components/content/TypewriterText.astro";
 import FloatingTOC from "@/components/interactive/FloatingTOC.astro";
 import IconifyLoader from "@/components/misc/IconifyLoader.astro";
 import ImageWrapper from "@/components/misc/ImageWrapper.astro";
-import { backgroundWallpaper, live2dModelConfig, siteConfig } from "@/config";
+import {
+	backgroundWallpaper,
+	live2dModelConfig,
+	sidebarLayoutConfig,
+	siteConfig,
+} from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
@@ -138,7 +143,8 @@ const finalMainPanelTop =
 	isBannerMode && isBackgroundEnabled ? mainPanelTop : "5.5rem";
 
 // 获取响应式侧边栏配置
-const sidebarConfig = getResponsiveSidebarConfig();
+// 传入是否为文章详情页的标志，用于控制是否显示右侧边栏
+const sidebarConfig = getResponsiveSidebarConfig(postSlug !== undefined);
 const { gridCols } = generateGridClasses(sidebarConfig);
 const sidebarClass = generateSidebarClasses(sidebarConfig);
 const rightSidebarClass = sidebarConfig.isBothSidebars
@@ -380,24 +386,28 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 
 
             {/* 渲染侧边栏 - 根据配置决定使用单侧或双侧边栏 */}
-            {sidebarConfig.isBothSidebars ? (
-                <>
-                    {/* 左侧边栏 */}
-                    {sidebarConfig.hasLeftComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
-                        <LeftSideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></LeftSideBar>
-                    )}
-                </>
-            ) : (
-                <>
-                    {/* 单侧边栏布局 */}
-                    {(sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
-                        <SideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></SideBar>
-                    )}
-                </>
-            )}
+            <div id="left-sidebar-wrapper" class="contents">
+                {sidebarConfig.isBothSidebars ? (
+                    <>
+                        {/* 左侧边栏 */}
+                        {sidebarConfig.hasLeftComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                            <LeftSideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></LeftSideBar>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {/* 单侧边栏布局 */}
+                        {(sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                            <SideBar class={`${sidebarClass} ${transparentClass}`} headings={headings}></SideBar>
+                        )}
+                    </>
+                )}
+            </div>
                     
             {/* 主内容区 - 始终渲染，确保 Swup 容器存在 */}
             <main id="swup-container" class={`${mainContentClass} transition-main`}>
+                {/* 携带网格布局类名，用于JS更新父容器 */}
+                <div id="grid-class-carrier" data-grid-class={gridCols} class="hidden"></div>
                 <div id="content-wrapper" class="onload-animation transition-leaving">
                     <slot></slot>
                     <div class="footer col-span-2 onload-animation hidden lg:block">
@@ -407,8 +417,26 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
             </main>
             
             {/* 右侧边栏 - 仅双侧边栏模式 */}
-            {sidebarConfig.isBothSidebars && sidebarConfig.hasRightComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
-                <RightSideBar class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></RightSideBar>
+            {/* 
+                如果全局配置为双侧栏(position: both)，则使用静态容器(不被swup替换)，避免闪烁。
+                如果全局配置为单侧栏(position: left)，则使用动态容器(被swup替换)，以便在文章页显示右侧栏。
+                注意：为了满足swup要求所有containers必须存在，我们在两种模式下都必须渲染 #right-sidebar-dynamic。
+            */}
+            {sidebarLayoutConfig.position === "both" ? (
+                <>
+                    <div id="right-sidebar-static" class="contents">
+                        {sidebarConfig.isBothSidebars && sidebarConfig.hasRightComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                            <RightSideBar class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></RightSideBar>
+                        )}
+                    </div>
+                    <div id="right-sidebar-dynamic" class="hidden"></div>
+                </>
+            ) : (
+                <div id="right-sidebar-dynamic" class="contents">
+                    {sidebarConfig.isBothSidebars && sidebarConfig.hasRightComponents && (sidebarConfig.mobileShowSidebar || sidebarConfig.tabletShowSidebar || sidebarConfig.desktopShowSidebar) && (
+                        <RightSideBar class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></RightSideBar>
+                    )}
+                </div>
             )}
 
             <div class="footer col-span-2 onload-animation block lg:hidden">

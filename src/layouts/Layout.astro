@@ -681,6 +681,22 @@ function disableAnimation() {
       }
     });
     window.swup.hooks.on("content:replace", () => {
+      // 更新主网格布局类名
+      const gridClassCarrier = document.getElementById("grid-class-carrier");
+      if (gridClassCarrier) {
+        const gridClass = gridClassCarrier.getAttribute("data-grid-class");
+        const mainGrid = document.getElementById("main-grid");
+        if (mainGrid && gridClass) {
+
+          const currentClasses = mainGrid.className.split(" ");
+          const newClasses = currentClasses.filter(c => !c.startsWith("lg:grid-cols-") && !c.startsWith("md:grid-cols-") && !c.startsWith("grid-cols-"));
+          
+          // 添加新的网格类
+          const gridClasses = gridClass.split(" ");
+          mainGrid.className = [...newClasses, ...gridClasses].join(" ");
+        }
+      }
+
       // 只处理katex元素的容器，使用浏览器原生滚动条
       initCustomScrollbar();
       

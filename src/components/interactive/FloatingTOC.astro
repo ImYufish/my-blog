@@ -18,10 +18,12 @@ const sidebarTocComponent = sidebarLayoutConfig.rightComponents?.find(
 );
 const isSidebarTocEnabled = sidebarTocComponent?.enable ?? false;
 const sidebarPosition = sidebarLayoutConfig.position;
+const showRightSidebarOnPostPage =
+	sidebarLayoutConfig.showRightSidebarOnPostPage;
 ---
 
 <!-- 悬浮TOC按钮 -->
-<div class="floating-toc-wrapper" data-is-sidebar-toc-enabled={String(isSidebarTocEnabled)} data-sidebar-position={sidebarPosition}>
+<div id="floating-toc-wrapper" class="floating-toc-wrapper" data-is-sidebar-toc-enabled={String(isSidebarTocEnabled)} data-sidebar-position={sidebarPosition} data-show-right-sidebar-on-post-page={String(showRightSidebarOnPostPage)}>
   <div
     id="floating-toc-btn"
     class="floating-toc-btn hide flex items-center rounded-2xl overflow-hidden transition"
@@ -357,7 +359,13 @@ const sidebarPosition = sidebarLayoutConfig.position;
 
     // 获取侧边栏位置配置
     const wrapper = document.querySelector('.floating-toc-wrapper');
-    const sidebarPosition = wrapper?.getAttribute('data-sidebar-position') || 'left';
+    let sidebarPosition = wrapper?.getAttribute('data-sidebar-position') || 'left';
+    const showRightSidebarOnPostPage = wrapper?.getAttribute('data-show-right-sidebar-on-post-page') === 'true';
+
+    // 如果配置了在文章详情页显示右侧边栏，且当前是文章详情页，则视为双侧边栏模式
+    if (sidebarPosition === 'left' && showRightSidebarOnPostPage) {
+        sidebarPosition = 'both';
+    }
 
     // 如果是单侧边栏模式（左侧），则始终显示悬浮目录（因为右侧边栏不存在）
     if (sidebarPosition === 'left') {
@@ -437,7 +445,9 @@ const sidebarPosition = sidebarLayoutConfig.position;
   initFloatingTOC();
 
   // 监听页面切换事件
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && !window.floatingTOCListenersInitialized) {
+    window.floatingTOCListenersInitialized = true;
+
     // Swup 路由切换
     document.addEventListener("swup:contentReplaced", () => {
       setTimeout(initFloatingTOC, 100);
