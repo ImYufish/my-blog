@@ -203,7 +203,7 @@ export const en: Translation = {
 	[Key.sponsorButtonText]:
 		"If this article helped you, please share or support!",
 
-	[Key.shareOnSocial]: "Share",
+	[Key.shareOnSocial]: "Share Article",
 	[Key.shareOnSocialDescription]:
 		"If this article helped you, please share it with others!",
 

@@ -197,7 +197,7 @@ export const zh_TW: Translation = {
 	[Key.sponsorButtonText]:
 		"如果這篇文章對你有幫助，歡迎分享給更多人或贊助支持！",
 
-	[Key.shareOnSocial]: "分享",
+	[Key.shareOnSocial]: "文章分享",
 	[Key.shareOnSocialDescription]: "如果這篇文章對你有幫助，歡迎分享給更多人！",
 
 	// 站點統計
