@@ -25,6 +25,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			enable: true,
 			// 主页横幅主标题
 			title: "Lovely firefly!",
+			// 主页横幅主标题字体大小
+			titleSize: "3.8rem",
 			// 主页横幅副标题
 			subtitle: [
 				"In Reddened Chrysalis, I Once Rest",
@@ -34,6 +36,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				"From Undreamt Night, I Thence Shine",
 				"In Finalized Morrow, I Full Bloom",
 			],
+			// 主页横幅副标题字体大小
+			subtitleSize: "1.5rem",
 			typewriter: {
 				// 是否启用打字机效果
 				// 打字机开启 → 循环显示所有副标题

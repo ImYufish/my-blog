@@ -220,12 +220,12 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col">
                     {backgroundWallpaper.banner?.homeText?.title && (
-                        <h1 class="banner-title font-bold text-5xl lg:text-6xl text-white mb-2 lg:mb-4">
+                        <h1 class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ fontSize: backgroundWallpaper.banner.homeText.titleSize || "3rem" }}>
                             {backgroundWallpaper.banner.homeText.title}
                         </h1>
                     )}
                     {backgroundWallpaper.banner?.homeText?.subtitle && (
-                        <h2 id="banner-subtitle" class="banner-subtitle text-lg lg:text-2xl text-white/90" data-subtitles={JSON.stringify(backgroundWallpaper.banner.homeText.subtitle)}>
+                        <h2 id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.banner.homeText.subtitleSize || "1.5rem" }} data-subtitles={JSON.stringify(backgroundWallpaper.banner.homeText.subtitle)}>
                             {backgroundWallpaper.banner.homeText.typewriter?.enable ? (
                                 <TypewriterText 
                                     text={backgroundWallpaper.banner.homeText.subtitle}
