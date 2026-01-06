@@ -27,7 +27,6 @@
 - `ArchivePanel.svelte` - 归档面板组件
 - `FontManager.astro` - 字体管理组件
 - `DisplaySettings.svelte` - 显示设置组件
-- `FloatingTOC.astro` - 浮动目录组件
 - `OverlayWallpaper.astro` - 覆盖层壁纸组件
 - `WallpaperSwitch.svelte` - 壁纸模式切换组件
 
@@ -53,6 +52,7 @@
 - `ButtonTag.astro` - 标签按钮组件
 - `Pagination.astro` - 静态路由分页组件（Astro 原生分页）
 - `ClientPagination.astro` - 客户端 JavaScript 分页组件（DOM 显示/隐藏控制）
+- `FloatingTOC.astro` - 浮动目录组件
 
 #### styles/ - 样式组件
 - `TOCStyles.astro` - 目录样式组件
