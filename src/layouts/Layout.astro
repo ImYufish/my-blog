@@ -1,6 +1,6 @@
 ---
-import Clarity from "@components/analytics/Clarity.astro";
 import GoogleAnalytics from "@components/analytics/GoogleAnalytics.astro";
+import MicrosoftClarity from "@components/analytics/MicrosoftClarity.astro";
 import FancyboxManager from "@components/effects/FancyboxManager.astro";
 import KatexManager from "@components/effects/KatexManager.astro";
 import SakuraEffect from "@components/effects/SakuraEffect.astro";
@@ -96,11 +96,11 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 <!doctype html>
 <html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]">
   <head>
-      {siteConfig.analytics?.gaId && (
-              <GoogleAnalytics gaId={siteConfig.analytics.gaId} />
+      {siteConfig.analytics?.googleAnalyticsId && (
+              <GoogleAnalytics analyticsId={siteConfig.analytics.googleAnalyticsId} />
       )}
-      {siteConfig.analytics?.clarityId && (
-              <Clarity clarityId={siteConfig.analytics.clarityId} />
+      {siteConfig.analytics?.microsoftClarityId && (
+              <MicrosoftClarity clarityId={siteConfig.analytics.microsoftClarityId} />
       )}
 
     <title>{pageTitle}</title>

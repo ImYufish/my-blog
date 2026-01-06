@@ -83,8 +83,8 @@ export type SiteConfig = {
 
 	// 统计分析
 	analytics?: {
-		gaId?: string; // Google Analytics ID
-		clarityId?: string; // Microsoft Clarity ID
+		googleAnalyticsId?: string; // Google Analytics ID
+		microsoftClarityId?: string; // Microsoft Clarity ID
 	};
 };
 

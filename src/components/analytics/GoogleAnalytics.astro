@@ -1,19 +1,19 @@
 ---
 interface Props {
-	gaId: string;
+	analyticsId: string;
 }
 
-const { gaId } = Astro.props;
+const { analyticsId } = Astro.props;
 ---
 
 <!-- Google tag (gtag.js) -->
-<script is:inline data-swup-ignore-script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-<script is:inline data-swup-ignore-script define:vars={{gaId}}>window.dataLayer = window.dataLayer || [];
+<script is:inline data-swup-ignore-script async src={`https://www.googletagmanager.com/gtag/js?id=${analyticsId}`}></script>
+<script is:inline data-swup-ignore-script define:vars={{analyticsId}}>window.dataLayer = window.dataLayer || [];
 
 function gtag() {
     dataLayer.push(arguments);
 }
 
 gtag('js', new Date());
-gtag('config', gaId);
+gtag('config', analyticsId);
 </script>

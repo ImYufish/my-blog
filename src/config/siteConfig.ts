@@ -130,9 +130,9 @@ export const siteConfig: SiteConfig = {
 	// 统计分析
 	analytics: {
 		// Google Analytics ID
-		gaId: "",
+		googleAnalyticsId: "G-P7GBNJKJKL",
 		// Microsoft Clarity ID
-		clarityId: "tx9equrgr6",
+		microsoftClarityId: "tx9equrgr6",
 	},
 
 	// 字体配置
