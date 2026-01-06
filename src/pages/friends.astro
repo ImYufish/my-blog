@@ -52,24 +52,26 @@ const description = i18n(I18nKey.friendsDescription);
       </div>
 
       <!-- 标签筛选 -->
-      <friend-filter class="flex flex-wrap gap-2 mb-6">
-        <button
-          data-tag="all"
-          class="btn-regular px-3 py-1.5 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary)] transition-colors duration-200 text-sm font-medium"
-        >
-          {i18n(I18nKey.all)}
-        </button>
-        {
-          allTags.map((tag) => (
+      {
+        items.length > 0 && (
+          <friend-filter class="flex flex-wrap gap-2 mb-6">
             <button
-              data-tag={tag}
-              class="btn-regular px-3 py-1.5 rounded-lg bg-[var(--btn-regular-bg)] text-[var(--btn-content)] hover:bg-[var(--btn-regular-bg-hover)] transition-colors duration-200 text-sm font-medium"
+              data-tag="all"
+              class="btn-regular px-3 py-1.5 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary)] transition-colors duration-200 text-sm font-medium"
             >
-              {tag}
+              {i18n(I18nKey.all)}
             </button>
-          ))
-        }
-      </friend-filter>
+            {allTags.map((tag) => (
+              <button
+                data-tag={tag}
+                class="btn-regular px-3 py-1.5 rounded-lg bg-[var(--btn-regular-bg)] text-[var(--btn-content)] hover:bg-[var(--btn-regular-bg-hover)] transition-colors duration-200 text-sm font-medium"
+              >
+                {tag}
+              </button>
+            ))}
+          </friend-filter>
+        )
+      }
 
       <div class={`grid grid-cols-1 sm:grid-cols-2 ${friendsPageConfig.columns === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-3 my-4`}>
         {
