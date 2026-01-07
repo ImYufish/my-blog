@@ -408,6 +408,10 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
             <main id="swup-container" class={`${mainContentClass} transition-main`}>
                 {/* 携带网格布局类名，用于JS更新父容器 */}
                 <div id="grid-class-carrier" data-grid-class={gridCols} class="hidden"></div>
+                {/* 备用 h1 标题 - 当主页横幅文本未启用时，提供隐藏的主标题 */}
+                {isHomePageCheck && !showHomeText && (
+                        <h1 class="sr-only">{siteConfig.title}</h1>
+                )}
                 <div id="content-wrapper" class="onload-animation transition-leaving">
                     <slot></slot>
                     <div class="footer col-span-2 onload-animation hidden lg:block">
