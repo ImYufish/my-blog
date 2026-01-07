@@ -59,7 +59,7 @@
 - [x] **Smooth Animations** - Swup page transition animations for silky smooth browsing experience
 - [x] **Responsive Design** - Perfect adaptation for desktop, tablet and mobile devices
 - [x] **Multi-language Support** - i18n internationalization, supports Simplified Chinese, Traditional Chinese, English, Japanese, Russian
-- [x] **Full-text Search** - Client-side search based on Pagefind, supports article content indexing. 
+- [x] **Full-text Search** - Client-side search based on Pagefind, supports article content indexing.
 
 ### Personalization
 - [x] **Sidebar** - Supports single sidebar, dual sidebar configuration
