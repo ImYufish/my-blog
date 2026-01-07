@@ -37,21 +37,21 @@ export const sponsorConfig: SponsorConfig = {
 			enabled: true,
 		},
 		{
+			name: "ko-fi",
+			icon: "simple-icons:kofi",
+			qrCode: "",
+			link: "https://ko-fi.com/cuteleaf",
+			description: "Buy a Coffee for Firefly",
+			enabled: true,
+		},
+		{
 			name: "爱发电",
 			icon: "simple-icons:afdian",
 			qrCode: "",
 			link: "https://afdian.com/a/cuteleaf",
 			description: "通过 爱发电 进行赞助",
 			enabled: true,
-		},
-		{
-			name: "Github",
-			icon: "fa6-brands:github",
-			qrCode: "",
-			link: "https://github.com/CuteLeaf/Firefly",
-			description: "点个Star就是最大的支持",
-			enabled: true,
-		},
+		}
 	],
 
 	// 赞助者列表（可选）

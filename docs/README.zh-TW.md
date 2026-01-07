@@ -15,9 +15,12 @@
 [![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/network/members)
 [![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
 > 
+> [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
+> 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
 [![愛發電贊助](https://img.shields.io/badge/愛發電-贊助作者-ff69b4.svg)](https://afdian.com/a/cuteleaf)
+
 </div>
 
 
@@ -57,25 +60,25 @@
 - [x] **流暢動畫** - Swup 頁面過渡動畫，提供絲滑的瀏覽體驗
 - [x] **響應式設計** - 完美適配桌面端、平板和行動裝置
 - [x] **多語言支援** - i18n 國際化，支援簡體中文、繁體中文、英文、日文、俄語
-- [x] **全文搜尋** - 基於 Pagefind 的客戶端搜尋，支援文章內容索引。同時支援 MeiliSearch 搜尋引擎
+- [x] **全文搜尋** - 基於 Pagefind 的客戶端搜尋，支援文章內容索引。
 
 ### 個性化
-- [x] **側邊欄** - 支援配置單側邊欄、雙側邊欄，支援前台自由切換
-- [x] **文章版面配置** - 支援配置(單列)列表、網格(多列/瀑布流)版面配置，支援前台自由切換
+- [x] **側邊欄** - 支援配置單側邊欄、雙側邊欄
+- [x] **文章版面配置** - 支援配置(單列)列表、網格(多列/瀑布流)版面配置
 - [x] **字型管理** - 支援自訂字型，豐富的字型選擇器
 - [x] **頁尾配置** - HTML 內容注入，完全自訂
 - [x] **導覽列自訂** - Logo、標題、連結全面自訂
-- [x] **桌布模式切換** - 橫幅桌布、全螢幕桌布、純色背景，支援前台自由切換
-- [x] **主題色自訂** - 360° 色相調節，支援亮色/暗色/跟隨系統三種模式，支援前台自由切換
+- [x] **桌布模式切換** - 橫幅桌布、全螢幕桌布、純色背景
+- [x] **主題色自訂** - 360° 色相調節，支援亮色/暗色/跟隨系統三種模式
 
 ### 頁面元件
 - [x] **留言板** - 支援留言頁面，整合留言系統
-- [x] **公告欄** - 頂部公告提示，支援關閉和自訂樣式
+- [x] **公告欄** - 側邊欄公告提示
 - [x] **看板娘** - 支援 Spine 和 Live2D 兩種動畫引擎
-- [x] **站點統計** - 顯示文章、分類、標籤數目、文章總字數、執行時長、最後更新時間
+- [x] **站點統計** - 顯示文章、分類、標籤數目、文章總字數等數據
 - [x] **站點日曆** - 顯示當月日曆，以及當月的發布文章
-- [x] **贊助頁面** - 多種支付方式、收款碼展示、贊助者列表、文章內贊助按鈕
-- [x] **分享海報** - 支援生成精美的文章分享海報，包含文章摘要、二維碼等資訊
+- [x] **贊助頁面** - 贊助連結跳轉、收款碼展示、贊助者列表、文章內贊助按鈕
+- [x] **分享海報** - 支援生成精美的文章分享海報
 - [x] **櫻花特效** - 支援櫻花特效，全螢幕櫻花效果
 - [x] **友情連結** - 精美的友鏈展示卡片
 - [x] **廣告元件** - 支援自訂側邊欄廣告內容
@@ -91,8 +94,8 @@
 - [x] **側邊欄目錄** - 動態顯示文章目錄，支援錨點跳轉
 - [x] **增強程式碼區塊** - 基於 Expressive Code，支援程式碼摺疊、行號、語言標識
 - [x] **數學公式支援** - KaTeX 渲染引擎，支援行內和區塊級公式
-- [x] **Markdown擴充** - 預設支援[GitHub Flavored Markdown](https://github.github.com/gfm/)，還包括了[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 - [x] **文章隨機封面圖** - 支援透過 API 獲取隨機封面圖
+- [x] **Markdown擴充** - 預設支援[GitHub Flavored Markdown](https://github.github.com/gfm/)，還包括了[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 
 ### SEO
 - [x] **SEO 優化** - 完整的 meta 標籤和結構化資料
@@ -219,6 +222,8 @@ tags: [Foo, Bar]
 category: Front-end
 draft: false
 lang: zh-CN      # 僅當文章語言與 `siteConfig.ts` 中的網站語言不同時需要設定
+pinned: false    # 置頂
+comment: true    # 是否允許留言
 ---
 ```
 

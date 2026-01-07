@@ -15,9 +15,12 @@
 [![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/network/members)
 [![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
 > 
+> [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
+> 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
 [![Afdian Sponsor](https://img.shields.io/badge/Afdian-作者を支援-ff69b4.svg)](https://afdian.com/a/cuteleaf)
+
 </div>
 
 
@@ -57,25 +60,25 @@
 - [x] **スムーズなアニメーション** - Swupページトランジションアニメーションで滑らかなブラウジング体験
 - [x] **レスポンシブデザイン** - デスクトップ、タブレット、モバイルデバイスに完璧に対応
 - [x] **多言語サポート** - i18n国際化、簡体字中国語、繁体字中国語、英語、日本語、ロシア語をサポート
-- [x] **全文検索** - Pagefindベースのクライアントサイド検索、記事コンテンツのインデックスをサポート。MeiliSearch検索エンジンもサポート
+- [x] **全文検索** - Pagefindベースのクライアントサイド検索、記事コンテンツのインデックスをサポート
 
 ### パーソナライゼーション
-- [x] **サイドバー** - シングルサイドバー、デュアルサイドバー設定をサポート、フロントエンドで自由に切り替え可能
-- [x] **記事レイアウト** - リスト（単列）、グリッド（多列/メーソンリー）レイアウトをサポート、フロントエンドで自由に切り替え可能
+- [x] **サイドバー** - シングルサイドバー、デュアルサイドバー設定をサポート
+- [x] **記事レイアウト** - リスト（単列）、グリッド（多列/メーソンリー）レイアウトをサポート
 - [x] **フォント管理** - カスタムフォントをサポート、豊富なフォントセレクター
 - [x] **フッター設定** - HTMLコンテンツ注入、完全カスタマイズ可能
 - [x] **ナビゲーションバーのカスタマイズ** - ロゴ、タイトル、リンクを完全カスタマイズ
-- [x] **壁紙モード切り替え** - バナー壁紙、フルスクリーン壁紙、単色背景、フロントエンドで自由に切り替え可能
-- [x] **テーマカラーのカスタマイズ** - 360°色相調整、ライト/ダーク/システム追従の3モードをサポート、フロントエンドで自由に切り替え可能
+- [x] **壁紙モード切り替え** - バナー壁紙、フルスクリーン壁紙、単色背景
+- [x] **テーマカラーのカスタマイズ** - 360°色相調整、ライト/ダーク/システム追従の3モードをサポート
 
 ### ページコンポーネント
 - [x] **ゲストブック** - ゲストブックページをサポート、コメントシステム統合
-- [x] **お知らせバー** - トップお知らせ通知、閉じる機能とカスタムスタイルをサポート
+- [x] **お知らせバー** - サイドバーのお知らせ通知
 - [x] **マスコット** - SpineとLive2Dの2つのアニメーションエンジンをサポート
-- [x] **サイト統計** - 記事、カテゴリ、タグ数、総文字数、稼働時間、最終更新時刻を表示
+- [x] **サイト統計** - 記事、カテゴリ、タグ数、総文字数などのデータを表示
 - [x] **サイトカレンダー** - 今月のカレンダーと今月公開された記事を表示
-- [x] **スポンサーページ** - 複数の支払い方法、支払いQRコード、スポンサーリスト、記事内スポンサーボタン
-- [x] **シェアポスター** - 記事の要約やQRコードなどを含む美しい記事シェアポスターの生成をサポート
+- [x] **スポンサーページ** - スポンサーリンクのジャンプ、支払いQRコードの表示、スポンサーリスト、記事内スポンサーボタン
+- [x] **シェアポスター** - 美しい記事シェアポスターの生成をサポート
 - [x] **桜エフェクト** - 桜エフェクトをサポート、フルスクリーン桜アニメーション
 - [x] **友人リンク** - 美しい友人リンク表示カード
 - [x] **広告コンポーネント** - カスタムサイドバー広告コンテンツをサポート
@@ -91,8 +94,8 @@
 - [x] **サイドバー目次** - 記事の目次を動的に表示、アンカージャンプをサポート
 - [x] **強化されたコードブロック** - Expressive Codeベース、コード折りたたみ、行番号、言語識別をサポート
 - [x] **数式サポート** - KaTeXレンダリングエンジン、インラインとブロック数式をサポート
-- [x] **Markdown拡張** - [Markdown拡張機能](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)、[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHubリポジトリカード](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)も含まれています
 - [x] **ランダムカバー画像** - APIを介してランダムカバー画像の取得をサポート
+- [x] **Markdown拡張** - デフォルトで[GitHub Flavored Markdown](https://github.github.com/gfm/)をサポート、[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHubリポジトリカード](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)も含まれています
 
 ### SEO
 - [x] **SEO最適化** - 完全なメタタグと構造化データ
@@ -219,6 +222,8 @@ tags: [Foo, Bar]
 category: Front-end
 draft: false
 lang: zh-CN      # 記事の言語が`siteConfig.ts`のサイト言語と異なる場合のみ設定
+pinned: false    # 記事を固定
+comment: true    # コメントを有効化
 ---
 ```
 

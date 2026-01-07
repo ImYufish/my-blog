@@ -72,20 +72,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 // 导航搜索配置
 export const navBarSearchConfig: NavBarSearchConfig = {
-	// 可选：PageFind， MeiliSearch
-	// 选择PageFind时：NavBarSearchMethod.PageFind,
-	// 选择MeiliSearch时：NavBarSearchMethod.MeiliSearch,
 	method: NavBarSearchMethod.PageFind,
-
-	// 当选择 MeiliSearch 时的配置
-	meiliSearchConfig: {
-		INDEX_NAME: "posts",
-		CONTENT_DIR: "src/content/posts",
-		MEILI_HOST: "http://localhost:7700",
-		PUBLIC_MEILI_HOST: "http://localhost:7700",
-		PUBLIC_MEILI_SEARCH_KEY:
-			"41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b",
-	},
 };
 
 export const navBarConfig: NavBarConfig = getDynamicNavBarConfig();

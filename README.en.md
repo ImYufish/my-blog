@@ -15,6 +15,8 @@
 [![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/network/members)
 [![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
 > 
+> [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
+> 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
 [![Afdian Sponsor](https://img.shields.io/badge/Afdian-Sponsor%20Author-ff69b4.svg)](https://afdian.com/a/cuteleaf)
@@ -57,25 +59,25 @@
 - [x] **Smooth Animations** - Swup page transition animations for silky smooth browsing experience
 - [x] **Responsive Design** - Perfect adaptation for desktop, tablet and mobile devices
 - [x] **Multi-language Support** - i18n internationalization, supports Simplified Chinese, Traditional Chinese, English, Japanese, Russian
-- [x] **Full-text Search** - Client-side search based on Pagefind, supports article content indexing. Also supports MeiliSearch search engine
+- [x] **Full-text Search** - Client-side search based on Pagefind, supports article content indexing. 
 
 ### Personalization
-- [x] **Sidebar** - Supports single sidebar, dual sidebar configuration, freely switchable in frontend
-- [x] **Article Layout** - Supports list (single column) and grid (multi-column/masonry) layout, freely switchable in frontend
+- [x] **Sidebar** - Supports single sidebar, dual sidebar configuration
+- [x] **Article Layout** - Supports list (single column) and grid (multi-column/masonry) layout
 - [x] **Font Management** - Custom font support with rich font selector
 - [x] **Footer Configuration** - HTML content injection, fully customizable
 - [x] **Navbar Customization** - Logo, title, links fully customizable
-- [x] **Wallpaper Mode Switching** - Banner wallpaper, fullscreen wallpaper, solid background, freely switchable in frontend
-- [x] **Theme Color Customization** - 360° hue adjustment, supports light/dark/system three modes, freely switchable in frontend
+- [x] **Wallpaper Mode Switching** - Banner wallpaper, fullscreen wallpaper, solid background
+- [x] **Theme Color Customization** - 360° hue adjustment, supports light/dark/system three modes
 
 ### Page Components
 - [x] **Guestbook** - Supports guestbook page with integrated comment system
-- [x] **Announcement Bar** - Top announcement notification, supports closing and custom styles
+- [x] **Announcement Bar** - Sidebar announcement notification
 - [x] **Mascot** - Supports both Spine and Live2D animation engines
-- [x] **Site Statistics** - Displays article, category, tag counts, total word count, running time, last update time
+- [x] **Site Statistics** - Displays article, category, tag counts, total word count, etc.
 - [x] **Site Calendar** - Displays current month calendar and published articles for the month
-- [x] **Sponsor Page** - Multiple payment methods, payment QR codes, sponsor list, in-article sponsor button
-- [x] **Share Poster** - Supports generating beautiful article share posters containing article summary, QR code, etc.
+- [x] **Sponsor Page** - Sponsor link redirection, payment QR codes display, sponsor list, in-article sponsor button
+- [x] **Share Poster** - Supports generating beautiful article share posters
 - [x] **Sakura Effect** - Supports sakura effect, fullscreen sakura animation
 - [x] **Friend Links** - Beautiful friend link display cards
 - [x] **Ad Component** - Supports custom sidebar advertising content
@@ -91,8 +93,8 @@
 - [x] **Sidebar TOC** - Dynamically displays article table of contents, supports anchor jumping
 - [x] **Enhanced Code Blocks** - Based on Expressive Code, supports code folding, line numbers, language identification
 - [x] **Math Formula Support** - KaTeX rendering engine, supports inline and block formulas
-- [x] **Markdown Extensions** - [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax), also includes [Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86), [GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87), [Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 - [x] **Random Cover Images** - Supports fetching random cover images via API
+- [x] **Markdown Extensions** - Default supports [GitHub Flavored Markdown](https://github.github.com/gfm/), also includes [Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86), [GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87), [Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 
 ### SEO
 - [x] **SEO Optimization** - Complete meta tags and structured data
@@ -219,6 +221,8 @@ tags: [Foo, Bar]
 category: Front-end
 draft: false
 lang: zh-CN      # Only set when article language differs from site language in `siteConfig.ts`
+pinned: false    # Pin article
+comment: true    # Enable comments
 ---
 ```
 

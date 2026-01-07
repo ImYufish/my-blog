@@ -45,7 +45,7 @@ export const adConfig2: AdConfig = {
 	content:
 		"如果您觉得本站内容对您有帮助，欢迎支持我们的创作！您的支持是我们持续更新的动力。",
 	image: {
-		src: "/assets/images/d2.webp",
+		src: "/assets/images/cover.webp",
 		alt: "支持博主",
 		link: "about/",
 		external: false,

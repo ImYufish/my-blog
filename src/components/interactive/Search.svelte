@@ -3,15 +3,9 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte";
 import { navigateToPage } from "@utils/navigation-utils";
-import { MeiliSearch } from "meilisearch";
 import { onMount } from "svelte";
 import type { SearchResult } from "@/global";
-import { type MeiliSearchConfig, NavBarSearchMethod } from "@/types/config";
 import { url as formatUrl } from "@/utils/url-utils";
-
-// --- Props from Astro ---
-export let searchMethod: NavBarSearchMethod;
-export let meiliSearchConfig: MeiliSearchConfig | undefined = undefined;
 
 // --- State ---
 let keywordDesktop = "";
@@ -19,7 +13,6 @@ let keywordMobile = "";
 let result: SearchResult[] = [];
 let isSearching = false;
 let initialized = false;
-let meiliClient: MeiliSearch | null = null;
 let debounceTimer: NodeJS.Timeout;
 
 // --- Mocks for Dev Mode ---
@@ -86,38 +79,13 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		try {
 			let searchResults: SearchResult[] = [];
 
-			if (searchMethod === NavBarSearchMethod.MeiliSearch) {
-				if (!meiliClient)
-					throw new Error("MeiliSearch client not initialized.");
-				const index = meiliClient.index(meiliSearchConfig.INDEX_NAME);
-				const searchResponse = await index.search(keyword, {
-					limit: 10,
-					attributesToHighlight: ["title", "content", "description"],
-					attributesToCrop: ["content:50"],
-					highlightPreTag: "<mark>",
-					highlightPostTag: "</mark>",
-				});
-				console.log(searchResponse);
-				// Map MeiliSearch results to our standard SearchResult format
-				searchResults = searchResponse.hits
-					.filter((hit) => hit._formatted)
-					.map((hit) => {
-						return {
-							url: hit._formatted?.slug,
-							meta: { title: hit._formatted?.title },
-							excerpt: hit._formatted?.description,
-							content: hit._formatted?.content,
-						};
-					});
-			} else if (searchMethod === NavBarSearchMethod.PageFind) {
-				if (import.meta.env.PROD && window.pagefind) {
-					const response = await window.pagefind.search(keyword);
-					searchResults = await Promise.all(
-						response.results.map((item) => item.data()),
-					);
-				} else if (import.meta.env.DEV) {
-					searchResults = fakeResult;
-				}
+			if (import.meta.env.PROD && window.pagefind) {
+				const response = await window.pagefind.search(keyword);
+				searchResults = await Promise.all(
+					response.results.map((item) => item.data()),
+				);
+			} else if (import.meta.env.DEV) {
+				searchResults = fakeResult;
 			}
 
 			result = searchResults;
@@ -134,40 +102,27 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 
 // --- Initialization onMount ---
 onMount(() => {
-	if (searchMethod === NavBarSearchMethod.MeiliSearch) {
-		try {
-			meiliClient = new MeiliSearch({
-				host: meiliSearchConfig.PUBLIC_MEILI_HOST,
-				apiKey: meiliSearchConfig.PUBLIC_MEILI_SEARCH_KEY,
-			});
-			initialized = true;
-			console.log("MeiliSearch client initialized.");
-		} catch (e) {
-			console.error("Failed to initialize MeiliSearch:", e);
-		}
-	} else if (searchMethod === NavBarSearchMethod.PageFind) {
-		const initializePagefind = () => {
-			initialized = true;
-			if (keywordDesktop) search(keywordDesktop, true);
-			if (keywordMobile) search(keywordMobile, false);
-		};
+	const initializePagefind = () => {
+		initialized = true;
+		if (keywordDesktop) search(keywordDesktop, true);
+		if (keywordMobile) search(keywordMobile, false);
+	};
 
-		if (import.meta.env.DEV) {
-			console.log("Pagefind mock enabled in development mode.");
+	if (import.meta.env.DEV) {
+		console.log("Pagefind mock enabled in development mode.");
+		initializePagefind();
+	} else {
+		if (window.pagefind) {
+			// If script already loaded
 			initializePagefind();
 		} else {
-			if (window.pagefind) {
-				// If script already loaded
-				initializePagefind();
-			} else {
-				// Listen for the event
-				document.addEventListener("pagefindready", initializePagefind, {
-					once: true,
-				});
-				document.addEventListener("pagefindloaderror", initializePagefind, {
-					once: true,
-				});
-			}
+			// Listen for the event
+			document.addEventListener("pagefindready", initializePagefind, {
+				once: true,
+			});
+			document.addEventListener("pagefindloaderror", initializePagefind, {
+				once: true,
+			});
 		}
 	}
 });

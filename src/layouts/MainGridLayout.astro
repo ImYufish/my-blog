@@ -71,11 +71,6 @@ const wavesEnabledOnDesktop =
 const wavesEnabledOnMobile =
 	typeof wavesConfig === "object" ? wavesConfig.mobile : wavesConfig;
 
-// 获取波浪效果性能设置
-const performanceConfig = backgroundWallpaper.banner?.waves?.performance;
-const waveQuality = performanceConfig?.quality || "high";
-const hardwareAcceleration = performanceConfig?.hardwareAcceleration ?? true;
-
 // 处理分设备控制的横幅信贷显示
 const creditEnableConfig = backgroundWallpaper.banner?.credit?.enable;
 const creditEnabledOnDesktop =
@@ -283,17 +278,14 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
     <div class={`waves absolute -bottom-[1px] h-[10vh] max-h-[9.375rem] min-h-[3.125rem] w-full md:h-[15vh] 
         ${!wavesEnabledOnMobile ? 'hidden' : ''} ${!wavesEnabledOnDesktop ? 'md:hidden' : ''} ${wavesEnabledOnDesktop ? 'md:block' : ''}`} 
         id="header-waves" 
-        style={`transform: translateZ(0); will-change: fill; ${hardwareAcceleration ? 'transform: translateZ(0);' : ''}`}
-        data-wave-quality={waveQuality}
-        data-hardware-acceleration={hardwareAcceleration}>
+        style="transform: translateZ(0); will-change: fill;">
         <svg
             class="waves"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 20 150 32"
+            viewBox="0 24 150 28"
             preserveAspectRatio="none"
-            shape-rendering={waveQuality === 'low' ? 'optimizeSpeed' : 'auto'}
-            style={`transform: translateZ(0); backface-visibility: hidden; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+            shape-rendering="geometricPrecision"
         >
             <defs>
                 <path
@@ -302,34 +294,30 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
                 >
                 </path>
             </defs>
-            <g class="parallax" style={`transform: translateZ(0); ${hardwareAcceleration ? 'will-change: transform;' : ''}`}>
+            <g class="parallax">
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="0"
-                    class={`opacity-25 fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -2s; animation-duration: ${waveQuality === 'low' ? '10s' : waveQuality === 'medium' ? '8s' : '7s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    class="opacity-25 fill-[var(--page-bg)]"
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="3"
-                    class={`opacity-50 fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -3s; animation-duration: ${waveQuality === 'low' ? '15s' : waveQuality === 'medium' ? '12s' : '10s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    class="opacity-50 fill-[var(--page-bg)]"
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="5"
-                    class={`opacity-75 fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -4s; animation-duration: ${waveQuality === 'low' ? '20s' : waveQuality === 'medium' ? '16s' : '13s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    class="opacity-65 fill-[var(--page-bg)]"
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
                     x="48"
                     y="7"
-                    class={`fill-[var(--page-bg)] ${waveQuality === 'low' ? 'wave-low-quality' : ''}`}
-                    style={`animation-delay: -5s; animation-duration: ${waveQuality === 'low' ? '30s' : waveQuality === 'medium' ? '25s' : '20s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; ${hardwareAcceleration ? 'will-change: transform;' : ''}`}
+                    class=" opacity-75 fill-[var(--page-bg)]"
                 ></use>
             </g>
         </svg>

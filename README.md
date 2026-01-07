@@ -15,13 +15,13 @@
 [![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/network/members)
 [![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
 > 
+> [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
+> 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
 [![爱发电赞助](https://img.shields.io/badge/爱发电-赞助作者-ff69b4.svg)](https://afdian.com/a/cuteleaf)
-> 
+
 </div>
-
-
 
 
 
@@ -61,29 +61,29 @@
 - [x] **流畅动画** - Swup 页面过渡动画，提供丝滑的浏览体验
 - [x] **响应式设计** - 完美适配桌面端、平板和移动设备
 - [x] **多语言支持** - i18n 国际化，支持简体中文、繁体中文、英文、日文、俄语
-- [x] **全文搜索** - 基于 Pagefind 的客户端搜索，支持文章内容索引。同时支持 MeiliSearch 搜索引擎
+- [x] **全文搜索** - 基于 Pagefind 的客户端搜索，支持文章内容索引。
 
 ### 个性化
-- [x] **侧边栏** - 支持配置单侧边栏、双侧边栏，支持前台自由切换
-- [x] **文章布局** - 支持配置(单列)列表、网格(多列/瀑布流)布局、支持前台自由切换
+- [x] **侧边栏** - 支持配置单侧边栏、双侧边栏
+- [x] **文章布局** - 支持配置(单列)列表、网格(多列/瀑布流)布局
 - [x] **字体管理** - 支持自定义字体，丰富的字体选择器
 - [x] **页脚配置** - HTML 内容注入，完全自定义
 - [x] **导航栏自定义** - Logo、标题、链接全面自定义
-- [x] **壁纸模式切换** - 横幅壁纸、全屏壁纸、纯色背景，支持前台自由切换
-- [x] **主题色自定义** - 360° 色相调节，支持亮色/暗色/跟随系统三种模式，支持前台自由切换
+- [x] **壁纸模式切换** - 横幅壁纸、全屏透明壁纸、纯色背景
+- [x] **主题色自定义** - 360° 色相调节，支持亮色/暗色/跟随系统三种模式
 
 ### 页面组件
 - [x] **留言板** - 支持留言页面，集成评论系统
-- [x] **公告栏** - 顶部公告提示，支持关闭和自定义样式
+- [x] **公告栏** - 侧边栏公告提示
 - [x] **看板娘** - 支持 Spine 和 Live2D 两种动画引擎
-- [x] **站点统计** - 显示文章、分类、标签数目、文章总字数、运行时长、最后更新时间
+- [x] **站点统计** - 显示文章、分类、标签数目、文章总字数等数据
 - [x] **站点日历** - 显示当月日历，以及当月的发布文章
-- [x] **赞助页面** - 多种支付方式、收款码展示、赞助者列表、文章内赞助按钮
-- [x] **分享海报** - 支持生成精美的文章分享海报，包含文章摘要、二维码等信息
+- [x] **赞助页面** - 赞助链接跳转、收款码展示、赞助者列表、文章内赞助按钮
+- [x] **分享海报** - 支持生成精美的文章分享海报
 - [x] **樱花特效** - 支持樱花特效，全屏樱花效果
 - [x] **友情链接** - 精美的友链展示卡片
 - [x] **广告组件** - 支持自定义侧边栏广告内容
-- [x] **番组计划** - 基于 Bangumi API 的追番和游戏记录展示
+- [x] **番组计划** - 基于 Bangumi API 的追番和游戏等记录展示
 - [x] **评论系统** - 集成 Twikoo、Waline、Giscus、Disqus、Artalk 评论系统
 - [x] **访问量统计** - 支持调用 Waline、Twikoo 自带的访问量追踪
 - [x] **音乐播放器** - 基于 APlayer，支持本地音乐和 Meting API 在线音乐
@@ -95,13 +95,14 @@
 - [x] **侧边栏目录** - 动态显示文章目录，支持锚点跳转
 - [x] **增强代码块** - 基于 Expressive Code，支持代码折叠、行号、语言标识
 - [x] **数学公式支持** - KaTeX 渲染引擎，支持行内和块级公式
-- [x] **Markdown扩展** - 默认支持[GitHub Flavored Markdown](https://github.github.com/gfm/)，还包括了[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 - [x] **文章随机封面图** - 支持通过 API 获取随机封面图
+- [x] **Markdown扩展** - 默认支持[GitHub Flavored Markdown](https://github.github.com/gfm/)，还包括了[Admonitions](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86)、[GitHub repository cards](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%93%E5%8D%A1%E7%89%87)、[Expressive Code](http://firefly.cuteleaf.cn/posts/code-examples/)
 
 ### SEO
 - [x] **SEO 优化** - 完整的 meta 标签和结构化数据
 - [x] **RSS 订阅** - 自动生成 RSS Feed
 - [x] **站点地图** - 自动生成 XML Sitemap，支持页面过滤配置
+- [x] **统计分析** - 集成 Google Analytics、Microsoft Clarity
 
 
 ## 📝计划中...
@@ -224,6 +225,8 @@ tags: [Foo, Bar]
 category: Front-end
 draft: false
 lang: zh-CN      # 仅当文章语言与 `siteConfig.ts` 中的网站语言不同时需要设置
+pinned: false    # 置顶
+comment: true    # 是否允许评论
 ---
 ```
 

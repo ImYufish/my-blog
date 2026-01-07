@@ -114,35 +114,14 @@ export type NavBarLink = {
 
 export enum NavBarSearchMethod {
 	PageFind = 0,
-	MeiliSearch = 1,
 }
-
-/**
- * MeiliSearch配置
- *
- * @property INDEX_NAME MeiliSearch索引名称
- * @property CONTENT_DIR 需要被索引的内容目录
- * @property MEILI_HOST MeiliSearch服务器地址
- * @property PUBLIC_MEILI_HOST 公共MeiliSearch服务器地址（前端使用）
- * @property PUBLIC_MEILI_SEARCH_KEY 公共MeiliSearch搜索密钥（前端使用）
- */
-export type MeiliSearchConfig = {
-	INDEX_NAME: string;
-	CONTENT_DIR: string;
-	MEILI_HOST: string;
-	PUBLIC_MEILI_HOST: string;
-	PUBLIC_MEILI_SEARCH_KEY: string;
-};
 
 export type NavBarSearchConfig = {
 	method: NavBarSearchMethod;
-	meiliSearchConfig?: MeiliSearchConfig;
 };
 
 export type NavBarConfig = {
 	links: (NavBarLink | LinkPreset)[];
-	searchMethod?: NavBarSearchMethod;
-	meiliSearchConfig?: MeiliSearchConfig;
 };
 
 export type ProfileConfig = {
@@ -543,10 +522,6 @@ export type BackgroundWallpaperConfig = {
 						desktop: boolean; // 桌面端是否启用波浪动画效果
 						mobile: boolean; // 移动端是否启用波浪动画效果
 				  }; // 是否启用波浪动画效果，支持布尔值或分别设置桌面端和移动端
-			performance?: {
-				quality: "high" | "medium" | "low"; // 渲染质量：high=高质量，medium=中等质量，low=低质量
-				hardwareAcceleration: boolean; // 是否启用硬件加速
-			}; // 波浪效果性能优化配置
 		};
 	};
 	// 全屏透明覆盖模式特有配置
