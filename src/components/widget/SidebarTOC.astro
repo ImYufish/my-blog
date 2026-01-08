@@ -1,6 +1,6 @@
 ---
 import type { MarkdownHeading } from "astro";
-import TOCStyles from "@/components/common/styles/TOCStyles.astro";
+import "@/styles/toc.css";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import WidgetLayout from "./WidgetLayout.astro";
@@ -29,8 +29,6 @@ const { headings: _headings = [], class: className, style } = Astro.props;
     </div>
   </div>
 </WidgetLayout>
-
-<TOCStyles />
 
 <style lang="stylus">
 /* SidebarTOC 特定样式 */

@@ -9,8 +9,7 @@
 ```
 common/
 ├── base/          # 基础 UI 组件
-├── controls/      # 控制交互组件
-└── styles/        # 样式组件
+└── controls/      # 控制交互组件
 ```
 
 ## 📦 base/ - 基础 UI 组件
@@ -64,9 +63,40 @@ import DropdownPanel from "@/components/common/base/DropdownPanel.astro";
 - LightDarkSwitch.svelte - 亮暗色主题切换
 - DropdownMenu.astro - 导航栏下拉菜单
 
+### FloatingButton.astro
+悬浮按钮基础组件，提供统一的玻璃拟态样式和动画效果。
+
+**Props:**
+- `id: string` - 按钮 ID
+- `icon: string` - 图标名称 (Iconify)
+- `ariaLabel?: string` - 无障碍标签
+- `onclick?: string` - 点击事件代码
+- `class?: string` - 额外类名
+
+**使用:**
+```astro
+import FloatingButton from "@/components/common/base/FloatingButton.astro";
+
+<FloatingButton 
+  id="my-btn" 
+  icon="material-symbols:home" 
+  onclick="handleClick()" 
+/>
+```
+
 ## 🎛️ controls/ - 控制交互组件
 
 用户交互控制组件，如按钮、分页等。
+
+### BackToHome.astro
+返回主页按钮组件。会自动检测是否在主页并隐藏。
+
+**使用:**
+```astro
+import BackToHome from "@/components/common/controls/BackToHome.astro";
+
+<BackToHome />
+```
 
 ### BackToTop.astro
 返回顶部按钮组件。
@@ -76,6 +106,32 @@ import DropdownPanel from "@/components/common/base/DropdownPanel.astro";
 import BackToTop from "@/components/common/controls/BackToTop.astro";
 
 <BackToTop />
+```
+
+### FloatingTOC.astro
+悬浮目录组件，包含展开面板。
+
+**Props:**
+- `headings: MarkdownHeading[]` - 文章标题列表
+
+**使用:**
+```astro
+import FloatingTOC from "@/components/common/controls/FloatingTOC.astro";
+
+<FloatingTOC headings={headings} />
+```
+
+### FloatingControls.astro
+右下角悬浮控件容器，统一管理各个悬浮按钮的布局和位置。
+
+**Props:**
+- `headings?: MarkdownHeading[]` - 传递给 TOC 的标题列表
+
+**使用:**
+```astro
+import FloatingControls from "@/components/common/controls/FloatingControls.astro";
+
+<FloatingControls headings={headings} />
 ```
 
 ### ButtonLink.astro
@@ -146,24 +202,6 @@ import ClientPagination from "@/components/common/controls/ClientPagination.astr
 **使用场景:**
 - `bangumi.astro` - 番组页面的动态分页
 - 任何需要客户端分页的场景
-
-## 🎨 styles/ - 样式组件
-
-提供统一样式的组件。
-
-### TOCStyles.astro
-目录（Table of Contents）的样式组件。
-
-**使用:**
-```astro
-import TOCStyles from "@/components/common/styles/TOCStyles.astro";
-
-<TOCStyles />
-```
-
-**使用场景:**
-- SidebarTOC.astro - 侧边栏目录
-- FloatingTOC.astro - 浮动目录
 
 ## 📝 样式规范
 

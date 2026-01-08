@@ -1,5 +1,4 @@
 ---
-import BackToTop from "@components/common/controls/BackToTop.astro";
 import OverlayWallpaper from "@components/interactive/OverlayWallpaper.astro";
 import Footer from "@components/layout/Footer.astro";
 import LeftSideBar from "@components/layout/LeftSideBar.astro";
@@ -10,7 +9,7 @@ import Live2DWidget from "@components/widget/Live2DWidget.astro";
 import SpineModel from "@components/widget/SpineModel.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
-import FloatingTOC from "@/components/common/controls/FloatingTOC.astro";
+import FloatingControls from "@/components/common/controls/FloatingControls.astro";
 import TypewriterText from "@/components/content/TypewriterText.astro";
 import IconifyLoader from "@/components/misc/IconifyLoader.astro";
 import ImageWrapper from "@/components/misc/ImageWrapper.astro";
@@ -436,14 +435,12 @@ const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
             </div>
         </div>
 
-        <BackToTop></BackToTop>
         <SpineModel></SpineModel>
         {live2dModelConfig.enable && <Live2DWidget config={live2dModelConfig} />}
     </div>
 </div>
 
-<!-- 悬浮TOC组件 -->
-<FloatingTOC headings={headings}></FloatingTOC>
+<FloatingControls headings={headings} />
 
 
 </Layout>

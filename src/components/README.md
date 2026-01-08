@@ -45,17 +45,17 @@
 #### base/ - 基础 UI 组件
 - `DropdownPanel` (Astro & Svelte) - 下拉面板容器
 - `DropdownItem` (Astro & Svelte) - 下拉选项
+- `FloatingButton.astro` - 悬浮按钮基础组件
 
 #### controls/ - 控制交互组件
+- `BackToHome.astro` - 返回主页按钮
 - `BackToTop.astro` - 返回顶部按钮
 - `ButtonLink.astro` - 链接按钮组件
 - `ButtonTag.astro` - 标签按钮组件
 - `Pagination.astro` - 静态路由分页组件（Astro 原生分页）
 - `ClientPagination.astro` - 客户端 JavaScript 分页组件（DOM 显示/隐藏控制）
 - `FloatingTOC.astro` - 浮动目录组件
-
-#### styles/ - 样式组件
-- `TOCStyles.astro` - 目录样式组件
+- `FloatingControls.astro` - 右下角悬浮控件容器
 
 ### 🧩 widget/ - 小部件组件
 各种功能小部件，如音乐播放器、Live2D等。
