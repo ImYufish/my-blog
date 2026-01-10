@@ -75,6 +75,12 @@ export const siteConfig: SiteConfig = {
 	// 站点开始日期，用于统计运行天数
 	siteStartDate: "2025-01-01",
 
+	// 提醒框（Admonitions）配置，修改后需要重启开发服务器才能生效
+	// 主题：'github' | 'obsidian' | 'vitepress'，每个主题风格和语法不同，可根据喜好选择
+	rehypeCallouts: {
+		theme: "github",
+	},
+
 	// 文章页底部的"上次编辑时间"卡片开关
 	showLastModified: true,
 

@@ -28,6 +28,11 @@ export type SiteConfig = {
 	// 站点开始日期，用于计算运行天数
 	siteStartDate?: string; // 格式: "YYYY-MM-DD"
 
+	// 提醒框配置
+	rehypeCallouts: {
+		theme: "github" | "obsidian" | "vitepress";
+	};
+
 	// 添加bangumi配置
 	bangumi?: {
 		userId?: string; // Bangumi用户ID

@@ -231,8 +231,8 @@ comment: true    # 是否允許留言
 
 除了 Astro 預設支援的 [GitHub Flavored Markdown](https://github.github.com/gfm/) 之外，還包含了一些額外的 Markdown 功能：
 
-- 提醒塊（Admonitions） ([預覽和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/#%E6%8F%90%E9%86%92%E6%A1%86))
-- GitHub 儲存庫卡片 ([預覽和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/#github-%E4%BB%93%E5%BA%AB%E5%8D%A1%E7%89%87))
+- 提醒塊（Admonitions） - 支援 GitHub, Obsidian, VitePress 三種風格主題配置 ([預覽和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/))
+- GitHub 儲存庫卡片 ([預覽和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - 基於 Expressive Code 的增強程式碼區塊 ([預覽](http://firefly.cuteleaf.cn/posts/code-examples/) / [文檔](https://expressive-code.com/))
 ## 🧞 指令
 
@@ -264,7 +264,7 @@ comment: true    # 是否允許留言
 ## 📝 許可協議
 
 本專案遵循 [MIT license](https://mit-license.org/) 開源協議，詳細查看 [LICENSE](../LICENSE) 文件
-最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感謝原作者的貢獻，原專案採用 [MIT 許可證](https://mit-license.org/)
+最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感謝原作者的貢獻，原專案採用 [MIT license](https://mit-license.org/)
 **版權聲明：**
 - Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
 - Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly)
