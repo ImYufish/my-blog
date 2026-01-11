@@ -76,8 +76,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		navbar: {
 			// 横幅导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
 			transparentMode: "semifull",
-			// 是否开启毛玻璃模糊效果，如果不开启则是半透明
-			enableBlur: true,
+			// 是否开启毛玻璃模糊效果，开启后可能会影响性能，导致网站变卡顿，如果不开启则是半透明
+			enableBlur: false,
 			// 毛玻璃模糊度
 			blur: 3,
 		},
