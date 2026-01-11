@@ -202,6 +202,12 @@ html {
     .enable-card-border .card-base-transparent {
         @apply transition-all duration-300 border border-[var(--line-divider)] shadow-sm;
     }
+
+    /* 导航栏样式适配 */
+    .enable-card-border #navbar > div:not(.absolute) {
+        @apply transition-all duration-300 border shadow-sm;
+        border-color: var(--line-divider) !important;
+    }
     
     /* 全屏壁纸模式下的半透明效果 */
     .wallpaper-transparent .card-base {
