@@ -525,6 +525,8 @@ export type BackgroundWallpaperConfig = {
 		};
 		navbar?: {
 			transparentMode?: "semi" | "full" | "semifull"; // 导航栏透明模式
+			enableBlur?: boolean; // 是否开启毛玻璃模糊效果
+			blur?: number; // 毛玻璃模糊度
 		};
 		waves?: {
 			enable:
