@@ -194,6 +194,14 @@ html {
     .card-base-transparent {
         @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg-transparent)] backdrop-blur-sm transition-colors duration-150;
     }
+
+    /* 开启边框和阴影效果时的样式 */
+    .enable-card-border .card-base {
+        @apply transition-all duration-300 border border-[var(--line-divider)] shadow-sm;
+    }
+    .enable-card-border .card-base-transparent {
+        @apply transition-all duration-300 border border-[var(--line-divider)] shadow-sm;
+    }
     
     /* 全屏壁纸模式下的半透明效果 */
     .wallpaper-transparent .card-base {
