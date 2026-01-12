@@ -21,7 +21,7 @@
  * 基础导航栏样式
  * 适用: 所有模式，所有设备
  * ============================================ */
- #navbar > div {
+#navbar>div {
     background: var(--card-bg);
     border: 1px solid transparent;
     border-radius: 0 0 0.75rem 0.75rem;
@@ -34,9 +34,10 @@
  * 遵循: transparentMode, enableBlur 配置
  * ============================================ */
 @media (min-width: 1024px) {
+
     /* "semi" */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="semi"]>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"]>div {
         backdrop-filter: blur(var(--navbar-glass-blur, 20px)) !important;
         background: rgba(255, 255, 255, var(--opacity-55)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -46,8 +47,8 @@
     }
 
     /* "full" */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="full"]>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="full"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: none !important;
@@ -57,8 +58,8 @@
     }
 
     /* "semifull" (static) */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="semifull"]>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: 1px solid transparent !important;
@@ -68,8 +69,8 @@
     }
 
     /* "semifull" (scrolled) */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="semifull"].scrolled>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled>div {
         backdrop-filter: blur(var(--navbar-glass-blur, 20px)) !important;
         background: rgba(255, 255, 255, var(--opacity-55)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -84,9 +85,10 @@
  * 适用: 移动端(≤1023px) + Banner模式 + 亮色主题 + 仅首页生效
  * ============================================ */
 @media (max-width: 1023px) {
+
     /* "semi" */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="semi"][data-is-home="true"] > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"] > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="semi"][data-is-home="true"]>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"]>div {
         backdrop-filter: blur(var(--navbar-glass-blur, 20px)) !important;
         background: rgba(255, 255, 255, var(--opacity-55)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -96,8 +98,8 @@
     }
 
     /* "full" */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="full"][data-is-home="true"] > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"] > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="full"][data-is-home="true"]>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: none !important;
@@ -107,8 +109,8 @@
     }
 
     /* "semifull" (static) */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: 1px solid transparent !important;
@@ -118,8 +120,8 @@
     }
 
     /* "semifull" (scrolled) */
-    #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div,
-    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div {
+    #banner-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div,
+    body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div {
         backdrop-filter: blur(var(--navbar-glass-blur, 20px)) !important;
         background: rgba(255, 255, 255, var(--opacity-55)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -129,38 +131,38 @@
     }
 }
 
-
 /* ============================================
  * 桌面端 - 暗色主题 - Banner模式
  * ============================================ */
 @media (min-width: 1024px) {
+
     /* "semi" */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="semi"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"]>div {
         background: rgba(0, 0, 0, var(--opacity-55)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
     /* "full" */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="full"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="full"]>div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
 
     /* "semifull" (static) */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="semifull"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"]>div {
         background: transparent !important;
         border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
     /* "semifull" (scrolled) */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="semifull"].scrolled>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled>div {
         background: rgba(0, 0, 0, var(--opacity-55)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -171,33 +173,34 @@
  * 移动端 - 暗色主题 - Banner模式
  * ============================================ */
 @media (max-width: 1023px) {
+
     /* "semi" */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="semi"][data-is-home="true"] > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"] > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="semi"][data-is-home="true"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"]>div {
         background: rgba(0, 0, 0, var(--opacity-55)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
     /* "full" */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="full"][data-is-home="true"] > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"] > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="full"][data-is-home="true"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
 
     /* "semifull" (static) */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div {
         background: transparent !important;
         border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
     /* "semifull" (scrolled) */
-    :root.dark #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div {
+    :root.dark #banner-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div {
         background: rgba(0, 0, 0, var(--opacity-55)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -206,17 +209,17 @@
 
 /* 使用 body:has(#banner-wrapper) 确保仅在 Banner 模式下生效 */
 /* 增加 .scrolled 组合选择器以提高优先级，确保覆盖滚动状态下的样式 */
-#banner-wrapper ~ * #navbar[data-enable-blur="false"] > div,
-#banner-wrapper ~ * #navbar[data-enable-blur="false"].scrolled > div,
-body:has(#banner-wrapper) #navbar[data-enable-blur="false"] > div,
-body:has(#banner-wrapper) #navbar[data-enable-blur="false"].scrolled > div {
+#banner-wrapper~* #navbar[data-enable-blur="false"]>div,
+#banner-wrapper~* #navbar[data-enable-blur="false"].scrolled>div,
+body:has(#banner-wrapper) #navbar[data-enable-blur="false"]>div,
+body:has(#banner-wrapper) #navbar[data-enable-blur="false"].scrolled>div {
     backdrop-filter: none !important;
 }
 
 /* 调整下拉菜单和浮动面板的背景透明度 */
 /* 亮色主题 */
-#banner-wrapper ~ * .dropdown-content,
-#banner-wrapper ~ * .float-panel,
+#banner-wrapper~* .dropdown-content,
+#banner-wrapper~* .float-panel,
 body:has(#banner-wrapper) .dropdown-content,
 body:has(#banner-wrapper) .float-panel,
 body.wallpaper-transparent .dropdown-content,
@@ -227,8 +230,8 @@ body.wallpaper-transparent .float-panel {
 }
 
 /* 暗色主题 */
-:root.dark #banner-wrapper ~ * .dropdown-content,
-:root.dark #banner-wrapper ~ * .float-panel,
+:root.dark #banner-wrapper~* .dropdown-content,
+:root.dark #banner-wrapper~* .float-panel,
 :root.dark body:has(#banner-wrapper) .dropdown-content,
 :root.dark body:has(#banner-wrapper) .float-panel,
 :root.dark body.wallpaper-transparent .dropdown-content,
@@ -236,4 +239,52 @@ body.wallpaper-transparent .float-panel {
     background: rgba(23, 23, 23, 0.9) !important;
     box-shadow: var(--shadow-md) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ============================================
+ * 全宽导航栏适配
+ * 适用: 桌面端 (≥1023px)
+ * 说明: 开启全宽导航栏时，去除底部圆角
+ * ============================================ */
+@media (min-width: 1023px) {
+
+    /* 覆盖基础样式 */
+    #navbar[data-full-width="true"]>div {
+        border-radius: 0 !important;
+    }
+
+    /* 覆盖 Banner 模式下的高优先级样式 (包括亮色/暗色, semi/full/semifull) */
+    /* 需要匹配 specificity: 2 IDs + 2 Attrs (max) */
+
+    /* 针对 max-width: 1023px 块中的 [data-is-home='true'] 规则 (如果 tablet 在此范围内) */
+    #banner-wrapper~* #navbar[data-full-width="true"]>div,
+    body:has(#banner-wrapper) #navbar[data-full-width="true"]>div {
+        border-radius: 0 !important;
+    }
+
+    /* 针对暗色模式 */
+    :root.dark #banner-wrapper~* #navbar[data-full-width="true"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-full-width="true"]>div {
+        border-radius: 0 !important;
+    }
+
+    /* 针对更高 specificity 的情况 (如 [data-is-home='true']) */
+    #banner-wrapper~* #navbar[data-full-width="true"][data-is-home="true"]>div,
+    body:has(#banner-wrapper) #navbar[data-full-width="true"][data-is-home="true"]>div {
+        border-radius: 0 !important;
+    }
+
+    :root.dark #banner-wrapper~* #navbar[data-full-width="true"][data-is-home="true"]>div,
+    :root.dark body:has(#banner-wrapper) #navbar[data-full-width="true"][data-is-home="true"]>div {
+        border-radius: 0 !important;
+    }
+}
+
+/* ============================================
+ * 小于1200px时隐藏导航栏菜单图标
+ * ============================================ */
+@media (max-width: 1199px) {
+    .navbar-icon {
+        display: none !important;
+    }
 }
