@@ -242,41 +242,21 @@ body.wallpaper-transparent .float-panel {
 }
 
 /* ============================================
- * 全宽导航栏适配
- * 适用: 桌面端 (≥1023px)
- * 说明: 开启全宽导航栏时，去除底部圆角
+ * 全宽导航栏适配 (Full Width Navbar)
+ * 确保在开启全宽模式时覆盖所有圆角和宽度限制
+ * 针对所有模式（Banner模式、壁纸模式、透明模式）统一去除圆角
+ * 使用高优先级选择器确保覆盖原主题样式
+ * 仅在桌面端 (min-width: 1024px) 生效，移动端保留圆角
  * ============================================ */
-@media (min-width: 1023px) {
-
-    /* 覆盖基础样式 */
-    #navbar[data-full-width="true"]>div {
+@media (min-width: 1024px) {
+    #navbar-wrapper #navbar[data-full-width="true"] > div,
+    body:has(#banner-wrapper) #navbar-wrapper #navbar[data-full-width="true"] > div,
+    body.wallpaper-transparent #navbar-wrapper #navbar[data-full-width="true"] > div,
+    #navbar-wrapper #navbar[data-full-width="true"].scrolled > div {
         border-radius: 0 !important;
-    }
-
-    /* 覆盖 Banner 模式下的高优先级样式 (包括亮色/暗色, semi/full/semifull) */
-    /* 需要匹配 specificity: 2 IDs + 2 Attrs (max) */
-
-    /* 针对 max-width: 1023px 块中的 [data-is-home='true'] 规则 (如果 tablet 在此范围内) */
-    #banner-wrapper~* #navbar[data-full-width="true"]>div,
-    body:has(#banner-wrapper) #navbar[data-full-width="true"]>div {
-        border-radius: 0 !important;
-    }
-
-    /* 针对暗色模式 */
-    :root.dark #banner-wrapper~* #navbar[data-full-width="true"]>div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-full-width="true"]>div {
-        border-radius: 0 !important;
-    }
-
-    /* 针对更高 specificity 的情况 (如 [data-is-home='true']) */
-    #banner-wrapper~* #navbar[data-full-width="true"][data-is-home="true"]>div,
-    body:has(#banner-wrapper) #navbar[data-full-width="true"][data-is-home="true"]>div {
-        border-radius: 0 !important;
-    }
-
-    :root.dark #banner-wrapper~* #navbar[data-full-width="true"][data-is-home="true"]>div,
-    :root.dark body:has(#banner-wrapper) #navbar[data-full-width="true"][data-is-home="true"]>div {
-        border-radius: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
     }
 }
 
