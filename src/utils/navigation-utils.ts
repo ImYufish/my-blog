@@ -148,7 +148,7 @@ export function getCurrentPath(): string {
  */
 export function isHomePage(): boolean {
 	const path = getCurrentPath();
-	return path === "/" || path === "";
+	return path === (import.meta.env.BASE_URL || "/") || path === "";
 }
 
 /**
@@ -156,7 +156,7 @@ export function isHomePage(): boolean {
  */
 export function isPostPage(): boolean {
 	const path = getCurrentPath();
-	return path.startsWith("/posts/");
+	return path.startsWith(`${import.meta.env.BASE_URL || "/"}posts/`);
 }
 
 /**

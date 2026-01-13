@@ -213,8 +213,8 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
             </a>
         {/each}
         {#if result.length > 5}
-            <a href="/search/?q={encodeURIComponent(keywordDesktop || keywordMobile)}"
-               on:click={(e) => handleResultClick(e, `/search/?q=${encodeURIComponent(keywordDesktop || keywordMobile)}`)}
+            <a href={`${import.meta.env.BASE_URL || "/"}search/?q=${encodeURIComponent(keywordDesktop || keywordMobile)}`}
+               on:click={(e) => handleResultClick(e, `${import.meta.env.BASE_URL || "/"}search/?q=${encodeURIComponent(keywordDesktop || keywordMobile)}`)}
                class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] text-[var(--primary)] font-bold text-center">
                 <span class="inline-flex items-center">
                     {i18n(I18nKey.searchViewMore).replace('{count}', (result.length - 5).toString())}

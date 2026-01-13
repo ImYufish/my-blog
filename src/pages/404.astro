@@ -30,7 +30,7 @@ import MainGridLayout from "@/layouts/MainGridLayout.astro";
             
             <!-- 返回首页按钮 -->
             <a 
-                href="/" 
+                href={import.meta.env.BASE_URL || "/"}
                 class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white rounded-[var(--radius-large)] hover:bg-[var(--btn-content)] transition-colors duration-200 font-medium"
             >
                 <Icon name="material-symbols:home" class="text-xl" />
