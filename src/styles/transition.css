@@ -66,7 +66,7 @@ html.is-animating .transition-swup-fade {
     }
     to {
         opacity: 1;
-        transform: none;
+        transform: translateY(0) translateX(0);
     }
 }
 
@@ -75,8 +75,8 @@ html.is-animating .transition-swup-fade {
    -------------------------------------------------------------------------- */
 
 .onload-animation {
-    opacity: 1;
-    animation: fade-in-up 200ms ease-out backwards;
+    opacity: 0;
+    animation: fade-in-up 200ms ease-out forwards;
 }
 
 /* 渐进式动画延迟 */

@@ -207,14 +207,25 @@
     }
 }
 
-/* 使用 body:has(#banner-wrapper) 确保仅在 Banner 模式下生效 */
-/* 增加 .scrolled 组合选择器以提高优先级，确保覆盖滚动状态下的样式 */
-#banner-wrapper~* #navbar[data-enable-blur="false"]>div,
-#banner-wrapper~* #navbar[data-enable-blur="false"].scrolled>div,
-body:has(#banner-wrapper) #navbar[data-enable-blur="false"]>div,
-body:has(#banner-wrapper) #navbar[data-enable-blur="false"].scrolled>div {
+
+/* ============================================
+ * 关闭毛玻璃模糊效果 - Banner模式
+ * ============================================ */
+body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-enable-blur="false"]>div,
+body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-enable-blur="false"].scrolled>div {
     backdrop-filter: none !important;
 }
+
+body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-enable-blur="false"]>div,
+body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-enable-blur="false"].scrolled>div {
+    backdrop-filter: none !important;
+}
+
+body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-enable-blur="false"]>div,
+body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-enable-blur="false"].scrolled>div {
+    backdrop-filter: none !important;
+}
+
 
 /* 调整下拉菜单和浮动面板的背景透明度 */
 /* 亮色主题 */
