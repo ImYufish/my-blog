@@ -2,7 +2,9 @@
 import FloatingButton from "@/components/common/FloatingButton.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
+import { url } from "@/utils/url-utils";
 ---
+
 
 <FloatingButton
   id="back-to-home-btn"
@@ -12,27 +14,27 @@ import { i18n } from "@/i18n/translation";
   class="hide"
 />
 
-<script is:raw is:inline>
-  function backToHome() {
-    const url = window.__BASE_URL__;
+
+
+<script is:raw is:inline define:vars={{ homeUrl: url("/")}}>
+  window.backToHome = function() {
+    const url = homeUrl;
     if (window.swup) {
       window.swup.navigate(url);
     } else {
       window.location.href = url;
     }
-  }
+  };
 </script>
 
-<script>
+<script is:inline define:vars={{ homeUrl: url("/") }}>
   function updateBackToHomeVisibility() {
     const btn = document.getElementById("back-to-home-btn");
     if (!btn) return;
 
-    // Check if we are on the home page
     const path = window.location.pathname.replace(/\/$/, "") || "/";
-    const isHome = path === import.meta.env.BASE_URL || path === (import.meta.env.BASE_URL || "/")+"index.html";
-    
-    if (isHome) {
+    const homePath = homeUrl.replace(/\/$/, "") || "/";
+    if (path === homePath) {
       btn.classList.add("hide");
     } else {
       btn.classList.remove("hide");

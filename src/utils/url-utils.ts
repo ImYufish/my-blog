@@ -23,12 +23,12 @@ function joinUrl(...parts: string[]): string {
 export function getPostUrlBySlug(slug: string): string {
 	// 移除文件扩展名（如 .md, .mdx 等）
 	const slugWithoutExt = removeFileExtension(slug);
-	return url(`${import.meta.env.BASE_URL || "/"}posts/${slugWithoutExt}/`);
+	return url(`/posts/${slugWithoutExt}/`);
 }
 
 export function getTagUrl(tag: string): string {
 	if (!tag) return url("/archive/");
-	return url(`${import.meta.env.BASE_URL || "/"}archive/?tag=${encodeURIComponent(tag.trim())}`);
+	return url(`/archive/?tag=${encodeURIComponent(tag.trim())}`);
 }
 
 export function getCategoryUrl(category: string | null): string {
@@ -37,8 +37,8 @@ export function getCategoryUrl(category: string | null): string {
 		category.trim() === "" ||
 		category.trim().toLowerCase() === i18n(I18nKey.uncategorized).toLowerCase()
 	)
-		return url(`${import.meta.env.BASE_URL || "/"}archive/?uncategorized=true`);
-	return url(`${import.meta.env.BASE_URL || "/"}archive/?category=${encodeURIComponent(category.trim())}`);
+		return url("/archive/?uncategorized=true");
+	return url(`/archive/?category=${encodeURIComponent(category.trim())}`);
 }
 
 export function getDir(path: string): string {
@@ -53,6 +53,10 @@ export function getDir(path: string): string {
 
 export function getFileDirFromPath(filePath: string): string {
 	return filePath.replace(/^src\//, "").replace(/\/[^/]+$/, "");
+}
+
+export function getSearchUrl(query: string): string {
+	return url(`/search/?q=${encodeURIComponent(query.trim())}`);
 }
 
 export function url(path: string) {
