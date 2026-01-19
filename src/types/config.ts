@@ -34,6 +34,9 @@ export type SiteConfig = {
 	// 站点开始日期，用于计算运行天数
 	siteStartDate?: string; // 格式: "YYYY-MM-DD"
 
+	// 可选：站点时区，使用 IANA 时区标识，例如 "Asia/Shanghai"、"UTC"
+	timezone?: string;
+
 	// 提醒框配置
 	rehypeCallouts: {
 		theme: "github" | "obsidian" | "vitepress";

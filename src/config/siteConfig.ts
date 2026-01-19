@@ -81,6 +81,10 @@ export const siteConfig: SiteConfig = {
 	// 站点开始日期，用于统计运行天数
 	siteStartDate: "2025-01-01",
 
+	// 站点时区（IANA 时区字符串），用于格式化bangumi、rss里的构建日期时间等等..
+	// 示例："Asia/Shanghai", "UTC", 如果为空，则按照构建服务器的时区进行时区转换
+	timezone: "Asia/Shanghai",
+
 	// 提醒框（Admonitions）配置，修改后需要重启开发服务器才能生效
 	// 主题：'github' | 'obsidian' | 'vitepress'，每个主题风格和语法不同，可根据喜好选择
 	rehypeCallouts: {
