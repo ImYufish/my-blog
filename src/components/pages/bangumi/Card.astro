@@ -63,6 +63,12 @@ const displayTags =
 	item.tags && item.tags.length > 0
 		? item.tags
 		: (item.subject.tags || []).map((t) => t.name).slice(0, 5);
+
+const visibleCoverTags = displayTags.slice(0, 3);
+const hiddenCoverTagCount = Math.max(
+	displayTags.length - visibleCoverTags.length,
+	0,
+);
 ---
 
 <a
@@ -121,14 +127,14 @@ const displayTags =
 
       {displayTags && displayTags.length > 0 && (
         <div class="flex flex-wrap gap-1 mt-1.5">
-          {displayTags.slice(0, 5).map((tag: string) => (
+          {visibleCoverTags.map((tag: string) => (
             <span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-white/20 text-white/90 backdrop-blur-sm">
               {tag}
             </span>
           ))}
-          {displayTags.length > 5 && (
+          {hiddenCoverTagCount > 0 && (
             <span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-white/20 text-white/60 backdrop-blur-sm">
-              +{displayTags.length - 5}
+              +{hiddenCoverTagCount}
             </span>
           )}
         </div>
