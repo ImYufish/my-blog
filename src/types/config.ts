@@ -206,6 +206,7 @@ export type CommentConfig = {
 	waline?: {
 		serverURL: string;
 		lang?: string;
+		emoji: string[];
 		login?: "enable" | "force" | "disable";
 		visitorCount?: boolean; // 是否统计访问量，true 启用访问量，false 关闭
 	};
