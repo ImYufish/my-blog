@@ -20,7 +20,7 @@ export const commentConfig: CommentConfig = {
 		// 设置 Waline 评论系统语言
 		lang: "zh-CN",
 		// 设置 Waline 评论系统表情地址
-		emoji:[
+		emoji: [
 			"https://unpkg.com/@waline/emojis@1.4.0/weibo",
 			"https://unpkg.com/@waline/emojis@1.4.0/bilibili",
 			"https://unpkg.com/@waline/emojis@1.4.0/bmoji",
