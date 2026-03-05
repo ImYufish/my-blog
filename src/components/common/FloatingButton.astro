@@ -52,7 +52,7 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
     
     /* 图标样式 */
     :global(svg)
-        font-size: 1.75rem
+        font-size: 2rem
         opacity: 1
         transition: opacity 0.2s ease 0.1s /* 显示时：延迟出现，通过 delay 避免"先出现icon" */
 
@@ -104,7 +104,7 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
         font-size: 1.5rem
         border-radius: 0.75rem
         :global(svg)
-            font-size: 1.25rem
+            font-size: 1.5rem
 
 @media (max-width: 480px)
     .floating-btn
@@ -113,7 +113,7 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
         font-size: 1.25rem
         border-radius: 0.5rem
         :global(svg)
-            font-size: 1rem
+            font-size: 1.2rem
 
 @media (max-width: 360px)
     .floating-btn
@@ -122,7 +122,7 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
         font-size: 1rem
         border-radius: 0.375rem
         :global(svg)
-            font-size: 0.875rem
+            font-size: 1rem
 
 @media (max-width: 320px)
     .floating-btn
@@ -131,7 +131,7 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
         font-size: 0.875rem
         border-radius: 0.25rem
         :global(svg)
-            font-size: 0.75rem
+            font-size: 0.875rem
 
 /* 确保按钮始终在可视区域内 */
 .floating-btn
