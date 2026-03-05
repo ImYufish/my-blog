@@ -493,6 +493,7 @@ const siteLang = lang.replace("_", "-");
         "lg:is-home": isHomePageCheck,
         "enable-banner": enableBanner,
         "enable-card-border": siteConfig.card?.border,
+        "card-follow-theme-hue": siteConfig.card?.followTheme,
       },
       ...(siteConfig.font.enable && siteConfig.font.selected
         ? (Array.isArray(siteConfig.font.selected)

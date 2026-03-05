@@ -29,6 +29,8 @@ export type SiteConfig = {
 	card: {
 		// 是否开启卡片边框和阴影立体效果
 		border: boolean;
+		// 是否让卡片风格跟随主题色相
+		followTheme?: boolean;
 	};
 
 	// 字体配置
