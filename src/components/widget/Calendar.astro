@@ -85,12 +85,12 @@ const postUrlPrefix = url("/posts/");
     </div>
 
     <!-- 月份选择视图 -->
-    <div id="month-view-container" class="hidden grid grid-cols-3 gap-2">
+    <div id="month-view-container" class="grid grid-cols-3 gap-2" style="display: none;">
       <!-- 将由 JavaScript 填充 -->
     </div>
 
     <!-- 年份选择视图 -->
-    <div id="year-view-container" class="hidden grid grid-cols-3 gap-2">
+    <div id="year-view-container" class="grid grid-cols-3 gap-2" style="display: none;">
       <!-- 将由 JavaScript 填充 -->
     </div>
     
@@ -349,8 +349,13 @@ const postUrlPrefix = url("/posts/");
   
   // 显示当月所有文章
   function showMonthlyPosts(currentMonthPosts) {
+    const postsWrapper = document.getElementById('calendar-posts');
     const postsList = document.getElementById('calendar-posts-list');
     const divider = document.getElementById('calendar-posts-divider');
+
+    if (postsWrapper) {
+      postsWrapper.style.display = currentMonthPosts.length > 0 ? 'block' : 'none';
+    }
     
     if (postsList) {
       postsList.innerHTML = currentMonthPosts.map(post => {
@@ -372,6 +377,7 @@ const postUrlPrefix = url("/posts/");
   
   // 设置日历格子点击事件
   function setupClickHandlers(currentMonthPosts) {
+    const postsWrapper = document.getElementById('calendar-posts');
     const calendarDays = document.querySelectorAll('.calendar-day[data-date]');
     const postsList = document.getElementById('calendar-posts-list');
     const divider = document.getElementById('calendar-posts-divider');
@@ -407,6 +413,10 @@ const postUrlPrefix = url("/posts/");
         const posts = postDateMap[dateKey] || [];
         
         if (posts.length > 0 && postsList) {
+          if (postsWrapper) {
+            postsWrapper.style.display = 'block';
+          }
+
           // 渲染文章列表
           postsList.innerHTML = posts.map(post => {
             const date = new Date(post.published);
