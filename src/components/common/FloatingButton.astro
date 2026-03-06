@@ -33,10 +33,10 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
 <style lang="stylus">
 .floating-btn
     color: var(--primary)
-    font-size: 2.25rem
+    font-size: 1.5rem
     font-weight: bold
-    width: 4rem
-    height: 4rem
+    width: 3rem
+    height: 3rem
     
     opacity: 1
     cursor: pointer
@@ -52,7 +52,7 @@ const { id, icon, ariaLabel, onclick, class: className = "" } = Astro.props;
     
     /* 图标样式 */
     :global(svg)
-        font-size: 2rem
+        font-size: 1.6rem
         opacity: 1
         transition: opacity 0.2s ease 0.1s /* 显示时：延迟出现，通过 delay 避免"先出现icon" */
 

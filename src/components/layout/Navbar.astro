@@ -44,6 +44,8 @@ const navbarTitle = siteConfig.navbar.title || siteConfig.title;
 
 // 获取导航栏宽度配置
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
+const navbarMenuAlign = siteConfig.navbar.menuAlign ?? "center";
+const isNavbarMenuCentered = navbarMenuAlign === "center";
 
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
@@ -90,62 +92,68 @@ if (isLocalSrcLogo) {
 <div id="navbar" class="z-50" style={`--navbar-glass-blur: ${navbarBlur}px;`} data-transparent-mode={navbarTransparentMode} data-enable-blur={String(navbarEnableBlur)} data-is-home={isHomePageCheck} data-full-width={navbarWidthFull}>
     <div class:list={[
         className,
-        "overflow-visible! h-18 mx-auto flex items-center px-4",
-        navbarWidthFull ? "" : "justify-between max-w-(--page-width)"
+        "overflow-visible! h-18 px-4"
     ]}>
-        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
+        <div class="mx-auto h-full w-full max-w-(--page-width) grid grid-cols-[auto_minmax(0,1fr)_auto] items-center">
+            <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
+                <div class:list={[
+                    "flex flex-row items-center text-md",
+                    siteConfig.navbar.followTheme ? "text-(--primary)" : "dark:text-white text-black"
+                ]}>
+                                    {siteConfig.navbar.logo?.type === "icon" ? (
+                                        <Icon name={siteConfig.navbar.logo.value || "material-symbols:home-pin-outline"} class="text-[1.75rem] mb-1 mr-2" />
+                                    ) : siteConfig.navbar.logo?.type === "image" && logoImg ? (
+                                        <Picture
+                                            src={logoImg}
+                                            alt={siteConfig.navbar.logo.alt || siteConfig.title}
+                                            class="h-7 w-7 mb-1 mr-2 object-contain"
+                                            formats={getImageFormats()}
+                                            fallbackFormat={getFallbackFormat()}
+                                            widths={[28, 56]}
+                                            loading="eager"
+                                            fetchpriority="high"
+                                        />
+                                    ) : siteConfig.navbar.logo?.type === "image" ? (
+                                        <img src={url(siteConfig.navbar.logo.value)} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 object-contain" fetchpriority="high" />
+                                    ) : siteConfig.navbar.logo?.type === "url" ? (
+                                        <img src={siteConfig.navbar.logo.value} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 object-contain" fetchpriority="high" />
+                                    ) : (
+                                        <Icon name="material-symbols:home-pin-outline" class="text-[1.75rem] mb-1 mr-2" />
+                                    )}
+                    {navbarTitle}
+                </div>
+            </a>
             <div class:list={[
-                "flex flex-row items-center text-md",
-                siteConfig.navbar.followTheme ? "text-(--primary)" : "dark:text-white text-black"
+                "hidden lg:flex items-center space-x-1 col-start-2",
+                isNavbarMenuCentered
+                    ? "justify-center"
+                    : "justify-start pl-2"
             ]}>
-                                {siteConfig.navbar.logo?.type === "icon" ? (
-                                    <Icon name={siteConfig.navbar.logo.value || "material-symbols:home-pin-outline"} class="text-[1.75rem] mb-1 mr-2" />
-                                ) : siteConfig.navbar.logo?.type === "image" && logoImg ? (
-                                    <Picture
-                                        src={logoImg}
-                                        alt={siteConfig.navbar.logo.alt || siteConfig.title}
-                                        class="h-7 w-7 mb-1 mr-2 object-contain"
-                                        formats={getImageFormats()}
-                                        fallbackFormat={getFallbackFormat()}
-                                        widths={[28, 56]}
-                                        loading="eager"
-                                        fetchpriority="high"
-                                    />
-                                ) : siteConfig.navbar.logo?.type === "image" ? (
-                                    <img src={url(siteConfig.navbar.logo.value)} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 object-contain" fetchpriority="high" />
-                                ) : siteConfig.navbar.logo?.type === "url" ? (
-                                    <img src={siteConfig.navbar.logo.value} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 object-contain" fetchpriority="high" />
-                                ) : (
-                                    <Icon name="material-symbols:home-pin-outline" class="text-[1.75rem] mb-1 mr-2" />
-                                )}
-                {navbarTitle}
+                {links.map((l) => {
+                    return <DropdownMenu link={l} />;
+                })}
             </div>
-        </a>
-        <div class="hidden lg:flex items-center space-x-1">
-            {links.map((l) => {
-                return <DropdownMenu link={l} />;
-            })}
-        </div>
-        <div class:list={["flex", navbarWidthFull ? "ml-auto" : ""]}>
-            <!--<SearchPanel client:load>-->
-            <Search
-                client:load
-            />
-            {musicPlayerConfig.showInNavbar && (
-                <button aria-label={i18n(I18nKey.music)} class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="music-player-switch">
-                    <Icon name="material-symbols:music-note-rounded" class="text-[1.25rem]"></Icon>
-                </button>
-            )}
-            {hasDisplaySettings && (
-                    <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="display-settings-switch">
-                        <Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
+            <div class="flex col-start-3 justify-self-end">
+                <!--<SearchPanel client:load>-->
+                <Search
+                    client:load
+                />
+                {musicPlayerConfig.showInNavbar && (
+                    <button aria-label={i18n(I18nKey.music)} class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="music-player-switch">
+                        <Icon name="material-symbols:music-note-rounded" class="text-[1.25rem]"></Icon>
                     </button>
-            )}
-            {/* @ts-ignore */}
-            <LightDarkSwitch client:load></LightDarkSwitch>
-            <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 lg:hidden!" id="nav-menu-switch">
-                <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
-            </button>
+                )}
+                {hasDisplaySettings && (
+                        <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="display-settings-switch">
+                            <Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
+                        </button>
+                )}
+                {/* @ts-ignore */}
+                <LightDarkSwitch client:load></LightDarkSwitch>
+                <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 lg:hidden!" id="nav-menu-switch">
+                    <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
+                </button>
+            </div>
         </div>
         {musicPlayerConfig.showInNavbar && (
             <div id="music-nav-panel" class="float-panel float-panel-closed absolute transition-all right-16 p-2 pt-4.5 w-80 z-50">

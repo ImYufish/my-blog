@@ -51,7 +51,7 @@
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -62,7 +62,7 @@
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
         box-shadow: none !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -102,7 +102,7 @@
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -113,7 +113,7 @@
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div {
         backdrop-filter: none !important;
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
         box-shadow: none !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -148,7 +148,7 @@
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="full"]>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"]>div {
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
@@ -156,7 +156,7 @@
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"]>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]>div {
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
@@ -186,7 +186,7 @@
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="full"][data-is-home="true"]>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
@@ -194,7 +194,7 @@
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div {
         background: transparent !important;
-        border: none !important;
+        border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
@@ -272,9 +272,9 @@ body.wallpaper-transparent .float-panel {
 }
 
 /* ============================================
- * 小于1200px时隐藏导航栏菜单图标
+ * 小于1280px时隐藏导航栏菜单图标
  * ============================================ */
-@media (max-width: 1199px) {
+@media (max-width: 1279px) {
     .navbar-icon {
         display: none !important;
     }
