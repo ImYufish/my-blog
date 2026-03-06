@@ -575,6 +575,13 @@ export type BackgroundWallpaperConfig = {
 	};
 	// 全屏透明覆盖模式特有配置
 	overlay?: {
+		switchable?:
+			| boolean
+			| {
+					opacity?: boolean; // 是否允许用户在控制面板调整壁纸透明度
+					blur?: boolean; // 是否允许用户在控制面板调整背景模糊度
+					cardOpacity?: boolean; // 是否允许用户在控制面板调整卡片透明度
+			  }; // 透明模式参数是否可在控制面板调整，支持统一开关或分项开关
 		zIndex?: number; // 层级，确保壁纸在合适的层级显示
 		opacity?: number; // 壁纸透明度，0-1之间
 		blur?: number; // 背景模糊程度，单位px

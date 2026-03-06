@@ -631,6 +631,8 @@ export function setWallpaperMode(mode: WALLPAPER_MODE): void {
 }
 
 export function initWallpaperMode(): void {
+	// 初始化透明模式参数（透明度/模糊度/卡片透明度）
+	applyStoredOverlaySettingsToDocument();
 	const storedMode = getStoredWallpaperMode();
 	applyWallpaperModeToDocument(storedMode);
 }
@@ -647,6 +649,152 @@ export function getStoredWallpaperMode(): WALLPAPER_MODE {
 		(localStorage.getItem("wallpaperMode") as WALLPAPER_MODE) ||
 		backgroundWallpaper.mode
 	);
+}
+
+// Overlay settings functions
+function clampNumber(value: number, min: number, max: number): number {
+	return Math.min(max, Math.max(min, value));
+}
+
+export function getDefaultOverlayOpacity(): number {
+	return backgroundWallpaper.overlay?.opacity ?? 0.8;
+}
+
+export function getDefaultOverlayBlur(): number {
+	return backgroundWallpaper.overlay?.blur ?? 0;
+}
+
+export function getDefaultOverlayCardOpacity(): number {
+	return backgroundWallpaper.overlay?.cardOpacity ?? 0.6;
+}
+
+export function getStoredOverlayOpacity(): number {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
+		return getDefaultOverlayOpacity();
+	}
+	const stored = localStorage.getItem("overlayOpacity");
+	if (stored === null) {
+		return getDefaultOverlayOpacity();
+	}
+	const parsed = Number.parseFloat(stored);
+	if (Number.isNaN(parsed)) {
+		return getDefaultOverlayOpacity();
+	}
+	return clampNumber(parsed, 0, 1);
+}
+
+export function getStoredOverlayBlur(): number {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
+		return getDefaultOverlayBlur();
+	}
+	const stored = localStorage.getItem("overlayBlur");
+	if (stored === null) {
+		return getDefaultOverlayBlur();
+	}
+	const parsed = Number.parseFloat(stored);
+	if (Number.isNaN(parsed)) {
+		return getDefaultOverlayBlur();
+	}
+	return clampNumber(parsed, 0, 20);
+}
+
+export function getStoredOverlayCardOpacity(): number {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
+		return getDefaultOverlayCardOpacity();
+	}
+	const stored = localStorage.getItem("overlayCardOpacity");
+	if (stored === null) {
+		return getDefaultOverlayCardOpacity();
+	}
+	const parsed = Number.parseFloat(stored);
+	if (Number.isNaN(parsed)) {
+		return getDefaultOverlayCardOpacity();
+	}
+	return clampNumber(parsed, 0, 1);
+}
+
+export function applyOverlayOpacityToDocument(opacity: number): void {
+	if (typeof document === "undefined") {
+		return;
+	}
+	const safeOpacity = clampNumber(opacity, 0, 1);
+	const wallpaperWrapper = document.getElementById("wallpaper-wrapper");
+	if (wallpaperWrapper) {
+		wallpaperWrapper.style.setProperty(
+			"--overlay-opacity",
+			String(safeOpacity),
+		);
+	}
+}
+
+export function applyOverlayBlurToDocument(blur: number): void {
+	if (typeof document === "undefined") {
+		return;
+	}
+	const safeBlur = clampNumber(blur, 0, 20);
+	const wallpaperWrapper = document.getElementById("wallpaper-wrapper");
+	if (wallpaperWrapper) {
+		wallpaperWrapper.style.setProperty("--overlay-blur", `${safeBlur}px`);
+	}
+}
+
+export function applyOverlayCardOpacityToDocument(cardOpacity: number): void {
+	if (typeof document === "undefined") {
+		return;
+	}
+	const safeCardOpacity = clampNumber(cardOpacity, 0, 1);
+	document.documentElement.style.setProperty(
+		"--card-transparent-opacity",
+		String(safeCardOpacity),
+	);
+}
+
+export function setOverlayOpacity(opacity: number): void {
+	const safeOpacity = clampNumber(opacity, 0, 1);
+	if (
+		typeof localStorage !== "undefined" &&
+		typeof localStorage.setItem === "function"
+	) {
+		localStorage.setItem("overlayOpacity", String(safeOpacity));
+	}
+	applyOverlayOpacityToDocument(safeOpacity);
+}
+
+export function setOverlayBlur(blur: number): void {
+	const safeBlur = clampNumber(blur, 0, 20);
+	if (
+		typeof localStorage !== "undefined" &&
+		typeof localStorage.setItem === "function"
+	) {
+		localStorage.setItem("overlayBlur", String(safeBlur));
+	}
+	applyOverlayBlurToDocument(safeBlur);
+}
+
+export function setOverlayCardOpacity(cardOpacity: number): void {
+	const safeCardOpacity = clampNumber(cardOpacity, 0, 1);
+	if (
+		typeof localStorage !== "undefined" &&
+		typeof localStorage.setItem === "function"
+	) {
+		localStorage.setItem("overlayCardOpacity", String(safeCardOpacity));
+	}
+	applyOverlayCardOpacityToDocument(safeCardOpacity);
+}
+
+export function applyStoredOverlaySettingsToDocument(): void {
+	applyOverlayOpacityToDocument(getStoredOverlayOpacity());
+	applyOverlayBlurToDocument(getStoredOverlayBlur());
+	applyOverlayCardOpacityToDocument(getStoredOverlayCardOpacity());
 }
 
 // Waves animation functions

@@ -211,6 +211,10 @@ export const zh_CN: Translation = {
 	[Key.bannerSettings]: "横幅设置",
 	[Key.bannerTitle]: "首页横幅标题",
 	[Key.wavesAnimation]: "水波纹动画",
+	[Key.overlaySettings]: "透明设置",
+	[Key.overlayOpacity]: "壁纸透明度",
+	[Key.overlayBlur]: "背景模糊度",
+	[Key.overlayCardOpacity]: "卡片透明度",
 
 	// 文章布局
 	[Key.postListLayout]: "文章布局",
