@@ -28,10 +28,12 @@ import FloatingButton from "@/components/common/FloatingButton.astro";
 
     // No comment section on current page: keep hidden.
     if (!commentSection) {
+      btn.style.display = "none";
       btn.classList.add("hide");
       return;
     }
 
+    btn.style.display = "";
     btn.classList.remove("hide");
   }
 
