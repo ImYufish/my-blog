@@ -116,13 +116,6 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    touch-action: pan-x pan-y;
-    cursor: grab;
-
-    &.is-dragging {
-      cursor: grabbing;
-      user-select: none;
-    }
   }
 
   .image-grid {
@@ -162,6 +155,7 @@
 
   .horizontal-scroll-container {
     @apply my-4;
+    border-radius: calc(var(--radius-large) - 0.5rem);
   }
 
   .horizontal-scroll-container > table {
@@ -190,6 +184,24 @@
 
   tr:nth-child(even) td {
     @apply bg-(--btn-plain-bg-active);
+  }
+}
+
+body.wallpaper-transparent .custom-md {
+  .horizontal-scroll-container {
+    background-color: var(--card-bg-transparent);
+  }
+
+  th {
+    background-color: color-mix(in oklch, var(--btn-regular-bg) 72%, transparent);
+  }
+
+  td {
+    background-color: color-mix(in oklch, var(--card-bg-transparent) 92%, transparent);
+  }
+
+  tr:nth-child(even) td {
+    background-color: color-mix(in oklch, var(--btn-plain-bg-active) 68%, transparent);
   }
 }
 
