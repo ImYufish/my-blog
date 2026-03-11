@@ -699,6 +699,101 @@ function disableAnimation() {
     });
   }
 
+  // 表格横向拖拽滚动功能
+  function enableHorizontalDragScroll(container: HTMLElement) {
+    if (container.dataset.dragScrollInitialized === "true") return;
+
+    let isPointerDown = false;
+    let hasDragged = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+
+    const hasHorizontalOverflow = () =>
+      container.scrollWidth > container.clientWidth + 1;
+
+    container.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "touch") return;
+      if (event.button !== 0) return;
+      if (!hasHorizontalOverflow()) return;
+
+      isPointerDown = true;
+      hasDragged = false;
+      startX = event.clientX;
+      startScrollLeft = container.scrollLeft;
+      container.classList.add("is-dragging");
+      container.setPointerCapture?.(event.pointerId);
+    });
+
+    container.addEventListener("pointermove", (event) => {
+      if (!isPointerDown) return;
+
+      const deltaX = event.clientX - startX;
+      if (Math.abs(deltaX) > 3) {
+        hasDragged = true;
+      }
+
+      container.scrollLeft = startScrollLeft - deltaX;
+      event.preventDefault();
+    });
+
+    const stopDragging = (event?: PointerEvent) => {
+      if (!isPointerDown) return;
+      isPointerDown = false;
+      container.classList.remove("is-dragging");
+
+      if (event) {
+        container.releasePointerCapture?.(event.pointerId);
+      }
+    };
+
+    container.addEventListener("pointerup", stopDragging);
+    container.addEventListener("pointercancel", stopDragging);
+    container.addEventListener("lostpointercapture", () => {
+      isPointerDown = false;
+      container.classList.remove("is-dragging");
+    });
+
+    container.addEventListener(
+      "click",
+      (event) => {
+        if (!hasDragged) return;
+        event.preventDefault();
+        event.stopPropagation();
+        hasDragged = false;
+      },
+      true
+    );
+
+    container.dataset.dragScrollInitialized = "true";
+  }
+
+  function initHorizontalOverflowContainers() {
+    const markdownTables = document.querySelectorAll(
+      ".custom-md table:not([data-horizontal-scroll-ready])"
+    ) as NodeListOf<HTMLElement>;
+
+    markdownTables.forEach((table) => {
+      if (table.parentElement?.classList.contains("horizontal-scroll-container")) {
+        table.dataset.horizontalScrollReady = "true";
+        return;
+      }
+
+      const container = document.createElement("div");
+      container.className = "horizontal-scroll-container";
+      table.parentNode?.insertBefore(container, table);
+      container.appendChild(table);
+      table.dataset.horizontalScrollReady = "true";
+    });
+
+    const scrollableContainers = document.querySelectorAll(
+      ".custom-md .horizontal-scroll-container"
+    ) as NodeListOf<HTMLElement>;
+
+    scrollableContainers.forEach((container) => {
+      enableHorizontalDragScroll(container);
+    });
+  }
+
   function showBanner() {
     const isBannerMode = backgroundWallpaper.mode === "banner";
     if (!isBannerMode) return;
@@ -772,6 +867,7 @@ function disableAnimation() {
 
       // 只处理katex元素的容器，使用浏览器原生滚动条
       initCustomScrollbar();
+      initHorizontalOverflowContainers();
 
       // 重新初始化图标加载器
       import("@/utils/icon-loader").then(({ initIconLoader }) => {
@@ -1105,10 +1201,12 @@ function disableAnimation() {
     document.addEventListener("DOMContentLoaded", () => {
       showBanner();
       initCustomScrollbar();
+      initHorizontalOverflowContainers();
     });
   } else {
     showBanner();
     initCustomScrollbar();
+    initHorizontalOverflowContainers();
   }
 
   // 检查当前页面是否为文章详情页
