@@ -67,9 +67,7 @@
 .twikoo .el-input-group__append,
 .twikoo .el-input-group__prepend,
 .twikoo .OwO .OwO-body,
-.twikoo .tk-preview-container,
-.twikoo .tk-admin,
-.twikoo .tk-panel {
+.twikoo .tk-preview-container {
   background-color: var(--tk-bg);
   border-color: var(--tk-border);
   color: var(--tk-text);
@@ -274,7 +272,6 @@ body.wallpaper-transparent .twikoo .el-input-group__append,
 body.wallpaper-transparent .twikoo .el-input-group__prepend,
 body.wallpaper-transparent .twikoo .tk-sort-select,
 body.wallpaper-transparent .twikoo .tk-preview-container,
-body.wallpaper-transparent .twikoo .tk-panel,
 body.wallpaper-transparent .twikoo .OwO .OwO-body {
   background-color: var(--tk-bg);
   backdrop-filter: blur(12px);
