@@ -105,7 +105,11 @@ const isPostPage = Astro.url.pathname.includes("/posts/");
 const isComponentInitiallyVisible = (
 	config: WidgetComponentConfig | MobileBottomComponentConfig,
 ): boolean => {
-	if ("showOnPostPage" in config && config.showOnPostPage === false && isPostPage) {
+	if (
+		"showOnPostPage" in config &&
+		config.showOnPostPage === false &&
+		isPostPage
+	) {
 		return false;
 	}
 	if (
@@ -212,7 +216,7 @@ const hasInitiallyVisibleTopComponents = topComponents.some(
 						<div
 							id={`${side}-sidebar-sticky`}
 							class:list={[
-								"transition-all duration-700 flex flex-col w-full mt-0 gap-4",
+								"flex flex-col w-full mt-0 gap-4",
 								"sticky",
 								hasInitiallyVisibleTopComponents ? "top-4" : "top-0",
 							]}
