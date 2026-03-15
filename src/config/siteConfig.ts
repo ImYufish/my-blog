@@ -80,12 +80,14 @@ export const siteConfig: SiteConfig = {
 		},
 		// 导航栏标题
 		title: "Firefly",
-		// 全宽导航栏，导航栏是否占满屏幕宽度，true：占满，false：不占满
+		// 全宽导航栏，导航栏是否占满屏幕宽度
 		widthFull: false,
 		// 导航菜单对齐方式，left：左对齐，center：居中
 		menuAlign: "center",
 		// 导航栏图标和标题是否跟随主题色
 		followTheme: false,
+		// 导航栏是否固定在顶部并始终可见
+		stickyNavbar: true,
 	},
 
 	// 站点开始日期，用于统计运行天数
