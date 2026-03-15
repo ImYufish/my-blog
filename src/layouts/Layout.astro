@@ -103,14 +103,14 @@ const siteLang = lang.replace("_", "-");
     {siteConfig.analytics?.microsoftClarityId && (
             <MicrosoftClarity clarityId={siteConfig.analytics.microsoftClarityId} />
     )}
-    {siteConfig.analytics?.la51AnalyticsId && (
+        {siteConfig.analytics?.la51Analytics?.Id && (
             <La51Analytics
-                    analyticsId={siteConfig.analytics.la51AnalyticsId}
-                    sdkUrl={siteConfig.analytics.la51Config?.sdkUrl}
-                    ck={siteConfig.analytics.la51Config?.ck}
-                    autoTrack={siteConfig.analytics.la51Config?.autoTrack}
-                    hashMode={siteConfig.analytics.la51Config?.hashMode}
-                    screenRecord={siteConfig.analytics.la51Config?.screenRecord}
+            analyticsId={siteConfig.analytics.la51Analytics.Id}
+            sdkUrl={siteConfig.analytics.la51Analytics?.sdkUrl}
+            ck={siteConfig.analytics.la51Analytics?.ck}
+            autoTrack={siteConfig.analytics.la51Analytics?.autoTrack}
+            hashMode={siteConfig.analytics.la51Analytics?.hashMode}
+            screenRecord={siteConfig.analytics.la51Analytics?.screenRecord}
             />
     )}
 
