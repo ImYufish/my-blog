@@ -112,7 +112,7 @@ export type SiteConfig = {
 		microsoftClarityId?: string; // Microsoft Clarity ID
 		umamiAnalytics?: {
 			websiteId?: string; // Umami Website ID
-			scriptUrl?: string; // Umami 脚本地址，支持自建服务
+			scriptUrl?: string; // Umami JS地址，支持使用自建
 		};
 		la51Analytics?: {
 			Id?: string; // 51la 统计 ID
