@@ -2,6 +2,7 @@
 import GoogleAnalytics from "@components/analytics/GoogleAnalytics.astro";
 import La51Analytics from "@components/analytics/La51Analytics.astro";
 import MicrosoftClarity from "@components/analytics/MicrosoftClarity.astro";
+import UmamiAnalytics from "@components/analytics/UmamiAnalytics.astro";
 import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontManager from "@components/features/FontManager.astro";
 import MusicManager from "@components/features/MusicManager.astro";
@@ -103,6 +104,12 @@ const siteLang = lang.replace("_", "-");
     {siteConfig.analytics?.microsoftClarityId && (
             <MicrosoftClarity clarityId={siteConfig.analytics.microsoftClarityId} />
     )}
+        {siteConfig.analytics?.umamiAnalytics?.websiteId && (
+          <UmamiAnalytics
+          websiteId={siteConfig.analytics.umamiAnalytics.websiteId}
+          scriptUrl={siteConfig.analytics.umamiAnalytics.scriptUrl}
+          />
+        )}
         {siteConfig.analytics?.la51Analytics?.Id && (
             <La51Analytics
             analyticsId={siteConfig.analytics.la51Analytics.Id}

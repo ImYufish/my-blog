@@ -166,6 +166,13 @@ export const siteConfig: SiteConfig = {
 		googleAnalyticsId: "",
 		// Microsoft Clarity ID
 		microsoftClarityId: "",
+		// Umami 统计配置
+		umamiAnalytics: {
+			// Umami Website ID
+			websiteId: "",
+			// Umami JS地址，支持使用自建
+			scriptUrl: "https://cloud.umami.is/script.js",
+		},
 		// 51la 统计配置
 		la51Analytics: {
 			// 51la 统计 ID
