@@ -229,21 +229,30 @@ if (
 	updatedGridConfig.hasLeftComponents &&
 	updatedGridConfig.hasRightComponents
 ) {
-	// 双侧栏：平板端跨2列，桌面端在中间列
-	footerClass.push("md:col-span-2 xl:col-start-2 xl:col-span-1");
+	// 双侧栏：Footer 在平板与桌面都跟随内容列
+	if (updatedGridConfig.tabletSidebar === "right") {
+		footerClass.push(
+			"md:col-start-1 md:col-span-1 xl:col-start-2 xl:col-span-1",
+		);
+	} else {
+		footerClass.push(
+			"md:col-start-2 md:col-span-1 xl:col-start-2 xl:col-span-1",
+		);
+	}
 } else if (
 	updatedGridConfig.hasLeftComponents &&
 	!updatedGridConfig.hasRightComponents
 ) {
-	footerClass.push("md:col-span-2 xl:col-start-2 xl:col-span-1");
+	// 仅左侧栏：内容列在第2列
+	footerClass.push("md:col-start-2 md:col-span-1 xl:col-start-2 xl:col-span-1");
 } else if (
 	!updatedGridConfig.hasLeftComponents &&
 	updatedGridConfig.hasRightComponents
 ) {
-	// 仅右侧栏：平板端跨2列，内容在第1列
-	footerClass.push("md:col-span-2 md:col-start-1 xl:col-start-1 xl:col-span-1");
+	// 仅右侧栏：内容列在第1列
+	footerClass.push("md:col-start-1 md:col-span-1 xl:col-start-1 xl:col-span-1");
 } else {
-	footerClass.push("xl:col-start-1 xl:col-span-1");
+	footerClass.push("md:col-start-1 md:col-span-1 xl:col-start-1 xl:col-span-1");
 }
 
 const footerClassName = footerClass.join(" ");
