@@ -21,14 +21,14 @@
 > 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
-[![Afdian Sponsor](https://img.shields.io/badge/Afdian-Поддержать%20автора-ff69b4.svg)](https://afdian.com/a/cuteleaf)
+[![Afdian Sponsor](https://img.shields.io/badge/Afdian-Поддержать%20автора-ff69b4.svg)](https://ifdian.net/a/cuteleaf)
 
 </div>
 
 
 ---
 📖 README:
-**[简体中文](../README.zh.md)** | **[繁體中文](README.zh-TW.md)** | **[English](../README.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)** 
+**[简体中文](../README.md)** | **[繁體中文](README.zh-TW.md)** | **[English](../README.en.md)** | **[日本語](README.ja.md)** | **[Русский](README.ru.md)** 
 
 🚀 Быстрое руководство:
 [**🖥️Демо**](https://firefly.cuteleaf.cn/) /
