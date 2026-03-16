@@ -156,6 +156,9 @@ export default defineConfig({
 				const url = new URL(page);
 				const pathname = url.pathname;
 
+				if (pathname === "/friends/" && !siteConfig.pages.friends) {
+					return false;
+				}
 				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {
 					return false;
 				}

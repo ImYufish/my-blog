@@ -128,6 +128,8 @@ export const siteConfig: SiteConfig = {
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
 	// bangumi的数据为编译时获取的，所以不是实时数据，请配置bangumi.userId
 	pages: {
+		// 友链页面开关
+		friends: true,
 		// 赞助页面开关
 		sponsor: true,
 		// 留言板页面开关，需要配置评论系统
