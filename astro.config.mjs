@@ -265,6 +265,7 @@ export default defineConfig({
 			// CSS 优化
 			cssCodeSplit: true,
 			cssMinify: "esbuild",
+			assetsInlineLimit: 4096,
 		},
 	},
 });
