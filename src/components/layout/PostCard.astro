@@ -190,7 +190,7 @@ const { remarkPluginFrontmatter } = await render(entry);
         aria-label={title}
         class:list={[
           "post-card-enter-btn",
-          "hidden md:flex btn-regular w-13",
+          "flex btn-regular w-13",
           "absolute right-3 top-3 bottom-3 rounded-xl bg-(--enter-btn-bg)",
           "hover:bg-(--enter-btn-bg-hover) active:bg-(--enter-btn-bg-active) active:scale-95",
         ]}
@@ -251,11 +251,11 @@ const { remarkPluginFrontmatter } = await render(entry);
   }
 
   :global(.list-mode) .no-cover .post-card-content {
-    width: 100% !important;
+    width: calc(100% - 52px - 12px) !important;
   }
 
   :global(.list-mode) .post-card-enter-btn {
-    display: none !important;
+    display: flex !important;
   }
 
   /* 移动端列表模式 - 隐藏tags，只在有空间时显示 */
@@ -357,6 +357,10 @@ const { remarkPluginFrontmatter } = await render(entry);
   }
   :global(.grid-mode) .has-cover .post-card-title::before {
     top: 1.3rem !important;
+  }
+
+  :global(.grid-mode) .post-card-enter-btn {
+    display: none !important;
   }
 
 </style>
