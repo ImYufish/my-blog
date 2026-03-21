@@ -93,6 +93,7 @@ export type SiteConfig = {
 	// 文章列表布局配置
 	postListLayout: {
 		defaultMode: "list" | "grid"; // 默认布局模式：list=列表模式，grid=网格模式
+		mobileDefaultMode?: "list" | "grid"; // 移动端默认布局模式（视口宽度<780px时使用），不设置则跟随 defaultMode
 		allowSwitch: boolean; // 是否允许用户切换布局
 		grid: {
 			// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
