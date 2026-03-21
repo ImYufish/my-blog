@@ -117,6 +117,7 @@ const { remarkPluginFrontmatter } = await render(entry);
         "transition text-75 mb-3.5 md:pr-4 description grow",
         { "line-clamp-2": !description },
       ]}
+      title={description || remarkPluginFrontmatter.excerpt}
     >
       {description || remarkPluginFrontmatter.excerpt}
     </div>
