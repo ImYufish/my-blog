@@ -229,7 +229,7 @@ const { remarkPluginFrontmatter } = await render(entry);
   :global(.list-mode) .post-card-title {
     font-size: 1.125rem !important;
     line-height: 1.75rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   :global(.list-mode) .post-card-title::before {
@@ -238,7 +238,7 @@ const { remarkPluginFrontmatter } = await render(entry);
 
   :global(.list-mode) .description {
     font-size: 0.8rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0.75rem !important;
     -webkit-line-clamp: 1 !important;
     line-clamp: 1 !important;
     display: -webkit-box !important;
@@ -359,8 +359,12 @@ const { remarkPluginFrontmatter } = await render(entry);
     top: 1.3rem !important;
   }
 
+  :global(.grid-mode) .no-cover .post-card-content {
+    width: calc(100% - 52px - 12px) !important;
+  }
+
   :global(.grid-mode) .post-card-enter-btn {
-    display: none !important;
+    display: flex !important;
   }
 
 </style>

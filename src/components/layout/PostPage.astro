@@ -334,8 +334,12 @@ const initialLayoutClass =
     .list-mode .post-meta-root {
       transform: scale(0.72) !important;
       transform-origin: top left !important;
-      margin-bottom: -0.5rem !important;
+      margin-bottom: 0.25rem !important;
       width: 139% !important;
+    }
+    .list-mode :global(.post-meta) {
+      margin-bottom: 0.25rem !important;
+      gap: 0.25rem !important;
     }
   }
 </style>
