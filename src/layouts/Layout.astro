@@ -1013,11 +1013,14 @@ function disableAnimation() {
         toc.classList.add("toc-not-ready");
       }
 
-      // 确保页面滚动到顶部，使用平滑滚动避免侧边栏闪烁
-      window.scrollTo({
+      // 确保页面滚动到顶部，桌面端使用平滑滚动避免侧边栏闪烁，但移动端不使用平滑滚动以避免闪烁问题
+      const shouldUseSmoothScroll = window.innerWidth >= 768;
+      if (shouldUseSmoothScroll) {
+        window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
+      }
     });
     window.swup.hooks.on("page:view", () => {
       // 更新网格列数和侧边栏组件可见性
