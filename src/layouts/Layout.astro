@@ -839,12 +839,15 @@ function disableAnimation() {
       const targetHref = el.getAttribute("href") || "";
       const targetPathname = (() => {
         try {
-          return new URL(targetHref, window.location.origin).pathname;
+          return new URL(targetHref, window.location.href).pathname;
         } catch {
           return targetHref;
         }
       })();
       const isSamePage = pathsEqual(targetPathname, window.location.pathname);
+      if (isSamePage) {
+        document.documentElement.classList.remove("is-page-transitioning");
+      }
       if (!isSamePage) {
         // 添加页面切换保护，防止导航栏闪烁
         document.documentElement.classList.add("is-page-transitioning");
