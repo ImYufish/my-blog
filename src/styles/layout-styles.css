@@ -558,6 +558,18 @@ html.is-page-transitioning .banner-home-text-overlay {
     contain: none;
     /* 精确对齐 */
     margin-bottom: -1px;
+    /* 切页期间尽量保持独立合成，避免被主内容动画拖慢 */
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+html.is-page-transitioning #header-waves,
+html.is-page-transitioning #header-waves svg,
+html.is-page-transitioning #header-waves use {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
 }
 
 /* 主题切换时的额外保护 */
