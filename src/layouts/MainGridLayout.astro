@@ -408,6 +408,22 @@ const bannerCarouselInterval = Math.max(
 
             if (mobileCount <= 1 && desktopCount <= 1) return;
 
+            // 保存 SSR 初始第一张图的 HTML，供后续轮播收集完整帧序列使用
+            if (typeof window.__bannerInitialFrameHtml === 'undefined') {
+                window.__bannerInitialFrameHtml = {};
+            }
+
+            function rememberInitialFrame(slotClass) {
+                var slot = container.querySelector('.' + slotClass);
+                if (!slot) return;
+                if (!window.__bannerInitialFrameHtml[slotClass]) {
+                    window.__bannerInitialFrameHtml[slotClass] = slot.innerHTML;
+                }
+            }
+
+            rememberInitialFrame('banner-image-slot-mobile');
+            rememberInitialFrame('banner-image-slot-desktop');
+
             // F5 刷新重置，Swup 切换保留
             if (typeof window.__bannerRandomIndex === 'undefined') {
                 window.__bannerRandomIndex = {
@@ -471,8 +487,15 @@ const bannerCarouselInterval = Math.max(
             function collectFrames(slotClass, tplClass) {
                 if (window.__bannerCarouselFrames[slotClass]) return;
                 var frames = [];
+                var initialFrame =
+                    window.__bannerInitialFrameHtml &&
+                    window.__bannerInitialFrameHtml[slotClass];
                 var slot = container.querySelector('.' + slotClass);
-                if (slot) frames.push(slot.innerHTML);
+                if (initialFrame) {
+                    frames.push(initialFrame);
+                } else if (slot) {
+                    frames.push(slot.innerHTML);
+                }
                 var tpls = container.querySelectorAll('.' + tplClass);
                 for (var i = 0; i < tpls.length; i++) {
                     // 直接读取 template 的 innerHTML，不创建真实 DOM 节点，避免触发图片加载
