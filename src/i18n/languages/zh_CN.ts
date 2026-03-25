@@ -211,6 +211,7 @@ export const zh_CN: Translation = {
 	// 横幅设置
 	[Key.bannerSettings]: "横幅设置",
 	[Key.bannerTitle]: "首页横幅标题",
+	[Key.bannerCarousel]: "横幅轮播",
 	[Key.wavesAnimation]: "水波纹动画",
 	[Key.overlaySettings]: "透明设置",
 	[Key.overlayOpacity]: "壁纸透明度",

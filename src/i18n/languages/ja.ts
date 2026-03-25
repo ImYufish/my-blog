@@ -218,6 +218,7 @@ export const ja: Translation = {
 	// バナー設定
 	[Key.bannerSettings]: "バナー設定",
 	[Key.bannerTitle]: "ホームバナータイトル",
+	[Key.bannerCarousel]: "バナーカルーセル",
 	[Key.wavesAnimation]: "波アニメーション",
 	[Key.overlaySettings]: "透明設定",
 	[Key.overlayOpacity]: "壁紙の透明度",

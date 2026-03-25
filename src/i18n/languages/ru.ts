@@ -220,6 +220,7 @@ export const ru: Translation = {
 	// Настройки баннера
 	[Key.bannerSettings]: "Настройки баннера",
 	[Key.bannerTitle]: "Заголовок главного баннера",
+	[Key.bannerCarousel]: "Карусель баннера",
 	[Key.wavesAnimation]: "Анимация волн",
 	[Key.overlaySettings]: "Настройки прозрачности",
 	[Key.overlayOpacity]: "Прозрачность обоев",

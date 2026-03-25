@@ -213,6 +213,7 @@ export const zh_TW: Translation = {
 	// 橫幅設置
 	[Key.bannerSettings]: "橫幅設置",
 	[Key.bannerTitle]: "首頁橫幅標題",
+	[Key.bannerCarousel]: "橫幅輪播",
 	[Key.wavesAnimation]: "水波紋動畫",
 	[Key.overlaySettings]: "透明設定",
 	[Key.overlayOpacity]: "桌布透明度",

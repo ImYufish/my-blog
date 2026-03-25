@@ -579,6 +579,11 @@ export type BackgroundWallpaperConfig = {
 			enableBlur?: boolean; // 是否开启毛玻璃模糊效果
 			blur?: number; // 毛玻璃模糊度
 		};
+		carousel?: {
+			enable: boolean; // 是否启用横幅图片轮播
+			interval?: number; // 轮播间隔时间，单位毫秒
+			switchable?: boolean; // 是否允许用户通过控制面板切换横幅轮播
+		};
 		waves?: {
 			enable:
 				| boolean
