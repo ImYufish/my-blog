@@ -285,8 +285,8 @@ export const zh_CN: Translation = {
 	[Key.scanToRead]: "扫码阅读文章",
 
 	// 代码块折叠配置
-	[Key.codeCollapsibleShowMore]: "显示更多",
-	[Key.codeCollapsibleShowLess]: "显示更少",
+	[Key.codeCollapsibleShowMore]: "展开",
+	[Key.codeCollapsibleShowLess]: "收起",
 	[Key.codeCollapsibleExpanded]: "代码块已展开",
 	[Key.codeCollapsibleCollapsed]: "代码块已折叠",
 

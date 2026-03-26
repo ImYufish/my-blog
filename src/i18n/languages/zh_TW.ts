@@ -287,8 +287,8 @@ export const zh_TW: Translation = {
 	[Key.scanToRead]: "掃碼閱讀文章",
 
 	// 代碼區塊折疊配置
-	[Key.codeCollapsibleShowMore]: "顯示更多",
-	[Key.codeCollapsibleShowLess]: "顯示更少",
+	[Key.codeCollapsibleShowMore]: "展開",
+	[Key.codeCollapsibleShowLess]: "收起",
 	[Key.codeCollapsibleExpanded]: "代碼區塊已展開",
 	[Key.codeCollapsibleCollapsed]: "代碼區塊已折疊",
 

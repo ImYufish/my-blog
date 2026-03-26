@@ -293,8 +293,8 @@ export const ja: Translation = {
 	[Key.scanToRead]: "QRコードで読む",
 
 	// コードブロック折りたたみ設定
-	[Key.codeCollapsibleShowMore]: "もっと表示",
-	[Key.codeCollapsibleShowLess]: "少なく表示",
+	[Key.codeCollapsibleShowMore]: "展開する",
+	[Key.codeCollapsibleShowLess]: "折りたたむ",
 	[Key.codeCollapsibleExpanded]: "コードブロックが展開されました",
 	[Key.codeCollapsibleCollapsed]: "コードブロックが折りたたまれました",
 
