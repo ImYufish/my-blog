@@ -54,8 +54,15 @@ const hasCover =
 const coverWidth = "30%";
 
 const showTags = siteConfig.postListLayout.showTags;
+const descriptionLines = Math.max(
+	0,
+	Math.trunc(siteConfig.postListLayout.descriptionLines ?? 2),
+);
+const descriptionClampLines = String(descriptionLines);
+const shouldClampDescription = descriptionLines > 0;
 
 const { remarkPluginFrontmatter } = await render(entry);
+const descriptionText = description || remarkPluginFrontmatter.excerpt || "";
 ---
 
 <div
@@ -114,11 +121,11 @@ const { remarkPluginFrontmatter } = await render(entry);
     <div
       class:list={[
         "transition text-75 md:pr-4 description grow",
-        { "line-clamp-2": !description },
+        { "description-clamped": shouldClampDescription },
       ]}
-      title={description || remarkPluginFrontmatter.excerpt}
+      title={descriptionText}
     >
-      {description || remarkPluginFrontmatter.excerpt}
+      {descriptionText}
     </div>
 
     <!-- tags -->
@@ -201,7 +208,15 @@ const { remarkPluginFrontmatter } = await render(entry);
   }
 </div>
 
-<style define:vars={{ coverWidth }}>
+<style define:vars={{ coverWidth, descriptionClampLines }}>
+  .description-clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: var(--descriptionClampLines);
+    line-clamp: var(--descriptionClampLines);
+  }
+
   /* === List Mode Mobile Styles === */
   /* 移动端列表模式：封面在右侧，内容缩小 */
   :global(.list-mode) .post-card-wrapper {
@@ -284,12 +299,7 @@ const { remarkPluginFrontmatter } = await render(entry);
     }
 
     :global(.list-mode) .description {
-      display: -webkit-box !important;
-      -webkit-box-orient: vertical !important;
-      overflow: hidden !important;
       font-size: inherit !important;
-      -webkit-line-clamp: 2 !important;
-      line-clamp: 2 !important;
     }
 
     :global(.list-mode) .stats a {
