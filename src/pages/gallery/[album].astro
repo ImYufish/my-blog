@@ -125,7 +125,7 @@ const columnWidth = galleryConfig.columnWidth || 240;
       {photos.length > 0 ? (
         <div
           class="gallery-masonry"
-          style={`--col-width: ${columnWidth}px;`}
+          style={`column-count: 2; column-gap: 0.75rem; --col-width: ${columnWidth}px;`}
         >
           {photos.map((photo) => (
             <PhotoCard src={photo} albumId={albumMeta.id} />
@@ -141,13 +141,11 @@ const columnWidth = galleryConfig.columnWidth || 240;
   </div>
 
   <style is:global>
-    .gallery-masonry {
-      column-width: var(--col-width, 240px);
-      column-gap: 0.75rem;
-    }
-
-    .gallery-masonry .gallery-photo-card {
-      break-inside: avoid;
+    @media (min-width: 640px) {
+      .gallery-masonry {
+        column-width: var(--col-width, 240px) !important;
+        column-count: auto !important;
+      }
     }
   </style>
 </MainGridLayout>
