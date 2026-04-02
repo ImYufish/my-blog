@@ -141,9 +141,7 @@ const isHomePaginationRoute =
 	/^\/\d+$/.test(currentPathname) ||
 	(homePath !== "" &&
 		new RegExp(`^${escapedHomePath}\\/\\d+$`).test(currentPathname));
-const shouldRenderCategoryBar =
-	!!siteConfig.categoryBar &&
-	(isHomeRoute || isHomePaginationRoute || isArchiveRoute);
+const shouldRenderCategoryBar = !!siteConfig.categoryBar;
 
 // 检查是否在文章详情页
 const isPostPage = !!postSlug;
@@ -891,9 +889,8 @@ const bannerCarouselInterval = Math.max(
                     
             {/* 主内容区包装器 - 包含静态栏位和swup容器，作为单个grid item */}
             <div class={staticBarClass}>
-                {/* 分类导航栏 - 仅在首页、首页分页和归档页渲染 */}
-                {shouldRenderCategoryBar && <CategoryBar />}
-
+                {/* 分类导航栏 - 始终渲染，非首页时初始隐藏，由 JS 控制后续显示/隐藏 */}
+                {shouldRenderCategoryBar && <div id="category-bar-wrapper" style={!(isHomeRoute || isHomePaginationRoute || isArchiveRoute) ? "display:none" : undefined}><CategoryBar /></div>}
                 {/* 主内容区 - 始终渲染，确保 Swup 容器存在 */}
                 <main id="swup-container" class="transition-main">
                 {/* 携带网格布局类名，用于JS更新父容器 */}
