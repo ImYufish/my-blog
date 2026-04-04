@@ -5,13 +5,25 @@ import { Icon } from "astro-icon/components";
 import { getCategoryList, getSortedPostsList } from "@/utils/content-utils";
 import { url } from "@/utils/url-utils";
 
+interface Props {
+	currentPostCategory?: string;
+}
+
+const { currentPostCategory } = Astro.props as Props;
+
 const categories = await getCategoryList();
 const totalPosts = (await getSortedPostsList()).length;
 const homeUrl = url("/");
 const archiveUrl = url("/archive/");
 ---
 
-<div class="card-base category-bar p-3 onload-animation" id="category-bar" data-home-path={homeUrl} data-archive-path={archiveUrl}>
+<div
+  class="card-base category-bar p-3 onload-animation"
+  id="category-bar"
+  data-home-path={homeUrl}
+  data-archive-path={archiveUrl}
+  data-current-post-category={currentPostCategory || ""}
+>
   <div class="category-bar-inner flex gap-2">
     <a
       href={homeUrl}
@@ -115,6 +127,22 @@ const archiveUrl = url("/archive/");
     border-color: var(--primary);
     color: white;
   }
+  .category-pill[data-soft-active] {
+    border-color: var(--line-divider);
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    color: color-mix(in srgb, var(--primary) 72%, var(--btn-content));
+  }
+  .category-pill[data-soft-active]:hover {
+    border-color: var(--line-divider);
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: color-mix(in srgb, var(--primary) 82%, var(--btn-content));
+  }
+  .category-pill[data-soft-active][data-active],
+  .category-pill[data-soft-active][data-active]:hover {
+    border-color: var(--line-divider);
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: color-mix(in srgb, var(--primary) 82%, var(--btn-content));
+  }
   .category-pill[data-active]:hover {
     background: var(--primary);
     border-color: var(--primary);
@@ -129,16 +157,10 @@ const archiveUrl = url("/archive/");
     const archivePath = (bar.getAttribute("data-archive-path") || "/archive").replace(/\/$/, "");
     const isHome = pathname === homePath || pathname === "" || pathname === "/";
     const isArchive = pathname === archivePath;
-    const escapedHomePath = homePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    // 分页页面（如 /2/, /3/）也属于首页的延续
-    const isHomePagination =
-      /^\/\d+$/.test(pathname) ||
-      (homePath !== "" && new RegExp(`^${escapedHomePath}\\/\\d+$`).test(pathname));
 
     return {
       isHome,
       isArchive,
-      isHomePagination,
       activeCategory: currentUrl.searchParams.get("category") || "",
       hasTag: currentUrl.searchParams.has("tag"),
       hasUncategorized: currentUrl.searchParams.has("uncategorized"),
@@ -146,23 +168,17 @@ const archiveUrl = url("/archive/");
   }
 
   function setActiveCategory(bar: HTMLElement, currentUrl: URL) {
-    const { isHome, isArchive, isHomePagination, activeCategory, hasTag, hasUncategorized } =
+    const { isHome, isArchive, activeCategory, hasTag, hasUncategorized } =
       getCategoryBarState(bar, currentUrl);
-
-    // 在首页、首页分页和归档页显示
-    const wrapper = document.getElementById("category-bar-wrapper");
-    const target = (wrapper || bar) as HTMLElement;
-    target.style.visibility = "";
-    if (!isHome && !isHomePagination && !isArchive) {
-      target.style.display = "none";
-      return;
-    }
-    target.style.display = "";
+    const postCategory = (bar.getAttribute("data-current-post-category") || "").trim();
 
     const pills = bar.querySelectorAll<HTMLAnchorElement>(".category-pill");
-    pills.forEach((pill) => pill.removeAttribute("data-active"));
+    pills.forEach((pill) => {
+      pill.removeAttribute("data-active");
+      pill.removeAttribute("data-soft-active");
+    });
 
-    if (isHome || isHomePagination) {
+    if (isHome) {
       bar.querySelector<HTMLAnchorElement>('.category-pill[data-category-name=""]')
         ?.setAttribute("data-active", "");
       return;
@@ -180,6 +196,15 @@ const archiveUrl = url("/archive/");
     if (isArchive && !hasTag && !hasUncategorized) {
       bar.querySelector<HTMLAnchorElement>('.category-pill[data-category-name="__archive__"]')
         ?.setAttribute("data-active", "");
+      return;
+    }
+
+    if (postCategory) {
+      pills.forEach((pill) => {
+        if (pill.getAttribute("data-category-name") === postCategory) {
+          pill.setAttribute("data-soft-active", "");
+        }
+      });
     }
   }
 
@@ -195,6 +220,12 @@ const archiveUrl = url("/archive/");
   function updateCategoryBar(currentUrl = new URL(window.location.href)) {
     const bar = document.getElementById("category-bar");
     if (!bar) return;
+
+    const swupContainer = document.getElementById("swup-container");
+    if (swupContainer) {
+      const currentPostCategory = swupContainer.getAttribute("data-current-post-category") || "";
+      bar.setAttribute("data-current-post-category", currentPostCategory);
+    }
 
     setActiveCategory(bar, currentUrl);
     scrollActiveCategoryIntoView(bar);
@@ -286,25 +317,20 @@ const archiveUrl = url("/archive/");
   });
   document.addEventListener("swup:contentReplaced", () => {
     updateCategoryBar();
+    // 某些 swup 生命周期下 URL/DOM 状态同步稍晚，下一帧再校正一次避免状态残留
+    requestAnimationFrame(() => {
+      updateCategoryBar();
+    });
   });
 
-  // 在 Swup 导航时控制 CategoryBar 显示/隐藏
+  // 在 Swup 导航时提前更新状态，避免切换期间激活态闪烁
   function setupSwupEarlyUpdate() {
     if (!window.swup?.hooks) return;
-    // visit:start: 仅用 visibility 隐藏，保留占位避免内容跳动
     window.swup.hooks.on("visit:start", (visit: any) => {
       const bar = document.getElementById("category-bar");
       if (!bar) return;
       const targetUrl = new URL(visit.to.url, window.location.href);
-      const { isHome, isHomePagination, isArchive } = getCategoryBarState(bar, targetUrl);
-      const wrapper = document.getElementById("category-bar-wrapper");
-      const target = (wrapper || bar) as HTMLElement;
-      if (!isHome && !isHomePagination && !isArchive) {
-        target.style.visibility = "hidden";
-      } else {
-        target.style.visibility = "";
-        target.style.display = "";
-      }
+      setActiveCategory(bar, targetUrl);
     });
   }
   if (window.swup?.hooks) {
