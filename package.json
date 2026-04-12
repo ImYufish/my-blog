@@ -1,7 +1,7 @@
 {
   "name": "firefly",
   "type": "module",
-  "version": "6.8.11",
+  "version": "6.9.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -38,7 +38,7 @@
     "@iconify/utils": "^3.1.0",
     "@swup/astro": "^1.8.0",
     "@tailwindcss/typography": "^0.5.16",
-    "astro": "6.0.8",
+    "astro": "6.1.5",
     "astro-expressive-code": "^0.41.7",
     "astro-icon": "^1.1.5",
     "dayjs": "^1.11.20",
