@@ -209,7 +209,9 @@ const archiveUrl = url("/archive/");
   }
 
   function scrollActiveCategoryIntoView(bar: HTMLElement, behavior: ScrollBehavior = "smooth") {
-    const activePill = bar.querySelector<HTMLAnchorElement>('.category-pill[data-active]');
+    const activePill =
+      bar.querySelector<HTMLAnchorElement>('.category-pill[data-active]') ||
+      bar.querySelector<HTMLAnchorElement>('.category-pill[data-soft-active]');
     const scroll = bar.querySelector<HTMLElement>(".category-scroll");
     if (!activePill || !scroll) return;
 
