@@ -151,6 +151,8 @@ const archiveUrl = url("/archive/");
 </style>
 
 <script>
+  let delayedCategoryBarScrollTimer: number | undefined;
+
   function getCategoryBarState(bar: HTMLElement, currentUrl: URL) {
     const pathname = currentUrl.pathname.replace(/\/$/, "");
     const homePath = (bar.getAttribute("data-home-path") || "/").replace(/\/$/, "");
@@ -219,7 +221,17 @@ const archiveUrl = url("/archive/");
     scroll.scrollTo({ left: Math.max(0, scrollLeft), behavior });
   }
 
-  function updateCategoryBar(currentUrl = new URL(window.location.href)) {
+  function shouldDeferCategoryScroll(bar: HTMLElement, currentUrl: URL) {
+    const { isHome } = getCategoryBarState(bar, currentUrl);
+    const isMobile = window.innerWidth < 1024;
+    const isBannerMode = document.body.classList.contains("enable-banner");
+    return isMobile && isBannerMode && !isHome;
+  }
+
+  function updateCategoryBar(
+    currentUrl = new URL(window.location.href),
+    options: { scrollBehavior?: ScrollBehavior; deferScroll?: boolean } = {},
+  ) {
     const bar = document.getElementById("category-bar");
     if (!bar) return;
 
@@ -230,7 +242,30 @@ const archiveUrl = url("/archive/");
     }
 
     setActiveCategory(bar, currentUrl);
-    scrollActiveCategoryIntoView(bar);
+
+    const deferScroll = options.deferScroll ?? shouldDeferCategoryScroll(bar, currentUrl);
+    const scrollBehavior = options.scrollBehavior ?? (deferScroll ? "auto" : "smooth");
+
+    if (delayedCategoryBarScrollTimer) {
+      window.clearTimeout(delayedCategoryBarScrollTimer);
+      delayedCategoryBarScrollTimer = undefined;
+    }
+
+    if (deferScroll) {
+      // 等主内容上移完成后再定位分类，避免出现“先横向滚动后上移”的卡顿观感。
+      delayedCategoryBarScrollTimer = window.setTimeout(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            scrollActiveCategoryIntoView(bar, scrollBehavior);
+            updateScrollHint();
+          });
+        });
+      }, 220);
+      return;
+    }
+
+    scrollActiveCategoryIntoView(bar, scrollBehavior);
+    updateScrollHint();
   }
 
   function initCategoryBarInteractions() {
@@ -271,6 +306,12 @@ const archiveUrl = url("/archive/");
 
     const scroll = bar.querySelector<HTMLElement>(".category-scroll");
     if (!scroll) return;
+
+    if (scroll.dataset.featuresBound === "true") {
+      updateScrollHint();
+      return;
+    }
+    scroll.dataset.featuresBound = "true";
 
     // 鼠标滚轮横向滚动
     scroll.addEventListener("wheel", (e) => {
