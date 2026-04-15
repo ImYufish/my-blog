@@ -405,6 +405,22 @@ onMount(() => {
 	};
 });
 
+onMount(() => {
+	const handleWallpaperModeChange = (event: Event) => {
+		const customEvent = event as CustomEvent<{ mode: WALLPAPER_MODE }>;
+		wallpaperMode = customEvent.detail.mode;
+	};
+
+	window.addEventListener("wallpaperModeChange", handleWallpaperModeChange);
+
+	return () => {
+		window.removeEventListener(
+			"wallpaperModeChange",
+			handleWallpaperModeChange,
+		);
+	};
+});
+
 $effect(() => {
 	if (hue || hue === 0) {
 		setHue(hue);
