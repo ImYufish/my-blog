@@ -75,6 +75,7 @@ export const ru: Translation = {
 	[Key.systemMode]: "Система",
 
 	[Key.more]: "Ещё",
+	[Key.collapse]: "Свернуть",
 
 	[Key.author]: "Автор",
 	[Key.publishedAt]: "Опубликовано",
