@@ -695,7 +695,7 @@ html[data-wallpaper-mode="fullscreen"] .absolute.w-full.z-30.no-banner-layout {
 #wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicator {
     display: flex;
     position: absolute;
-    bottom: 5rem;
+    bottom: 10rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -715,11 +715,6 @@ html[data-wallpaper-mode="fullscreen"] .absolute.w-full.z-30.no-banner-layout {
     color: rgba(255, 255, 255, 1);
 }
 
-#wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicator.hide {
-    opacity: 0;
-    transform: translateX(-50%) translateY(10px);
-    pointer-events: none;
-}
 
 @keyframes scroll-down-bounce {
     0%, 100% { transform: translateY(0); }
