@@ -48,12 +48,12 @@
 }
 
 .toc-item:hover {
-	background: color-mix(in oklab, var(--toc-btn-hover) 84%, transparent);
+	background: color-mix(in oklab, var(--toc-btn-hover), transparent);
 	transform: translateX(1px);
 }
 
 .toc-item:active {
-	background: color-mix(in oklab, var(--toc-btn-active) 88%, transparent);
+	background: color-mix(in oklab, var(--toc-btn-active), transparent);
 }
 
 .toc-item.toc-level-1 {
@@ -130,7 +130,7 @@
 	position: absolute;
 	left: 0;
 	right: 0;
-	background: color-mix(in oklab, var(--toc-btn-hover) 78%, transparent);
+	background: color-mix(in oklab, var(--toc-indicator-bg), transparent);
 	border-radius: 0.875rem;
 	transition: top 0.18s ease, height 0.18s ease, opacity 0.14s ease;
 	box-shadow: 0 6px 18px -14px color-mix(in oklab, var(--primary) 55%, transparent);
