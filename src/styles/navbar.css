@@ -36,6 +36,7 @@
     background-color: var(--card-bg);
     border: 1px solid transparent;
     border-radius: 0 0 0.75rem 0.75rem;
+    backdrop-filter: blur(0);
     @apply navbar-surface-transition;
 }
 
@@ -73,7 +74,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "full" */
     #wallpaper-wrapper~* #navbar[data-transparent-mode="full"]>div,
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"]>div {
-        backdrop-filter: none !important;
+        backdrop-filter: blur(0) !important;
         background: transparent !important;
         border: none !important;
         border-radius: 0 !important;
@@ -83,7 +84,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "semifull" (static) */
     #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"]>div,
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]>div {
-        backdrop-filter: none !important;
+        backdrop-filter: blur(0) !important;
         background: transparent !important;
         border: none !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
@@ -118,7 +119,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "full" */
     #wallpaper-wrapper~* #navbar[data-transparent-mode="full"][data-is-home="true"]>div,
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
-        backdrop-filter: none !important;
+        backdrop-filter: blur(0) !important;
         background: transparent !important;
         border: none !important;
         border-radius: 0 !important;
@@ -128,7 +129,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "semifull" (static) */
     #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div,
     body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"]>div {
-        backdrop-filter: none !important;
+        backdrop-filter: blur(0) !important;
         background: transparent !important;
         border: none !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
@@ -223,23 +224,23 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
  * ============================================ */
 body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semi"][data-enable-blur="false"]>div,
 body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semi"][data-enable-blur="false"].scrolled>div {
-    backdrop-filter: none !important;
+    backdrop-filter: blur(0) !important;
 }
 
 body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"][data-enable-blur="false"]>div,
 body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="full"][data-enable-blur="false"].scrolled>div {
-    backdrop-filter: none !important;
+    backdrop-filter: blur(0) !important;
 }
 
 body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"][data-enable-blur="false"]>div,
 body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"][data-enable-blur="false"].scrolled>div {
-    backdrop-filter: none !important;
+    backdrop-filter: blur(0) !important;
 }
 
 /* 页面切换期间强制 semifull 保持透明，避免自动回顶时出现背景闪烁 */
 .is-page-transitioning #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"]:not(.scrolled)>div,
 .is-page-transitioning body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scrolled)>div {
-    backdrop-filter: none !important;
+    backdrop-filter: blur(0) !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
