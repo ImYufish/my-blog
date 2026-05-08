@@ -693,7 +693,11 @@ function adjustMainContentPosition(
 					mainContent.style.setProperty("top", "5.5rem", "important");
 				} else {
 					// 桌面端：与首页相同定位（保留grid transform）
-					mainContent.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
+					mainContent.style.setProperty(
+						"top",
+						"calc(var(--banner-height) - 3rem)",
+						"important",
+					);
 				}
 			} else {
 				mainContent.style.setProperty(
