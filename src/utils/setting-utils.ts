@@ -692,26 +692,21 @@ function adjustMainContentPosition(
 				if (window.innerWidth < 1024) {
 					mainContent.style.setProperty("top", "5.5rem", "important");
 				} else {
-					// 桌面端：移除grid transform，用banner-home高度定位
-					const bannerGrid = document.getElementById("main-grid");
-					if (bannerGrid) {
-						bannerGrid.style.transition = "none";
-						bannerGrid.style.transform = "none";
-					}
-					mainContent.style.setProperty("top", "calc(var(--banner-height-home) - 3rem)", "important");
+					// 桌面端：与首页相同定位（保留grid transform）
+					mainContent.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
 				}
 			} else {
-				// 首页：保留grid transform，用banner高度定位
-				const bannerGrid = document.getElementById("main-grid");
-				if (bannerGrid) {
-					bannerGrid.style.transition = "none";
-					bannerGrid.style.transform = "";
-				}
 				mainContent.style.setProperty(
 					"top",
 					"calc(var(--banner-height) - 3rem)",
 					"important",
 				);
+			}
+			// 清除main-grid的内联transform，恢复CSS规则控制
+			const bannerGrid = document.getElementById("main-grid");
+			if (bannerGrid) {
+				bannerGrid.style.transform = "";
+				bannerGrid.style.transition = "";
 			}
 			break;
 		}

@@ -473,12 +473,8 @@ const siteLang = lang.replace("_", "-");
               mainContentWrapper.style.zIndex = "";
               mainContentWrapper.style.setProperty("margin-top", "0", "important");
             } else if (wallpaperMode === WALLPAPER_BANNER && !isHomePage) {
-              // 桌面端横幅模式非首页：移除grid transform，用banner-home高度定位
-              const mainGrid = document.getElementById("main-grid");
-              if (mainGrid) {
-                mainGrid.style.transform = "none";
-              }
-              mainContentWrapper.style.setProperty("top", "calc(var(--banner-height-home) - 3rem)", "important");
+              // 桌面端横幅模式非首页：与首页相同定位（保留grid transform）
+              mainContentWrapper.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
               mainContentWrapper.style.position = "";
               mainContentWrapper.style.zIndex = "";
               mainContentWrapper.style.setProperty("margin-top", "0", "important");
@@ -994,22 +990,9 @@ function disableAnimation() {
         mainEl.style.setProperty("margin-top", "5.5rem", "important");
       }
 
-      // 桌面端横幅模式：非首页移除grid transform用banner-home高度，首页保留transform
+      // 桌面端横幅模式：统一用banner高度定位，不改变grid transform
       if (!isMobileForBanner && currentMode === "banner" && mainEl) {
-        const mainGrid = document.getElementById("main-grid");
-        if (!isHome) {
-          if (mainGrid) {
-            mainGrid.style.transition = "none";
-            mainGrid.style.transform = "none";
-          }
-          mainEl.style.setProperty("top", "calc(var(--banner-height-home) - 3rem)", "important");
-        } else {
-          if (mainGrid) {
-            mainGrid.style.transition = "none";
-            mainGrid.style.transform = "";
-          }
-          mainEl.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
-        }
+        mainEl.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
         mainEl.style.position = "";
         mainEl.style.zIndex = "";
         mainEl.style.setProperty("margin-top", "0", "important");
@@ -1172,22 +1155,9 @@ function disableAnimation() {
             mainContentWrapper.style.setProperty("top", "0", "important");
             mainContentWrapper.style.setProperty("margin-top", "5.5rem", "important");
           }
-          // 桌面端横幅模式：非首页移除grid transform用banner-home高度，首页保留transform
+          // 桌面端横幅模式：统一用banner高度定位，不改变grid transform
           if (visitDesktopMode === "banner") {
-            const mainGrid = document.getElementById("main-grid");
-            if (!isHomePage) {
-              if (mainGrid) {
-                mainGrid.style.transition = "none";
-                mainGrid.style.transform = "none";
-              }
-              mainContentWrapper.style.setProperty("top", "calc(var(--banner-height-home) - 3rem)", "important");
-            } else {
-              if (mainGrid) {
-                mainGrid.style.transition = "none";
-                mainGrid.style.transform = "";
-              }
-              mainContentWrapper.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
-            }
+            mainContentWrapper.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
             mainContentWrapper.style.position = "";
             mainContentWrapper.style.zIndex = "";
             mainContentWrapper.style.setProperty("margin-top", "0", "important");
@@ -1275,22 +1245,9 @@ function disableAnimation() {
         mainEl.style.setProperty("margin-top", "5.5rem", "important");
       }
 
-      // 桌面端横幅模式：非首页移除grid transform用banner-home高度，首页保留transform
+      // 桌面端横幅模式：统一用banner高度定位，不改变grid transform
       if (!isMobileForBanner && currentMode === "banner" && mainEl) {
-        const mainGrid = document.getElementById("main-grid");
-        if (!isHome) {
-          if (mainGrid) {
-            mainGrid.style.transition = "none";
-            mainGrid.style.transform = "none";
-          }
-          mainEl.style.setProperty("top", "calc(var(--banner-height-home) - 3rem)", "important");
-        } else {
-          if (mainGrid) {
-            mainGrid.style.transition = "none";
-            mainGrid.style.transform = "";
-          }
-          mainEl.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
-        }
+        mainEl.style.setProperty("top", "calc(var(--banner-height) - 3rem)", "important");
         mainEl.style.position = "";
         mainEl.style.zIndex = "";
         mainEl.style.setProperty("margin-top", "0", "important");
