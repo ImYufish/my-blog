@@ -673,7 +673,6 @@ function updateNavbarTransparency(mode: WALLPAPER_MODE) {
 
 function adjustMainContentPosition(
 	mode: WALLPAPER_MODE | "banner" | "none" | "overlay" | "fullscreen",
-	prevTop?: string,
 ) {
 	const mainContent = document.querySelector(
 		".w-full.z-30.pointer-events-none",
