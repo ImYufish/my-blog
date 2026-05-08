@@ -732,17 +732,15 @@ html:not([data-wallpaper-mode="overlay"]):not([data-wallpaper-mode="none"]):not(
     scroll-margin-top: 5.5rem;
 }
 
-/* Fullscreen 模式下首页主内容与壁纸保持间距，非首页不额外加间距 */
+/* Fullscreen 模式下主内容在壁纸下方，用 relative 定位紧跟壁纸 */
 html[data-wallpaper-mode="fullscreen"] .w-full.z-30.pointer-events-none {
-    margin-top: 5.5rem !important;
+    top: 0 !important;
 }
 
 /* Fullscreen 模式下移动端非首页隐藏壁纸（与横幅模式一致） */
 @media (max-width: 1023px) {
     #wallpaper-wrapper.wallpaper-fullscreen.mobile-hide-banner {
-        transform: translateY(-100%) translateZ(0) !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
+        display: none !important;
     }
 
     /* Fullscreen 模式下主内容使用 relative 定位，需要匹配 pointer-events-none 类 */

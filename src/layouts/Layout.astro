@@ -461,11 +461,17 @@ const siteLang = lang.replace("_", "-");
               mainContentWrapper.classList.remove("mobile-main-no-banner");
             }
             // 全屏壁纸模式：用 relative 定位让内容紧跟壁纸（移动端非首页除外，壁纸已隐藏）
-            const isMobileNonHome = window.innerWidth < 1024 && !isHomePageCheck;
+            const isMobileNonHome = window.innerWidth < 1024 && !isHomePage;
             if (wallpaperMode === WALLPAPER_FULLSCREEN && !isMobileNonHome) {
               mainContentWrapper.style.position = "relative";
               mainContentWrapper.style.top = "0";
               mainContentWrapper.style.zIndex = "30";
+              mainContentWrapper.style.setProperty("margin-top", "5.5rem", "important");
+            } else if (isMobileNonHome) {
+              mainContentWrapper.style.setProperty("top", "5.5rem", "important");
+              mainContentWrapper.style.position = "";
+              mainContentWrapper.style.zIndex = "";
+              mainContentWrapper.style.setProperty("margin-top", "0", "important");
             }
           }
 
@@ -937,6 +943,7 @@ function disableAnimation() {
               mainEl.style.setProperty("top", "5.5rem", "important");
               mainEl.style.position = "";
               mainEl.style.zIndex = "";
+              mainEl.style.setProperty("margin-top", "0", "important");
             }
           } else {
             if (wrapper) {
@@ -949,6 +956,7 @@ function disableAnimation() {
                 mainEl.style.position = "relative";
                 mainEl.style.zIndex = "30";
                 mainEl.style.setProperty("top", "0", "important");
+                mainEl.style.setProperty("margin-top", "5.5rem", "important");
               } else {
                 mainEl.style.removeProperty("top");
                 mainEl.style.position = "";
@@ -963,6 +971,7 @@ function disableAnimation() {
         mainEl.style.position = "relative";
         mainEl.style.zIndex = "30";
         mainEl.style.setProperty("top", "0", "important");
+        mainEl.style.setProperty("margin-top", "5.5rem", "important");
       }
 
       // 更新侧边栏组件的可见性（根据新页面的 URL）
@@ -1028,6 +1037,18 @@ function disableAnimation() {
         bodyElement!.classList.remove("is-home");
       }
 
+      // 同步壁纸模式的 body 类（防止 enable-banner 从初始加载残留到全屏/overlay/none 模式）
+      const currentWallpaperMode = document.documentElement.getAttribute("data-wallpaper-mode");
+      if (currentWallpaperMode !== "banner") {
+        bodyElement!.classList.remove("enable-banner");
+        bodyElement!.classList.add("no-banner-layout");
+        if (currentWallpaperMode === "overlay") {
+          bodyElement!.classList.add("wallpaper-transparent");
+        } else {
+          bodyElement!.classList.remove("wallpaper-transparent");
+        }
+      }
+
       // Control navbar transparency based on page
       const navbar = document.getElementById("navbar");
       if (navbar) {
@@ -1067,11 +1088,9 @@ function disableAnimation() {
           // 首页：禁用主内容区域的过渡动画，防止文章列表下移
           mainContentWrapper.style.transition = "none";
 
-          // 先显示banner，然后移除隐藏类让其优雅出现
+          // 移除隐藏类让壁纸出现（display:none 由 CSS 类控制，需先移除类）
+          wallpaperWrapper.classList.remove("mobile-hide-banner");
           wallpaperWrapper.style.display = "";
-          setTimeout(() => {
-            wallpaperWrapper.classList.remove("mobile-hide-banner");
-          }, 100);
           setTimeout(() => {
             mainContentWrapper.classList.remove("mobile-main-no-banner");
             // 清除之前设置的内联top，恢复banner模式的CSS计算值
@@ -1082,6 +1101,7 @@ function disableAnimation() {
               mainContentWrapper.style.position = "relative";
               mainContentWrapper.style.zIndex = "30";
               mainContentWrapper.style.setProperty("top", "0", "important");
+              mainContentWrapper.style.setProperty("margin-top", "5.5rem", "important");
             }
             // 在移除类之后立即恢复过渡动画（下次导航时使用）
             setTimeout(() => {
@@ -1089,15 +1109,13 @@ function disableAnimation() {
             }, 50);
           }, 150);
         } else {
-          // 非首页：分阶段隐藏，先隐藏banner，再移动内容
+          // 非首页：隐藏壁纸并移动内容
           wallpaperWrapper.classList.add("mobile-hide-banner");
-          // 延迟移动内容，让banner先完全消失
-          setTimeout(() => {
-            mainContentWrapper.classList.add("mobile-main-no-banner");
-            mainContentWrapper.style.setProperty("top", "5.5rem", "important");
-            mainContentWrapper.style.position = "";
-            mainContentWrapper.style.zIndex = "";
-          }, 100);
+          mainContentWrapper.classList.add("mobile-main-no-banner");
+          mainContentWrapper.style.setProperty("top", "5.5rem", "important");
+          mainContentWrapper.style.position = "";
+          mainContentWrapper.style.zIndex = "";
+          mainContentWrapper.style.setProperty("margin-top", "0", "important");
         }
       } else if (!isMobile && wallpaperWrapper) {
         // 桌面端：确保banner正常显示
@@ -1111,6 +1129,7 @@ function disableAnimation() {
             mainContentWrapper.style.position = "relative";
             mainContentWrapper.style.zIndex = "30";
             mainContentWrapper.style.setProperty("top", "0", "important");
+            mainContentWrapper.style.setProperty("margin-top", "5.5rem", "important");
           }
         }
       }
@@ -1164,6 +1183,7 @@ function disableAnimation() {
               mainEl.style.setProperty("top", "5.5rem", "important");
               mainEl.style.position = "";
               mainEl.style.zIndex = "";
+              mainEl.style.setProperty("margin-top", "0", "important");
             }
           } else {
             if (wrapper) {
@@ -1176,6 +1196,7 @@ function disableAnimation() {
                 mainEl.style.position = "relative";
                 mainEl.style.zIndex = "30";
                 mainEl.style.setProperty("top", "0", "important");
+                mainEl.style.setProperty("margin-top", "5.5rem", "important");
               } else {
                 mainEl.style.removeProperty("top");
                 mainEl.style.position = "";
@@ -1190,6 +1211,7 @@ function disableAnimation() {
         mainEl.style.position = "relative";
         mainEl.style.zIndex = "30";
         mainEl.style.setProperty("top", "0", "important");
+        mainEl.style.setProperty("margin-top", "5.5rem", "important");
       }
 
       // 在移动端恢复文章列表容器的过渡动画（在主内容区位置动画完成后）

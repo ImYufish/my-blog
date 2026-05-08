@@ -702,6 +702,7 @@ function adjustMainContentPosition(
 					"important",
 				);
 			}
+			mainContent.style.setProperty("margin-top", "0", "important");
 			mainContent.style.minHeight = "";
 			mainContent.style.position = "";
 			// 清除main-grid的内联transform，恢复CSS规则控制
@@ -721,6 +722,7 @@ function adjustMainContentPosition(
 				mainContent.classList.add("mobile-main-no-banner");
 				mainContent.classList.add("no-banner-layout");
 				mainContent.style.setProperty("top", "5.5rem", "important");
+				mainContent.style.setProperty("margin-top", "0", "important");
 				mainContent.style.position = "";
 				mainContent.style.minHeight = "";
 				mainContent.style.transition = "";
@@ -731,6 +733,7 @@ function adjustMainContentPosition(
 			mainContent.style.position = "relative";
 			mainContent.style.zIndex = "30";
 			mainContent.style.setProperty("top", "0", "important");
+			mainContent.style.setProperty("margin-top", "5.5rem", "important");
 			mainContent.style.transition = "";
 			break;
 		}
@@ -738,6 +741,7 @@ function adjustMainContentPosition(
 			// Overlay模式：使用紧凑布局，主内容从导航栏下方开始
 			mainContent.classList.add("no-banner-layout");
 			mainContent.style.setProperty("top", "5.5rem", "important");
+			mainContent.style.setProperty("margin-top", "0", "important");
 			mainContent.style.position = "";
 			mainContent.style.minHeight = "";
 			mainContent.style.transition = "";
@@ -746,6 +750,7 @@ function adjustMainContentPosition(
 			// 无壁纸模式：主内容从导航栏下方开始
 			mainContent.classList.add("no-banner-layout");
 			mainContent.style.setProperty("top", "5.5rem", "important");
+			mainContent.style.setProperty("margin-top", "0", "important");
 			mainContent.style.position = "";
 			mainContent.style.minHeight = "";
 			mainContent.style.transition = "";
