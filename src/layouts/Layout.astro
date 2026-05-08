@@ -473,6 +473,8 @@ const siteLang = lang.replace("_", "-");
               mainContentWrapper.style.zIndex = "";
               mainContentWrapper.style.setProperty("margin-top", "0", "important");
             }
+            // 定位完成后显示主内容（初始CSS规则会隐藏，防止壁纸初始化前闪烁）
+            mainContentWrapper.style.visibility = "visible";
           }
 
           // 处理banner homeText元素

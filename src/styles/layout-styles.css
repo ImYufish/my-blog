@@ -738,6 +738,11 @@ html[data-wallpaper-mode="fullscreen"] .w-full.z-30.pointer-events-none {
     top: 0 !important;
 }
 
+/* 初始加载时隐藏主内容，防止壁纸初始化前内容闪烁 */
+html[data-wallpaper-mode="fullscreen"] body:not(.wallpaper-initialized) .w-full.z-30.pointer-events-none {
+    visibility: hidden;
+}
+
 /* Fullscreen 模式下移动端非首页隐藏壁纸（与横幅模式一致） */
 @media (max-width: 1023px) {
     #wallpaper-wrapper.wallpaper-fullscreen.mobile-hide-banner {

@@ -761,6 +761,10 @@ function adjustMainContentPosition(
 			mainContent.style.transition = "";
 			break;
 	}
+
+	// 定位完成后显示主内容，防止初始加载时壁纸初始化前的内容闪烁
+	mainContent.style.visibility = "visible";
+	document.body.classList.add("wallpaper-initialized");
 }
 
 function adjustMainContentTransparency(enable: boolean) {
