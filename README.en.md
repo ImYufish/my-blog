@@ -80,7 +80,7 @@
 - [x] **Footer Configuration** - HTML content injection, fully customizable
 - [x] **Light/Dark Mode** - Supports light/dark/system three modes
 - [x] **Navbar Customization** - Logo, title, links fully customizable
-- [x] **Wallpaper Mode Switching** - Banner wallpaper, fullscreen wallpaper, solid background
+- [x] **Wallpaper Mode Switching** - Banner wallpaper, fullscreen wallpaper, fullscreen transparent wallpaper, solid background
 - [x] **Theme Color Customization** - 360° hue adjustment
 
 
