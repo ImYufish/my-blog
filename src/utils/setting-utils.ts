@@ -417,12 +417,6 @@ function showBannerMode() {
 		}
 	}
 
-	// 显示横幅图片来源文本
-	const creditDesktop = document.getElementById("banner-credit-desktop");
-	const creditMobile = document.getElementById("banner-credit-mobile");
-	if (creditDesktop) creditDesktop.style.display = "";
-	if (creditMobile) creditMobile.style.display = "";
-
 	// 显示横幅首页文本（如果启用且是首页）
 	const bannerTextOverlay = document.querySelector(
 		".banner-home-text-overlay",
@@ -513,25 +507,6 @@ function showFullscreenMode(animate = false) {
 		}
 	}
 
-	// 显示横幅图片来源文本（如果配置启用）
-	const fullscreenCredit = backgroundWallpaper.common?.credit?.enable;
-	const creditDesktop = document.getElementById("banner-credit-desktop");
-	const creditMobile = document.getElementById("banner-credit-mobile");
-	if (creditDesktop) {
-		const showDesktop =
-			typeof fullscreenCredit === "object"
-				? fullscreenCredit.desktop
-				: fullscreenCredit;
-		creditDesktop.style.display = showDesktop && !isMobile ? "" : "none";
-	}
-	if (creditMobile) {
-		const showMobile =
-			typeof fullscreenCredit === "object"
-				? fullscreenCredit.mobile
-				: fullscreenCredit;
-		creditMobile.style.display = showMobile && isMobile ? "" : "none";
-	}
-
 	// 显示横幅首页文本（如果启用且是首页）
 	const bannerTextOverlay = document.querySelector(
 		".banner-home-text-overlay",
@@ -597,12 +572,6 @@ function showOverlayMode() {
 		});
 	}
 
-	// 隐藏横幅图片来源文本
-	const creditDesktop = document.getElementById("banner-credit-desktop");
-	const creditMobile = document.getElementById("banner-credit-mobile");
-	if (creditDesktop) creditDesktop.style.display = "none";
-	if (creditMobile) creditMobile.style.display = "none";
-
 	// 隐藏横幅首页文本
 	const bannerTextOverlay = document.querySelector(".banner-home-text-overlay");
 	if (bannerTextOverlay) {
@@ -627,12 +596,6 @@ function hideAllWallpapers() {
 		wallpaperWrapper.classList.remove("wallpaper-overlay");
 		wallpaperWrapper.classList.remove("wallpaper-fullscreen");
 	}
-
-	// 隐藏横幅图片来源文本
-	const creditDesktop = document.getElementById("banner-credit-desktop");
-	const creditMobile = document.getElementById("banner-credit-mobile");
-	if (creditDesktop) creditDesktop.style.display = "none";
-	if (creditMobile) creditMobile.style.display = "none";
 
 	// 隐藏横幅首页文本
 	const bannerTextOverlay = document.querySelector(".banner-home-text-overlay");

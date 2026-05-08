@@ -564,26 +564,6 @@ export type BackgroundWallpaperConfig = {
 				pauseTime: number; // 完整显示后的暂停时间（毫秒）
 			};
 		};
-		credit?: {
-			enable:
-				| boolean
-				| {
-						desktop: boolean; // 桌面端是否显示横幅图片来源文本
-						mobile: boolean; // 移动端是否显示横幅图片来源文本
-				  }; // 是否显示横幅图片来源文本，支持布尔值或分别设置桌面端和移动端
-			text:
-				| string
-				| {
-						desktop: string; // 桌面端显示的来源文本
-						mobile: string; // 移动端显示的来源文本
-				  }; // 横幅图片来源文本，支持字符串或分别设置桌面端和移动端
-			url?:
-				| string
-				| {
-						desktop: string; // 桌面端原始艺术品或艺术家页面的 URL 链接
-						mobile: string; // 移动端原始艺术品或艺术家页面的 URL 链接
-				  }; // 原始艺术品或艺术家页面的 URL 链接，支持字符串或分别设置桌面端和移动端
-		};
 		navbar?: {
 			transparentMode?: "semi" | "full" | "semifull"; // 导航栏透明模式
 			enableBlur?: boolean; // 是否开启毛玻璃模糊效果

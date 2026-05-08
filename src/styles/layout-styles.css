@@ -732,10 +732,9 @@ html:not([data-wallpaper-mode="overlay"]):not([data-wallpaper-mode="none"]):not(
     scroll-margin-top: 5.5rem;
 }
 
-/* Fullscreen 模式下主内容上移，credit 自然显示在壁纸上（与横幅模式一致） */
-/* top 完全由 JS（hooks + adjustMainContentPosition）用 inline !important 控制，避免 CSS !important 冲突 */
+/* Fullscreen 模式下首页主内容与壁纸保持间距，非首页不额外加间距 */
 html[data-wallpaper-mode="fullscreen"] .w-full.z-30.pointer-events-none {
-    margin-top: 0.5rem !important;
+    margin-top: 5.5rem !important;
 }
 
 /* Fullscreen 模式下移动端非首页隐藏壁纸（与横幅模式一致） */
@@ -750,7 +749,6 @@ html[data-wallpaper-mode="fullscreen"] .w-full.z-30.pointer-events-none {
     .w-full.z-30.pointer-events-none.mobile-main-no-banner {
         top: 5.5rem !important;
         min-height: calc(100vh - 5.5rem) !important;
-        margin-top: 0 !important;
         transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s !important;
     }
 }

@@ -97,27 +97,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				pauseTime: 2000,
 			},
 		},
-		// 图片来源
-		credit: {
-			enable: {
-				// 桌面端显示横幅图片来源文本
-				desktop: true,
-				// 移动端显示横幅图片来源文本
-				mobile: true,
-			},
-			text: {
-				// 桌面端要显示的来源文本
-				desktop: "Pixiv - 晚晚喵",
-				// 移动端要显示的来源文本
-				mobile: "Pixiv - KiraraShss",
-			},
-			url: {
-				// 桌面端原始艺术品或艺术家页面的 URL 链接
-				desktop: "https://www.pixiv.net/users/108801776",
-				// 移动端原始艺术品或艺术家页面的 URL 链接
-				mobile: "https://www.pixiv.net/users/42715864",
-			},
-		},
 		// 导航栏配置
 		navbar: {
 			// 导航栏透明模式："semi" 半透明，"full" 完全透明，"semifull" 动态透明
