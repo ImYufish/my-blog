@@ -503,6 +503,14 @@ const siteLang = lang.replace("_", "-");
         }
       })();
 
+      // 初始化渐变过渡状态 - 在 html 元素上设置属性，CSS 会立即生效
+      (function applyGradientEnabled() {
+        const gradientEnabled = localStorage.getItem("gradientEnabled");
+        if (gradientEnabled !== null) {
+          document.documentElement.setAttribute("data-gradient-enabled", gradientEnabled);
+        }
+      })();
+
       // 初始化横幅标题显示状态 - 在 html 元素上设置属性，CSS 会立即生效
       (function applyBannerTitleEnabled() {
         const bannerTitleEnabled = localStorage.getItem("bannerTitleEnabled");

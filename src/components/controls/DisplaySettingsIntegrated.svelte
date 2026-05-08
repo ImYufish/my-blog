@@ -10,6 +10,7 @@ import { i18n } from "@i18n/translation";
 import {
 	getDefaultBannerCarouselEnabled,
 	getDefaultBannerTitleEnabled,
+	getDefaultGradientEnabled,
 	getDefaultHue,
 	getDefaultOverlayBlur,
 	getDefaultOverlayCardOpacity,
@@ -18,6 +19,7 @@ import {
 	getHue,
 	getStoredBannerCarouselEnabled,
 	getStoredBannerTitleEnabled,
+	getStoredGradientEnabled,
 	getStoredOverlayBlur,
 	getStoredOverlayCardOpacity,
 	getStoredOverlayOpacity,
@@ -25,6 +27,7 @@ import {
 	getStoredWavesEnabled,
 	setBannerCarouselEnabled,
 	setBannerTitleEnabled,
+	setGradientEnabled,
 	setHue,
 	setOverlayBlur,
 	setOverlayCardOpacity,
@@ -68,6 +71,8 @@ let isMobileWidth = $state(
 let isSwitching = $state(false);
 let wavesEnabled = $state(true);
 const defaultWavesEnabled = getDefaultWavesEnabled();
+let gradientEnabled = $state(true);
+const defaultGradientEnabled = getDefaultGradientEnabled();
 let bannerTitleEnabled = $state(true);
 const defaultBannerTitleEnabled = getDefaultBannerTitleEnabled();
 let bannerCarouselEnabled = $state(true);
@@ -88,6 +93,9 @@ const showThemeColor = !siteConfig.themeColor.fixed;
 // 是否允许用户切换水波纹动画（只看 switchable 配置）
 const isWavesSwitchable =
 	backgroundWallpaper.common?.waves?.switchable ?? false;
+// 是否允许用户切换渐变过渡（只看 switchable 配置）
+const isGradientSwitchable =
+	backgroundWallpaper.common?.gradient?.switchable ?? false;
 // 检查是否启用横幅标题配置
 const isBannerTitleEnabled =
 	backgroundWallpaper.common?.homeText?.enable ?? false;
@@ -100,7 +108,10 @@ const isBannerCarouselSwitchable =
 	backgroundWallpaper.banner?.carousel?.switchable ?? false;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
 const hasBannerSettings =
-	isWavesSwitchable || isBannerTitleSwitchable || isBannerCarouselSwitchable;
+	isWavesSwitchable ||
+	isGradientSwitchable ||
+	isBannerTitleSwitchable ||
+	isBannerCarouselSwitchable;
 const overlaySwitchableConfig =
 	backgroundWallpaper.overlay?.switchable ?? false;
 const isOverlaySettingsSwitchable =
@@ -133,6 +144,7 @@ let bannerSettingsIsDefault = $derived(
 	(!isBannerTitleSwitchable ||
 		bannerTitleEnabled === defaultBannerTitleEnabled) &&
 		(!isWavesSwitchable || wavesEnabled === defaultWavesEnabled) &&
+		(!isGradientSwitchable || gradientEnabled === defaultGradientEnabled) &&
 		(!isBannerCarouselSwitchable ||
 			bannerCarouselEnabled === defaultBannerCarouselEnabled),
 );
@@ -214,6 +226,11 @@ function resetWavesEnabled() {
 	setWavesEnabled(defaultWavesEnabled);
 }
 
+function resetGradientEnabled() {
+	gradientEnabled = defaultGradientEnabled;
+	setGradientEnabled(defaultGradientEnabled);
+}
+
 function resetBannerSettings() {
 	if (
 		isBannerTitleSwitchable &&
@@ -225,6 +242,10 @@ function resetBannerSettings() {
 	if (isWavesSwitchable && wavesEnabled !== defaultWavesEnabled) {
 		wavesEnabled = defaultWavesEnabled;
 		setWavesEnabled(defaultWavesEnabled);
+	}
+	if (isGradientSwitchable && gradientEnabled !== defaultGradientEnabled) {
+		gradientEnabled = defaultGradientEnabled;
+		setGradientEnabled(defaultGradientEnabled);
 	}
 	if (
 		isBannerCarouselSwitchable &&
@@ -258,6 +279,11 @@ function resetOverlaySettings() {
 function toggleWavesEnabled() {
 	wavesEnabled = !wavesEnabled;
 	setWavesEnabled(wavesEnabled);
+}
+
+function toggleGradientEnabled() {
+	gradientEnabled = !gradientEnabled;
+	setGradientEnabled(gradientEnabled);
 }
 
 function toggleBannerTitleEnabled() {
@@ -344,6 +370,9 @@ onMount(() => {
 
 	// 从localStorage读取水波纹动画状态
 	wavesEnabled = getStoredWavesEnabled();
+
+	// 从localStorage读取渐变过渡状态
+	gradientEnabled = getStoredGradientEnabled();
 
 	// 从localStorage读取横幅标题状态
 	bannerTitleEnabled = getStoredBannerTitleEnabled();
@@ -650,6 +679,24 @@ $effect(() => {
                         <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
                              class:left-0.5={!wavesEnabled}
                              class:left-5={wavesEnabled}></div>
+                    </div>
+                </button>
+                {/if}
+                <!-- Gradient Transition Switch -->
+                {#if isGradientSwitchable}
+                <button
+                    class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
+                    class:bg-(--btn-regular-bg-hover)={gradientEnabled}
+                    onclick={toggleGradientEnabled}
+                >
+                    <Icon icon="material-symbols:gradient" class="text-[1.25rem] shrink-0"></Icon>
+                    <span class="text-sm flex-1">{i18n(I18nKey.gradientTransition)}</span>
+                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                         class:bg-(--primary)={gradientEnabled}
+                         class:bg-(--btn-regular-bg-active)={!gradientEnabled}>
+                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
+                             class:left-0.5={!gradientEnabled}
+                             class:left-5={gradientEnabled}></div>
                     </div>
                 </button>
                 {/if}

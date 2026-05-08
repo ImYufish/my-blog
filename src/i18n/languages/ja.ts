@@ -222,6 +222,7 @@ export const ja: Translation = {
 	[Key.bannerTitle]: "ホームバナータイトル",
 	[Key.bannerCarousel]: "バナーカルーセル",
 	[Key.wavesAnimation]: "波アニメーション",
+	[Key.gradientTransition]: "グラデーション遷移",
 	[Key.overlaySettings]: "透明設定",
 	[Key.overlayOpacity]: "壁紙の透明度",
 	[Key.overlayBlur]: "背景ぼかし",

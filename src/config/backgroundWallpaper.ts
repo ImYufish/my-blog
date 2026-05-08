@@ -117,6 +117,19 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否允许用户通过控制面板切换水波纹动画
 			switchable: true,
 		},
+		// 渐变过渡效果配置，当水波纹关闭时自动启用，提供壁纸底部到背景色的平滑过渡
+		gradient: {
+			enable: {
+				// 桌面端是否启用渐变过渡
+				desktop: true,
+				// 移动端是否启用渐变过渡
+				mobile: true,
+			},
+			// 渐变高度
+			height: "15vh",
+			// 是否允许用户通过控制面板切换渐变过渡
+			switchable: true,
+		},
 	},
 	// Banner模式特有配置
 	banner: {

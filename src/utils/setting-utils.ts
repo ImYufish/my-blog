@@ -1041,6 +1041,64 @@ export function applyWavesEnabledToDocument(enabled: boolean): void {
 	}
 }
 
+// Gradient transition functions
+export function getDefaultGradientEnabled(): boolean {
+	const gradientConfig = backgroundWallpaper.common?.gradient?.enable;
+	if (typeof gradientConfig === "object") {
+		const isMobile =
+			typeof window !== "undefined" ? window.innerWidth < 768 : false;
+		return isMobile
+			? (gradientConfig.mobile ?? true)
+			: (gradientConfig.desktop ?? true);
+	}
+	return gradientConfig ?? true;
+}
+
+export function getStoredGradientEnabled(): boolean {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
+		return getDefaultGradientEnabled();
+	}
+	const stored = localStorage.getItem("gradientEnabled");
+	if (stored === null) {
+		return getDefaultGradientEnabled();
+	}
+	return stored === "true";
+}
+
+export function setGradientEnabled(enabled: boolean): void {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function"
+	) {
+		return;
+	}
+	localStorage.setItem("gradientEnabled", String(enabled));
+	applyGradientEnabledToDocument(enabled);
+}
+
+export function applyGradientEnabledToDocument(enabled: boolean): void {
+	if (typeof document === "undefined") {
+		return;
+	}
+	document.documentElement.setAttribute(
+		"data-gradient-enabled",
+		String(enabled),
+	);
+	const gradientElement = document.getElementById("wallpaper-gradient");
+	if (gradientElement) {
+		if (enabled) {
+			gradientElement.style.display = "";
+			gradientElement.classList.remove("gradient-disabled");
+		} else {
+			gradientElement.style.display = "none";
+			gradientElement.classList.add("gradient-disabled");
+		}
+	}
+}
+
 // Banner title functions
 export function getDefaultBannerTitleEnabled(): boolean {
 	return backgroundWallpaper.common?.homeText?.enable ?? true;

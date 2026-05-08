@@ -215,6 +215,7 @@ export const zh_CN: Translation = {
 	[Key.bannerTitle]: "首页横幅标题",
 	[Key.bannerCarousel]: "横幅轮播",
 	[Key.wavesAnimation]: "水波纹动画",
+	[Key.gradientTransition]: "渐变过渡",
 	[Key.overlaySettings]: "透明设置",
 	[Key.overlayOpacity]: "壁纸透明度",
 	[Key.overlayBlur]: "背景模糊度",

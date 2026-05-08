@@ -224,6 +224,7 @@ export const ru: Translation = {
 	[Key.bannerTitle]: "Заголовок главного баннера",
 	[Key.bannerCarousel]: "Карусель баннера",
 	[Key.wavesAnimation]: "Анимация волн",
+	[Key.gradientTransition]: "Градиентный переход",
 	[Key.overlaySettings]: "Настройки прозрачности",
 	[Key.overlayOpacity]: "Прозрачность обоев",
 	[Key.overlayBlur]: "Размытие фона",

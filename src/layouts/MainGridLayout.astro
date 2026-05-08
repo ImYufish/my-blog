@@ -92,6 +92,23 @@ const wavesEnabledOnMobile =
 const shouldRenderWaves =
 	wavesEnabledOnDesktop || wavesEnabledOnMobile || wavesSwitchable;
 
+// 渐变过渡配置
+const gradientConfig = backgroundWallpaper.common?.gradient?.enable;
+const gradientSwitchable =
+	backgroundWallpaper.common?.gradient?.switchable ?? false;
+const gradientEnabledOnDesktop =
+	typeof gradientConfig === "object"
+		? gradientConfig.desktop
+		: (gradientConfig ?? true);
+const gradientEnabledOnMobile =
+	typeof gradientConfig === "object"
+		? gradientConfig.mobile
+		: (gradientConfig ?? true);
+const gradientHeight = backgroundWallpaper.common?.gradient?.height ?? "30vh";
+// 是否需要渲染渐变元素（任一设备启用 或 允许用户切换）
+const shouldRenderGradient =
+	gradientEnabledOnDesktop || gradientEnabledOnMobile || gradientSwitchable;
+
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 
@@ -761,6 +778,15 @@ const bannerCarouselInterval = Math.max(
                 ></use>
             </g>
         </svg>
+    </div>
+    ) : null}
+
+    <!-- Gradient transition - 当水波纹关闭时显示，提供壁纸底部到背景色的平滑过渡 -->
+    {shouldRenderGradient ? (
+    <div class={`wallpaper-gradient absolute bottom-0 left-0 w-full pointer-events-none
+        ${!gradientEnabledOnMobile ? 'hidden' : ''} ${!gradientEnabledOnDesktop ? 'md:hidden' : ''} ${gradientEnabledOnDesktop ? 'md:block' : ''}`}
+        id="wallpaper-gradient"
+        style={`height: ${gradientHeight}; background: linear-gradient(to bottom, transparent, var(--page-bg));`}>
     </div>
     ) : null}
 </div>

@@ -213,6 +213,7 @@ enum I18nKey {
 	bannerTitle = "bannerTitle",
 	bannerCarousel = "bannerCarousel",
 	wavesAnimation = "wavesAnimation",
+	gradientTransition = "gradientTransition",
 	overlaySettings = "overlaySettings",
 	overlayOpacity = "overlayOpacity",
 	overlayBlur = "overlayBlur",

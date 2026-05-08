@@ -578,6 +578,17 @@ export type BackgroundWallpaperConfig = {
 				  }; // 是否启用水波纹动画效果，支持布尔值或分别设置桌面端和移动端
 			switchable?: boolean; // 是否允许用户通过控制面板切换水波纹动画
 		};
+		// 渐变过渡效果配置，当水波纹关闭时自动启用，提供壁纸底部到背景色的平滑过渡
+		gradient?: {
+			enable:
+				| boolean
+				| {
+						desktop: boolean; // 桌面端是否启用渐变过渡
+						mobile: boolean; // 移动端是否启用渐变过渡
+				  }; // 是否启用渐变过渡，支持布尔值或分别设置桌面端和移动端，默认true（水波纹关闭时自动生效）
+			height?: string; // 渐变高度，默认 "30vh"
+			switchable?: boolean; // 是否允许用户通过控制面板切换渐变过渡
+		};
 	};
 
 	// Banner模式特有配置

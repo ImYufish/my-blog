@@ -223,6 +223,7 @@ export const en: Translation = {
 	[Key.bannerTitle]: "Home Banner Title",
 	[Key.bannerCarousel]: "Banner Carousel",
 	[Key.wavesAnimation]: "Waves Animation",
+	[Key.gradientTransition]: "Gradient Transition",
 	[Key.overlaySettings]: "Transparency Settings",
 	[Key.overlayOpacity]: "Wallpaper Opacity",
 	[Key.overlayBlur]: "Background Blur",
