@@ -679,10 +679,6 @@ function adjustMainContentPosition(
 	) as HTMLElement;
 	if (!mainContent) return;
 
-	// 先用内联样式锁住当前top，防止移除类时跳到默认值
-	const currentTop = getComputedStyle(mainContent).top;
-	mainContent.style.setProperty("top", currentTop, "important");
-
 	// 移除现有的位置类
 	mainContent.classList.remove("mobile-main-no-banner", "no-banner-layout");
 
@@ -693,22 +689,29 @@ function adjustMainContentPosition(
 			if (!isHome) {
 				// 移动端非首页隐藏banner，主内容从导航栏下方开始
 				mainContent.classList.add("mobile-main-no-banner");
-				mainContent.style.setProperty("top", "5.5rem", "important");
+				if (window.innerWidth < 1024) {
+					mainContent.style.setProperty("top", "5.5rem", "important");
+				} else {
+					// 桌面端：移除grid transform，用banner-home高度定位
+					const bannerGrid = document.getElementById("main-grid");
+					if (bannerGrid) {
+						bannerGrid.style.transition = "none";
+						bannerGrid.style.transform = "none";
+					}
+					mainContent.style.setProperty("top", "calc(var(--banner-height-home) - 3rem)", "important");
+				}
 			} else {
+				// 首页：保留grid transform，用banner高度定位
+				const bannerGrid = document.getElementById("main-grid");
+				if (bannerGrid) {
+					bannerGrid.style.transition = "none";
+					bannerGrid.style.transform = "";
+				}
 				mainContent.style.setProperty(
 					"top",
 					"calc(var(--banner-height) - 3rem)",
 					"important",
 				);
-			}
-			mainContent.style.setProperty("margin-top", "0", "important");
-			mainContent.style.minHeight = "";
-			mainContent.style.position = "";
-			// 清除main-grid的内联transform，恢复CSS规则控制
-			const bannerGrid = document.getElementById("main-grid");
-			if (bannerGrid) {
-				bannerGrid.style.transform = "";
-				bannerGrid.style.transition = "";
 			}
 			break;
 		}
