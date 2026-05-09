@@ -1,7 +1,8 @@
 /* Layout specific styles */
 
-/* 用户关闭时隐藏横幅标题 */
-html[data-banner-title-enabled="false"] .banner-home-text-overlay {
+/* 用户关闭时隐藏横幅标题（需要足够特异性覆盖 fullscreen/overlay 的 display: flex !important） */
+html[data-banner-title-enabled="false"] #wallpaper-wrapper.wallpaper-fullscreen .banner-home-text-overlay,
+html[data-banner-title-enabled="false"] #wallpaper-wrapper.wallpaper-overlay .banner-home-text-overlay {
     display: none !important;
 }
 
