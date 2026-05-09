@@ -1123,6 +1123,11 @@ function disableAnimation() {
               mainContentWrapper.style.zIndex = "30";
               mainContentWrapper.style.setProperty("top", "0", "important");
               mainContentWrapper.style.setProperty("margin-top", "1rem", "important");
+            } else if (visitCurrentMode === "overlay" || visitCurrentMode === "none") {
+              mainContentWrapper.style.setProperty("top", "5.5rem", "important");
+              mainContentWrapper.style.position = "";
+              mainContentWrapper.style.zIndex = "";
+              mainContentWrapper.style.setProperty("margin-top", "0", "important");
             } else {
               mainContentWrapper.style.setProperty("top", "calc(var(--banner-height) - 3.5rem)", "important");
               mainContentWrapper.style.position = "";
