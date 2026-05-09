@@ -703,7 +703,11 @@ function adjustMainContentPosition(
 				mainContent.classList.remove("no-banner-layout");
 				void mainContent.offsetWidth; // 强制回流
 				// 2. 动画到横幅目标位置
-				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
+				mainContent.style.setProperty(
+					"transition",
+					"top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+					"important",
+				);
 				mainContent.style.setProperty("top", bannerTargetTop, "important");
 				setTimeout(() => {
 					mainContent.style.position = "";
@@ -766,7 +770,11 @@ function adjustMainContentPosition(
 			mainContent.classList.add("no-banner-layout");
 			void mainContent.offsetWidth; // 强制回流
 			// 2. 动画到壁纸底部（100vh）
-			mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
+			mainContent.style.setProperty(
+				"transition",
+				"top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+				"important",
+			);
 			mainContent.style.setProperty("top", "100vh", "important");
 			setTimeout(() => {
 				// 动画完成后切换为 relative，使内容进入文档流
