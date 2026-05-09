@@ -619,7 +619,7 @@ $effect(() => {
                 before:w-1 before:h-4 before:rounded-md before:bg-(--primary)
                 before:absolute before:-left-3 before:top-1/2 before:-translate-y-1/2"
             >
-                {i18n(I18nKey.bannerSettings)}
+                {i18n(I18nKey.wallpaperSettings)}
                 <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md  active:scale-90"
                         class:opacity-0={bannerSettingsIsDefault} class:pointer-events-none={bannerSettingsIsDefault} onclick={resetBannerSettings}>
                     <div class="text-(--btn-content)">
@@ -636,7 +636,7 @@ $effect(() => {
                     onclick={toggleBannerTitleEnabled}
                 >
                     <Icon icon="material-symbols:titlecase-rounded" class="text-[1.25rem] shrink-0"></Icon>
-                    <span class="text-sm flex-1">{i18n(I18nKey.bannerTitle)}</span>
+                    <span class="text-sm flex-1">{i18n(I18nKey.wallpaperTitle)}</span>
                     <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
                          class:bg-(--primary)={bannerTitleEnabled}
                          class:bg-(--btn-regular-bg-active)={!bannerTitleEnabled}>
@@ -654,7 +654,7 @@ $effect(() => {
                     onclick={toggleBannerCarouselEnabled}
                 >
                     <Icon icon="material-symbols:view-carousel-outline" class="text-[1.25rem] shrink-0"></Icon>
-                    <span class="text-sm flex-1">{i18n(I18nKey.bannerCarousel)}</span>
+                    <span class="text-sm flex-1">{i18n(I18nKey.wallpaperCarousel)}</span>
                     <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
                          class:bg-(--primary)={bannerCarouselEnabled}
                          class:bg-(--btn-regular-bg-active)={!bannerCarouselEnabled}>

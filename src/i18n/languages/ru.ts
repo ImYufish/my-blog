@@ -219,10 +219,10 @@ export const ru: Translation = {
 	[Key.wallpaperOverlayMode]: "Прозрачный",
 	[Key.wallpaperNoneMode]: "Однотонный фон",
 
-	// Настройки баннера
-	[Key.bannerSettings]: "Настройки баннера",
-	[Key.bannerTitle]: "Заголовок главного баннера",
-	[Key.bannerCarousel]: "Карусель баннера",
+	// Настройки обоев
+	[Key.wallpaperSettings]: "Настройки обоев",
+	[Key.wallpaperTitle]: "Заголовок главных обоев",
+	[Key.wallpaperCarousel]: "Карусель обоев",
 	[Key.wavesAnimation]: "Анимация волн",
 	[Key.gradientTransition]: "Градиентный переход",
 	[Key.overlaySettings]: "Настройки прозрачности",

@@ -218,10 +218,10 @@ export const en: Translation = {
 	[Key.wallpaperOverlayMode]: "Overlay Wallpaper",
 	[Key.wallpaperNoneMode]: "None Wallpaper",
 
-	// Banner Settings
-	[Key.bannerSettings]: "Banner Settings",
-	[Key.bannerTitle]: "Home Banner Title",
-	[Key.bannerCarousel]: "Banner Carousel",
+	// Wallpaper Settings
+	[Key.wallpaperSettings]: "Wallpaper Settings",
+	[Key.wallpaperTitle]: "Home Wallpaper Title",
+	[Key.wallpaperCarousel]: "Wallpaper Carousel",
 	[Key.wavesAnimation]: "Waves Animation",
 	[Key.gradientTransition]: "Gradient Transition",
 	[Key.overlaySettings]: "Transparency Settings",

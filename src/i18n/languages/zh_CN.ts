@@ -210,10 +210,10 @@ export const zh_CN: Translation = {
 	[Key.wallpaperOverlayMode]: "全屏透明",
 	[Key.wallpaperNoneMode]: "纯色背景",
 
-	// 横幅设置
-	[Key.bannerSettings]: "横幅设置",
-	[Key.bannerTitle]: "首页横幅标题",
-	[Key.bannerCarousel]: "横幅轮播",
+	// 壁纸设置
+	[Key.wallpaperSettings]: "壁纸设置",
+	[Key.wallpaperTitle]: "首页壁纸标题",
+	[Key.wallpaperCarousel]: "壁纸轮播",
 	[Key.wavesAnimation]: "水波纹动画",
 	[Key.gradientTransition]: "渐变过渡",
 	[Key.overlaySettings]: "透明设置",
