@@ -536,54 +536,44 @@ $effect(() => {
                     </div>
                 </button>
             </div>
-            <div class="space-y-1">
+            <div class="flex gap-2">
                 <button
-                    class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
+                    class="flex-1 btn-regular rounded-md py-2 px-3 flex items-center justify-center gap-2 active:scale-95 transition-all relative overflow-hidden"
                     class:opacity-60={wallpaperMode !== WALLPAPER_BANNER}
                     class:bg-(--btn-regular-bg-hover)={wallpaperMode === WALLPAPER_BANNER}
                     onclick={() => switchWallpaperMode(WALLPAPER_BANNER)}
                 >
                     <Icon icon="material-symbols:image-outline" class="text-[1.25rem] shrink-0"></Icon>
-                    <span class="text-sm flex-1">{i18n(I18nKey.wallpaperBannerMode)}</span>
-                    {#if wallpaperMode === WALLPAPER_BANNER}
-                        <Icon icon="material-symbols:check-circle" class="text-[1rem] shrink-0 text-(--primary)"></Icon>
-                    {/if}
+                    <span class="text-xs font-medium">{i18n(I18nKey.wallpaperBannerMode)}</span>
                 </button>
                 <button
-                    class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
+                    class="flex-1 btn-regular rounded-md py-2 px-3 flex items-center justify-center gap-2 active:scale-95 transition-all relative overflow-hidden"
                     class:opacity-60={wallpaperMode !== WALLPAPER_FULLSCREEN}
                     class:bg-(--btn-regular-bg-hover)={wallpaperMode === WALLPAPER_FULLSCREEN}
                     onclick={() => switchWallpaperMode(WALLPAPER_FULLSCREEN)}
                 >
                     <Icon icon="material-symbols:wallpaper" class="text-[1.25rem] shrink-0"></Icon>
-                    <span class="text-sm flex-1">{i18n(I18nKey.wallpaperFullscreenMode)}</span>
-                    {#if wallpaperMode === WALLPAPER_FULLSCREEN}
-                        <Icon icon="material-symbols:check-circle" class="text-[1rem] shrink-0 text-(--primary)"></Icon>
-                    {/if}
+                    <span class="text-xs font-medium">{i18n(I18nKey.wallpaperFullscreenMode)}</span>
                 </button>
+            </div>
+            <div class="flex gap-2 mt-2">
                 <button
-                    class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
+                    class="flex-1 btn-regular rounded-md py-2 px-3 flex items-center justify-center gap-2 active:scale-95 transition-all relative overflow-hidden"
                     class:opacity-60={wallpaperMode !== WALLPAPER_OVERLAY}
                     class:bg-(--btn-regular-bg-hover)={wallpaperMode === WALLPAPER_OVERLAY}
                     onclick={() => switchWallpaperMode(WALLPAPER_OVERLAY)}
                 >
                     <Icon icon="material-symbols:full-coverage-outline-rounded" class="text-[1.25rem] shrink-0"></Icon>
-                    <span class="text-sm flex-1">{i18n(I18nKey.wallpaperOverlayMode)}</span>
-                    {#if wallpaperMode === WALLPAPER_OVERLAY}
-                        <Icon icon="material-symbols:check-circle" class="text-[1rem] shrink-0 text-(--primary)"></Icon>
-                    {/if}
+                    <span class="text-xs font-medium">{i18n(I18nKey.wallpaperOverlayMode)}</span>
                 </button>
                 <button
-                    class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
+                    class="flex-1 btn-regular rounded-md py-2 px-3 flex items-center justify-center gap-2 active:scale-95 transition-all relative overflow-hidden"
                     class:opacity-60={wallpaperMode !== WALLPAPER_NONE}
                     class:bg-(--btn-regular-bg-hover)={wallpaperMode === WALLPAPER_NONE}
                     onclick={() => switchWallpaperMode(WALLPAPER_NONE)}
                 >
                     <Icon icon="material-symbols:hide-image-outline" class="text-[1.25rem] shrink-0"></Icon>
-                    <span class="text-sm flex-1">{i18n(I18nKey.wallpaperNoneMode)}</span>
-                    {#if wallpaperMode === WALLPAPER_NONE}
-                        <Icon icon="material-symbols:check-circle" class="text-[1rem] shrink-0 text-(--primary)"></Icon>
-                    {/if}
+                    <span class="text-xs font-medium">{i18n(I18nKey.wallpaperNoneMode)}</span>
                 </button>
             </div>
         </div>
@@ -785,9 +775,6 @@ $effect(() => {
                         <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
                     </svg>
                     <span class="text-xs font-medium">{i18n(I18nKey.postListLayoutList)}</span>
-                    {#if currentLayout === 'list'}
-                        <Icon icon="material-symbols:check-circle" class="text-[1rem] shrink-0 text-(--primary)"></Icon>
-                    {/if}
                 </button>
                 <button
                     aria-label={i18n(I18nKey.postListLayoutGrid)}
@@ -802,9 +789,6 @@ $effect(() => {
                         <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
                     </svg>
                     <span class="text-xs font-medium">{i18n(I18nKey.postListLayoutGrid)}</span>
-                    {#if currentLayout === 'grid'}
-                        <Icon icon="material-symbols:check-circle" class="text-[1rem] shrink-0 text-(--primary)"></Icon>
-                    {/if}
                 </button>
             </div>
         </div>
