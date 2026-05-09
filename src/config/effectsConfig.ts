@@ -1,5 +1,7 @@
 import type { SakuraConfig } from "../types/config";
 
+// 特效配置 - 集中管理所有动画特效
+
 export const sakuraConfig: SakuraConfig = {
 	// 是否启用樱花特效
 	enable: false,
