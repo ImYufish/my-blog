@@ -214,6 +214,8 @@ enum I18nKey {
 	wallpaperCarousel = "wallpaperCarousel",
 	wavesAnimation = "wavesAnimation",
 	gradientTransition = "gradientTransition",
+	sakuraEffect = "sakuraEffect",
+	effectsSettings = "effectsSettings",
 	overlaySettings = "overlaySettings",
 	overlayOpacity = "overlayOpacity",
 	overlayBlur = "overlayBlur",
