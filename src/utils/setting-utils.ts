@@ -698,18 +698,13 @@ function adjustMainContentPosition(
 			const isHome = checkIsHomePage(window.location.pathname);
 			const bannerTargetTop = "calc(var(--banner-height) - 3rem)";
 
-			// 先禁用 CSS transition（layout-styles.css 定义了 transition: top 0.4s），
-			// 防止清除 inline top 时触发 CSS 过渡动画导致内容停在中间
+			// 禁用 CSS transition，防止整个定位过程中的值变化触发过渡动画
 			mainContent.style.setProperty("transition", "none", "important");
 			// 清除 fullscreen 模式特有的 inline 样式（position: relative, top: 0 等）
 			mainContent.style.position = "";
 			mainContent.style.zIndex = "";
 			mainContent.style.top = "";
 			mainContent.style.setProperty("margin-top", "");
-			// 强制回流：让 CSS 值（position: absolute, top: 70vh 等）立即生效
-			void mainContent.offsetWidth;
-			// 移除 transition: none，恢复 CSS 原有的 transition
-			mainContent.style.removeProperty("transition");
 
 			if (!isHome) {
 				mainContent.classList.add("mobile-main-no-banner");
@@ -726,6 +721,9 @@ function adjustMainContentPosition(
 				bannerGrid.style.transform = "";
 				bannerGrid.style.transition = "";
 			}
+			// 所有定位操作完成后，强制回流并恢复 CSS transition
+			void mainContent.offsetWidth;
+			mainContent.style.removeProperty("transition");
 			break;
 		}
 		case "fullscreen": {
