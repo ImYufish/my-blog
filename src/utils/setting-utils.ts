@@ -276,7 +276,7 @@ export function initThemeListener() {
 }
 
 // Wallpaper mode functions
-export function applyWallpaperModeToDocument(mode: WALLPAPER_MODE) {
+export function applyWallpaperModeToDocument(mode: WALLPAPER_MODE, animate = true) {
 	// 检查是否允许切换壁纸模式
 	const isSwitchable = backgroundWallpaper.switchable ?? true;
 	if (!isSwitchable) {
@@ -318,11 +318,11 @@ export function applyWallpaperModeToDocument(mode: WALLPAPER_MODE) {
 		switch (mode) {
 			case WALLPAPER_BANNER:
 				body.classList.add("enable-banner");
-				showBannerMode();
+				showBannerMode(true);
 				break;
 			case WALLPAPER_FULLSCREEN:
 				body.classList.add("no-banner-layout");
-				showFullscreenMode(true);
+				showFullscreenMode(animate);
 				break;
 			case WALLPAPER_OVERLAY:
 				body.classList.add("wallpaper-transparent");
@@ -385,7 +385,7 @@ function ensureWallpaperState(mode: WALLPAPER_MODE) {
 	updateNavbarTransparency(mode);
 }
 
-function showBannerMode() {
+function showBannerMode(animate = false) {
 	// 显示 wallpaper-wrapper 并切换为 banner 模式
 	const wallpaperWrapper = document.getElementById("wallpaper-wrapper");
 	if (wallpaperWrapper) {
@@ -440,7 +440,7 @@ function showBannerMode() {
 	}
 
 	// 调整主内容位置
-	adjustMainContentPosition("banner");
+	adjustMainContentPosition("banner", animate);
 
 	// 处理移动端非首页主内容区域位置
 	const mainContentWrapper = document.querySelector(
@@ -532,7 +532,7 @@ function showFullscreenMode(animate = false) {
 	}
 
 	// 调整主内容位置
-	adjustMainContentPosition("fullscreen");
+	adjustMainContentPosition("fullscreen", animate);
 
 	// 移除透明效果（全屏壁纸模式不使用半透明）
 	adjustMainContentTransparency(false);
@@ -673,6 +673,7 @@ function updateNavbarTransparency(mode: WALLPAPER_MODE) {
 
 function adjustMainContentPosition(
 	mode: WALLPAPER_MODE | "banner" | "none" | "overlay" | "fullscreen",
+	animate = false,
 ) {
 	const mainContent = document.querySelector(
 		".w-full.z-30.pointer-events-none",
@@ -689,11 +690,10 @@ function adjustMainContentPosition(
 			const bannerTargetTop = "calc(var(--banner-height) - 3rem)";
 
 			// 检查是否从全屏模式切换（需要过渡动画）
-			const isFullscreenToBanner = mainContent.style.position === "relative";
+			const isFullscreenToBanner = animate && mainContent.style.position === "relative";
 
 			if (isFullscreenToBanner) {
 				// 从全屏切换到横幅：从当前位置（文档流中）动画滑到横幅位置
-				// 1. 切换为 absolute，保持当前视觉位置不变
 				const currentTop = mainContent.getBoundingClientRect().top;
 				mainContent.style.transition = "none";
 				mainContent.style.position = "absolute";
@@ -701,13 +701,8 @@ function adjustMainContentPosition(
 				mainContent.style.setProperty("top", `${currentTop}px`, "important");
 				mainContent.style.setProperty("margin-top", "0", "important");
 				mainContent.classList.remove("no-banner-layout");
-				void mainContent.offsetWidth; // 强制回流
-				// 2. 动画到横幅目标位置
-				mainContent.style.setProperty(
-					"transition",
-					"top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-					"important",
-				);
+				void mainContent.offsetWidth;
+				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
 				mainContent.style.setProperty("top", bannerTargetTop, "important");
 				setTimeout(() => {
 					mainContent.style.position = "";
@@ -716,7 +711,7 @@ function adjustMainContentPosition(
 					mainContent.style.setProperty("margin-top", "");
 				}, 450);
 			} else {
-				// 普通切换：直接设置位置
+				// 普通切换或初始化：直接设置位置
 				mainContent.style.position = "";
 				mainContent.style.zIndex = "";
 				mainContent.style.setProperty("margin-top", "");
@@ -759,32 +754,35 @@ function adjustMainContentPosition(
 				break;
 			}
 
-			// 全屏模式：从当前位置动画滑到壁纸下方，完成后切换为 relative
-			// 1. 读取当前 top 值作为动画起点
-			const computedTop = mainContent.getBoundingClientRect().top;
-			mainContent.style.transition = "none";
-			mainContent.style.position = "absolute";
-			mainContent.style.zIndex = "30";
-			mainContent.style.setProperty("top", `${computedTop}px`, "important");
-			mainContent.style.setProperty("margin-top", "0", "important");
-			mainContent.classList.add("no-banner-layout");
-			void mainContent.offsetWidth; // 强制回流
-			// 2. 动画到壁纸底部（100vh）
-			mainContent.style.setProperty(
-				"transition",
-				"top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-				"important",
-			);
-			mainContent.style.setProperty("top", "100vh", "important");
-			setTimeout(() => {
-				// 动画完成后切换为 relative，使内容进入文档流
+			if (animate) {
+				// 运行时切换：从当前位置动画滑到壁纸下方，完成后切换为 relative
+				const computedTop = mainContent.getBoundingClientRect().top;
 				mainContent.style.transition = "none";
+				mainContent.style.position = "absolute";
+				mainContent.style.zIndex = "30";
+				mainContent.style.setProperty("top", `${computedTop}px`, "important");
+				mainContent.style.setProperty("margin-top", "0", "important");
+				mainContent.classList.add("no-banner-layout");
+				void mainContent.offsetWidth;
+				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
+				mainContent.style.setProperty("top", "100vh", "important");
+				setTimeout(() => {
+					mainContent.style.transition = "none";
+					mainContent.style.position = "relative";
+					mainContent.style.setProperty("top", "0", "important");
+					mainContent.style.setProperty("margin-top", "1rem", "important");
+					void mainContent.offsetWidth;
+					mainContent.style.transition = "";
+				}, 450);
+			} else {
+				// 初始化：直接设置位置，无需动画
+				mainContent.classList.add("no-banner-layout");
 				mainContent.style.position = "relative";
+				mainContent.style.zIndex = "30";
 				mainContent.style.setProperty("top", "0", "important");
 				mainContent.style.setProperty("margin-top", "1rem", "important");
-				void mainContent.offsetWidth;
 				mainContent.style.transition = "";
-			}, 450);
+			}
 			break;
 		}
 		case "overlay":
@@ -864,7 +862,7 @@ export function initWallpaperMode(): void {
 	// 初始化透明模式参数（透明度/模糊度/卡片透明度）
 	applyStoredOverlaySettingsToDocument();
 	const storedMode = getStoredWallpaperMode();
-	applyWallpaperModeToDocument(storedMode);
+	applyWallpaperModeToDocument(storedMode, false);
 }
 
 export function getStoredWallpaperMode(): WALLPAPER_MODE {
