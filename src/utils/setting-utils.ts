@@ -686,30 +686,52 @@ function adjustMainContentPosition(
 		case "banner": {
 			// Banner模式：主内容在banner下方
 			const isHome = checkIsHomePage(window.location.pathname);
+			const bannerTargetTop = "calc(var(--banner-height) - 3rem)";
+
+			// 检查是否从全屏模式切换（需要过渡动画）
+			const isFullscreenToBanner = mainContent.style.position === "relative";
+
+			if (isFullscreenToBanner) {
+				// 从全屏切换到横幅：从当前位置（文档流中）动画滑到横幅位置
+				// 1. 切换为 absolute，保持当前视觉位置不变
+				const currentTop = mainContent.getBoundingClientRect().top;
+				mainContent.style.transition = "none";
+				mainContent.style.position = "absolute";
+				mainContent.style.zIndex = "30";
+				mainContent.style.setProperty("top", `${currentTop}px`, "important");
+				mainContent.style.setProperty("margin-top", "0", "important");
+				mainContent.classList.remove("no-banner-layout");
+				void mainContent.offsetWidth; // 强制回流
+				// 2. 动画到横幅目标位置
+				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
+				mainContent.style.setProperty("top", bannerTargetTop, "important");
+				setTimeout(() => {
+					mainContent.style.position = "";
+					mainContent.style.zIndex = "";
+					mainContent.style.transition = "";
+					mainContent.style.setProperty("margin-top", "");
+				}, 450);
+			} else {
+				// 普通切换：直接设置位置
+				mainContent.style.position = "";
+				mainContent.style.zIndex = "";
+				mainContent.style.setProperty("margin-top", "");
+			}
+
 			if (!isHome) {
-				// 移动端非首页隐藏banner，主内容从导航栏下方开始
 				mainContent.classList.add("mobile-main-no-banner");
 				if (window.innerWidth < 1024) {
 					mainContent.style.setProperty("top", "5.5rem", "important");
 				} else {
-					// 桌面端：与首页相同定位（保留grid transform）
-					mainContent.style.setProperty(
-						"top",
-						"calc(var(--banner-height) - 3rem)",
-						"important",
-					);
+					if (!isFullscreenToBanner) {
+						mainContent.style.setProperty("top", bannerTargetTop, "important");
+					}
 				}
 			} else {
-				mainContent.style.setProperty(
-					"top",
-					"calc(var(--banner-height) - 3rem)",
-					"important",
-				);
+				if (!isFullscreenToBanner) {
+					mainContent.style.setProperty("top", bannerTargetTop, "important");
+				}
 			}
-			// 清除全屏模式残留的内联样式，恢复CSS规则控制
-			mainContent.style.position = "";
-			mainContent.style.zIndex = "";
-			mainContent.style.setProperty("margin-top", "");
 			const bannerGrid = document.getElementById("main-grid");
 			if (bannerGrid) {
 				bannerGrid.style.transform = "";
@@ -732,13 +754,29 @@ function adjustMainContentPosition(
 				mainContent.style.transition = "";
 				break;
 			}
-			mainContent.classList.add("no-banner-layout");
-			// relative + top:0：内容在文档流中紧跟壁纸，页面可滚动
-			mainContent.style.position = "relative";
+
+			// 全屏模式：从当前位置动画滑到壁纸下方，完成后切换为 relative
+			// 1. 读取当前 top 值作为动画起点
+			const computedTop = mainContent.getBoundingClientRect().top;
+			mainContent.style.transition = "none";
+			mainContent.style.position = "absolute";
 			mainContent.style.zIndex = "30";
-			mainContent.style.setProperty("top", "0", "important");
-			mainContent.style.setProperty("margin-top", "1rem", "important");
-			mainContent.style.transition = "";
+			mainContent.style.setProperty("top", `${computedTop}px`, "important");
+			mainContent.style.setProperty("margin-top", "0", "important");
+			mainContent.classList.add("no-banner-layout");
+			void mainContent.offsetWidth; // 强制回流
+			// 2. 动画到壁纸底部（100vh）
+			mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
+			mainContent.style.setProperty("top", "100vh", "important");
+			setTimeout(() => {
+				// 动画完成后切换为 relative，使内容进入文档流
+				mainContent.style.transition = "none";
+				mainContent.style.position = "relative";
+				mainContent.style.setProperty("top", "0", "important");
+				mainContent.style.setProperty("margin-top", "1rem", "important");
+				void mainContent.offsetWidth;
+				mainContent.style.transition = "";
+			}, 450);
 			break;
 		}
 		case "overlay":
