@@ -277,7 +277,10 @@ export function initThemeListener() {
 }
 
 // Wallpaper mode functions
-export function applyWallpaperModeToDocument(mode: WALLPAPER_MODE, animate = true) {
+export function applyWallpaperModeToDocument(
+	mode: WALLPAPER_MODE,
+	animate = true,
+) {
 	// 检查是否允许切换壁纸模式
 	const isSwitchable = backgroundWallpaper.switchable ?? true;
 	if (!isSwitchable) {
@@ -753,7 +756,11 @@ function adjustMainContentPosition(
 				mainContent.style.setProperty("margin-top", "0", "important");
 				mainContent.classList.add("no-banner-layout");
 				void mainContent.offsetWidth;
-				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
+				mainContent.style.setProperty(
+					"transition",
+					"top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+					"important",
+				);
 				mainContent.style.setProperty("top", "100vh", "important");
 				fullscreenAnimationTimeout = setTimeout(() => {
 					mainContent.style.transition = "none";
@@ -1161,10 +1168,7 @@ export function setSakuraEnabled(enabled: boolean): void {
 		return;
 	}
 	localStorage.setItem("sakuraEnabled", String(enabled));
-	document.documentElement.setAttribute(
-		"data-sakura-enabled",
-		String(enabled),
-	);
+	document.documentElement.setAttribute("data-sakura-enabled", String(enabled));
 	// 实时切换樱花特效
 	window.dispatchEvent(
 		new CustomEvent("sakuraToggle", { detail: { enabled } }),

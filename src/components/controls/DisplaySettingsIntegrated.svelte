@@ -15,6 +15,7 @@ import {
 	getDefaultOverlayBlur,
 	getDefaultOverlayCardOpacity,
 	getDefaultOverlayOpacity,
+	getDefaultSakuraEnabled,
 	getDefaultWavesEnabled,
 	getHue,
 	getStoredBannerCarouselEnabled,
@@ -23,18 +24,17 @@ import {
 	getStoredOverlayBlur,
 	getStoredOverlayCardOpacity,
 	getStoredOverlayOpacity,
+	getStoredSakuraEnabled,
 	getStoredWallpaperMode,
 	getStoredWavesEnabled,
 	setBannerCarouselEnabled,
 	setBannerTitleEnabled,
 	setGradientEnabled,
 	setHue,
-	getDefaultSakuraEnabled,
-	getStoredSakuraEnabled,
-	setSakuraEnabled,
 	setOverlayBlur,
 	setOverlayCardOpacity,
 	setOverlayOpacity,
+	setSakuraEnabled,
 	setWallpaperMode,
 	setWavesEnabled,
 } from "@utils/setting-utils";
@@ -112,8 +112,7 @@ const isBannerTitleSwitchable =
 const isBannerCarouselSwitchable =
 	backgroundWallpaper.banner?.carousel?.switchable ?? false;
 // 是否允许用户切换樱花特效
-const isSakuraSwitchable =
-	sakuraConfig?.switchable ?? false;
+const isSakuraSwitchable = sakuraConfig?.switchable ?? false;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
 const hasBannerSettings =
 	isWavesSwitchable ||
