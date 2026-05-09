@@ -671,6 +671,9 @@ function updateNavbarTransparency(mode: WALLPAPER_MODE) {
 	}
 }
 
+// 跟踪全屏模式动画的 setTimeout，快速切换时需要取消
+let fullscreenAnimationTimeout: ReturnType<typeof setTimeout> | null = null;
+
 function adjustMainContentPosition(
 	mode: WALLPAPER_MODE | "banner" | "none" | "overlay" | "fullscreen",
 	animate = false,
@@ -679,6 +682,12 @@ function adjustMainContentPosition(
 		".w-full.z-30.pointer-events-none",
 	) as HTMLElement;
 	if (!mainContent) return;
+
+	// 取消上一次全屏模式动画的 setTimeout，防止快速切换时竞态覆盖
+	if (fullscreenAnimationTimeout) {
+		clearTimeout(fullscreenAnimationTimeout);
+		fullscreenAnimationTimeout = null;
+	}
 
 	// 移除现有的位置类
 	mainContent.classList.remove("mobile-main-no-banner", "no-banner-layout");
@@ -689,47 +698,28 @@ function adjustMainContentPosition(
 			const isHome = checkIsHomePage(window.location.pathname);
 			const bannerTargetTop = "calc(var(--banner-height) - 3rem)";
 
-			// 检查是否从全屏模式切换（需要过渡动画）
-			const isFullscreenToBanner = animate && mainContent.style.position === "relative";
-
-			if (isFullscreenToBanner) {
-				// 从全屏切换到横幅：从当前位置（文档流中）动画滑到横幅位置
-				const currentTop = mainContent.getBoundingClientRect().top;
-				mainContent.style.transition = "none";
-				mainContent.style.position = "absolute";
-				mainContent.style.zIndex = "30";
-				mainContent.style.setProperty("top", `${currentTop}px`, "important");
-				mainContent.style.setProperty("margin-top", "0", "important");
-				mainContent.classList.remove("no-banner-layout");
-				void mainContent.offsetWidth;
-				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
-				mainContent.style.setProperty("top", bannerTargetTop, "important");
-				setTimeout(() => {
-					mainContent.style.position = "";
-					mainContent.style.zIndex = "";
-					mainContent.style.transition = "";
-					mainContent.style.setProperty("margin-top", "");
-				}, 450);
-			} else {
-				// 普通切换或初始化：直接设置位置
-				mainContent.style.position = "";
-				mainContent.style.zIndex = "";
-				mainContent.style.setProperty("margin-top", "");
-			}
+			// 先禁用 CSS transition（layout-styles.css 定义了 transition: top 0.4s），
+			// 防止清除 inline top 时触发 CSS 过渡动画导致内容停在中间
+			mainContent.style.setProperty("transition", "none", "important");
+			// 清除 fullscreen 模式特有的 inline 样式（position: relative, top: 0 等）
+			mainContent.style.position = "";
+			mainContent.style.zIndex = "";
+			mainContent.style.top = "";
+			mainContent.style.setProperty("margin-top", "");
+			// 强制回流：让 CSS 值（position: absolute, top: 70vh 等）立即生效
+			void mainContent.offsetWidth;
+			// 移除 transition: none，恢复 CSS 原有的 transition
+			mainContent.style.removeProperty("transition");
 
 			if (!isHome) {
 				mainContent.classList.add("mobile-main-no-banner");
 				if (window.innerWidth < 1024) {
 					mainContent.style.setProperty("top", "5.5rem", "important");
 				} else {
-					if (!isFullscreenToBanner) {
-						mainContent.style.setProperty("top", bannerTargetTop, "important");
-					}
-				}
-			} else {
-				if (!isFullscreenToBanner) {
 					mainContent.style.setProperty("top", bannerTargetTop, "important");
 				}
+			} else {
+				mainContent.style.setProperty("top", bannerTargetTop, "important");
 			}
 			const bannerGrid = document.getElementById("main-grid");
 			if (bannerGrid) {
@@ -766,7 +756,7 @@ function adjustMainContentPosition(
 				void mainContent.offsetWidth;
 				mainContent.style.setProperty("transition", "top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)", "important");
 				mainContent.style.setProperty("top", "100vh", "important");
-				setTimeout(() => {
+				fullscreenAnimationTimeout = setTimeout(() => {
 					mainContent.style.transition = "none";
 					mainContent.style.position = "relative";
 					mainContent.style.setProperty("top", "0", "important");
