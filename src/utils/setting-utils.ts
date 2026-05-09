@@ -737,7 +737,7 @@ function adjustMainContentPosition(
 			mainContent.style.position = "relative";
 			mainContent.style.zIndex = "30";
 			mainContent.style.setProperty("top", "0", "important");
-			mainContent.style.setProperty("margin-top", "5.5rem", "important");
+			mainContent.style.setProperty("margin-top", "1rem", "important");
 			mainContent.style.transition = "";
 			break;
 		}
