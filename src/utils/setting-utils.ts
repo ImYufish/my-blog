@@ -706,7 +706,10 @@ function adjustMainContentPosition(
 					"important",
 				);
 			}
-			// 清除main-grid的内联transform，恢复CSS规则控制
+			// 清除全屏模式残留的内联样式，恢复CSS规则控制
+			mainContent.style.position = "";
+			mainContent.style.zIndex = "";
+			mainContent.style.setProperty("margin-top", "");
 			const bannerGrid = document.getElementById("main-grid");
 			if (bannerGrid) {
 				bannerGrid.style.transform = "";
