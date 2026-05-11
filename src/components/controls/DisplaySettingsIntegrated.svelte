@@ -312,6 +312,7 @@ function toggleSakuraEnabled() {
 function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 	wallpaperMode = newMode;
 	setWallpaperMode(newMode);
+	window.scrollTo({ top: 0 });
 
 	if (newMode === WALLPAPER_OVERLAY) {
 		requestAnimationFrame(refreshAllRangeProgress);
