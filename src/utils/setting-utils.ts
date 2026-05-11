@@ -753,7 +753,8 @@ function adjustMainContentPosition(
 				mainContent.style.position = "absolute";
 				mainContent.style.zIndex = "30";
 				mainContent.style.setProperty("top", `${computedTop}px`, "important");
-				mainContent.style.setProperty("margin-top", "0", "important");
+				// absolute 定位下 margin-top 不影响布局，提前设好最终值避免切换 relative 时跳变
+				mainContent.style.setProperty("margin-top", "1rem", "important");
 				mainContent.classList.add("no-banner-layout");
 				void mainContent.offsetWidth;
 				mainContent.style.setProperty(
@@ -766,7 +767,6 @@ function adjustMainContentPosition(
 					mainContent.style.transition = "none";
 					mainContent.style.position = "relative";
 					mainContent.style.setProperty("top", "0", "important");
-					mainContent.style.setProperty("margin-top", "1rem", "important");
 					void mainContent.offsetWidth;
 					mainContent.style.transition = "";
 				}, 450);
