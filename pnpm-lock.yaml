@@ -101,6 +101,9 @@ importers:
       katex:
         specifier: ^0.16.45
         version: 0.16.45
+      l2d-widget:
+        specifier: ^0.0.2
+        version: 0.0.2
       marked:
         specifier: ^16.4.2
         version: 16.4.2
@@ -1511,6 +1514,11 @@ packages:
 
   '@pagefind/default-ui@1.5.2':
     resolution: {integrity: sha512-pm1LMnQg8N2B3n2TnjKlhaFihpz6zTiA4HiGQ6/slKO/+8K9CAU5kcjdSSPgpuk1PMuuN4hxLipUIifnrkl3Sg==}
+
+  '@pagefind/freebsd-x64@1.5.2':
+    resolution: {integrity: sha512-7EVzo9+0w+2cbe671BtMj10UlNo83I+HrLVLfRxO731svHRJKUfJ/mo05gU14pe9PCfpKNQT8FS3Xc/oDN6pOA==}
+    cpu: [x64]
+    os: [freebsd]
 
   '@pagefind/linux-arm64@1.5.2':
     resolution: {integrity: sha512-Ovt9+K35sqzn8H3ZMXGwls4TD/wMJuvRtShHIsmUQREmaxjrDEX7gHckRCrwYJ4XE1H1p6HkLz3wukrAnsfXQw==}
@@ -3507,6 +3515,9 @@ packages:
 
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
+
+  l2d-widget@0.0.2:
+    resolution: {integrity: sha512-1W8PUMer9WUW83wb3yerXdRRZMzz+wRv7Ns3K5Hwy/rqHS8vRZnEV2fSSd9mCx20HTWKRF1mXRCU4+RSDD8pdQ==}
 
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
@@ -7056,6 +7067,9 @@ snapshots:
 
   '@pagefind/default-ui@1.5.2': {}
 
+  '@pagefind/freebsd-x64@1.5.2':
+    optional: true
+
   '@pagefind/linux-arm64@1.5.2':
     optional: true
 
@@ -9376,6 +9390,8 @@ snapshots:
 
   kolorist@1.8.0: {}
 
+  l2d-widget@0.0.2: {}
+
   lightningcss-android-arm64@1.32.0:
     optional: true
 
@@ -10222,6 +10238,7 @@ snapshots:
     optionalDependencies:
       '@pagefind/darwin-arm64': 1.5.2
       '@pagefind/darwin-x64': 1.5.2
+      '@pagefind/freebsd-x64': 1.5.2
       '@pagefind/linux-arm64': 1.5.2
       '@pagefind/linux-x64': 1.5.2
       '@pagefind/windows-arm64': 1.5.2
