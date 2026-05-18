@@ -85,7 +85,7 @@ export const spineModelConfig: SpineModelConfig = {
 // Live2D 看板娘配置 (使用 l2d-widget)
 export const live2dWidgetConfig = {
 	// Live2D 看板娘开关
-	enable: true,
+	enable: false,
 	// 模型配置，支持单个模型或数组（多模型切换）
 	model: {
 		// Live2D模型文件路径
