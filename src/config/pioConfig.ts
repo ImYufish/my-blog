@@ -82,7 +82,7 @@ export const spineModelConfig: SpineModelConfig = {
 	opacity: 1.0,
 };
 
-// Live2D 看板娘配置 (使用 l2d-widget库，文档：https://l2d-widget.hacxy.cn)
+// Live2D 看板娘配置 (使用 l2d-widget 库，文档：https://l2d-widget.hacxy.cn)
 export const live2dWidgetConfig: Live2DWidgetConfig = {
 	// Live2D 看板娘开关
 	enable: false,
@@ -158,17 +158,6 @@ export const live2dWidgetConfig: Live2DWidgetConfig = {
 		offset: {
 			x: 0, // 正值右移，负值左移
 			y: 0, // 正值下移，负值上移
-		},
-		// 打字动画与嘴型同步配置
-		typing: {
-			// 嘴型参数名，不填则只播放打字动画，不驱动嘴型
-			param: "PARAM_MOUTH_OPEN_Y",
-			// 打字速度（ms/字）
-			speed: 100,
-			// 嘴型开合最小值（0-1）
-			minValue: 0.5,
-			// 嘴型开合最大值（0-1）
-			maxValue: 1,
 		},
 	},
 	// 响应式配置
