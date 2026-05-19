@@ -1,4 +1,4 @@
-import type { SpineModelConfig } from "../types/config";
+import type { Live2DWidgetConfig, SpineModelConfig } from "../types/config";
 
 // Spine 看板娘配置
 export const spineModelConfig: SpineModelConfig = {
@@ -82,14 +82,22 @@ export const spineModelConfig: SpineModelConfig = {
 	opacity: 1.0,
 };
 
-// Live2D 看板娘配置 (使用 l2d-widget)
-export const live2dWidgetConfig = {
+// Live2D 看板娘配置 (使用 l2d-widget库，文档：https://l2d-widget.hacxy.cn)
+export const live2dWidgetConfig: Live2DWidgetConfig = {
 	// Live2D 看板娘开关
 	enable: false,
 	// 模型配置，支持单个模型或数组（多模型切换）
 	model: {
 		// Live2D模型文件路径
 		path: "/pio/models/live2d/snow_miku/model.json",
+		// 动作声音音量 0-1，默认 0（静音）
+		volume: 0,
+		// 模型缩放比例
+		scale: 1,
+		// X轴偏移
+		x: 0,
+		// Y轴偏移
+		y: 0,
 	},
 	// 显示位置：bottom-left 或 bottom-right
 	position: "bottom-left" as const,
@@ -131,15 +139,37 @@ export const live2dWidgetConfig = {
 	},
 	// 提示气泡配置
 	tips: {
+		// 气泡开关
+		enable: true,
+		// 初始欢迎消息
 		welcomeMessage: ["你好！我是Miku~", "欢迎来到我的世界！"],
+		// 循环提示内容
 		messages: [
 			"有什么需要帮助的吗？",
 			"今天天气真不错呢！",
 			"要不要一起玩游戏？",
 			"记得按时休息哦！",
 		],
+		// 文字显示时间（ms）
 		duration: 3000,
+		// 提示气泡切换间隔（ms）
 		interval: 6000,
+		// 位置偏移量（px），基于默认位置（模型正上方居中）进行微调
+		offset: {
+			x: 0, // 正值右移，负值左移
+			y: 0, // 正值下移，负值上移
+		},
+		// 打字动画与嘴型同步配置
+		typing: {
+			// 嘴型参数名，不填则只播放打字动画，不驱动嘴型
+			param: "PARAM_MOUTH_OPEN_Y",
+			// 打字速度（ms/字）
+			speed: 100,
+			// 嘴型开合最小值（0-1）
+			minValue: 0.5,
+			// 嘴型开合最大值（0-1）
+			maxValue: 1,
+		},
 	},
 	// 响应式配置
 	responsive: {

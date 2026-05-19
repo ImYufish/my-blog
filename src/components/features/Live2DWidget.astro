@@ -10,7 +10,21 @@ interface MenuItem {
 interface Props {
 	config: {
 		enable: boolean;
-		model: { path: string } | { path: string }[];
+		model:
+			| {
+					path: string;
+					volume?: number;
+					scale?: number;
+					x?: number;
+					y?: number;
+			  }
+			| {
+					path: string;
+					volume?: number;
+					scale?: number;
+					x?: number;
+					y?: number;
+			  }[];
 		position?: "bottom-left" | "bottom-right";
 		size?: number | { width: number; height: number };
 		primaryColor?: string;
@@ -40,6 +54,10 @@ const { config } = Astro.props;
 const models = Array.isArray(config.model) ? config.model : [config.model];
 const modelConfigs = models.map((m) => ({
 	path: url(m.path),
+	...(m.volume !== undefined && { volume: m.volume }),
+	...(m.scale !== undefined && { scale: m.scale }),
+	...(m.x !== undefined && { x: m.x }),
+	...(m.y !== undefined && { y: m.y }),
 }));
 
 // 序列化菜单配置（只保留 icon, label, action）
@@ -149,13 +167,20 @@ function serializeMenus(menus: Props["config"]["menus"]) {
 			}
 
 			// 提示配置
-			if (tips && (tips.welcomeMessage || tips.messages)) {
+			if (tips && tips.enable === false) {
+				// 显式禁用提示气泡
+				if (!Array.isArray(options.model)) {
+					options.model.tips = false;
+				}
+			} else if (tips && (tips.welcomeMessage || tips.messages)) {
 				if (!Array.isArray(options.model)) {
 					options.model.tips = {
 						welcomeMessage: tips.welcomeMessage,
 						messages: tips.messages,
 						duration: tips.duration,
 						interval: tips.interval,
+						offset: tips.offset,
+						typing: tips.typing,
 					};
 				}
 			}
