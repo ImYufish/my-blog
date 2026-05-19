@@ -676,6 +676,13 @@ html[data-wallpaper-mode="fullscreen"] .absolute.w-full.z-30.no-banner-layout {
     transition: none !important;
 }
 
+/* Fullscreen 模式下非 sticky 导航栏：隐藏 top-row 占位，避免顶部空白 */
+html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
+    height: 0 !important;
+    overflow: visible !important;
+    transition: none !important;
+}
+
 /* Fullscreen 模式下图片全屏覆盖，无模糊 */
 #wallpaper-wrapper.wallpaper-fullscreen img,
 #wallpaper-wrapper.wallpaper-fullscreen img[class*="object-cover"] {
