@@ -902,6 +902,21 @@ function disableAnimation() {
   }
 
   const setup = () => {
+    // 全屏壁纸模式：替换 swup 默认的回顶行为
+    // 首页回顶部，其他页滚动到 #main-grid（与 ScrollDownIndicator 行为一致）
+    window.swup.hooks.replace("scroll:top", (visit: { to: { url: string } }, args: { options: ScrollIntoViewOptions }) => {
+      const wallpaperMode = document.documentElement.getAttribute("data-wallpaper-mode");
+      if (wallpaperMode === "fullscreen" && !pathsEqual(visit.to.url, url("/"))) {
+        const mainGrid = document.getElementById("main-grid");
+        if (mainGrid) {
+          mainGrid.scrollIntoView({ behavior: args.options?.behavior || "auto" });
+          return true;
+        }
+      }
+      window.scrollTo({ top: 0, left: 0, ...args.options });
+      return true;
+    });
+
     // TODO: temp solution to change the height of the banner
     /*
 	window.swup.hooks.on('animation:out:start', () => {
@@ -1182,8 +1197,10 @@ function disableAnimation() {
       }
 
       // 确保页面滚动到顶部，切页期间使用即时回顶，移动端不使用，避免出现闪烁
+      // 全屏壁纸模式非首页跳过此处回顶，由 scroll:top 钩子统一处理滚动到 #main-grid
       const shouldUseSmoothScroll = window.innerWidth >= 768;
-      if (shouldUseSmoothScroll) {
+      const isFullscreenNonHome = document.documentElement.getAttribute("data-wallpaper-mode") === "fullscreen" && !isHomePage;
+      if (shouldUseSmoothScroll && !isFullscreenNonHome) {
         window.scrollTo({
           top: 0,
           behavior: "auto",
