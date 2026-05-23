@@ -469,6 +469,12 @@ const siteLang = lang.replace("_", "-");
               mainContentWrapper.style.top = "0";
               mainContentWrapper.style.zIndex = "30";
               mainContentWrapper.style.setProperty("margin-top", "1rem", "important");
+            } else if (isMobile && isHomePage && (wallpaperMode === WALLPAPER_BANNER || wallpaperMode === undefined)) {
+              // 移动端横幅模式首页：清除 inline top，让 CSS 响应式规则生效
+              mainContentWrapper.style.removeProperty("top");
+              mainContentWrapper.style.position = "";
+              mainContentWrapper.style.zIndex = "";
+              mainContentWrapper.style.setProperty("margin-top", "0", "important");
             } else if (isMobileNonHome) {
               mainContentWrapper.style.setProperty("top", "5.5rem", "important");
               mainContentWrapper.style.position = "";
@@ -1140,6 +1146,12 @@ function disableAnimation() {
               mainContentWrapper.style.setProperty("margin-top", "1rem", "important");
             } else if (visitCurrentMode === "overlay" || visitCurrentMode === "none") {
               mainContentWrapper.style.setProperty("top", "5.5rem", "important");
+              mainContentWrapper.style.position = "";
+              mainContentWrapper.style.zIndex = "";
+              mainContentWrapper.style.setProperty("margin-top", "0", "important");
+            } else if (isMobile) {
+              // 移动端横幅模式首页：清除 inline top，让 CSS 响应式规则生效
+              mainContentWrapper.style.removeProperty("top");
               mainContentWrapper.style.position = "";
               mainContentWrapper.style.zIndex = "";
               mainContentWrapper.style.setProperty("margin-top", "0", "important");
