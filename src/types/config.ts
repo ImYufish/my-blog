@@ -119,6 +119,7 @@ export type SiteConfig = {
 		umamiAnalytics?: {
 			websiteId?: string; // Umami Website ID
 			scriptUrl?: string; // Umami JS地址，支持使用自建
+			replaysScriptUrl?: string; // Umami 会话回放脚本地址
 			trackOutboundLinks?: boolean; // 是否追踪出站链接点击事件，默认 true
 			collectWebVitals?: boolean; // 是否自动收集访客浏览器核心网页指标，默认 false
 			relpays?: {

@@ -182,6 +182,8 @@ export const siteConfig: SiteConfig = {
 			websiteId: "",
 			// Umami JS地址，支持使用自建
 			scriptUrl: "https://cloud.umami.is/script.js",
+			// Umami 会话回放脚本地址，支持使用自建
+			replaysScriptUrl: "https://cloud.umami.is/recorder.js",
 			// 是否追踪出站链接
 			trackOutboundLinks: true,
 			// 是否收集浏览器性能指标
