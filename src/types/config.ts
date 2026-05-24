@@ -529,8 +529,8 @@ export type Live2DWidgetConfig = {
 				path: string;
 				volume?: number;
 				scale?: number;
-				x?: number;
-				y?: number;
+				x?: number; // X轴偏移，范围 -2~2，正值向右
+				y?: number; // Y轴偏移，范围 -2~2，正值向上
 		  }[]; // 模型配置，支持单个或多个模型
 	position?: "bottom-left" | "bottom-right"; // 显示位置，默认 "bottom-left"
 	size?: number | { width: number; height: number }; // 画布尺寸（px），默认 300
