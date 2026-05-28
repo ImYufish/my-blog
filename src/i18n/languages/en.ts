@@ -315,6 +315,7 @@ export const en: Translation = {
 	[Key.galleryAlbums]: "albums",
 	[Key.galleryNoAlbums]: "No albums yet",
 	[Key.galleryBackToAlbums]: "Back to albums",
+	[Key.searchAlbums]: "Search albums...",
 
 	// Password Protection
 	[Key.passwordProtected]: "Password Protected",
