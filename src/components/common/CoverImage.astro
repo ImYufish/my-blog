@@ -10,7 +10,7 @@ import {
 	getImageQuality,
 	shouldAddNoReferrer,
 } from "@/utils/image-utils";
-import { getLqipGradient } from "@/utils/lqip";
+import { getLqipGradient } from "@/utils/lqip-utils";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -103,7 +103,11 @@ const imageStyle = `object-position: ${position};`;
 // LQIP 渐变占位
 const DEFAULT_GRADIENT =
 	"linear-gradient(135deg, #d6d3d1 0%, #a8a29e 50%, #d6d3d1 100%)";
-const lqipGradient = isLocal ? getLqipGradient(src, basePath) : undefined;
+const lqipGradient = isLocal
+	? getLqipGradient(src, basePath)
+	: isPublic
+		? getLqipGradient(src, basePath, true)
+		: undefined;
 const lqipStyle = `background: ${lqipGradient || DEFAULT_GRADIENT}`;
 
 // 响应式配置

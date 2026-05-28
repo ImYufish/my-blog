@@ -16,7 +16,6 @@ const IGNORE_DIRS = [
 	"public/assets/images/sponsor/**",
 	"public/assets/music/**",
 	"public/gallery/**",
-
 ];
 
 interface RgbColor {
@@ -61,10 +60,10 @@ async function processImage(imagePath: string): Promise<string | null> {
 }
 
 function filePathToKey(filePath: string): string {
-	if (filePath.startsWith(SRC_DIR)) {
-		return path.relative(SRC_DIR, filePath).replace(/\\/g, "/");
+	if (filePath.startsWith(PUBLIC_DIR)) {
+		return `public:${path.relative(PUBLIC_DIR, filePath).replace(/\\/g, "/")}`;
 	}
-	return path.relative(PUBLIC_DIR, filePath).replace(/\\/g, "/");
+	return `src:${path.relative(SRC_DIR, filePath).replace(/\\/g, "/")}`;
 }
 
 async function main() {

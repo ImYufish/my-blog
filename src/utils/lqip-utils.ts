@@ -15,10 +15,26 @@ function normalizePath(p: string): string {
 export function getLqipGradient(
 	src: string,
 	basePath?: string,
+	isPublic?: boolean,
 ): string | undefined {
-	// 先尝试完整路径（basePath + src），再尝试 src 本身
+	if (isPublic) {
+		// public 图片：key 格式为 public:xxx（去掉开头的 /）
+		const relativePath = src.replace(/^\//, "");
+		const compact = lqips[`public:${relativePath}`] || lqips[relativePath];
+		if (!compact || compact.length !== 18) return undefined;
+		const c1 = `#${compact.slice(0, 6)}`;
+		const c2 = `#${compact.slice(6, 12)}`;
+		const c3 = `#${compact.slice(12, 18)}`;
+		return `linear-gradient(135deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+	}
+
+	// src 图片：key 格式为 src:xxx
 	const fullPath = basePath ? normalizePath(`${basePath}/${src}`) : src;
-	const compact = lqips[fullPath] || lqips[src];
+	const compact =
+		lqips[`src:${fullPath}`] ||
+		lqips[`src:${src}`] ||
+		lqips[fullPath] ||
+		lqips[src];
 	if (!compact || compact.length !== 18) return undefined;
 
 	const c1 = `#${compact.slice(0, 6)}`;
