@@ -124,6 +124,9 @@ export const en: Translation = {
 	[Key.bangumiEmpty]: "No Data",
 	[Key.bangumiEmptyReason]:
 		"Possible reasons: username does not exist, network connection issue, or API limit",
+	[Key.bangumiFetchError]: "Bangumi Data Fetch Failed",
+	[Key.bangumiFetchErrorDesc]:
+		"Failed to fetch data from Bangumi API during build. This page is temporarily unavailable.",
 	[Key.bangumiUsername]: "Username",
 	[Key.bangumiApi]: "API",
 	[Key.bangumiConfigTip]:

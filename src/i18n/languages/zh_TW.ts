@@ -123,6 +123,9 @@ export const zh_TW: Translation = {
 	[Key.bangumiNoDataDescription]: "該分類下還沒有任何條目",
 	[Key.bangumiEmpty]: "暫無數據",
 	[Key.bangumiEmptyReason]: "可能的原因：用戶名不存在、網絡連接問題或API限制",
+	[Key.bangumiFetchError]: "Bangumi 資料拉取失敗",
+	[Key.bangumiFetchErrorDesc]:
+		"構建時從 Bangumi API 獲取資料失敗，該頁面內容暫不可用。",
 	[Key.bangumiUsername]: "用戶名",
 	[Key.bangumiApi]: "API",
 	[Key.bangumiConfigTip]: "提示：請在頁面配置中設置正確的Bangumi用戶名",

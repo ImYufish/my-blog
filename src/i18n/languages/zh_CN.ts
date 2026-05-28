@@ -121,6 +121,9 @@ export const zh_CN: Translation = {
 	[Key.bangumiNoDataDescription]: "该分类下还没有任何条目",
 	[Key.bangumiEmpty]: "暂无数据",
 	[Key.bangumiEmptyReason]: "可能的原因：用户名不存在、网络连接问题或API限制",
+	[Key.bangumiFetchError]: "Bangumi 数据拉取失败",
+	[Key.bangumiFetchErrorDesc]:
+		"构建时从 Bangumi API 获取数据失败，该页面内容暂不可用。",
 	[Key.bangumiUsername]: "用户名",
 	[Key.bangumiApi]: "API",
 	[Key.bangumiConfigTip]: "提示：请在页面配置中设置正确的Bangumi用户名",

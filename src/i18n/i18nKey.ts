@@ -129,6 +129,10 @@ enum I18nKey {
 	bangumiTotalPages = "bangumiTotalPages",
 	bangumiPage = "bangumiPage",
 
+	// 番组错误
+	bangumiFetchError = "bangumiFetchError",
+	bangumiFetchErrorDesc = "bangumiFetchErrorDesc",
+
 	// 番组分类
 	bangumiCategoryBook = "bangumiCategoryBook",
 	bangumiCategoryAnime = "bangumiCategoryAnime",
