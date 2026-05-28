@@ -6,7 +6,18 @@ import fs from "fs/promises";
 import path from "path";
 
 const SRC_DIR = "src";
+const PUBLIC_DIR = "public";
 const OUTPUT_FILE = "src/constants/lqips.json";
+// 需要忽略的目录（相对于项目根目录）
+const IGNORE_DIRS = [
+	"public/favicon/**",
+	"public/pio/**",
+	"public/assets/images/effects/**",
+	"public/assets/images/sponsor/**",
+	"public/assets/music/**",
+	"public/gallery/**",
+
+];
 
 interface RgbColor {
 	r: number;
@@ -50,31 +61,73 @@ async function processImage(imagePath: string): Promise<string | null> {
 }
 
 function filePathToKey(filePath: string): string {
-	const relative = path.relative(SRC_DIR, filePath).replace(/\\/g, "/");
-	return relative;
+	if (filePath.startsWith(SRC_DIR)) {
+		return path.relative(SRC_DIR, filePath).replace(/\\/g, "/");
+	}
+	return path.relative(PUBLIC_DIR, filePath).replace(/\\/g, "/");
 }
 
 async function main() {
-	const files = await glob("src/**/*.{png,jpg,jpeg,webp,avif}");
+	// 读取已有的 lqips.json
+	let existingLqips: LqipMap = {};
+	try {
+		const content = await fs.readFile(OUTPUT_FILE, "utf-8");
+		existingLqips = JSON.parse(content);
+		console.log(
+			`Loaded ${Object.keys(existingLqips).length} existing entries from ${OUTPUT_FILE}`,
+		);
+	} catch {
+		console.log(`No existing ${OUTPUT_FILE} found, will create new.`);
+	}
+
+	const files = await glob("{src,public}/**/*.{png,jpg,jpeg,webp,avif}", {
+		ignore: IGNORE_DIRS,
+	});
 
 	if (files.length === 0) {
 		console.log("No image files found.");
 		return;
 	}
 
-	console.log(`Found ${files.length} images. Processing...`);
+	// 移除已不存在的图片数据
+	const currentKeys = new Set(files.map((file) => filePathToKey(file)));
+	const removedKeys = Object.keys(existingLqips).filter(
+		(key) => !currentKeys.has(key),
+	);
+	for (const key of removedKeys) {
+		delete existingLqips[key];
+	}
+	if (removedKeys.length > 0) {
+		console.log(
+			`Removed ${removedKeys.length} stale entries: ${removedKeys.join(", ")}`,
+		);
+	}
 
-	const lqips: LqipMap = {};
+	// 过滤掉已有数据的图片
+	const newFiles = files.filter((file) => {
+		const key = filePathToKey(file);
+		return !(key in existingLqips);
+	});
+
+	console.log(
+		`Found ${files.length} images, ${newFiles.length} new to process.`,
+	);
+
+	const lqips: LqipMap = { ...existingLqips };
 	let processed = 0;
 
-	for (const file of files) {
-		const filePath = path.resolve(file);
-		process.stdout.write(`\rProcessing ${processed + 1}/${files.length}...`);
-		const compact = await processImage(filePath);
-		if (compact !== null) {
-			const key = filePathToKey(file);
-			lqips[key] = compact;
-			processed++;
+	if (newFiles.length > 0) {
+		for (const file of newFiles) {
+			const filePath = path.resolve(file);
+			process.stdout.write(
+				`\rProcessing ${processed + 1}/${newFiles.length}...`,
+			);
+			const compact = await processImage(filePath);
+			if (compact !== null) {
+				const key = filePathToKey(file);
+				lqips[key] = compact;
+				processed++;
+			}
 		}
 	}
 
@@ -83,7 +136,7 @@ async function main() {
 	await fs.writeFile(OUTPUT_FILE, JSON.stringify(lqips, null, 2), "utf-8");
 
 	console.log(
-		`\nDone! Processed ${processed}/${files.length} images. Output: ${OUTPUT_FILE}`,
+		`\nDone! Processed ${processed}/${newFiles.length} new images. Total: ${Object.keys(lqips).length}. Output: ${OUTPUT_FILE}`,
 	);
 }
 
