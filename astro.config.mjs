@@ -99,6 +99,7 @@ export default defineConfig({
 				"fa7-solid": ["*"],
 				"simple-icons": ["*"],
 				mdi: ["*"],
+				mingcute: ["*"],
 			},
 		}),
 		expressiveCode({
