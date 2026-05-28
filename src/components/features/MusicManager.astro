@@ -101,6 +101,7 @@ const managerConfigStr = JSON.stringify({
     document.body.appendChild(audio);
 
     // ── State ────────────────────────────────────────────────
+    var loadVersion = 0; // incremented on each loadTrack to discard stale play() results
     var state = {
         playlist: [],
         currentIndex: 0,
@@ -204,6 +205,7 @@ const managerConfigStr = JSON.stringify({
         if (index < 0 || index >= state.playlist.length) return;
         state.currentIndex = index;
         var track = state.playlist[index];
+        var ver = ++loadVersion;
 
         audio.src = track.url;
 
@@ -213,9 +215,12 @@ const managerConfigStr = JSON.stringify({
 
         if (autoPlay) {
             audio.play().then(function () {
+                if (ver !== loadVersion) return; // stale, discard
                 state.isPlaying = true;
                 emit('fm:play-state', { isPlaying: true });
             }).catch(function (e) {
+                if (ver !== loadVersion) return; // stale, discard
+                if (e.name === 'AbortError') return; // interrupted by new load
                 console.warn('Autoplay blocked:', e);
             });
         } else {
