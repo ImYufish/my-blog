@@ -10,7 +10,7 @@ import {
 	getImageQuality,
 	shouldAddNoReferrer,
 } from "@/utils/image-utils";
-import { getLqipGradient } from "@/utils/lqip-utils";
+import { getLqipProps } from "@/utils/lqip-utils";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -101,14 +101,11 @@ const imageClass =
 const imageStyle = `object-position: ${position};`;
 
 // LQIP 渐变占位
-const DEFAULT_GRADIENT =
-	"linear-gradient(135deg, #d6d3d1 0%, #a8a29e 50%, #d6d3d1 100%)";
-const lqipGradient = isLocal
-	? getLqipGradient(src, basePath)
+const lqipProps = isLocal
+	? getLqipProps(src, basePath)
 	: isPublic
-		? getLqipGradient(src, basePath, true)
-		: undefined;
-const lqipStyle = `background: ${lqipGradient || DEFAULT_GRADIENT}`;
+		? getLqipProps(src, basePath, true)
+		: getLqipProps(src);
 
 // 响应式配置
 const widths = preview ? [320, 480, 640, 960] : [800, 1200, 1600, 2000];
@@ -140,7 +137,7 @@ const remoteReferrerPolicy =
 	data-api-urls={apiUrls.length > 0 ? JSON.stringify(apiUrls) : undefined}
 >
 	<!-- LQIP 渐变占位 -->
-	<div class="lqip-placeholder absolute inset-0 pointer-events-none" style={lqipStyle} aria-hidden="true"></div>
+	<div class="lqip-placeholder absolute inset-0 pointer-events-none" style={lqipProps.style} aria-hidden="true"></div>
 
 	<!-- 加载动画 -->
 	{showLoading && (
@@ -233,15 +230,6 @@ const remoteReferrerPolicy =
 		.cover-image-container {
 			min-height: 0;
 		}
-	}
-
-	/* LQIP 占位 */
-	.lqip-placeholder {
-		z-index: 0;
-		transition: opacity 0.5s ease-out;
-	}
-	.lqip-placeholder.loaded {
-		opacity: 0;
 	}
 
 	/* 加载动画容器 */

@@ -9,7 +9,7 @@ import {
 	getImageQuality,
 	shouldAddNoReferrer,
 } from "@/utils/image-utils";
-import { getLqipGradient } from "@/utils/lqip-utils";
+import { getLqipProps } from "@/utils/lqip-utils";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -98,17 +98,14 @@ const responsiveProps = {
 };
 
 // LQIP 渐变占位
-const DEFAULT_GRADIENT =
-	"linear-gradient(135deg, #d6d3d1 0%, #a8a29e 50%, #d6d3d1 100%)";
-const lqipGradient = isLocal
-	? getLqipGradient(src, basePath)
+const lqipProps = isLocal
+	? getLqipProps(src, basePath)
 	: isPublic
-		? getLqipGradient(src, basePath, true)
-		: undefined;
-const lqipStyle = `background: ${lqipGradient || DEFAULT_GRADIENT}`;
+		? getLqipProps(src, basePath, true)
+		: getLqipProps(src);
 ---
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
-    <div class="lqip-placeholder absolute inset-0 pointer-events-none" style={lqipStyle} aria-hidden="true"></div>
+    <div class="lqip-placeholder absolute inset-0 pointer-events-none" style={lqipProps.style} aria-hidden="true"></div>
     <div class="transition absolute inset-0 dark:bg-black/10 pointer-events-none"></div>
     {isLocal && img && usePicture && (
         <Picture
@@ -136,43 +133,3 @@ const lqipStyle = `background: ${lqipGradient || DEFAULT_GRADIENT}`;
     )}
     {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} referrerpolicy={referrerPolicy} />}
 </div>
-
-<style>
-    .lqip-placeholder {
-        z-index: 0;
-        transition: opacity 0.5s ease-out;
-    }
-    .lqip-placeholder.loaded {
-        opacity: 0;
-    }
-</style>
-
-<script>
-    function initImageLoadFadeIn() {
-        const containers = document.querySelectorAll<HTMLElement>('.overflow-hidden.relative');
-        containers.forEach(container => {
-            const img = container.querySelector<HTMLImageElement>('img, picture img');
-            const placeholder = container.querySelector<HTMLElement>('.lqip-placeholder');
-            if (!img || !placeholder) return;
-
-            if (img.complete && img.naturalWidth > 0) {
-                img.style.opacity = '1';
-                placeholder.classList.add('loaded');
-            } else {
-                img.addEventListener('load', () => {
-                    img.style.opacity = '1';
-                    placeholder.classList.add('loaded');
-                }, { once: true });
-                img.addEventListener('error', () => {
-                    placeholder.classList.add('loaded');
-                }, { once: true });
-            }
-        });
-    }
-
-    initImageLoadFadeIn();
-    document.addEventListener('astro:page-load', initImageLoadFadeIn);
-    document.addEventListener('swup:contentReplaced', () => {
-        requestAnimationFrame(initImageLoadFadeIn);
-    });
-</script>

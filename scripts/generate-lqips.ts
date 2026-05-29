@@ -13,9 +13,7 @@ const IGNORE_DIRS = [
 	"public/favicon/**",
 	"public/pio/**",
 	"public/assets/images/effects/**",
-	"public/assets/images/sponsor/**",
 	"public/assets/music/**",
-	"public/gallery/**",
 ];
 
 interface RgbColor {

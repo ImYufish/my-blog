@@ -4,6 +4,9 @@ import lqipData from "@constants/lqips.json";
 
 const lqips: Record<string, string> = lqipData as Record<string, string>;
 
+const DEFAULT_GRADIENT =
+	"linear-gradient(135deg, #d6d3d1 0%, #a8a29e 50%, #d6d3d1 100%)";
+
 function normalizePath(p: string): string {
 	return p.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
 }
@@ -41,4 +44,35 @@ export function getLqipGradient(
 	const c2 = `#${compact.slice(6, 12)}`;
 	const c3 = `#${compact.slice(12, 18)}`;
 	return `linear-gradient(135deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+}
+
+/** 判断是否为外部图片 */
+export function isExternalImage(src: string): boolean {
+	return (
+		src.startsWith("http://") ||
+		src.startsWith("https://") ||
+		src.startsWith("data:")
+	);
+}
+
+/** 获取 LQIP 内联样式 */
+export function getLqipStyle(
+	src: string,
+	basePath?: string,
+	isPublic?: boolean,
+): string | undefined {
+	if (isExternalImage(src)) return undefined;
+	const gradient = getLqipGradient(src, basePath, isPublic);
+	return gradient ? `background: ${gradient}` : undefined;
+}
+
+/** 获取 LQIP props（用于 Astro 组件），外部图片自动降级 */
+export function getLqipProps(
+	src: string,
+	basePath?: string,
+	isPublic?: boolean,
+): { style: string } {
+	if (isExternalImage(src)) return { style: "background: var(--muted)" };
+	const style = getLqipStyle(src, basePath, isPublic);
+	return { style: style || `background: ${DEFAULT_GRADIENT}` };
 }
