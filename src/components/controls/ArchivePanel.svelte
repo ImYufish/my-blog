@@ -172,15 +172,25 @@ onMount(async () => {
 		collapsedYears = new Set(groupedPostsArray.slice(1).map((g) => g.year));
 	}
 
-	// 更新横幅标题为当前筛选的分类名或标签名
-	const bannerTitle = document.querySelector(".banner-page-title-text");
+	// 更新横幅标题为当前筛选的分类名或标签名（带淡入淡出）
+	const bannerTitle = document.querySelector<HTMLElement>(
+		".banner-page-title-text",
+	);
 	if (bannerTitle) {
+		let newTitle = "";
 		if (categories.length > 0) {
-			bannerTitle.textContent = categories.join(" / ");
+			newTitle = categories.join(" / ");
 		} else if (uncategorized) {
-			bannerTitle.textContent = i18n(I18nKey.uncategorized);
+			newTitle = i18n(I18nKey.uncategorized);
 		} else if (tags.length > 0) {
-			bannerTitle.textContent = tags.map((t) => `#${t}`).join(" / ");
+			newTitle = tags.map((t) => `#${t}`).join(" / ");
+		}
+		if (newTitle && bannerTitle.textContent !== newTitle) {
+			bannerTitle.style.opacity = "0";
+			setTimeout(() => {
+				bannerTitle.textContent = newTitle;
+				bannerTitle.style.opacity = "1";
+			}, 260);
 		}
 	}
 });
