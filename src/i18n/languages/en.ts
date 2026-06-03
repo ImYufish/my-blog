@@ -299,6 +299,8 @@ export const en: Translation = {
 	[Key.calendarOctober]: "Oct",
 	[Key.calendarNovember]: "Nov",
 	[Key.calendarDecember]: "Dec",
+	[Key.calendar]: "Site Calendar",
+	[Key.calendarHeatmapWeek]: "Week {week} of {month}, {count} posts",
 
 	[Key.shareArticle]: "Share",
 	[Key.generatingPoster]: "Generating Poster...",

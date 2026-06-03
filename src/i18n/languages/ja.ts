@@ -298,6 +298,8 @@ export const ja: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+	[Key.calendar]: "サイトカレンダー",
+	[Key.calendarHeatmapWeek]: "{month}月第{week}週、{count}記事",
 
 	[Key.shareArticle]: "共有",
 	[Key.generatingPoster]: "ポスター生成中...",

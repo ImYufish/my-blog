@@ -292,6 +292,8 @@ export const zh_TW: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+	[Key.calendar]: "站點日曆",
+	[Key.calendarHeatmapWeek]: "{month}月第{week}週，{count}篇文章",
 
 	[Key.shareArticle]: "分享",
 	[Key.generatingPoster]: "海報生成中...",
