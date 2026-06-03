@@ -51,6 +51,6 @@ export const LinkPresets: { [key in LinkPreset]: NavBarLink } = {
 	[LinkPreset.Categories]: {
 		name: i18n(I18nKey.categories),
 		url: "/categories/",
-		icon: "material-symbols:category-rounded",
+		icon: "material-symbols:folder-open-rounded",
 	},
 };
