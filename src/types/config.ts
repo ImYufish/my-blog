@@ -179,6 +179,8 @@ export enum LinkPreset {
 	Guestbook = 5,
 	Bangumi = 6,
 	Gallery = 7,
+	Tags = 8,
+	Categories = 9,
 }
 
 export type NavBarLink = {
