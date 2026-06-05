@@ -15,7 +15,7 @@ const { item, loadImage = false } = Astro.props;
 const coverSrc = item.subject?.images?.medium || "";
 const lqipProps = coverSrc ? getLqipProps(coverSrc) : { style: "" };
 
-const subject_base_url = "https://bgm.tv/subject/";
+const subject_base_url = "https://bangumi.one/subject/";
 
 const getStatusColor = (type: number) => {
 	switch (type) {
