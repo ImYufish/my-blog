@@ -20,7 +20,6 @@
   "dependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/cloudflare": "^13.6.1",
-    "@napi-rs/wasm-runtime": "^1.1.4",
     "@astrojs/compiler-rs": "^0.2.1",
     "@astrojs/markdown-remark": "^7.2.0",
     "@astrojs/markdown-satteri": "^0.2.2",
@@ -39,6 +38,7 @@
     "@iconify-json/mingcute": "^1.2.7",
     "@iconify-json/simple-icons": "^1.2.85",
     "@iconify/utils": "^3.1.1",
+    "@napi-rs/wasm-runtime": "^1.1.4",
     "@swup/astro": "^1.8.0",
     "@tailwindcss/typography": "^0.5.16",
     "astro": "6.4.4",
@@ -72,7 +72,7 @@
     "svelte": "^5.55.9",
     "typescript": "^5.9.2",
     "unist-util-visit": "^5.1.0",
-    "wrangler": "^4.95.0"
+    "wrangler": "^4.98.0"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.9",
