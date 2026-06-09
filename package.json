@@ -61,6 +61,7 @@
     "rehype-components": "^0.3.0",
     "rehype-katex": "^7.0.1",
     "rehype-slug": "^6.0.0",
+    "remark-admonition-to-blockquote-callout": "^1.0.0",
     "remark-directive": "^3.0.1",
     "remark-math": "^6.0.0",
     "remark-sectionize": "^2.1.0",

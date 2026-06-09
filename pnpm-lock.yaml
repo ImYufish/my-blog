@@ -137,6 +137,9 @@ importers:
       rehype-slug:
         specifier: ^6.0.0
         version: 6.0.0
+      remark-admonition-to-blockquote-callout:
+        specifier: ^1.0.0
+        version: 1.0.0
       remark-directive:
         specifier: ^3.0.1
         version: 3.0.1
@@ -4974,6 +4977,10 @@ packages:
 
   rehype@13.0.2:
     resolution: {integrity: sha512-j31mdaRFrwFRUIlxGeuPXXKWQxet52RBQRvCmzl5eCefn/KGbomK5GMHNMsOJf55fgo3qw5tST5neDuarDYR2A==}
+
+  remark-admonition-to-blockquote-callout@1.0.0:
+    resolution: {integrity: sha512-mDVqlEmopZb3Y6IcUCfC3qrSEXHUQy+EOOzAOYfobJ8JkLiIA05Qyo9nTysZvgCJfNpQdqq2hl9cJMnvIdNISg==}
+    engines: {node: '>=16.0.0'}
 
   remark-directive@3.0.1:
     resolution: {integrity: sha512-gwglrEQEZcZYgVyG1tQuA+h58EZfq5CSULw7J90AFuCTyib1thgHPoqQ+h9iFvU6R+vnZ5oNFQR5QKgGpk741A==}
@@ -11590,6 +11597,10 @@ snapshots:
       rehype-parse: 9.0.1
       rehype-stringify: 10.0.1
       unified: 11.0.5
+
+  remark-admonition-to-blockquote-callout@1.0.0:
+    dependencies:
+      '@types/mdast': 4.0.4
 
   remark-directive@3.0.1:
     dependencies:

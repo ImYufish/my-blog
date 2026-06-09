@@ -20,6 +20,7 @@ import { pluginCollapsible } from "expressive-code-collapsible"; /* Collapsible 
 import { pluginLanguageBadge } from "expressive-code-language-badge"; /* Language Badge */
 import rehypeCallouts from "rehype-callouts";
 import rehypeSlug from "rehype-slug";
+import remarkAdmonitionToBlockquoteCallout from "remark-admonition-to-blockquote-callout";
 import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
@@ -205,6 +206,9 @@ export default defineConfig({
 	markdown: {
 		processor: unified({
 			remarkPlugins: [
+				...(siteConfig.rehypeCallouts.enablePythonMarkdownAdmonitions !== false
+					? [remarkAdmonitionToBlockquoteCallout]
+					: []),
 				remarkMath,
 				remarkReadingTime,
 				remarkImageGrid,
