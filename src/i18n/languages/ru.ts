@@ -280,6 +280,20 @@ export const ru: Translation = {
 	[Key.siteStatsDays]: "{days} дней",
 	[Key.today]: "Сегодня",
 
+	// Информация о сайте
+	[Key.siteInfo]: "Информация о сайте",
+	[Key.siteInfoBuildTime]: "Время сборки",
+	[Key.siteInfoBuildPlatform]: "Платформа сборки",
+	[Key.siteInfoBlogVersion]: "Версия блога",
+	[Key.siteInfoAstroVersion]: "Astro",
+	[Key.siteInfoNodeVersion]: "Node",
+	[Key.siteInfoPnpmVersion]: "pnpm",
+	[Key.siteInfoSystem]: "Система",
+	[Key.siteInfoExpand]: "Показать информацию о сборке",
+	[Key.siteInfoCollapse]: "Скрыть информацию о сборке",
+	[Key.siteInfoDomain]: "Домен",
+	[Key.siteInfoLicense]: "Лицензия",
+
 	// Компонент календаря
 	[Key.calendarSunday]: "Вс",
 	[Key.calendarMonday]: "Пн",

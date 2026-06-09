@@ -270,6 +270,20 @@ export const zh_CN: Translation = {
 	[Key.siteStatsDays]: "{days} 天",
 	[Key.today]: "今天",
 
+	// 站点信息
+	[Key.siteInfo]: "站点信息",
+	[Key.siteInfoBuildTime]: "构建时间",
+	[Key.siteInfoBuildPlatform]: "构建平台",
+	[Key.siteInfoBlogVersion]: "博客版本",
+	[Key.siteInfoAstroVersion]: "Astro",
+	[Key.siteInfoNodeVersion]: "Node",
+	[Key.siteInfoPnpmVersion]: "pnpm",
+	[Key.siteInfoSystem]: "系统信息",
+	[Key.siteInfoExpand]: "展开构建信息",
+	[Key.siteInfoCollapse]: "收起构建信息",
+	[Key.siteInfoDomain]: "站点域名",
+	[Key.siteInfoLicense]: "文章许可",
+
 	// 日历组件
 	[Key.calendarSunday]: "日",
 	[Key.calendarMonday]: "一",

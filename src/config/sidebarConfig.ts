@@ -110,18 +110,14 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：广告栏组件 1
-			type: "advertisement",
+			// 组件类型：站点信息组件（构建信息）
+			type: "siteInfo",
 			// 是否启用该组件
 			enable: true,
-			// 是否显示组件标题
-			showTitle: false,
 			// 组件位置
-			position: "sticky",
+			position: "top",
 			// 是否在文章详情页显示
 			showOnPostPage: true,
-			// 配置ID：使用第一个广告配置
-			configId: "ad1",
 		},
 		{
 			// 组件类型：日历组件
@@ -151,6 +147,20 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 			// 是否在非文章详情页显示
 			showOnNonPostPage: false,
+		},
+		{
+			// 组件类型：广告栏组件 1
+			type: "advertisement",
+			// 是否启用该组件
+			enable: true,
+			// 是否显示组件标题
+			showTitle: false,
+			// 组件位置
+			position: "sticky",
+			// 是否在文章详情页显示
+			showOnPostPage: true,
+			// 配置ID：使用第一个广告配置
+			configId: "ad1",
 		},
 		{
 			// 组件类型：广告栏组件 2
