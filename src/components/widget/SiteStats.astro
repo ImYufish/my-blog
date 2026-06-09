@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
-import { siteConfig } from "@/config";
+import { sidebarLayoutConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import {
@@ -16,6 +16,13 @@ interface Props {
 }
 
 const { class: className, style } = Astro.props;
+
+const statsComponent = [
+	...sidebarLayoutConfig.leftComponents,
+	...sidebarLayoutConfig.rightComponents,
+	...sidebarLayoutConfig.mobileBottomComponents,
+].find((c) => c.type === "stats");
+const showTitle = statsComponent?.showTitle !== false;
 
 // 从配置中获取站点开始日期
 const siteStartDate = siteConfig.siteStartDate || "2025-01-01";
@@ -102,7 +109,7 @@ const stats = [
 ];
 ---
 
-<WidgetLayout name={i18n(I18nKey.siteStats)} id="site-stats" class={className} style={style}>
+<WidgetLayout name={i18n(I18nKey.siteStats)} showTitle={showTitle} id="site-stats" class={className} style={style}>
   <div class="flex flex-col gap-2">
     {stats.map((stat) => (
       <div class="flex items-center justify-between px-3 py-1.5">

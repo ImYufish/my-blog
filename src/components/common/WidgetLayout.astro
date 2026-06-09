@@ -6,6 +6,7 @@ import { i18n } from "@/i18n/translation";
 interface Props {
 	id: string;
 	name?: string;
+	showTitle?: boolean;
 	isCollapsed?: boolean;
 	collapsedHeight?: string;
 	useExpandedButtonSpacing?: boolean;
@@ -16,6 +17,7 @@ interface Props {
 const {
 	id,
 	name,
+	showTitle = true,
 	isCollapsed,
 	collapsedHeight,
 	useExpandedButtonSpacing = false,
@@ -31,7 +33,7 @@ const className = Astro.props.class;
     class={"pb-4 card-base " + className}
     style={style}
 >
-    {name && (
+    {name && showTitle && (
         <div class="widget-title font-bold transition text-lg text-neutral-900 dark:text-neutral-100 relative ml-8 mt-4 mb-2
             before:w-1 before:h-4 before:rounded-md before:bg-(--primary)
             before:absolute before:left-[-16px] before:top-[5.5px] flex items-center justify-between">
@@ -39,7 +41,7 @@ const className = Astro.props.class;
             <slot name="title-icon" />
         </div>
     )}
-    <div id={id} class:list={["collapse-wrapper px-4 overflow-hidden", {"collapsed": isCollapsed, "pt-4": !name}]}>
+    <div id={id} class:list={["collapse-wrapper px-4 overflow-hidden", {"collapsed": isCollapsed, "pt-4": !name || !showTitle}]}>
         <slot></slot>
     </div>
     {isCollapsed && <div class="expand-btn px-4 -mb-2">

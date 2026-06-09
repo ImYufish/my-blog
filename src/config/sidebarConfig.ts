@@ -28,6 +28,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	// 组件的渲染顺序完全取决于它们在配置数组中出现的顺序，但top的组件会优先于sticky位置的组件渲染
 	// type 组件类型
 	// enable 是否启用该组件
+	// showTitle 是否显示该组件标题，默认true
 	// position 组件位置：top固定顶部，sticky粘性定位(会跟随页面滚动)
 	// showOnPostPage 是否在文章详情页显示该组件
 	// showOnNonPostPage 是否在非文章详情页显示该组件（除文章详情页外都显示）
@@ -125,6 +126,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			type: "calendar",
 			// 是否启用该组件
 			enable: true,
+			// 是否显示组件标题
+			showTitle: false,
 			// 组件位置
 			position: "sticky",
 			// 是否在文章详情页显示

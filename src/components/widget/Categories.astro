@@ -18,6 +18,7 @@ const categoriesComponent = [
 ].find((c) => c.type === "categories");
 
 const collapseThreshold = categoriesComponent?.responsive?.collapseThreshold;
+const showTitle = categoriesComponent?.showTitle !== false;
 const isCollapsed = collapseThreshold
 	? categories.length > collapseThreshold
 	: false;
@@ -30,7 +31,7 @@ const className = Astro.props.class;
 const style = Astro.props.style;
 ---
 
-<WidgetLayout name={i18n(I18nKey.categories)} id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
+<WidgetLayout name={i18n(I18nKey.categories)} showTitle={showTitle} id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
                 class={className} style={style}
 >
     {categories.map((c) =>

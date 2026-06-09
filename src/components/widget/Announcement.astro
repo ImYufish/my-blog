@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import { sidebarLayoutConfig } from "@/config";
 import { announcementConfig } from "@/config/announcementConfig";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
@@ -13,11 +14,19 @@ interface Props {
 }
 const className = Astro.props.class;
 const style = Astro.props.style;
+
+const announcementComponent = [
+	...sidebarLayoutConfig.leftComponents,
+	...sidebarLayoutConfig.rightComponents,
+	...sidebarLayoutConfig.mobileBottomComponents,
+].find((c) => c.type === "announcement");
+const showTitle = announcementComponent?.showTitle !== false;
 ---
 
 <!-- 组件显示现在由sidebarLayoutConfig统一控制，无需检查config.enable -->
 <WidgetLayout
   name={config.title || i18n(I18nKey.announcement)}
+  showTitle={showTitle}
   id="announcement"
   class={className}
   style={style}
