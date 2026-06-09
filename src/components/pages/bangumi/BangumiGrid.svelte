@@ -33,9 +33,21 @@ const {
 const isDynamic = $derived(!!fetchConfig);
 
 // 状态
-let activeTab = $state(initialActiveTab || "");
-let loading = $state(isDynamic);
+let activeTab = $state("");
+let fetchLoading = $state(false);
+const loading = $derived(isDynamic && fetchLoading);
 let error = $state(false);
+
+// 初始化 activeTab / 当 fetchConfig 变化时重置状态
+$effect(() => {
+	if (initialActiveTab) {
+		activeTab = initialActiveTab;
+	}
+	if (fetchConfig) {
+		fetchLoading = true;
+		error = false;
+	}
+});
 let errorTitle = $state("");
 let errorDesc = $state("");
 let updateTimestamp = $state("");
@@ -128,7 +140,7 @@ async function loadDynamicData() {
 			newTabs.push({ id: catKey, name: info.name, count: data.length });
 		} catch (e) {
 			console.error(`[Bangumi] 获取 ${catKey} 数据失败:`, e);
-			loading = false;
+			fetchLoading = false;
 			error = true;
 			errorTitle = i18n(I18nKey.bangumiFetchError);
 			errorDesc = i18n(I18nKey.bangumiFetchErrorDesc);
@@ -137,7 +149,7 @@ async function loadDynamicData() {
 	}
 
 	if (newTabs.length === 0 || newTabs.every((t) => t.count === 0)) {
-		loading = false;
+		fetchLoading = false;
 		error = true;
 		errorTitle = i18n(I18nKey.bangumiNoData);
 		errorDesc = i18n(I18nKey.bangumiNoDataDescription);
@@ -147,7 +159,7 @@ async function loadDynamicData() {
 	dynamicTabs = newTabs;
 	dynamicData = newData;
 	activeTab = newTabs[0].id;
-	loading = false;
+	fetchLoading = false;
 
 	const now = new Date();
 	const pad = (n: number) => (n < 10 ? `0${n}` : String(n));
