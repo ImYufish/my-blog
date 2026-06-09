@@ -10,6 +10,7 @@ interface Props {
 	isCollapsed?: boolean;
 	collapsedHeight?: string;
 	useExpandedButtonSpacing?: boolean;
+	contentPadding?: boolean;
 	moreUrl?: string;
 	class?: string;
 	style?: string;
@@ -21,6 +22,7 @@ const {
 	isCollapsed,
 	collapsedHeight,
 	useExpandedButtonSpacing = false,
+	contentPadding = true,
 	moreUrl,
 	style,
 } = Astro.props;
@@ -30,7 +32,7 @@ const className = Astro.props.class;
     data-id={id}
     data-is-collapsed={String(isCollapsed)}
     data-use-expanded-button-spacing={String(useExpandedButtonSpacing)}
-    class={"pb-4 card-base " + className}
+    class:list={["card-base", {"pb-4": contentPadding}, className]}
     style={style}
 >
     {name && showTitle && (
@@ -41,7 +43,7 @@ const className = Astro.props.class;
             <slot name="title-icon" />
         </div>
     )}
-    <div id={id} class:list={["collapse-wrapper px-4 overflow-hidden", {"collapsed": isCollapsed, "pt-4": !name || !showTitle}]}>
+    <div id={id} class:list={["collapse-wrapper overflow-hidden", {"px-4": contentPadding, "collapsed": isCollapsed, "pt-4": contentPadding && (!name || !showTitle)}]}>
         <slot></slot>
     </div>
     {isCollapsed && <div class="expand-btn px-4 -mb-2">
