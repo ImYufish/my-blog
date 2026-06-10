@@ -54,11 +54,13 @@ const buildTime = formatDateI18nWithTime(new Date());
 
 // 构建平台检测
 function detectBuildPlatform(): string {
+	if (process.env.EDGEONE) return "EdgeOne";
 	if (process.env.VERCEL) return "Vercel";
-	if (process.env.CF_PAGES || process.env.CF_WORKERS) return "Cloudflare";
 	if (process.env.NETLIFY) return "Netlify";
 	if (process.env.GITHUB_ACTIONS) return "GitHub Actions";
-	return "Local / Unknown";
+	if (process.env.CF_PAGES) return "Cloudflare Pages";
+	if (process.env.CF_WORKERS) return "Cloudflare Workers";
+	return "Unknown";
 }
 const buildPlatform = detectBuildPlatform();
 
