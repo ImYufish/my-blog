@@ -1,4 +1,4 @@
-import type { FriendLink, FriendsPageConfig } from "../types/config";
+import type { FriendLink, FriendsPageConfig } from "../types/friendsConfig";
 
 // 可以在src/content/spec/friends.md中编写友链页面下方的自定义内容
 

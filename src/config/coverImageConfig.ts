@@ -1,4 +1,4 @@
-import type { CoverImageConfig } from "../types/config";
+import type { CoverImageConfig } from "../types/coverImageConfig";
 
 /**
  * 文章封面图配置

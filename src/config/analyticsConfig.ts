@@ -1,4 +1,4 @@
-import type { AnalyticsConfig } from "../types/config";
+import type { AnalyticsConfig } from "../types/analyticsConfig";
 
 export const analyticsConfig: AnalyticsConfig = {
 	// Google Analytics ID

@@ -1,4 +1,4 @@
-import type { SakuraConfig } from "../types/config";
+import type { SakuraConfig } from "../types/effectsConfig";
 
 // 特效配置 - 集中管理所有动画特效
 

@@ -1,4 +1,4 @@
-import type { PlantUMLConfig } from "../types/config";
+import type { PlantUMLConfig } from "../types/plantumlConfig";
 
 /**
  * PlantUML 图表渲染配置

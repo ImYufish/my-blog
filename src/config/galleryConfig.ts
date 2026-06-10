@@ -1,4 +1,4 @@
-import type { GalleryConfig } from "@/types/config";
+import type { GalleryConfig } from "@/types/galleryConfig";
 
 // 相册配置
 export const galleryConfig: GalleryConfig = {

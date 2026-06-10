@@ -1,4 +1,4 @@
-import type { MusicPlayerConfig } from "../types/config";
+import type { MusicPlayerConfig } from "../types/musicConfig";
 
 // 音乐播放器配置
 export const musicPlayerConfig: MusicPlayerConfig = {

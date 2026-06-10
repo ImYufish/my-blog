@@ -1,4 +1,4 @@
-import type { ExpressiveCodeConfig } from "../types/config";
+import type { ExpressiveCodeConfig } from "../types/expressiveCodeConfig";
 
 /**
  * expressive-code配置

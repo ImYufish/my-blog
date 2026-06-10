@@ -1,4 +1,4 @@
-import type { FontConfig } from "../types/config";
+import type { FontConfig } from "../types/fontConfig";
 
 // 字体配置
 export const fontConfig: FontConfig = {
