@@ -103,11 +103,6 @@ const mainItems = [
 		value: `Firefly v${blogVersion}`,
 	},
 	{
-		icon: "material-symbols:language",
-		label: i18n(I18nKey.siteInfoDomain),
-		value: siteDomain,
-	},
-	{
 		icon: "material-symbols:copyright-outline",
 		label: i18n(I18nKey.siteInfoLicense),
 		value: licenseName,
@@ -122,6 +117,12 @@ const detailItems: {
 	value: string;
 	fullWidth?: boolean;
 }[] = [
+	{
+		icon: "material-symbols:language",
+		label: i18n(I18nKey.siteInfoDomain),
+		value: siteDomain,
+		fullWidth: true,
+	},
 	{
 		icon: "mdi:clover",
 		label: "Firefly",
