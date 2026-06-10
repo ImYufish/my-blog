@@ -302,6 +302,7 @@ export const ru: Translation = {
 	[Key.calendarDecember]: "Дек",
 	[Key.calendar]: "Календарь сайта",
 	[Key.calendarHeatmapWeek]: "Неделя {week} {month}, {count} записей",
+	[Key.advertisement]: "Реклама",
 
 	[Key.shareArticle]: "Поделиться",
 	[Key.generatingPoster]: "Создание постера...",
