@@ -278,6 +278,20 @@ export const ja: Translation = {
 	[Key.siteStatsDays]: "{days} 日",
 	[Key.today]: "今日",
 
+	// サイト情報
+	[Key.siteInfo]: "サイト情報",
+	[Key.siteInfoBuildTime]: "ビルド日時",
+	[Key.siteInfoBuildPlatform]: "ビルドプラットフォーム",
+	[Key.siteInfoBlogVersion]: "ブログバージョン",
+	[Key.siteInfoAstroVersion]: "Astro バージョン",
+	[Key.siteInfoNodeVersion]: "Node バージョン",
+	[Key.siteInfoPnpmVersion]: "pnpm バージョン",
+	[Key.siteInfoSystem]: "システム情報",
+	[Key.siteInfoExpand]: "ビルド情報を展開",
+	[Key.siteInfoCollapse]: "ビルド情報を折畳む",
+	[Key.siteInfoDomain]: "ドメイン",
+	[Key.siteInfoLicense]: "ライセンス",
+
 	// カレンダーコンポーネント
 	[Key.calendarSunday]: "日",
 	[Key.calendarMonday]: "月",

@@ -279,6 +279,20 @@ export const en: Translation = {
 	[Key.siteStatsDays]: "{days} days",
 	[Key.today]: "Today",
 
+	// Site Info
+	[Key.siteInfo]: "Site Info",
+	[Key.siteInfoBuildTime]: "Build Time",
+	[Key.siteInfoBuildPlatform]: "Build Platform",
+	[Key.siteInfoBlogVersion]: "Blog Version",
+	[Key.siteInfoAstroVersion]: "Astro Version",
+	[Key.siteInfoNodeVersion]: "Node Version",
+	[Key.siteInfoPnpmVersion]: "pnpm Version",
+	[Key.siteInfoSystem]: "System",
+	[Key.siteInfoExpand]: "Show build info",
+	[Key.siteInfoCollapse]: "Hide build info",
+	[Key.siteInfoDomain]: "Domain",
+	[Key.siteInfoLicense]: "License",
+
 	// Calendar Component
 	[Key.calendarSunday]: "Sun",
 	[Key.calendarMonday]: "Mon",
