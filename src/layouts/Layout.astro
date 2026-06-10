@@ -10,8 +10,10 @@ import SakuraEffect from "@components/features/SakuraEffect.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 
 import {
+	analyticsConfig,
 	backgroundWallpaper,
 	expressiveCodeConfig,
+	fontConfig,
 	profileConfig,
 	siteConfig,
 } from "@/config";
@@ -98,30 +100,30 @@ const siteLang = lang.replace("_", "-");
 <html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode}>
   <head>
     <meta charset="UTF-8" />
-    {siteConfig.analytics?.googleAnalyticsId && (
-            <GoogleAnalytics analyticsId={siteConfig.analytics.googleAnalyticsId} />
+    {analyticsConfig?.googleAnalyticsId && (
+            <GoogleAnalytics analyticsId={analyticsConfig.googleAnalyticsId} />
     )}
-    {siteConfig.analytics?.microsoftClarityId && (
-            <MicrosoftClarity clarityId={siteConfig.analytics.microsoftClarityId} />
+    {analyticsConfig?.microsoftClarityId && (
+            <MicrosoftClarity clarityId={analyticsConfig.microsoftClarityId} />
     )}
-        {siteConfig.analytics?.umamiAnalytics?.websiteId && (
+        {analyticsConfig?.umamiAnalytics?.websiteId && (
           <UmamiAnalytics
-          websiteId={siteConfig.analytics.umamiAnalytics.websiteId}
-          scriptUrl={siteConfig.analytics.umamiAnalytics.scriptUrl}
-          replaysScriptUrl={siteConfig.analytics.umamiAnalytics.replaysScriptUrl}
-          trackOutboundLinks={siteConfig.analytics.umamiAnalytics.trackOutboundLinks}
-          collectWebVitals={siteConfig.analytics.umamiAnalytics.collectWebVitals}
-          replays={siteConfig.analytics.umamiAnalytics.replays}
+          websiteId={analyticsConfig.umamiAnalytics.websiteId}
+          scriptUrl={analyticsConfig.umamiAnalytics.scriptUrl}
+          replaysScriptUrl={analyticsConfig.umamiAnalytics.replaysScriptUrl}
+          trackOutboundLinks={analyticsConfig.umamiAnalytics.trackOutboundLinks}
+          collectWebVitals={analyticsConfig.umamiAnalytics.collectWebVitals}
+          replays={analyticsConfig.umamiAnalytics.replays}
           />
         )}
-        {siteConfig.analytics?.la51Analytics?.Id && (
+        {analyticsConfig?.la51Analytics?.Id && (
             <La51Analytics
-            analyticsId={siteConfig.analytics.la51Analytics.Id}
-            sdkUrl={siteConfig.analytics.la51Analytics?.sdkUrl}
-            ck={siteConfig.analytics.la51Analytics?.ck}
-            autoTrack={siteConfig.analytics.la51Analytics?.autoTrack}
-            hashMode={siteConfig.analytics.la51Analytics?.hashMode}
-            screenRecord={siteConfig.analytics.la51Analytics?.screenRecord}
+            analyticsId={analyticsConfig.la51Analytics.Id}
+            sdkUrl={analyticsConfig.la51Analytics?.sdkUrl}
+            ck={analyticsConfig.la51Analytics?.ck}
+            autoTrack={analyticsConfig.la51Analytics?.autoTrack}
+            hashMode={analyticsConfig.la51Analytics?.hashMode}
+            screenRecord={analyticsConfig.la51Analytics?.screenRecord}
             />
     )}
 
@@ -569,10 +571,10 @@ const siteLang = lang.replace("_", "-");
         "enable-card-border": siteConfig.card?.border,
         "card-follow-theme-hue": siteConfig.card?.followTheme,
       },
-      ...(siteConfig.font.enable && siteConfig.font.selected
-        ? (Array.isArray(siteConfig.font.selected)
-            ? siteConfig.font.selected
-            : [siteConfig.font.selected]
+      ...(fontConfig.enable && fontConfig.selected
+        ? (Array.isArray(fontConfig.selected)
+            ? fontConfig.selected
+            : [fontConfig.selected]
           ).map((fontId) => `font-${fontId}-enabled`)
         : []),
     ]}
