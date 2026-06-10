@@ -433,14 +433,9 @@ export type WidgetComponentConfig = {
 	enable: boolean; // 是否启用该组件
 	showTitle?: boolean; // 是否显示该组件标题，默认true
 	position: "top" | "sticky"; // 组件位置：top=固定在顶部，sticky=粘性定位（可滚动）
-	configId?: string; // 配置ID，用于广告组件指定使用哪个配置
 	showOnPostPage?: boolean; // 是否在文章详情页显示
 	showOnNonPostPage?: boolean; // 是否在非文章详情页显示
-	responsive?: {
-		hidden?: ("mobile" | "tablet" | "desktop")[]; // 在指定设备上隐藏
-		collapseThreshold?: number; // 折叠阈值
-		showHeatmap?: boolean; // 是否显示热力图（仅日历组件）
-	};
+	responsive?: WidgetResponsiveConfig;
 	customProps?: Record<string, unknown>; // 自定义属性，用于扩展组件功能
 };
 
@@ -448,15 +443,30 @@ export type MobileBottomComponentConfig = {
 	type: WidgetComponentType; // 组件类型
 	enable: boolean; // 是否启用该组件
 	showTitle?: boolean; // 是否显示该组件标题，默认true
-	configId?: string; // 配置ID，用于广告组件指定使用哪个配置
 	showOnPostPage?: boolean; // 是否在文章详情页显示
 	showOnNonPostPage?: boolean; // 是否在非文章详情页显示
-	responsive?: {
-		hidden?: ("mobile" | "tablet" | "desktop")[]; // 在指定设备上隐藏
-		collapseThreshold?: number; // 折叠阈值
-		showHeatmap?: boolean; // 是否显示热力图（仅日历组件）
-	};
+	responsive?: WidgetResponsiveConfig;
 	customProps?: Record<string, unknown>; // 自定义属性，用于扩展组件功能
+};
+
+// 组件通用响应式配置
+export type WidgetResponsiveConfig = {
+	hidden?: ("mobile" | "tablet" | "desktop")[]; // 在指定设备上隐藏
+	collapseThreshold?: number; // 折叠阈值
+	showHeatmap?: boolean; // 是否显示热力图（仅日历组件）
+	ad?: AdConfig; // 广告组件专用配置
+};
+
+// 广告栏配置
+export type AdConfig = {
+	title?: string; // 广告栏标题
+	content?: string; // 广告栏文本内容
+	image?: { src: string; alt?: string; link?: string; external?: boolean }; // 广告图片
+	link?: { text: string; url: string; external?: boolean }; // 广告链接按钮
+	padding?: { top?: string; right?: string; bottom?: string; left?: string; all?: string }; // 内边距
+	closable?: boolean; // 是否可关闭
+	displayCount?: number; // 显示次数限制，-1为无限制
+	expireDate?: string; // 过期时间 (ISO 8601 格式)
 };
 
 export type SidebarLayoutConfig = {
@@ -674,33 +684,6 @@ export type BackgroundWallpaperConfig = {
 	fullscreen?: {
 		position?: string; // 壁纸位置，支持CSS object-position的所有值
 	};
-};
-
-// 广告栏配置
-export type AdConfig = {
-	title?: string; // 广告栏标题
-	content?: string; // 广告栏文本内容
-	image?: {
-		src: string; // 图片地址
-		alt?: string; // 图片描述
-		link?: string; // 图片点击链接
-		external?: boolean; // 是否外部链接
-	};
-	link?: {
-		text: string; // 链接文本
-		url: string; // 链接地址
-		external?: boolean; // 是否外部链接
-	};
-	padding?: {
-		top?: string; // 上边距，如 "0", "1rem", "16px"
-		right?: string; // 右边距
-		bottom?: string; // 下边距
-		left?: string; // 左边距
-		all?: string; // 统一边距，会覆盖单独设置
-	};
-	closable?: boolean; // 是否可关闭
-	displayCount?: number; // 显示次数限制，-1为无限制
-	expireDate?: string; // 过期时间 (ISO 8601 格式)
 };
 
 // 友链配置

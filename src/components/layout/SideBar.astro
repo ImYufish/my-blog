@@ -130,6 +130,7 @@ const getComponentProps = (
 	const baseProps: Record<string, unknown> = {
 		class: "onload-animation",
 		style: `animation-delay: ${getAnimationDelay(index)}`,
+		componentConfig: config,
 	};
 
 	// 添加 showOnPostPage 和 showOnNonPostPage 标记class（仅WidgetComponentConfig有这些属性）
@@ -150,15 +151,6 @@ const getComponentProps = (
 	// 特殊处理 SidebarTOC 组件
 	if (config.type === "sidebarToc") {
 		return { ...baseProps, headings: Astro.props.headings || [] };
-	}
-
-	// 特殊处理 Advertisement 组件
-	if (
-		config.type === "advertisement" &&
-		"configId" in config &&
-		config.configId
-	) {
-		return { ...baseProps, configId: config.configId };
 	}
 
 	return baseProps;
