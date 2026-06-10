@@ -2,8 +2,7 @@
 import { Icon } from "astro-icon/components";
 import DropdownItem from "@/components/common/DropdownItem.astro";
 import DropdownPanel from "@/components/common/DropdownPanel.astro";
-import { LinkPresets } from "@/constants/link-presets";
-import { LinkPreset, type NavBarLink } from "@/types/config";
+import type { NavBarLink } from "@/types/config";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -18,22 +17,7 @@ if (!link) {
 	return null;
 }
 
-// 转换子菜单中的LinkPreset为NavBarLink
-const processedLink = {
-	...link,
-	children: link.children
-		?.map((child: NavBarLink | LinkPreset): NavBarLink | null => {
-			if (typeof child === "number") {
-				// 检查 LinkPreset 是否存在于 LinkPresets 中
-				if (child in LinkPresets) {
-					return LinkPresets[child as LinkPreset];
-				}
-				return null;
-			}
-			return child;
-		})
-		.filter((child): child is NavBarLink => child !== null),
-};
+const processedLink = link;
 
 const hasChildren = processedLink.children && processedLink.children.length > 0;
 ---

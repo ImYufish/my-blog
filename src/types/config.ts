@@ -174,25 +174,12 @@ export type Favicon = {
 	sizes?: string;
 };
 
-export enum LinkPreset {
-	Home = 0,
-	Archive = 1,
-	About = 2,
-	Friends = 3,
-	Sponsor = 4,
-	Guestbook = 5,
-	Bangumi = 6,
-	Gallery = 7,
-	Tags = 8,
-	Categories = 9,
-}
-
 export type NavBarLink = {
 	name: string;
-	url: string;
+	url?: string;
 	external?: boolean;
 	icon?: string; // 菜单项图标
-	children?: (NavBarLink | LinkPreset)[]; // 支持子菜单，可以是NavBarLink或LinkPreset
+	children?: NavBarLink[]; // 支持子菜单
 };
 
 export enum NavBarSearchMethod {
@@ -204,7 +191,7 @@ export type NavBarSearchConfig = {
 };
 
 export type NavBarConfig = {
-	links: (NavBarLink | LinkPreset)[];
+	links: NavBarLink[];
 };
 
 export type ProfileConfig = {

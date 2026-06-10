@@ -1,23 +1,13 @@
 ---
 import { Icon } from "astro-icon/components";
-import { LinkPresets } from "@/constants/link-presets";
-import { LinkPreset, type NavBarLink } from "@/types/config";
+import type { NavBarLink } from "@/types/config";
 import { url } from "@/utils/url-utils";
 
 interface Props {
 	links: NavBarLink[];
 }
 
-// 处理links中的LinkPreset转换
-const processedLinks = Astro.props.links.map((link: NavBarLink) => ({
-	...link,
-	children: link.children?.map((child: NavBarLink | LinkPreset): NavBarLink => {
-		if (typeof child === "number") {
-			return LinkPresets[child];
-		}
-		return child;
-	}),
-}));
+const processedLinks = Astro.props.links;
 ---
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed transition-all fixed right-4 px-2 py-2 max-h-[80vh] overflow-y-auto"]}>
     {processedLinks.map((link) => (
