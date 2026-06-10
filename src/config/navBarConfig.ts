@@ -19,6 +19,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 文章及其子菜单
 	links.push({
 		name: "文章",
+		url: "#",
 		icon: "material-symbols:article",
 		children: [
 			// 归档
@@ -41,6 +42,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 我的及其子菜单
 	links.push({
 		name: "我的",
+		url: "#",
 		icon: "material-symbols:person",
 		children: [
 			// 相册
@@ -54,6 +56,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 关于及其子菜单
 	links.push({
 		name: "关于",
+		url: "#",
 		icon: "material-symbols:info",
 		children: [
 			// 赞助
@@ -67,6 +70,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 自定义导航栏链接
 	links.push({
 		name: "链接",
+		url: "#",
 		icon: "material-symbols:link",
 		// 子菜单
 		children: [
@@ -88,8 +92,22 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				external: true,
 				icon: "fa7-brands:qq",
 			},
+			{
+				name: "Firefly文档",
+				url: "https://docs-firefly.cuteleaf.cn",
+				external: true,
+				icon: "material-symbols:docs",
+			},
 		],
 	});
+
+	// 文档链接
+	// links.push({
+	// 	name: "文档",
+	// 	url: "https://docs-firefly.cuteleaf.cn",
+	// 	external: true,
+	// 	icon: "material-symbols:docs",
+	// });
 
 	return { links } as NavBarConfig;
 };
