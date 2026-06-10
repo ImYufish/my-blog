@@ -57,22 +57,6 @@ export type SiteConfig = {
 	// 可选：站点时区，使用 IANA 时区标识，例如 "Asia/Shanghai"、"UTC"
 	timezone?: string;
 
-	// 提醒框配置
-	rehypeCallouts: {
-		theme: "github" | "obsidian" | "vitepress";
-		enablePythonMarkdownAdmonitions?: boolean;
-	};
-
-	// bangumi配置
-	bangumi?: {
-		userId?: string; // Bangumi用户ID
-		mode?: "static" | "dynamic"; // 数据模式：static=构建时获取，dynamic=客户端实时获取
-		apiUrl?: string; // Bangumi API 地址
-		subjectBaseUrl?: string; // 条目详情页地址
-		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
-	};
-
-	generateOgImages: boolean;
 	favicon: Array<{
 		src: string;
 		theme?: "light" | "dark";
@@ -92,10 +76,6 @@ export type SiteConfig = {
 		followTheme?: boolean; // 导航栏图标和标题是否跟随主题色
 		stickyNavbar?: boolean; // 导航栏是否固定在顶部始终可见
 	};
-
-	showLastModified: boolean; // 控制"上次编辑"卡片显示的开关
-	outdatedThreshold?: number; // 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
-	sharePoster?: boolean; // 是否显示分享海报按钮
 
 	// 页面开关配置
 	pages: {
@@ -123,6 +103,32 @@ export type SiteConfig = {
 			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数，默认 320
 			columnWidth?: number;
 		};
+	};
+
+	// 文章内容页配置
+	post: {
+		// 提醒框（Admonitions）配置
+		rehypeCallouts: {
+			theme: "github" | "obsidian" | "vitepress";
+			enablePythonMarkdownAdmonitions?: boolean;
+		};
+		// 控制"上次编辑时间"卡片显示的开关
+		showLastModified: boolean;
+		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
+		outdatedThreshold?: number;
+		// 是否显示分享海报按钮
+		sharePoster?: boolean;
+		// OpenGraph图片功能
+		generateOgImages: boolean;
+	};
+
+	// bangumi配置
+	bangumi?: {
+		userId?: string; // Bangumi用户ID
+		mode?: "static" | "dynamic"; // 数据模式：static=构建时获取，dynamic=客户端实时获取
+		apiUrl?: string; // Bangumi API 地址
+		subjectBaseUrl?: string; // 条目详情页地址
+		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
 	};
 
 	// 分页配置

@@ -21,7 +21,7 @@ interface FontOptions {
 export const prerender = true;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	if (!siteConfig.generateOgImages) {
+	if (!siteConfig.post.generateOgImages) {
 		return [];
 	}
 

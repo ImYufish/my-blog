@@ -80,7 +80,7 @@ if (title) {
 }
 
 let ogImageUrl: string | undefined;
-if (siteConfig.generateOgImages && postSlug) {
+if (siteConfig.post.generateOgImages && postSlug) {
 	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
 }
 

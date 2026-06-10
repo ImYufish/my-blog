@@ -266,7 +266,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
           {/* 赞助按钮 & 分享按钮 */}
           {
-            (siteConfig.sharePoster || (sponsorConfig.showButtonInPost && siteConfig.pages.sponsor)) && (
+            (siteConfig.post.sharePoster || (sponsorConfig.showButtonInPost && siteConfig.pages.sponsor)) && (
               <div class="mb-6 rounded-xl onload-animation">
                 <div class="p-6 bg-(--license-block-bg) rounded-xl">
                   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -299,7 +299,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                     </div>
                     <div class="flex items-center gap-3">
                       {
-                        siteConfig.sharePoster && (
+                        siteConfig.post.sharePoster && (
                           <SharePoster
                             client:load
                             title={entry.data.title}
@@ -354,7 +354,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
           {/* 赞助按钮 & 分享按钮 */}
           {
-            (siteConfig.sharePoster || (sponsorConfig.showButtonInPost && siteConfig.pages.sponsor)) && (
+            (siteConfig.post.sharePoster || (sponsorConfig.showButtonInPost && siteConfig.pages.sponsor)) && (
               <div class="mb-6 rounded-xl onload-animation">
                 <div class="p-6 bg-(--license-block-bg) rounded-xl">
                   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -387,7 +387,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                     </div>
                     <div class="flex items-center gap-3">
                       {
-                        siteConfig.sharePoster && (
+                        siteConfig.post.sharePoster && (
                           <SharePoster
                             client:load
                             title={entry.data.title}
@@ -440,10 +440,10 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
   <!-- 上次编辑时间 -->
   {
-    siteConfig.showLastModified && (() => {
+    siteConfig.post.showLastModified && (() => {
       const lastModified = dayjs(entry.data.updated || entry.data.published);
       const dateStr = lastModified.format("YYYY-MM-DD");
-      const outdatedThreshold = siteConfig.outdatedThreshold ?? 1;
+      const outdatedThreshold = siteConfig.post.outdatedThreshold ?? 1;
 
       // 1. 預設加上 hidden 隱藏，並把時間與閾值綁在 data-* 屬性
       return (

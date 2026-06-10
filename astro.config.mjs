@@ -206,7 +206,7 @@ export default defineConfig({
 	markdown: {
 		processor: unified({
 			remarkPlugins: [
-				...(siteConfig.rehypeCallouts.enablePythonMarkdownAdmonitions !== false
+				...(siteConfig.post.rehypeCallouts.enablePythonMarkdownAdmonitions !== false
 					? [remarkAdmonitionToBlockquoteCallout]
 					: []),
 				remarkMath,
@@ -221,7 +221,7 @@ export default defineConfig({
 			],
 			rehypePlugins: [
 				[rehypeKatex, { katex }],
-				[rehypeCallouts, { theme: siteConfig.rehypeCallouts.theme }],
+				[rehypeCallouts, { theme: siteConfig.post.rehypeCallouts.theme }],
 				rehypeSlug,
 				rehypeMermaid,
 				rehypePlantuml,
@@ -271,7 +271,7 @@ export default defineConfig({
 		},
 		resolve: {
 			alias: {
-				"@rehype-callouts-theme": `rehype-callouts/theme/${siteConfig.rehypeCallouts.theme}`,
+				"@rehype-callouts-theme": `rehype-callouts/theme/${siteConfig.post.rehypeCallouts.theme}`,
 			},
 		},
 		build: {
