@@ -6,14 +6,18 @@ import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { licenseConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
+import type { WidgetComponentConfig } from "@/types/config";
 import { formatDateI18nWithTime } from "@/utils/date-utils";
 
 interface Props {
 	class?: string;
 	style?: string;
+	widgetConfig?: WidgetComponentConfig;
 }
 
-const { class: className, style } = Astro.props;
+const { class: className, style, widgetConfig } = Astro.props;
+
+const showTitle = widgetConfig?.showTitle !== false;
 
 // ---- 构建时收集版本和环境信息 ----
 
@@ -159,6 +163,7 @@ const detailItems: {
 
 <WidgetLayout
   name={i18n(I18nKey.siteInfo)}
+  showTitle={showTitle}
   id="site-info"
   class={className}
   style={style}
@@ -193,7 +198,7 @@ const detailItems: {
       data-expand-text={i18n(I18nKey.siteInfoExpand)}
       data-collapse-text={i18n(I18nKey.siteInfoCollapse)}
     >
-      <div class="site-info-detail overflow-hidden">
+      <div class="site-info-detail overflow-hidden collapsed">
         <div class="grid grid-cols-2 gap-2">
           {
             detailItems.map(
@@ -257,8 +262,8 @@ const detailItems: {
       const expandText = this.dataset.expandText || "展开构建信息";
       const collapseText = this.dataset.collapseText || "收起构建信息";
 
+      // 初始状态已在 HTML 中通过 class="collapsed" 设定，JS 只需同步文字
       let expanded = false;
-      detail.classList.add("collapsed");
       textEl.textContent = expandText;
 
       btn.addEventListener("click", () => {

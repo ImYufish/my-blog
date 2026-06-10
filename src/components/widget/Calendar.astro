@@ -1,27 +1,22 @@
 ---
 import { Icon } from "astro-icon/components";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
-import { sidebarLayoutConfig } from "@/config";
 import { siteConfig } from "@/config/siteConfig";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
+import type { WidgetComponentConfig } from "@/types/config";
 import { url } from "@/utils/url-utils";
-
-// 从配置中获取日历组件的热力图配置
-const calendarComponent = [
-	...sidebarLayoutConfig.leftComponents,
-	...sidebarLayoutConfig.rightComponents,
-	...sidebarLayoutConfig.mobileBottomComponents,
-].find((c) => c.type === "calendar");
-
-const showHeatmap = calendarComponent?.responsive?.showHeatmap ?? true;
 
 interface Props {
 	class?: string;
 	style?: string;
+	widgetConfig?: WidgetComponentConfig;
 }
 
-const { class: className, style } = Astro.props;
+const { class: className, style, widgetConfig } = Astro.props;
+
+const showHeatmap = widgetConfig?.specificConfig?.calendar?.showHeatmap ?? true;
+const showTitle = widgetConfig?.showTitle !== false;
 
 // 月份名称（使用 i18n）
 const monthNames = [
@@ -63,7 +58,7 @@ const calendarDataUrl = url("/api/allPostMeta.json");
 const postUrlPrefix = url("/posts/");
 ---
 
-<WidgetLayout name={i18n(I18nKey.calendar)} showTitle={calendarComponent?.showTitle !== false} id="calendar-widget" class={className} style={style}>
+<WidgetLayout name={i18n(I18nKey.calendar)} showTitle={showTitle} id="calendar-widget" class={className} style={style}>
   <div class="calendar-container">
     <div class="flex justify-between items-center mb-2">
         <button id="prev-month-btn" class="btn-plain rounded-lg w-8 h-8 flex items-center justify-center hover:bg-(--btn-plain-bg-hover) transition-colors" aria-label="Previous Month">
