@@ -168,27 +168,27 @@ const SITE_LANG = "zh_CN";
 ```
 src/
 ├── config/
-│   ├── index.ts              # 設定インデックスファイル
-│   ├── siteConfig.ts         # サイト基本設定
-│   ├── backgroundWallpaper.ts # 背景壁紙設定
-│   ├── profileConfig.ts      # ユーザープロフィール設定
-│   ├── commentConfig.ts      # コメントシステム設定
-│   ├── announcementConfig.ts # お知らせ設定
-│   ├── licenseConfig.ts      # ライセンス設定
-│   ├── footerConfig.ts       # フッター設定
-│   ├── FooterConfig.html     # フッターHTMLコンテンツ
-│   ├── expressiveCodeConfig.ts # コードハイライト設定
-│   ├── effectsConfig.ts      # アニメーションエフェクト設定（桜など）
-│   ├── fontConfig.ts         # フォント設定
-│   ├── sidebarConfig.ts      # サイドバーレイアウト設定
-│   ├── navBarConfig.ts       # ナビゲーションバー設定
-│   ├── musicConfig.ts        # 音楽プレーヤー設定
-│   ├── pioConfig.ts          # マスコット設定
-│   ├── adConfig.ts           # 広告設定
-│   ├── friendsConfig.ts      # 友人リンク設定
-│   ├── galleryConfig.ts      # ギャラリー設定
-│   ├── sponsorConfig.ts      # スポンサー設定
-│   └── coverImageConfig.ts   # 記事カバー画像設定
+│   ├── index.ts                  # 設定インデックスファイル
+│   ├── siteConfig.ts             # サイト基本設定
+│   ├── analyticsConfig.ts        # アナリティクス設定
+│   ├── announcementConfig.ts     # お知らせ設定
+│   ├── backgroundWallpaper.ts    # 背景壁紙設定
+│   ├── commentConfig.ts          # コメントシステム設定
+│   ├── coverImageConfig.ts       # カバー画像設定
+│   ├── effectsConfig.ts          # アニメーションエフェクト設定（桜など）
+│   ├── expressiveCodeConfig.ts   # コードハイライト設定
+│   ├── fontConfig.ts             # フォント設定
+│   ├── footerConfig.ts           # フッター設定
+│   ├── friendsConfig.ts          # 友人リンク設定
+│   ├── galleryConfig.ts          # ギャラリー設定
+│   ├── licenseConfig.ts          # ライセンス設定
+│   ├── musicConfig.ts            # 音楽プレーヤー設定
+│   ├── navBarConfig.ts           # ナビゲーションバー設定
+│   ├── pioConfig.ts              # マスコット設定
+│   ├── plantumlConfig.ts         # PlantUML図表設定
+│   ├── profileConfig.ts          # ユーザープロフィール設定
+│   ├── sidebarConfig.ts          # サイドバーレイアウト設定
+│   └── sponsorConfig.ts          # スポンサー設定
 ```
 
 ## ⚙️ 記事のFrontmatter

@@ -169,27 +169,27 @@ const SITE_LANG = "zh_CN";
 ```
 src/
 ├── config/
-│   ├── index.ts              # Индексный файл конфигурации
-│   ├── siteConfig.ts         # Базовая конфигурация сайта
-│   ├── backgroundWallpaper.ts # Конфигурация фоновых обоев
-│   ├── profileConfig.ts      # Конфигурация профиля пользователя
-│   ├── commentConfig.ts      # Конфигурация системы комментариев
-│   ├── announcementConfig.ts # Конфигурация объявлений
-│   ├── licenseConfig.ts      # Конфигурация лицензии
-│   ├── footerConfig.ts       # Конфигурация подвала
-│   ├── FooterConfig.html     # HTML-контент подвала
-│   ├── expressiveCodeConfig.ts # Конфигурация подсветки кода
-│   ├── effectsConfig.ts      # Конфигурация анимационных эффектов (сакура и др.)
-│   ├── fontConfig.ts         # Конфигурация шрифтов
-│   ├── sidebarConfig.ts      # Конфигурация макета боковой панели
-│   ├── navBarConfig.ts       # Конфигурация навигационной панели
-│   ├── musicConfig.ts        # Конфигурация музыкального плеера
-│   ├── pioConfig.ts          # Конфигурация маскота
-│   ├── adConfig.ts           # Конфигурация рекламы
-│   ├── friendsConfig.ts      # Конфигурация дружественных ссылок
-│   ├── galleryConfig.ts      # Конфигурация галереи
-│   ├── sponsorConfig.ts      # Конфигурация спонсоров
-│   └── coverImageConfig.ts   # Конфигурация обложек статей
+│   ├── index.ts                  # Индексный файл конфигурации
+│   ├── siteConfig.ts             # Базовая конфигурация сайта
+│   ├── analyticsConfig.ts        # Конфигурация аналитики
+│   ├── announcementConfig.ts     # Конфигурация объявлений
+│   ├── backgroundWallpaper.ts    # Конфигурация фоновых обоев
+│   ├── commentConfig.ts          # Конфигурация системы комментариев
+│   ├── coverImageConfig.ts       # Конфигурация обложек статей
+│   ├── effectsConfig.ts          # Конфигурация анимационных эффектов (сакура и др.)
+│   ├── expressiveCodeConfig.ts   # Конфигурация подсветки кода
+│   ├── fontConfig.ts             # Конфигурация шрифтов
+│   ├── footerConfig.ts           # Конфигурация подвала
+│   ├── friendsConfig.ts          # Конфигурация дружественных ссылок
+│   ├── galleryConfig.ts          # Конфигурация галереи
+│   ├── licenseConfig.ts          # Конфигурация лицензии
+│   ├── musicConfig.ts            # Конфигурация музыкального плеера
+│   ├── navBarConfig.ts           # Конфигурация навигационной панели
+│   ├── pioConfig.ts              # Конфигурация маскота
+│   ├── plantumlConfig.ts         # Конфигурация диаграмм PlantUML
+│   ├── profileConfig.ts          # Конфигурация профиля пользователя
+│   ├── sidebarConfig.ts          # Конфигурация макета боковой панели
+│   └── sponsorConfig.ts          # Конфигурация спонсоров
 ```
 
 

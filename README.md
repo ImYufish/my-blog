@@ -170,27 +170,27 @@ const SITE_LANG = "zh_CN";
 ```
 src/
 ├── config/
-│   ├── index.ts              # 配置索引文件
-│   ├── siteConfig.ts         # 站点基础配置
-│   ├── backgroundWallpaper.ts # 背景壁纸配置
-│   ├── profileConfig.ts      # 用户资料配置
-│   ├── commentConfig.ts      # 评论系统配置
-│   ├── announcementConfig.ts # 公告配置
-│   ├── licenseConfig.ts      # 许可证配置
-│   ├── footerConfig.ts       # 页脚配置
-│   ├── FooterConfig.html     # 页脚HTML内容
-│   ├── expressiveCodeConfig.ts # 代码高亮配置
-│   ├── effectsConfig.ts      # 动画特效配置（樱花等）
-│   ├── fontConfig.ts         # 字体配置
-│   ├── sidebarConfig.ts      # 侧边栏布局配置
-│   ├── navBarConfig.ts       # 导航栏配置
-│   ├── musicConfig.ts        # 音乐播放器配置
-│   ├── pioConfig.ts          # 看板娘配置
-│   ├── adConfig.ts           # 广告配置
-│   ├── friendsConfig.ts      # 友链配置
-│   ├── galleryConfig.ts      # 相册配置
-│   ├── sponsorConfig.ts      # 赞助配置
-│   └── coverImageConfig.ts  # 文章封面图配置
+│   ├── index.ts                  # 配置索引文件
+│   ├── siteConfig.ts             # 站点基础配置
+│   ├── analyticsConfig.ts        # 统计分析配置
+│   ├── announcementConfig.ts     # 公告配置
+│   ├── backgroundWallpaper.ts    # 背景壁纸配置
+│   ├── commentConfig.ts          # 评论系统配置
+│   ├── coverImageConfig.ts       # 封面图配置
+│   ├── effectsConfig.ts          # 动画特效配置（樱花等）
+│   ├── expressiveCodeConfig.ts   # 代码高亮配置
+│   ├── fontConfig.ts             # 字体配置
+│   ├── footerConfig.ts           # 页脚配置
+│   ├── friendsConfig.ts          # 友链配置
+│   ├── galleryConfig.ts          # 相册配置
+│   ├── licenseConfig.ts          # 许可证配置
+│   ├── musicConfig.ts            # 音乐播放器配置
+│   ├── navBarConfig.ts           # 导航栏配置
+│   ├── pioConfig.ts              # 看板娘配置
+│   ├── plantumlConfig.ts         # PlantUML 图表配置
+│   ├── profileConfig.ts          # 用户资料配置
+│   ├── sidebarConfig.ts          # 侧边栏布局配置
+│   └── sponsorConfig.ts          # 赞助配置
 ```
 
 ## ⚙️ 文章 Frontmatter

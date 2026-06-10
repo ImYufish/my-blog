@@ -167,27 +167,27 @@ const SITE_LANG = "zh_CN";
 ```
 src/
 ├── config/
-│   ├── index.ts              # Configuration index file
-│   ├── siteConfig.ts         # Site basic configuration
-│   ├── backgroundWallpaper.ts # Background wallpaper configuration
-│   ├── profileConfig.ts      # User profile configuration
-│   ├── commentConfig.ts      # Comment system configuration
-│   ├── announcementConfig.ts # Announcement configuration
-│   ├── licenseConfig.ts      # License configuration
-│   ├── footerConfig.ts       # Footer configuration
-│   ├── FooterConfig.html     # Footer HTML content
-│   ├── expressiveCodeConfig.ts # Code highlighting configuration
-│   ├── effectsConfig.ts      # Animation effects config (sakura, etc.)
-│   ├── fontConfig.ts         # Font configuration
-│   ├── sidebarConfig.ts      # Sidebar layout configuration
-│   ├── navBarConfig.ts       # Navbar configuration
-│   ├── musicConfig.ts        # Music player configuration
-│   ├── pioConfig.ts          # Mascot configuration
-│   ├── adConfig.ts           # Ad configuration
-│   ├── friendsConfig.ts      # Friend links configuration
-│   ├── galleryConfig.ts      # Gallery configuration
-│   ├── sponsorConfig.ts      # Sponsor configuration
-│   └── coverImageConfig.ts   # Article cover image configuration
+│   ├── index.ts                  # Configuration index file
+│   ├── siteConfig.ts             # Site basic configuration
+│   ├── analyticsConfig.ts        # Analytics configuration
+│   ├── announcementConfig.ts     # Announcement configuration
+│   ├── backgroundWallpaper.ts    # Background wallpaper configuration
+│   ├── commentConfig.ts          # Comment system configuration
+│   ├── coverImageConfig.ts       # Cover image configuration
+│   ├── effectsConfig.ts          # Animation effects config (sakura, etc.)
+│   ├── expressiveCodeConfig.ts   # Code highlighting configuration
+│   ├── fontConfig.ts             # Font configuration
+│   ├── footerConfig.ts           # Footer configuration
+│   ├── friendsConfig.ts          # Friend links configuration
+│   ├── galleryConfig.ts          # Gallery configuration
+│   ├── licenseConfig.ts          # License configuration
+│   ├── musicConfig.ts            # Music player configuration
+│   ├── navBarConfig.ts           # Navbar configuration
+│   ├── pioConfig.ts              # Mascot configuration
+│   ├── plantumlConfig.ts         # PlantUML diagram configuration
+│   ├── profileConfig.ts          # User profile configuration
+│   ├── sidebarConfig.ts          # Sidebar layout configuration
+│   └── sponsorConfig.ts          # Sponsor configuration
 ```
 
 
