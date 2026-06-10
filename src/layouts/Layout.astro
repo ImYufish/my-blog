@@ -61,10 +61,6 @@ const navbarTransparentMode =
 const shouldShowTopHighlight =
 	navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
 
-if (!banner || typeof banner !== "string" || banner.trim() === "") {
-	banner = getDefaultBackground();
-}
-
 // TODO don't use post cover as banner for now
 banner = getDefaultBackground();
 
