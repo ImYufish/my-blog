@@ -257,7 +257,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 组件专属配置
 			specificConfig: {
 				// 折叠阈值：当标签数量超过20个时自动折叠
-				collapseThreshold: 20,
+				collapseThreshold: 10,
 			},
 		},
 		{
