@@ -58,13 +58,7 @@ function detectBuildPlatform(): string {
 	if (process.env.CF_PAGES || process.env.CF_WORKERS) return "Cloudflare";
 	if (process.env.NETLIFY) return "Netlify";
 	if (process.env.GITHUB_ACTIONS) return "GitHub Actions";
-	if (process.env.RENDER) return "Render";
-	if (process.env.RAILWAY_STATIC_URL) return "Railway";
-	if (process.env.HEROKU_APP_NAME || process.env.DYNO) return "Heroku";
-	if (process.env.TENCENTCLOUD_SECRETID || process.env.EO_ENV_ID)
-		return "EdgeOne";
-	if (process.env.ALIBABA_CLOUD || process.env.ESA_PROJECT) return "ESA";
-	return "Local";
+	return "Local / Unknown";
 }
 const buildPlatform = detectBuildPlatform();
 
