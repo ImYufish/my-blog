@@ -38,6 +38,12 @@ export type WidgetSpecificConfig = {
 	collapseThreshold?: number; // 折叠阈值
 	calendar?: CalendarConfig; // 日历组件专用配置
 	ad?: AdConfig; // 广告组件专用配置
+	siteInfo?: SiteInfoConfig; // 站点信息组件专用配置
+};
+
+// 站点信息组件专用配置
+export type SiteInfoConfig = {
+	unknownBuildPlatform?: string; // 未识别的构建平台显示文本，默认 "Unknown CI"
 };
 
 // 日历组件专用配置

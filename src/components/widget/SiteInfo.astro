@@ -2,6 +2,7 @@
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { Icon } from "astro-icon/components";
+import ci from "ci-info";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { licenseConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
@@ -52,17 +53,14 @@ if (pnpmMatch) {
 // 构建时间
 const buildTime = formatDateI18nWithTime(new Date());
 
-// 构建平台检测
-function detectBuildPlatform(): string {
-	if (process.env.EDGEONE) return "EdgeOne";
-	if (process.env.VERCEL) return "Vercel";
-	if (process.env.NETLIFY) return "Netlify";
-	if (process.env.GITHUB_ACTIONS) return "GitHub Actions";
-	if (process.env.CF_PAGES) return "Cloudflare Pages";
-	if (process.env.CF_WORKERS) return "Cloudflare Workers";
-	return "Unknown";
-}
-const buildPlatform = detectBuildPlatform();
+// 构建平台检测（使用 ci-info 自动识别 CI 环境）
+const unknownBuildPlatform =
+	widgetConfig?.specificConfig?.siteInfo?.unknownBuildPlatform || "Unknown CI";
+const buildPlatform = ci.isCI
+	? ci.name || unknownBuildPlatform
+	: import.meta.env.DEV
+		? "Local Dev"
+		: "Local";
 
 // 系统信息（平台 + 架构）
 const platformMap: Record<string, string> = {
