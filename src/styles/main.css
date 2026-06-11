@@ -3,8 +3,9 @@
 @import './navbar.css';
 @import './banner-title.css';
 @import './waves.css';
-@import './transition.css'; 
+@import './transition.css';
 @import './custom-scrollbar.css';
+@import './tags.css';
 
 
 @plugin '@tailwindcss/typography';

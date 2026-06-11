@@ -71,6 +71,8 @@ export const ru: Translation = {
 	[Key.minutesCount]: "минуты",
 	[Key.postCount]: "пост",
 	[Key.postsCount]: "постов",
+	[Key.tagsCount]: "тегов",
+	[Key.noData]: "Нет данных",
 
 	[Key.themeColor]: "Цвет темы",
 
