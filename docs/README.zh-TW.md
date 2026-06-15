@@ -21,7 +21,7 @@
 > 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
-[![愛發電贊助](https://img.shields.io/badge/愛發電-贊助作者-ff69b4.svg)](https://ifdian.net/a/cuteleaf)
+[![愛發電打賞](https://img.shields.io/badge/愛發電-打賞作者-ff69b4.svg)](https://ifdian.net/a/cuteleaf)
 
 </div>
 
@@ -191,7 +191,7 @@ src/
 │   ├── plantumlConfig.ts         # PlantUML 圖表配置
 │   ├── profileConfig.ts          # 使用者資料配置
 │   ├── sidebarConfig.ts          # 側邊欄版面配置
-│   └── sponsorConfig.ts          # 贊助配置
+│   └── sponsorConfig.ts          # 打賞配置
 ```
 
 

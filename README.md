@@ -21,7 +21,7 @@
 > 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
-[![爱发电赞助](https://img.shields.io/badge/爱发电-赞助作者-ff69b4.svg)](https://ifdian.net/a/cuteleaf)
+[![爱发电打赏](https://img.shields.io/badge/爱发电-打赏作者-ff69b4.svg)](https://ifdian.net/a/cuteleaf)
 
 </div>
 
@@ -190,7 +190,7 @@ src/
 │   ├── plantumlConfig.ts         # PlantUML 图表配置
 │   ├── profileConfig.ts          # 用户资料配置
 │   ├── sidebarConfig.ts          # 侧边栏布局配置
-│   └── sponsorConfig.ts          # 赞助配置
+│   └── sponsorConfig.ts          # 打赏配置
 ```
 
 ## ⚙️ 文章 Frontmatter
