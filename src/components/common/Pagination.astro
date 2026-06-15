@@ -77,7 +77,7 @@ const getPageUrl = (p: number) => {
         { disabled: page.url.prev == undefined },
       ]}
     >
-      <Icon
+      <Icon is:inline
         name="material-symbols:chevron-left-rounded"
         class="text-[1.75rem]"
         aria-hidden="true"
@@ -89,7 +89,7 @@ const getPageUrl = (p: number) => {
       {
         pages.map((p) => {
           if (p == HIDDEN)
-            return <Icon name="material-symbols:more-horiz" class="mx-1" aria-hidden="true" />;
+            return <Icon is:inline name="material-symbols:more-horiz" class="mx-1" aria-hidden="true" />;
           if (p == page.currentPage)
             return (
               <div
@@ -122,7 +122,7 @@ const getPageUrl = (p: number) => {
         { disabled: page.url.next == undefined },
       ]}
     >
-      <Icon
+      <Icon is:inline
         name="material-symbols:chevron-right-rounded"
         class="text-[1.75rem]"
         aria-hidden="true"

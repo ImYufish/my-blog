@@ -16,7 +16,7 @@ import { url } from "@/utils/url-utils";
       class="absolute transition pointer-events-none group-hover:bg-black/30 group-active:bg-black/50
         w-full h-full z-50 flex items-center justify-center"
     >
-      <Icon
+      <Icon is:inline
         name="fa7-regular:address-card"
         class="transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl"
       />
@@ -67,12 +67,12 @@ import { url } from "@/utils/url-utils";
                                         `.replace(/\s+/g, " ").trim()
                                     },
                                     class={className}>
-                            <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                            <Icon is:inline name={item.icon} class="text-[1.5rem]"></Icon>
                             {showName && item.name}
                         </a>
                     } else {
                         return <a rel="me" aria-label={item.name} href={item.url} target="_blank" class={className}>
-                            <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                            <Icon is:inline name={item.icon} class="text-[1.5rem]"></Icon>
                             {showName && item.name}
                         </a>
                     }
@@ -94,13 +94,13 @@ import { url } from "@/utils/url-utils";
                                         `.replace(/\s+/g, " ").trim()
                                     },
                                     class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
-                            <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                            <Icon is:inline name={item.icon} class="text-[1.5rem]"></Icon>
                             {item.name}
                         </a>
                     } else {
                         return <a rel="me" aria-label={item.name} href={item.url} target="_blank"
                                             class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
-                                <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+                                <Icon is:inline name={item.icon} class="text-[1.5rem]"></Icon>
                                 {item.name}
                             </a>
                     }

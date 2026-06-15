@@ -52,7 +52,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
   {
     pinned && (
       <div class="pinned-btn flex items-center gap-1 bg-(--btn-regular-bg) text-(--btn-content) rounded-md px-2 py-1.5 font-bold">
-        <Icon name="material-symbols:pinboard" class="text-xl" />
+        <Icon is:inline name="material-symbols:pinboard" class="text-xl" />
         <span class="text-sm">{i18n(I18nKey.pinned)}</span>
       </div>
     )
@@ -61,7 +61,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
   <!-- publish date -->
   <div class="flex items-center">
     <div class="meta-icon">
-      <Icon
+      <Icon is:inline
         name="material-symbols:calendar-today-outline-rounded"
         class="text-xl"
       />
@@ -76,7 +76,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
     !hideUpdateDate && updated && updated.getTime() !== published.getTime() && (
       <div class="flex items-center">
         <div class="meta-icon">
-          <Icon
+          <Icon is:inline
             name="material-symbols:edit-calendar-outline-rounded"
             class="text-xl"
           />
@@ -91,7 +91,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
   <!-- categories -->
   <div class="flex items-center">
     <div class="meta-icon">
-      <Icon name="material-symbols:book-2-outline-rounded" class="text-xl" />
+      <Icon is:inline name="material-symbols:book-2-outline-rounded" class="text-xl" />
     </div>
     <div class="flex flex-row flex-nowrap items-center">
       <a
@@ -110,7 +110,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
      showTags && (
        <div class:list={["items-center", {"flex": !hideTagsForMobile, "hidden md:flex": hideTagsForMobile}]}>
          <div class="meta-icon">
-           <Icon name="material-symbols:tag-rounded" class="text-xl" />
+           <Icon is:inline name="material-symbols:tag-rounded" class="text-xl" />
          </div>
          <div class="flex flex-row flex-nowrap items-center">
            {(tags && tags.length > 0) && tags.map((tag, i) => (
@@ -135,7 +135,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
       id && (
         <div class="flex items-center">
           <div class="meta-icon">
-            <Icon
+            <Icon is:inline
               name="material-symbols:visibility-outline-rounded"
               class="text-xl"
             />
@@ -157,7 +157,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
       id && (
         <div class="flex items-center">
           <div class="meta-icon">
-            <Icon name="material-symbols:visibility-outline-rounded" class="text-xl" />
+            <Icon is:inline name="material-symbols:visibility-outline-rounded" class="text-xl" />
           </div>
           <span class="text-50 text-sm font-medium mr-1">
             {i18n(I18nKey.pageViews)}
@@ -174,7 +174,7 @@ const path = customPath || (id ? `/posts/${id}` : "");
         id && (
                     <div class="flex items-center">
                         <div class="meta-icon">
-                            <Icon name="material-symbols:visibility-outline-rounded" class="text-xl" />
+                            <Icon is:inline name="material-symbols:visibility-outline-rounded" class="text-xl" />
                         </div>
                         <span class="text-50 text-sm font-medium mr-1">
                             {i18n(I18nKey.pageViews)}

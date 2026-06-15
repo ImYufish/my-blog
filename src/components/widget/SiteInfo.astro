@@ -171,7 +171,7 @@ const detailItems: {
           <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-neutral-100/60 dark:bg-neutral-800/50">
             <div class="flex items-center gap-2.5">
               <div class="text-(--primary) text-lg">
-                <Icon name={item.icon} is:inline />
+                <Icon is:inline name={item.icon} />
               </div>
               <span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm">
                 {item.label}
@@ -203,7 +203,7 @@ const detailItems: {
                   { "col-span-2": item.fullWidth }
                 ]}>
                   <div class="text-(--primary) text-lg">
-                    <Icon name={item.icon} is:inline />
+                    <Icon is:inline name={item.icon} />
                   </div>
                   <span class="text-xs text-neutral-500 dark:text-neutral-400">
                     {item.label}
