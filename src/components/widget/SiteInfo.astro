@@ -99,6 +99,7 @@ const mainItems = [
 		icon: "mdi:clover",
 		label: i18n(I18nKey.siteInfoBlogVersion),
 		value: `Firefly v${blogVersion}`,
+		href: "https://github.com/CuteLeaf/Firefly",
 	},
 	{
 		icon: "material-symbols:copyright-outline",
@@ -167,7 +168,7 @@ const detailItems: {
     {/* 始终显示的项目（列表卡片） */}
     <div class="flex flex-col gap-2">
       {
-        mainItems.map((item: { icon: string; label: string; value: string }) => (
+        mainItems.map((item: { icon: string; label: string; value: string; href?: string }) => (
           <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-neutral-100/60 dark:bg-neutral-800/50">
             <div class="flex items-center gap-2.5">
               <div class="text-(--primary) text-lg">
@@ -177,12 +178,24 @@ const detailItems: {
                 {item.label}
               </span>
             </div>
-            <span
-              class="text-xs font-bold text-neutral-900 dark:text-neutral-100 text-right max-w-[55%] truncate"
-              title={item.value}
-            >
-              {item.value}
-            </span>
+            {item.href ? (
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs font-bold text-neutral-900 dark:text-neutral-100 text-right max-w-[55%] truncate hover:text-(--primary) transition-colors"
+                title={item.value}
+              >
+                {item.value}
+              </a>
+            ) : (
+              <span
+                class="text-xs font-bold text-neutral-900 dark:text-neutral-100 text-right max-w-[55%] truncate"
+                title={item.value}
+              >
+                {item.value}
+              </span>
+            )}
           </div>
         ))
       }
