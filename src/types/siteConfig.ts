@@ -112,7 +112,7 @@ export type SiteConfig = {
 	post: {
 		// 提醒框（Admonitions）配置
 		rehypeCallouts: {
-			theme: "github" | "obsidian" | "vitepress";
+			theme: "github" | "obsidian" | "vitepress" | "docusaurus";
 			enablePythonMarkdownAdmonitions?: boolean;
 		};
 		// 控制"上次编辑时间"卡片显示的开关
