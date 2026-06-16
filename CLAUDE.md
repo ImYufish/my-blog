@@ -78,3 +78,4 @@ Icons/LQIP data are generated into `src/constants/` and committed. Regenerate wi
 - **Vercel** (default, `vercel.json`)
 - **Cloudflare Workers** (`wrangler.jsonc`, set `CF_WORKERS` env var)
 - Static output to `dist/`
+

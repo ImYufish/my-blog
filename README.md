@@ -214,7 +214,7 @@ comment: true    # 是否允许评论
 
 除了 Astro 默认支持的 [GitHub Flavored Markdown](https://github.github.com/gfm/) 之外，还包含了一些额外的 Markdown 功能：
 
-- 提醒块（Admonitions） - 支持 GitHub, Obsidian, VitePress 三种风格主题配置 ([预览和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/))
+- 提醒块（Admonitions） - 支持 GitHub, Obsidian, VitePress, Docusaurus 四种风格主题配置 ([预览和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - GitHub 仓库卡片 ([预览和用法](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - 基于 Expressive Code 的增强代码块 ([预览](http://firefly.cuteleaf.cn/posts/code-examples/) / [文档](https://expressive-code.com/))
 

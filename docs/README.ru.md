@@ -214,7 +214,7 @@ comment: true    # Включить комментарии
 
 Помимо поддержки [GitHub Flavored Markdown](https://github.github.com/gfm/) по умолчанию в Astro, есть несколько дополнительных функций Markdown:
 
-- Предупреждающие блоки (Admonitions) - Поддержка тем GitHub, Obsidian и VitePress ([Предпросмотр и использование](https://firefly.cuteleaf.cn/posts/markdown-extended/))
+- Предупреждающие блоки (Admonitions) - Поддержка тем GitHub, Obsidian, VitePress и Docusaurus ([Предпросмотр и использование](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - Карточки репозиториев GitHub ([Предпросмотр и использование](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - Улучшенные блоки кода на основе Expressive Code ([Предпросмотр](http://firefly.cuteleaf.cn/posts/code-examples/) / [Документация](https://expressive-code.com/))
 
