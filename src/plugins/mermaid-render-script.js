@@ -13,6 +13,71 @@
 	const MAX_RETRIES = 3;
 	const RETRY_DELAY = 1000; // 1秒
 
+	// svg-pan-zoom 自定义事件处理器：
+	// 阻止所有 touch 事件避免与原生滚动冲突，仅通过 pointer 事件处理鼠标拖拽
+	const panZoomCustomEvents = {
+		haltEventListeners: [
+			"touchstart",
+			"touchend",
+			"touchmove",
+			"touchleave",
+			"touchcancel",
+			"pointerdown",
+			"pointermove",
+			"pointerup",
+			"pointerleave",
+			"pointercancel",
+			"mousedown",
+			"mousemove",
+			"mouseup",
+			"mouseleave",
+			"mousewheel",
+			"wheel",
+			"DOMMouseScroll",
+		],
+		init(options) {
+			const instance = options.instance;
+
+			const onPointerDown = (event) => {
+				if (event.pointerType === "touch") return;
+				if (event.button === 0) {
+					instance.handleMouseDown(event);
+				}
+			};
+			const onPointerMove = (event) => {
+				if (event.pointerType === "touch") return;
+				instance.handleMouseMove(event);
+			};
+			const onPointerUp = (event) => {
+				if (event.pointerType === "touch") return;
+				instance.handleMouseUp(event);
+			};
+
+			const target = options.svgElement;
+			target.addEventListener("pointerdown", onPointerDown);
+			target.addEventListener("pointermove", onPointerMove);
+			target.addEventListener("pointerup", onPointerUp);
+			target.addEventListener("pointerleave", onPointerUp);
+			target.addEventListener("pointercancel", onPointerUp);
+
+			instance._customListeners = {
+				target,
+				onPointerDown,
+				onPointerMove,
+				onPointerUp,
+			};
+		},
+		destroy(options) {
+			const l = options.instance._customListeners;
+			if (!l) return;
+			l.target.removeEventListener("pointerdown", l.onPointerDown);
+			l.target.removeEventListener("pointermove", l.onPointerMove);
+			l.target.removeEventListener("pointerup", l.onPointerUp);
+			l.target.removeEventListener("pointerleave", l.onPointerUp);
+			l.target.removeEventListener("pointercancel", l.onPointerUp);
+		},
+	};
+
 	// 检查主题是否真的发生了变化
 	function hasThemeChanged() {
 		const isDark = document.documentElement.classList.contains("dark");
@@ -420,13 +485,14 @@
 					panEnabled: true,
 					zoomEnabled: true,
 					controlIconsEnabled: false,
-					mouseWheelZoomEnabled: true,
+					mouseWheelZoomEnabled: false,
 					dblClickZoomEnabled: true,
 					minZoom: 0.5,
 					maxZoom: 5,
 					fit: true,
 					center: true,
 					zoomScaleSensitivity: 0.3,
+					customEventsHandler: panZoomCustomEvents,
 				});
 
 				container._panZoomInstance = panZoomInstance;
@@ -590,6 +656,7 @@
 					fit: true,
 					center: true,
 					zoomScaleSensitivity: 0.3,
+					customEventsHandler: panZoomCustomEvents,
 				});
 			} catch (e) {
 				console.warn("Failed to initialize fullscreen pan-zoom:", e);

@@ -187,21 +187,7 @@
 		});
 		container.appendChild(controls);
 
-		// 滚轮缩放
-		container.addEventListener(
-			"wheel",
-			(event) => {
-				if (!event.ctrlKey && !event.metaKey) {
-					// 保持与 mermaid 一致：悬停时直接缩放
-				}
-				event.preventDefault();
-				const factor = event.deltaY < 0 ? SCALE_STEP : 1 / SCALE_STEP;
-				zoomBy(factor, event.clientX, event.clientY);
-			},
-			{ passive: false },
-		);
-
-		// 拖拽平移
+		// 拖拽平移（仅鼠标，触摸设备不启用拖拽）
 		let isDragging = false;
 		let startX = 0;
 		let startY = 0;
@@ -209,7 +195,8 @@
 		let startTy = 0;
 
 		const onPointerDown = (event) => {
-			if (event.button !== 0 && event.pointerType !== "touch") return;
+			if (event.pointerType === "touch") return;
+			if (event.button !== 0) return;
 			if (event.target.closest(".plantuml-controls")) return;
 			isDragging = true;
 			startX = event.clientX;
@@ -336,7 +323,7 @@
 			fsControls.appendChild(el);
 		});
 
-		// overlay 内滚轮缩放
+		// overlay 内滚轮缩放（全屏时恢复，不影响页面滚动）
 		content.addEventListener(
 			"wheel",
 			(event) => {
@@ -347,13 +334,14 @@
 			{ passive: false },
 		);
 
-		// overlay 内拖拽平移
+		// overlay 内拖拽平移（仅鼠标，触摸设备不启用拖拽）
 		let dragging = false;
 		let sx = 0;
 		let sy = 0;
 		let stx = 0;
 		let sty = 0;
 		content.addEventListener("pointerdown", (event) => {
+			if (event.pointerType === "touch") return;
 			if (event.target.closest(".plantuml-fs-controls")) return;
 			dragging = true;
 			sx = event.clientX;

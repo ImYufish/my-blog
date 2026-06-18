@@ -252,6 +252,7 @@ a.card-github.fetch-error
   overflow: hidden
   background: var(--card-bg)
   transition: all 0.3s ease
+  touch-action: pan-y pinch-zoom
 
   &:hover
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
@@ -395,6 +396,7 @@ a.card-github.fetch-error
   display: flex
   align-items: center
   justify-content: center
+  touch-action: none
   background: rgba(255, 255, 255, 0.95)
 
   &:active
@@ -449,7 +451,7 @@ a.card-github.fetch-error
   overflow: hidden
   background: var(--card-bg)
   transition: all 0.3s ease
-  touch-action: none
+  touch-action: pan-y pinch-zoom
 
   &:hover
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
@@ -589,6 +591,7 @@ a.card-github.fetch-error
   justify-content: center
   background: rgba(255, 255, 255, 0.95)
   overflow: hidden
+  touch-action: none
 
   &:active
     cursor: grabbing
