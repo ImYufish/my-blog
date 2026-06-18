@@ -10,6 +10,7 @@ import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
+import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import {
@@ -653,6 +654,10 @@ const bannerCarouselInterval = Math.max(
         })();
     </script>
     
+    {backgroundWallpaper.playerEnable && typeof backgroundWallpaper.src === "object" && !Array.isArray(backgroundWallpaper.src) && backgroundWallpaper.src.playerUrl && (
+        <BackgroundPlayer playerUrl={backgroundWallpaper.src.playerUrl} playerMode={backgroundWallpaper.common?.playerMode ?? "order"} />
+    )}
+
     <div id="banner-dim-container" class="absolute inset-0 z-0 pointer-events-none">
         {showBannerDim && <div class="banner-dim-overlay absolute inset-0" style={`background: rgba(0, 0, 0, ${dimOpacity})`}></div>}
     </div>
