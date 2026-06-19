@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 
@@ -36,9 +37,7 @@ const tLoadError = i18n(I18nKey.videoLoadError);
 						title={tPrev}
 						aria-label={tPrev}
 					>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-							<path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
-						</svg>
+						<Icon is:inline name="material-symbols:skip-previous-rounded" class="text-[1rem]" />
 					</button>
 				)}
 
@@ -49,9 +48,7 @@ const tLoadError = i18n(I18nKey.videoLoadError);
 						title={tNext}
 						aria-label={tNext}
 					>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-							<path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-						</svg>
+						<Icon is:inline name="material-symbols:skip-next-rounded" class="text-[1rem]" />
 					</button>
 				)}
 			</div>
@@ -79,6 +76,10 @@ const tLoadError = i18n(I18nKey.videoLoadError);
 		var toast = document.getElementById("bg-player-toast");
 
 		if (!video) return;
+
+		// 防止 is:inline 脚本重复注册监听器（Swup 导航会重新执行脚本）
+		if (video.getAttribute("data-player-init")) return;
+		video.setAttribute("data-player-init", "true");
 
 		var isPlaying = false;
 		var currentIndex = 0;
@@ -187,6 +188,16 @@ const tLoadError = i18n(I18nKey.videoLoadError);
 		if (prevBtn) prevBtn.addEventListener("click", function () { switchTrack(prevIndex()); });
 		if (nextBtn) nextBtn.addEventListener("click", function () { switchTrack(pickIndex(currentIndex)); });
 
+		// 切换壁纸模式时停止播放
+		window.addEventListener("wallpaperModeChange", function (e) {
+			if (e.detail && e.detail.mode === "none" && isPlaying) {
+				isPlaying = false;
+				video.pause();
+				if (overlay) { overlay.classList.remove("opacity-100"); overlay.classList.add("opacity-0"); }
+				syncAttr();
+			}
+		});
+
 		// 动态控制 prev/next 按钮显示
 		if (!isMultiple) {
 			if (prevBtn) prevBtn.style.display = "none";
@@ -194,8 +205,11 @@ const tLoadError = i18n(I18nKey.videoLoadError);
 		}
 
 		function cleanup() {
-			document.body.removeAttribute("data-bg-video-playing");
-			document.documentElement.removeAttribute("data-bg-video-playing");
+			// 视频仍在播放时保留属性，供 Navbar 同步按钮状态
+			if (!isPlaying) {
+				document.body.removeAttribute("data-bg-video-playing");
+				document.documentElement.removeAttribute("data-bg-video-playing");
+			}
 		}
 		document.addEventListener("astro:before-swap", cleanup);
 	})();
