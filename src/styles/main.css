@@ -6,7 +6,7 @@
 @import './transition.css';
 @import './custom-scrollbar.css';
 @import './tags.css';
-
+@import './gallery.css';
 
 @plugin '@tailwindcss/typography';
 
@@ -577,3 +577,4 @@ html {
 .pagination-info {
   @apply text-sm text-(--text-secondary) text-center mb-2;
 }
+
