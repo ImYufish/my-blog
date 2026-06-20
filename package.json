@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && astro build && pagefind --site dist",
+    "build": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && astro build && npx tsx scripts/subset-fonts.ts && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
@@ -87,7 +87,8 @@
     "@types/qrcode": "^1.5.6",
     "@types/sanitize-html": "^2.16.1",
     "postcss-import": "^16.1.1",
-    "postcss-nesting": "^13.0.2",
+    "postcss-nesting": "^14.0.0",
+    "subset-font": "^2.5.0",
     "tailwindcss": "^4.3.0"
   },
   "packageManager": "pnpm@9.14.4"

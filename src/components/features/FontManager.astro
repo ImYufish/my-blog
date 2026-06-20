@@ -1,60 +1,67 @@
 ---
 import { fontConfig } from "@/config";
 
-// 获取选中的字体
-const getSelectedFonts = () => {
-	if (!fontConfig.enable || !fontConfig.selected) return [];
+// 统一解析 selected 为数组
+const selectedIds: string[] =
+	fontConfig.enable && fontConfig.selected
+		? Array.isArray(fontConfig.selected)
+			? fontConfig.selected
+			: [fontConfig.selected]
+		: [];
 
-	const selectedIds = Array.isArray(fontConfig.selected)
-		? fontConfig.selected
-		: [fontConfig.selected];
-
-	return selectedIds
-		.map((id) => fontConfig.fonts[id])
-		.filter((font) => font?.src); // 过滤掉系统字体和不存在的字体
-};
-
-const selectedFonts = getSelectedFonts();
-
-// 生成字体CSS类名
-const generateFontClasses = () => {
-	if (!fontConfig.enable) return [];
-
-	const selectedIds = Array.isArray(fontConfig.selected)
-		? fontConfig.selected
-		: [fontConfig.selected];
-
-	return selectedIds.map((id) => `font-${id}-enabled`);
-};
-
-const fontClasses = generateFontClasses();
-
-// 生成font-family回退样式
-const generateFontFamilyStyle = () => {
-	if (!fontConfig.enable || !fontConfig.selected) return "";
-
-	const selectedIds = Array.isArray(fontConfig.selected)
-		? fontConfig.selected
-		: [fontConfig.selected];
-
-	const selectedFontFamilies = selectedIds
-		.map((id) => fontConfig.fonts[id])
-		.filter((font) => font)
-		.map((font) => `"${font.family}"`);
-
-	if (selectedFontFamilies.length === 0) return "";
-
+// 解析字体ID为完整的 font-family CSS 值
+const resolveFontFamily = (fontId: string): string => {
+	const font = fontConfig.fonts[fontId];
+	if (!font) return "";
 	const fallbacks = fontConfig.fallback || [];
-	const allFonts = [...selectedFontFamilies, ...fallbacks];
-
-	return `font-family: ${allFonts.join(", ")};`;
+	return [`"${font.family}"`, ...fallbacks].join(", ");
 };
 
-const fontFamilyStyle = generateFontFamilyStyle();
+// 全局 selected 中有 src 的字体（排除系统字体）
+const selectedFonts = selectedIds
+	.map((id) => fontConfig.fonts[id])
+	.filter((font) => font?.src);
+
+// 需要加载的所有字体（selected + 各区域独立字体，去重）
+const allFontIds = new Set(selectedIds);
+if (fontConfig.bannerTitleFont) allFontIds.add(fontConfig.bannerTitleFont);
+if (fontConfig.bannerSubtitleFont)
+	allFontIds.add(fontConfig.bannerSubtitleFont);
+if (fontConfig.navbarTitleFont) allFontIds.add(fontConfig.navbarTitleFont);
+
+const allFontsToLoad = Array.from(allFontIds)
+	.map((id) => fontConfig.fonts[id])
+	.filter((font) => font?.src);
+
+// 生成 font-family 回退样式
+const selectedFontFamilies = selectedIds
+	.map((id) => fontConfig.fonts[id])
+	.filter((font) => font)
+	.map((font) => `"${font?.family ?? ""}"`);
+
+const fallbacks = fontConfig.fallback || [];
+const fontFamilyStyle =
+	selectedFontFamilies.length > 0
+		? `font-family: ${[...selectedFontFamilies, ...fallbacks].join(", ")};`
+		: "";
+
+// 生成各区域独立字体 CSS 变量值
+const bannerTitleFontFamily =
+	fontConfig.enable && fontConfig.bannerTitleFont
+		? resolveFontFamily(fontConfig.bannerTitleFont)
+		: "";
+const bannerSubtitleFontFamily =
+	fontConfig.enable && fontConfig.bannerSubtitleFont
+		? resolveFontFamily(fontConfig.bannerSubtitleFont)
+		: "";
+const navbarTitleFontFamily =
+	fontConfig.enable && fontConfig.navbarTitleFont
+		? resolveFontFamily(fontConfig.navbarTitleFont)
+		: "";
 ---
 
 <!-- 字体样式表链接 -->{
-  selectedFonts.map((font) => {
+  allFontsToLoad.map((font) => {
     // 判断是否为外部链接
     const isExternalUrl =
       font.src.startsWith("http://") ||
@@ -66,12 +73,20 @@ const fontFamilyStyle = generateFontFamilyStyle();
       return <link rel="stylesheet" href={font.src} />;
     } else {
       // 本地字体文件
+      // 如果启用了子集化且为构建模式，输出占位符供构建后脚本替换
+      const isSubset = font.subset && !import.meta.env.DEV;
+      const fontSrc = isSubset
+        ? `__SUBSET_FONT_${font.id}__`
+        : font.src;
+      const fontFormat = isSubset
+        ? 'format("woff2")'
+        : (font.format ? `format("${font.format}")` : "");
       return (
         <style
           set:html={`
         @font-face {
           font-family: "${font.family}";
-          src: url("${font.src}") ${font.format ? `format("${font.format}")` : ""};
+          src: url("${fontSrc}") ${fontFormat};
           ${font.weight ? `font-weight: ${font.weight};` : ""}
           ${font.style ? `font-style: ${font.style};` : ""}
           ${font.display ? `font-display: ${font.display};` : ""}
@@ -88,17 +103,22 @@ const fontFamilyStyle = generateFontFamilyStyle();
 {
   fontConfig.enable &&
     fontConfig.preload &&
-    selectedFonts
+    allFontsToLoad
       .filter((font) => !font.src.startsWith("http"))
-      .map((font) => (
-        <link
-          rel="preload"
-          href={font.src}
-          as="font"
-          type={`font/${font.format || "woff2"}`}
-          crossorigin
-        />
-      ))
+      .map((font) => {
+        const isSubset = font.subset && !import.meta.env.DEV;
+        const href = isSubset ? `__SUBSET_FONT_${font.id}__` : font.src;
+        const type = isSubset ? "font/woff2" : `font/${font.format || "woff2"}`;
+        return (
+          <link
+            rel="preload"
+            href={href}
+            as="font"
+            type={type}
+            crossorigin
+          />
+        );
+      })
 }
 
 <!-- 全局字体样式 -->
@@ -109,6 +129,9 @@ const fontFamilyStyle = generateFontFamilyStyle();
     :root {
       --font-family-custom: ${selectedFonts.map((font) => `"${font.family}"`).join(", ")};
       --font-family-fallback: ${(fontConfig.fallback || []).join(", ")};
+      ${bannerTitleFontFamily ? `--font-banner-title: ${bannerTitleFontFamily};` : ""}
+      ${bannerSubtitleFontFamily ? `--font-banner-subtitle: ${bannerSubtitleFontFamily};` : ""}
+      ${navbarTitleFontFamily ? `--font-navbar-title: ${navbarTitleFontFamily};` : ""}
     }
     
     /* 应用自定义字体到body */
@@ -127,45 +150,20 @@ const fontFamilyStyle = generateFontFamilyStyle();
       `;
       })
       .join("\n")}
-    
-    /* 为整体启用字体的body添加类名 */
-    ${fontClasses.map((className) => `.${className}`).join(",\n")} {
-      /* 字体相关的全局样式可以在这里添加 */
-    }
   `}
     />
   )
 }
 
 <script>
-  // 字体加载优化和错误处理
+  // 字体加载完成事件
   if (document.fonts && typeof document.fonts.ready !== "undefined") {
     document.fonts.ready
       .then(() => {
-        console.log("All fonts have been loaded");
-
-        // 触发自定义事件，通知字体加载完成
         document.dispatchEvent(new CustomEvent("fontsLoaded"));
       })
       .catch((error: Error) => {
         console.warn("Font loading failed:", error);
       });
-  }
-
-  // 字体加载性能监控
-  if (typeof PerformanceObserver !== "undefined") {
-    const observer = new PerformanceObserver((list) => {
-      list.getEntries().forEach((entry) => {
-        if (entry.entryType === "resource") {
-          // console.log(`Font resource loaded: ${entry.name} (${entry.duration.toFixed(2)}ms)`);
-        }
-      });
-    });
-
-    try {
-      observer.observe({ entryTypes: ["resource"] });
-    } catch (e) {
-      // 浏览器不支持时静默失败
-    }
   }
 </script>
