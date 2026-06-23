@@ -760,7 +760,7 @@ html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
 #wallpaper-wrapper.wallpaper-fullscreen .waves {
     position: absolute !important;
     bottom: -1px !important;
-    z-index: 5 !important;
+    z-index: 15 !important;
 }
 
 /* Fullscreen 模式下滚动向下指示器 */

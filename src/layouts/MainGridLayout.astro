@@ -318,7 +318,7 @@ const hasMultipleImages =
 				: `top: -${BANNER_HEIGHT_EXTEND}vh`
 }>
     <!-- 背景图片显示 -->
-    {(bannerCarouselEnabledDefault && hasMultipleImages) ? (
+    {hasMultipleImages ? (
     <!-- 轮播模式：渲染所有图片为 slide-item -->
     <div class:list={["relative h-full w-full bg-black", `effect-${bannerCarouselEffect}`]} id="banner-images-container"
          style={`z-index: 5; --carousel-interval: ${bannerCarouselInterval}ms`}
@@ -396,7 +396,7 @@ const hasMultipleImages =
     )}
 
     <!-- 壁纸轮播脚本（基于 CSS transition） -->
-    {(bannerCarouselEnabledDefault && hasMultipleImages) && (
+    {hasMultipleImages && (
     <script is:inline data-swup-ignore-script>
         (function initBannerCarousel() {
             var container = document.getElementById('banner-images-container');
