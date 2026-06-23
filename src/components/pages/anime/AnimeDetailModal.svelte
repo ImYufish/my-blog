@@ -10,6 +10,16 @@ interface Props {
 
 let { anime, onclose }: Props = $props();
 
+/** 将元素挂载到 body，脱离 overflow:hidden 容器 */
+function portal(node: HTMLElement) {
+	document.body.appendChild(node);
+	return {
+		destroy() {
+			node.remove();
+		},
+	};
+}
+
 function handleBackdropClick(e: MouseEvent) {
 	if (e.target === e.currentTarget) {
 		onclose();
@@ -35,6 +45,7 @@ function getTypeColor(type: string): string {
 
 {#if anime}
 	<div
+		use:portal
 		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
 		onclick={handleBackdropClick}
 		onkeydown={handleKeydown}
@@ -42,7 +53,7 @@ function getTypeColor(type: string): string {
 		aria-modal="true"
 		tabindex="-1"
 	>
-		<div class="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-xl sm:rounded-2xl bg-(--card-bg) border border-(--line-divider) shadow-2xl animate-in">
+		<div class="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-xl sm:rounded-2xl bg-(--card-bg) border border-(--line-divider) shadow-2xl animate-in">
 			<!-- 关闭按钮 -->
 			<button
 				class="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
