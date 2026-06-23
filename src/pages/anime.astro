@@ -45,6 +45,7 @@ interface BilibiliItem {
 	media_id: number;
 	title: string;
 	cover?: string;
+	season_type?: number;
 	season_type_name?: string;
 	rating?: { score?: number };
 	evaluate?: string;
@@ -117,22 +118,25 @@ if (TMDB_API_KEY && TMDB_LIST_ID) {
 	}
 }
 
-// 2. Bilibili 数据
+// 2. Bilibili 数据（type=1 追番 + type=2 追剧）
 let bilibiliItems: BilibiliItem[] = [];
 if (BILIBILI_UID) {
 	try {
 		console.log(`[Anime] Fetching Bilibili list for UID: ${BILIBILI_UID}...`);
 		const ps = 30;
 
-		// 第一页请求，获取 total 总数
-		const firstRes = await fetch(
-			`https://api.bilibili.com/x/space/bangumi/follow/list?type=1&vmid=${BILIBILI_UID}&pn=1&ps=${ps}`,
-		);
-		const firstJson = await firstRes.json();
+		/** 获取指定类型的全部追番数据 */
+		async function fetchBilibiliByType(type: number): Promise<BilibiliItem[]> {
+			const items: BilibiliItem[] = [];
+			// 第一页，获取 total
+			const firstRes = await fetch(
+				`https://api.bilibili.com/x/space/bangumi/follow/list?type=${type}&vmid=${BILIBILI_UID}&pn=1&ps=${ps}`,
+			);
+			const firstJson = await firstRes.json();
+			if (firstJson.code !== 0 || !firstJson.data?.list?.length) return items;
 
-		if (firstJson.code === 0 && firstJson.data?.list?.length > 0) {
-			bilibiliItems.push(...firstJson.data.list);
-			const total = firstJson.data.total || bilibiliItems.length;
+			items.push(...firstJson.data.list);
+			const total = firstJson.data.total || items.length;
 			const totalPages = Math.ceil(total / ps);
 
 			// 并发请求剩余页
@@ -141,19 +145,29 @@ if (BILIBILI_UID) {
 				for (let pn = 2; pn <= totalPages; pn++) {
 					promises.push(
 						fetch(
-							`https://api.bilibili.com/x/space/bangumi/follow/list?type=1&vmid=${BILIBILI_UID}&pn=${pn}&ps=${ps}`,
+							`https://api.bilibili.com/x/space/bangumi/follow/list?type=${type}&vmid=${BILIBILI_UID}&pn=${pn}&ps=${ps}`,
 						)
 							.then((r) => r.json())
 							.then((j) => j.data?.list || []),
 					);
 				}
 				const remaining = await Promise.all(promises);
-				for (const items of remaining) {
-					bilibiliItems.push(...items);
+				for (const batch of remaining) {
+					items.push(...batch);
 				}
 			}
+			return items;
 		}
-		console.log(`[Anime] Fetched ${bilibiliItems.length} items from Bilibili.`);
+
+		// 并发获取追番和追剧
+		const [animeItems, dramaItems] = await Promise.all([
+			fetchBilibiliByType(1),
+			fetchBilibiliByType(2),
+		]);
+		bilibiliItems = [...animeItems, ...dramaItems];
+		console.log(
+			`[Anime] Fetched ${bilibiliItems.length} items from Bilibili (anime: ${animeItems.length}, drama: ${dramaItems.length}).`,
+		);
 	} catch (e) {
 		console.error("[Anime] Bilibili fetch error:", e);
 	}
@@ -174,6 +188,7 @@ let animeList: StandardizedAnime[] = tmdbItems.map((anime) => {
 		originalTitle,
 		poster: anime.poster_path ? TMDB_IMG + anime.poster_path : null,
 		type: type as "tv" | "movie",
+		season_type: type === "movie" ? 2 : 1,
 		source: "tmdb",
 		rating: anime.vote_average || 0,
 		date,
@@ -190,10 +205,9 @@ if (bilibiliItems.length > 0) {
 		title: item.title,
 		originalTitle: item.title,
 		poster: item.cover ? item.cover.replace("http://", "https://") : null,
-		type:
-			item.season_type_name === "剧场版" || item.season_type_name === "电影"
-				? ("movie" as const)
-				: ("tv" as const),
+		// season_type: 1=番剧, 2=电影, 3=纪录片, 4=国创, 5=电视剧
+		type: item.season_type === 2 ? ("movie" as const) : ("tv" as const),
+		season_type: item.season_type || 1,
 		source: "bilibili" as const,
 		rating: item.rating?.score || 0,
 		date: "",

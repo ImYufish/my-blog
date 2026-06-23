@@ -7,6 +7,7 @@
 @import './custom-scrollbar.css';
 @import './tags.css';
 @import './gallery.css';
+@import './anime-bangumi.css';
 
 @plugin '@tailwindcss/typography';
 
@@ -341,11 +342,11 @@ html {
 
     .hide-scrollbar {
         scrollbar-width: none;
-        -ms-overflow-style: none;
     }
     .hide-scrollbar::-webkit-scrollbar {
         display: none;
     }
+
 
     .text-90 {
         @apply text-black/90 dark:text-white/90

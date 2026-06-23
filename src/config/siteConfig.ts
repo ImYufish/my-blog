@@ -168,9 +168,9 @@ export const siteConfig: SiteConfig = {
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
 		mode: "dynamic",
 		// Bangumi API 地址
-		apiUrl: "https://api.bangumi.one",
+		apiUrl: "https://bgmapi.anibt.net",
 		// 详情页地址
-		subjectBaseUrl: "https://bangumi.one/subject/",
+		subjectBaseUrl: "https://bgmmi.anibt.net/subject/",
 		// 条目类型排序，数组中的类型将按顺序优先展示
 		// 可选值: "anime" | "book" | "music" | "game" | "real" (暂不支持"real"类型)
 		// 未列出的类型将按默认顺序排在后面

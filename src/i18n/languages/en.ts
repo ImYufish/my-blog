@@ -159,7 +159,7 @@ export const en: Translation = {
 	[Key.animeTotal]: "Total",
 	[Key.animeAverageRating]: "Avg Rating",
 	[Key.animeSearch]: "Search anime...",
-	[Key.animeAllTypes]: "All Types",
+	[Key.animeAllTypes]: "All",
 	[Key.animeTV]: "TV Anime",
 	[Key.animeMovie]: "Movie",
 	[Key.animeRatingDesc]: "Highest Rating",
@@ -185,6 +185,12 @@ export const en: Translation = {
 	[Key.animeAllWithCount]: "All ({count})",
 	[Key.animeTVWithCount]: "TV ({count})",
 	[Key.animeMovieWithCount]: "Movie ({count})",
+	[Key.animeTypeAnime]: "Anime",
+	[Key.animeTypeMovie]: "Movie",
+	[Key.animeTypeDocumentary]: "Documentary",
+	[Key.animeTypeChinese]: "Chinese Animation",
+	[Key.animeTypeDrama]: "Drama",
+	[Key.animeTypeConcert]: "Concert",
 
 	// Pagination
 	[Key.paginationFirst]: "First",

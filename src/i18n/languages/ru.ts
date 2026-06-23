@@ -160,7 +160,7 @@ export const ru: Translation = {
 	[Key.animeTotal]: "Всего",
 	[Key.animeAverageRating]: "Средний рейтинг",
 	[Key.animeSearch]: "Поиск аниме...",
-	[Key.animeAllTypes]: "Все типы",
+	[Key.animeAllTypes]: "Все",
 	[Key.animeTV]: "TV Аниме",
 	[Key.animeMovie]: "Фильм",
 	[Key.animeRatingDesc]: "По рейтингу ↓",
@@ -186,6 +186,12 @@ export const ru: Translation = {
 	[Key.animeAllWithCount]: "Все ({count})",
 	[Key.animeTVWithCount]: "ТВ ({count})",
 	[Key.animeMovieWithCount]: "Фильм ({count})",
+	[Key.animeTypeAnime]: "Аниме",
+	[Key.animeTypeMovie]: "Фильм",
+	[Key.animeTypeDocumentary]: "Документальный",
+	[Key.animeTypeChinese]: "Китайское аниме",
+	[Key.animeTypeDrama]: "Сериал",
+	[Key.animeTypeConcert]: "Концерт",
 
 	// Пагинация
 	[Key.paginationFirst]: "Первая",

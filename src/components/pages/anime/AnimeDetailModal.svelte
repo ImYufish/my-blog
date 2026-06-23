@@ -32,12 +32,30 @@ function handleKeydown(e: KeyboardEvent) {
 	}
 }
 
-function getTypeLabel(type: string): string {
-	return type === "movie" ? i18n(I18nKey.animeMovie) : i18n(I18nKey.animeTV);
+const SEASON_TYPE_I18N: Record<number, I18nKey> = {
+	1: I18nKey.animeTypeAnime,
+	2: I18nKey.animeTypeMovie,
+	3: I18nKey.animeTypeDocumentary,
+	4: I18nKey.animeTypeChinese,
+	5: I18nKey.animeTypeDrama,
+	7: I18nKey.animeTypeConcert,
+};
+
+const SEASON_TYPE_COLORS: Record<number, string> = {
+	1: "bg-blue-500",
+	2: "bg-purple-500",
+	3: "bg-emerald-500",
+	4: "bg-orange-500",
+	5: "bg-pink-500",
+	7: "bg-yellow-500",
+};
+
+function getTypeLabel(seasonType: number): string {
+	return i18n(SEASON_TYPE_I18N[seasonType] || I18nKey.animeTypeAnime);
 }
 
-function getTypeColor(type: string): string {
-	return type === "movie" ? "bg-purple-500" : "bg-blue-500";
+function getTypeColor(seasonType: number): string {
+	return SEASON_TYPE_COLORS[seasonType] || "bg-gray-500";
 }
 </script>
 
@@ -68,12 +86,19 @@ function getTypeColor(type: string): string {
 			<!-- 内容区域 -->
 			<div class="flex flex-col md:flex-row">
 				<!-- 海报 -->
-				<div class="relative w-full md:w-64 lg:w-72 shrink-0 aspect-2/3 md:aspect-auto bg-neutral-100 dark:bg-neutral-800">
+				<div class="relative w-full md:w-64 lg:w-72 shrink-0 aspect-2/3 md:aspect-auto bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
 					{#if anime.poster}
+						<div class="lqip-placeholder absolute inset-0 pointer-events-none" style="background: var(--muted)" aria-hidden="true"></div>
 						<img
 							src={anime.poster}
 							alt={anime.title}
-							class="h-full w-full object-cover"
+							class="h-full w-full object-cover opacity-0 transition-opacity duration-500"
+							onload={(e) => {
+								const img = e.currentTarget as HTMLElement;
+								img.style.opacity = '1';
+								const ph = img.parentElement?.querySelector('.lqip-placeholder');
+								if (ph) ph.classList.add('loaded');
+							}}
 						/>
 					{:else}
 						<div class="flex h-full min-h-[300px] items-center justify-center">
@@ -98,8 +123,8 @@ function getTypeColor(type: string): string {
 
 					<!-- 徽章 -->
 					<div class="mb-4 flex flex-wrap gap-2">
-						<span class="inline-flex items-center gap-1 rounded-lg {getTypeColor(anime.type)} px-3 py-1 text-xs font-bold text-white">
-							{getTypeLabel(anime.type)}
+						<span class="inline-flex items-center gap-1 rounded-lg {getTypeColor(anime.season_type)} px-3 py-1 text-xs font-bold text-white">
+							{getTypeLabel(anime.season_type)}
 						</span>
 						{#if anime.rating > 0}
 							<span class="inline-flex items-center gap-1 rounded-lg bg-yellow-500/10 border border-yellow-500/20 px-3 py-1 text-xs font-bold text-yellow-600 dark:text-yellow-400">

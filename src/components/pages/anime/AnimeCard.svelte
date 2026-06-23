@@ -21,12 +21,30 @@ function handleClick() {
 	onclick?.(anime);
 }
 
-function getTypeLabel(type: string): string {
-	return type === "movie" ? i18n(I18nKey.animeMovie) : i18n(I18nKey.animeTV);
+const SEASON_TYPE_I18N: Record<number, I18nKey> = {
+	1: I18nKey.animeTypeAnime,
+	2: I18nKey.animeTypeMovie,
+	3: I18nKey.animeTypeDocumentary,
+	4: I18nKey.animeTypeChinese,
+	5: I18nKey.animeTypeDrama,
+	7: I18nKey.animeTypeConcert,
+};
+
+const SEASON_TYPE_COLORS: Record<number, string> = {
+	1: "bg-blue-500",
+	2: "bg-purple-500",
+	3: "bg-emerald-500",
+	4: "bg-orange-500",
+	5: "bg-pink-500",
+	7: "bg-yellow-500",
+};
+
+function getTypeLabel(seasonType: number): string {
+	return i18n(SEASON_TYPE_I18N[seasonType] || I18nKey.animeTypeAnime);
 }
 
-function getTypeColor(type: string): string {
-	return type === "movie" ? "bg-purple-500" : "bg-blue-500";
+function getTypeColor(seasonType: number): string {
+	return SEASON_TYPE_COLORS[seasonType] || "bg-gray-500";
 }
 </script>
 
@@ -68,8 +86,8 @@ function getTypeColor(type: string): string {
 		{/if}
 
 		<!-- 类型角标（左上） -->
-		<div class="absolute top-2 left-2 rounded-lg {getTypeColor(anime.type)} px-2 py-1 text-xs font-bold text-white backdrop-blur-sm">
-			{getTypeLabel(anime.type)}
+		<div class="absolute top-2 left-2 rounded-lg {getTypeColor(anime.season_type)} px-2 py-1 text-xs font-bold text-white backdrop-blur-sm">
+			{getTypeLabel(anime.season_type)}
 		</div>
 
 		<!-- 来源标签 -->

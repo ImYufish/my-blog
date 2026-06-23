@@ -180,6 +180,12 @@ enum I18nKey {
 	animeAllWithCount = "animeAllWithCount",
 	animeTVWithCount = "animeTVWithCount",
 	animeMovieWithCount = "animeMovieWithCount",
+	animeTypeAnime = "animeTypeAnime",
+	animeTypeMovie = "animeTypeMovie",
+	animeTypeDocumentary = "animeTypeDocumentary",
+	animeTypeChinese = "animeTypeChinese",
+	animeTypeDrama = "animeTypeDrama",
+	animeTypeConcert = "animeTypeConcert",
 
 	// 分页
 	paginationFirst = "paginationFirst",

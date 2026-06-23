@@ -6,7 +6,8 @@ export interface StandardizedAnime {
 	title: string; // 中文标题
 	originalTitle: string; // 原始标题（日文/英文）
 	poster: string | null; // 海报 URL（null 表示无海报）
-	type: "tv" | "movie"; // 类型：TV 动画 / 剧场版
+	type: "tv" | "movie"; // 类型：TV 动画 / 电影
+	season_type: number; // Bilibili 分类：1=番剧, 2=电影, 3=纪录片, 4=国创, 5=电视剧；TMDB: 1=tv, 2=movie
 	source: "tmdb" | "bilibili"; // 数据来源
 	rating: number; // 评分（0-10）
 	date: string; // 发布日期（YYYY-MM-DD）
