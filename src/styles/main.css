@@ -3,7 +3,7 @@
 @import './navbar.css';
 @import './banner-title.css';
 @import './waves.css';
-@import './transition.css';
+@import './transition.css'; 
 @import './custom-scrollbar.css';
 @import './tags.css';
 @import './gallery.css';
@@ -268,6 +268,10 @@ html {
     }
     
     .wallpaper-transparent .btn-card {
+        background-color: var(--card-bg-transparent) !important;
+    }
+
+    .wallpaper-transparent .bg-\(--card-bg\) {
         background-color: var(--card-bg-transparent) !important;
     }
 
