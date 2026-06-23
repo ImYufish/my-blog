@@ -258,15 +258,15 @@ const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
 const configQuality = getImageQuality();
 const mobileQuality = Math.round(configQuality * 0.9);
 const bannerCarouselEnabledDefault =
-	backgroundWallpaper.banner?.carousel?.enable ?? false;
+	backgroundWallpaper.common?.carousel?.enable ?? false;
 const bannerCarouselSwitchable =
-	backgroundWallpaper.banner?.carousel?.switchable ?? false;
+	backgroundWallpaper.common?.carousel?.switchable ?? false;
 const bannerCarouselInterval = Math.max(
-	backgroundWallpaper.banner?.carousel?.interval ?? 5000,
+	backgroundWallpaper.common?.carousel?.interval ?? 5000,
 	3000,
 );
 const bannerCarouselEffect =
-	backgroundWallpaper.banner?.carousel?.transitionEffect ?? "fade";
+	backgroundWallpaper.common?.carousel?.transitionEffect ?? "fade";
 const hasMultipleImages =
 	backgroundImages.desktop.length > 1 || backgroundImages.mobile.length > 1;
 ---
