@@ -8,11 +8,15 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import type { StandardizedAnime } from "@/types/anime";
+import { formatDateI18nWithTime } from "@/utils/date-utils";
 
 // 检查页面是否启用
 if (!siteConfig.pages.anime) {
 	return Astro.redirect("/404/");
 }
+
+// 获取构建时间
+const buildTime = formatDateI18nWithTime(new Date());
 
 // 追番配置
 const animeConfig = siteConfig.anime;
@@ -119,32 +123,35 @@ if (BILIBILI_UID) {
 	try {
 		console.log(`[Anime] Fetching Bilibili list for UID: ${BILIBILI_UID}...`);
 		const ps = 30;
-		let pn = 1;
-		let hasMore = true;
 
-		while (hasMore) {
-			const res = await fetch(
-				`https://api.bilibili.com/x/space/bangumi/follow/list?type=1&vmid=${BILIBILI_UID}&pn=${pn}&ps=${ps}`,
-			);
-			const json = await res.json();
+		// 第一页请求，获取 total 总数
+		const firstRes = await fetch(
+			`https://api.bilibili.com/x/space/bangumi/follow/list?type=1&vmid=${BILIBILI_UID}&pn=1&ps=${ps}`,
+		);
+		const firstJson = await firstRes.json();
 
-			if (
-				json.code === 0 &&
-				json.data &&
-				json.data.list &&
-				json.data.list.length > 0
-			) {
-				bilibiliItems.push(...json.data.list);
-				if (json.data.total > bilibiliItems.length) {
-					pn++;
-				} else {
-					hasMore = false;
+		if (firstJson.code === 0 && firstJson.data?.list?.length > 0) {
+			bilibiliItems.push(...firstJson.data.list);
+			const total = firstJson.data.total || bilibiliItems.length;
+			const totalPages = Math.ceil(total / ps);
+
+			// 并发请求剩余页
+			if (totalPages > 1) {
+				const promises: Promise<BilibiliItem[]>[] = [];
+				for (let pn = 2; pn <= totalPages; pn++) {
+					promises.push(
+						fetch(
+							`https://api.bilibili.com/x/space/bangumi/follow/list?type=1&vmid=${BILIBILI_UID}&pn=${pn}&ps=${ps}`,
+						)
+							.then((r) => r.json())
+							.then((j) => j.data?.list || []),
+					);
 				}
-			} else {
-				hasMore = false;
+				const remaining = await Promise.all(promises);
+				for (const items of remaining) {
+					bilibiliItems.push(...items);
+				}
 			}
-
-			if (pn > 20) break;
 		}
 		console.log(`[Anime] Fetched ${bilibiliItems.length} items from Bilibili.`);
 	} catch (e) {
@@ -242,6 +249,9 @@ const isConfigured = !!(BILIBILI_UID || (TMDB_API_KEY && TMDB_LIST_ID));
           </div>
           <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
             {i18n(I18nKey.animeSubtitle)}
+          </p>
+          <p class="text-xs text-neutral-500 dark:text-neutral-500 mt-2">
+            {i18n(I18nKey.animeLastUpdated)} {buildTime}
           </p>
         </div>
 
