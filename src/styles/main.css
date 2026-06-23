@@ -225,6 +225,9 @@ html {
     .enable-card-border .card-base-transparent {
         @apply transition-all duration-300 border border-(--line-divider) shadow-xs;
     }
+    .enable-card-border .btn-card {
+        @apply transition-all duration-300 border border-(--line-divider) shadow-xs;
+    }
 
     /* 导航栏样式适配 */
     .enable-card-border #navbar > div:not(.absolute) {
@@ -267,7 +270,7 @@ html {
     .wallpaper-transparent .btn-card {
         background-color: var(--card-bg-transparent) !important;
     }
-    
+
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition-colors duration-150;
     }
