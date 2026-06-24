@@ -71,7 +71,7 @@ function getTypeColor(seasonType: number): string {
 		aria-modal="true"
 		tabindex="-1"
 	>
-		<div class="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-xl sm:rounded-2xl bg-(--card-bg) border border-(--line-divider) shadow-2xl animate-in">
+		<div class="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-xl sm:rounded-2xl bg-(--card-bg) border border-(--line-divider) shadow-2xl animate-in scale-90 sm:scale-100">
 			<!-- 关闭按钮 -->
 			<button
 				class="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
@@ -86,7 +86,7 @@ function getTypeColor(seasonType: number): string {
 			<!-- 内容区域 -->
 			<div class="flex flex-col md:flex-row">
 				<!-- 海报 -->
-				<div class="relative w-full md:w-64 lg:w-72 shrink-0 aspect-2/3 md:aspect-auto bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+				<div class="relative w-full md:w-64 lg:w-72 shrink-0 h-48 sm:h-64 md:aspect-auto md:h-auto bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
 					{#if anime.poster}
 						<div class="lqip-placeholder absolute inset-0 pointer-events-none" style="background: var(--muted)" aria-hidden="true"></div>
 						<img
@@ -184,11 +184,11 @@ function getTypeColor(seasonType: number): string {
 	@keyframes animate-in {
 		from {
 			opacity: 0;
-			transform: scale(0.95) translateY(10px);
+			transform: translateY(10px);
 		}
 		to {
 			opacity: 1;
-			transform: scale(1) translateY(0);
+			transform: translateY(0);
 		}
 	}
 	.animate-in {
