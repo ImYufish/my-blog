@@ -130,7 +130,7 @@ function goToPage(page: number) {
     display: none;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .mobile-pagination {
       display: none;
     }
@@ -178,7 +178,7 @@ function goToPage(page: number) {
     }
   }
 
-  @media (max-width: 768px) and (orientation: landscape) {
+  @media (max-width: 1024px) and (orientation: landscape) {
     .mobile-pagination {
       padding: 0 0.5rem;
     }
