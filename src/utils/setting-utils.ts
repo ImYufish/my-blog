@@ -704,7 +704,7 @@ function adjustMainContentPosition(
 		case "banner": {
 			// Banner模式：主内容在banner下方
 			const isHome = checkIsHomePage(window.location.pathname);
-			const bannerTargetTop = "calc(var(--banner-height) - 3rem)";
+			const bannerTargetTop = "calc(var(--banner-height) - 3.5rem)";
 
 			// 禁用 CSS transition，防止整个定位过程中的值变化触发过渡动画
 			mainContent.style.setProperty("transition", "none", "important");
