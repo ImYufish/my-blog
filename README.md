@@ -44,6 +44,11 @@
 🔧 高度可配置: 大部分功能模块均可通过配置文件自定义
 
 <img alt="firefly" src="./docs/images/1.webp" />
+<div style="display: flex; gap: 10px;">
+  <img src="./docs/images/3.webp" style="width: 33%;">
+  <img src="./docs/images/2.webp" style="width: 33%;">
+  <img src="./docs/images/4.webp" style="width: 33%;">
+</div>
 <img alt="Lighthouse" src="./docs/images/Lighthouse.png" />
 
 >[!TIP]

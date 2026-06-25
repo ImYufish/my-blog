@@ -44,7 +44,12 @@
 🔧 高度可配置: 大部分功能模組均可透過配置檔案自訂
 
 <img alt="firefly" src="./images/1.webp" />
-<img alt="Lighthouse" src="./images/Lighthouse.png" />
+<div style="display: flex; gap: 10px;">
+  <img src="./images/3.webp" style="width: 33%;">
+  <img src="./images/2.webp" style="width: 33%;">
+  <img src="./images/4.webp" style="width: 33%;">
+</div>
+<img alt="Lighthouse" src="./docs/images/Lighthouse.png" />
 
 >[!TIP]
 >
