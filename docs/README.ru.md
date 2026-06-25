@@ -43,12 +43,19 @@
 
 🔧 Высокая настраиваемость: Большинство функций можно настроить через конфигурационные файлы
 
-<img alt="firefly" src="./images/1.webp" />
-<div style="display: flex; gap: 10px;">
-  <img src="./images/3.webp" style="width: 33%;">
-  <img src="./images/2.webp" style="width: 33%;">
-  <img src="./images/4.webp" style="width: 33%;">
-</div>
+<table width="100%" align="center">
+  <tr>
+    <td colspan="3" align="center">
+      <img src="./images/1.webp" >
+      <br>横幅模式</td>
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./images/3.webp" width="300"><br>透明模式</td>
+    <td align="center"><img src="./images/2.webp" width="300"><br>全屏壁纸模式</td>
+    <td align="center"><img src="./images/4.webp" width="300"><br>纯色模式</td>
+  </tr>
+</table>
 <img alt="Lighthouse" src="./docs/images/Lighthouse.png" />
 
 >[!TIP]
