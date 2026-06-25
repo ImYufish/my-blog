@@ -47,13 +47,13 @@
   <tr>
     <td colspan="3" align="center">
       <img src="./images/1.webp" >
-      <br>横幅模式</td>
+      <br>バナーモード</td>
     </td>
   </tr>
   <tr>
-    <td align="center"><img src="./images/3.webp" width="300"><br>透明模式</td>
-    <td align="center"><img src="./images/2.webp" width="300"><br>全屏壁纸模式</td>
-    <td align="center"><img src="./images/4.webp" width="300"><br>纯色模式</td>
+    <td align="center"><img src="./images/3.webp" width="300"><br>オーバーレイモード</td>
+    <td align="center"><img src="./images/2.webp" width="300"><br>全画面壁紙モード</td>
+    <td align="center"><img src="./images/4.webp" width="300"><br>ソリッドカラーモード</td>
   </tr>
 </table>
 <img alt="Lighthouse" src="./docs/images/Lighthouse.png" />
