@@ -701,6 +701,8 @@ html[data-wallpaper-mode="fullscreen"] .absolute.w-full.z-30.no-banner-layout {
     object-fit: cover !important;
     object-position: center !important;
     filter: blur(var(--overlay-blur, 0px));
+    /* 放大图片，让模糊后的暗角被容器 overflow:hidden 裁掉 */
+    transform: scale(1.05);
 }
 
 /* Overlay 模式隐藏 Banner 专属元素 */
