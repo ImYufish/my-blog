@@ -523,22 +523,15 @@ html[data-wallpaper-mode="fullscreen"] .absolute.w-full.z-30.no-banner-layout {
     }
 }
 
-/* 移动端暗色模式优化 */
+/* 移动端暗色模式文字阴影优化（仅横幅/全屏壁纸模式） */
 @media (max-width: 1023px) and (prefers-color-scheme: dark) {
-    .banner-home-text-overlay {
-        background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.8) 0%,
-            rgba(0, 0, 0, 0.4) 50%,
-            transparent 100%
-        );
-    }
-
-    .banner-title {
+    html.dark[data-wallpaper-mode="banner"] .banner-title,
+    html.dark[data-wallpaper-mode="fullscreen"] .banner-title {
         text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
     }
 
-    .banner-subtitle {
+    html.dark[data-wallpaper-mode="banner"] .banner-subtitle,
+    html.dark[data-wallpaper-mode="fullscreen"] .banner-subtitle {
         text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
     }
 }
