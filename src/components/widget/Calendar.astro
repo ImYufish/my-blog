@@ -243,7 +243,7 @@ const postUrlPrefix = url("/posts/");
       document.body.appendChild(tooltipEl);
     }
     gridEl.querySelectorAll('.heatmap-cell[data-tooltip]').forEach(cell => {
-      cell.addEventListener('mouseenter', (e) => {
+      cell.addEventListener('mouseenter', () => {
         tooltipEl.textContent = cell.getAttribute('data-tooltip');
         tooltipEl.style.opacity = '1';
         const rect = cell.getBoundingClientRect();
