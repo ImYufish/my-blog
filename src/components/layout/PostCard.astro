@@ -7,7 +7,7 @@ import PostMetadata from "@/components/layout/PostMeta.astro";
 import PostStats from "@/components/layout/PostStats.astro";
 import { siteConfig } from "@/config";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
-import { getFileDirFromPath } from "@/utils/url-utils";
+import { getFileDirFromPath, getTagUrl } from "@/utils/url-utils";
 
 interface Props {
 	class?: string;
@@ -52,15 +52,33 @@ const hasCover =
 
 const coverWidth = "30%";
 
-const showTags = siteConfig.postListLayout.showTags;
-const tagCount = Math.max(
-	0,
-	Math.trunc(siteConfig.postListLayout.tagCount ?? 1),
-);
 const descriptionLines = Math.max(
 	0,
 	Math.trunc(siteConfig.postListLayout.descriptionLines ?? 2),
 );
+
+// PostMeta 配置
+const metaConfig = siteConfig.postListLayout.meta ?? {};
+const showCategory = metaConfig.showCategory ?? true;
+const metaShowTags = metaConfig.showTags ?? true;
+const metaTagCount =
+	metaConfig.tagCount !== undefined
+		? Math.max(0, Math.trunc(metaConfig.tagCount))
+		: 1;
+const metaShowWords = metaConfig.showWords ?? true;
+const metaShowReadingTime = metaConfig.showReadingTime ?? true;
+const metaShowPublished = metaConfig.showPublished ?? true;
+
+// PostStats 配置
+const statsConfig = siteConfig.postListLayout.stats ?? {};
+const statsShowPublished = statsConfig.showPublished ?? true;
+const statsShowWords = statsConfig.showWords ?? true;
+const statsShowReadingTime = statsConfig.showReadingTime ?? true;
+
+// 标签显示位置
+const tagsPosition = siteConfig.postListLayout.tagsPosition ?? "meta";
+const showTagsInMeta = metaShowTags && tagsPosition === "meta";
+const showTagsAtBottom = metaShowTags && tagsPosition === "bottom";
 const descriptionClampLines = String(descriptionLines);
 const shouldClampDescription = descriptionLines > 0;
 
@@ -116,14 +134,19 @@ const minutes = remarkPluginFrontmatter.minutes;
     <PostMetadata
       published={published}
       tags={tags}
-      showPublished={false}
-      showTags={showTags && tagCount > 0}
-      maxTags={tagCount}
+      showPublished={metaShowPublished}
+      showCategory={showCategory}
+      showTags={showTagsInMeta}
+      maxTags={metaTagCount > 0 ? metaTagCount : undefined}
       showNoTags={false}
       hideUpdateDate={true}
       category={category || undefined}
       pinned={pinned}
       password={password}
+      words={words}
+      minutes={minutes}
+      showWords={metaShowWords}
+      showReadingTime={metaShowReadingTime}
       className="mb-4 post-meta card-header-meta"
     />
 
@@ -138,14 +161,36 @@ const minutes = remarkPluginFrontmatter.minutes;
       {descriptionText}
     </div>
 
-    <!-- stats -->
-    <PostStats
-      published={published}
-      words={words}
-      minutes={minutes}
-      showIcons={siteConfig.postListLayout.showStatsIcons}
-      className="stats mt-auto pt-3 text-black/30 dark:text-white/30 gap-x-2"
-    />
+    <!-- bottom tags（与 stats 二选一） -->
+    {showTagsAtBottom && tags && tags.length > 0 && (
+      <div class="post-card-bottom-tags flex flex-wrap items-center gap-1.5 mt-auto pt-3">
+        {(metaTagCount > 0 ? tags.slice(0, metaTagCount) : tags).map((tag) => (
+          <a
+            href={getTagUrl(tag)}
+            aria-label={`View all posts with the ${tag.trim()} tag`}
+            class="transition text-xs font-medium px-2.5 py-1 rounded-full
+              bg-black/5 dark:bg-white/10 text-neutral-500 dark:text-neutral-400
+              hover:bg-(--btn-regular-bg) hover:text-(--btn-content)"
+          >
+            {tag.trim()}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- stats（与底部标签二选一） -->
+    {!showTagsAtBottom && (
+      <PostStats
+        published={published}
+        words={words}
+        minutes={minutes}
+        showPublished={statsShowPublished}
+        showWords={statsShowWords}
+        showReadingTime={statsShowReadingTime}
+        showIcons={siteConfig.postListLayout.showStatsIcons}
+        className="stats mt-auto pt-3 text-black/30 dark:text-white/30 gap-x-2"
+      />
+    )}
   </div>
   {
     hasCover && (

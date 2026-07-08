@@ -124,16 +124,41 @@ export const siteConfig: SiteConfig = {
 		defaultMode: "list",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "grid",
-		// 是否在文章列表中显示标签
-		showTags: true,
-		// 文章列表中最多显示的标签数量
-		tagCount: 2,
+		// 是否允许用户切换布局
+		allowSwitch: true,
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 文章卡片底部统计和发布日期是否显示图标
 		showStatsIcons: true,
-		// 是否允许用户切换布局
-		allowSwitch: true,
+		// 标签显示位置
+		// 设置为"meta"：显示在文章标题下的元数据
+		// 设置为"bottom"：顶替stats在底部显示
+		tagsPosition: "bottom",
+		// PostMeta 元数据显示控制
+		meta: {
+			// 是否显示发布日期
+			showPublished: true,
+			// 是否显示分类
+			showCategory: true,
+			// 是否显示标签
+			showTags: true,
+			// 标签数量，设为 0 则不限制
+			tagCount: 5,
+			// 是否显示字数
+			showWords: false,
+			// 是否显示阅读时间
+			showReadingTime: false,
+		},
+		// 底部 PostStats 统计信息显示控制
+		// 如果tagsPosition设置为"bottom"，则stats将不显示
+		stats: {
+			// 是否显示发布日期
+			showPublished: true,
+			// 是否显示字数
+			showWords: true,
+			// 是否显示阅读时间
+			showReadingTime: true,
+		},
 		// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 		grid: {
 			// 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
