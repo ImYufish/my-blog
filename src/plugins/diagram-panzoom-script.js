@@ -225,15 +225,16 @@
 			{ passive: false },
 		);
 
-		// 全屏拖拽平移
+		// 全屏拖拽平移（支持鼠标和触摸）
 		let fdrag = false;
 		let fsx = 0;
 		let fsy = 0;
 		let fstx = 0;
 		let fsty = 0;
 		content.addEventListener("pointerdown", (e) => {
-			if (e.pointerType === "touch") return;
 			if (e.target.closest(".diagram-fs-controls")) return;
+			// 多指触摸时由 pinch 处理，跳过单指拖拽
+			if (e.pointerType === "touch" && e.isPrimary === false) return;
 			fdrag = true;
 			fsx = e.clientX;
 			fsy = e.clientY;
@@ -254,6 +255,58 @@
 		};
 		content.addEventListener("pointerup", fEnd);
 		content.addEventListener("pointercancel", fEnd);
+
+		// 双指缩放（pinch-to-zoom），基于手势初始状态计算避免闪烁
+		let pinchDist = 0;
+		let pinchScale = 1;
+		let pinchTx = 0;
+		let pinchTy = 0;
+		let pinchCx = 0;
+		let pinchCy = 0;
+		content.addEventListener(
+			"touchstart",
+			(e) => {
+				if (e.touches.length === 2) {
+					e.preventDefault();
+					const t0 = e.touches[0];
+					const t1 = e.touches[1];
+					pinchDist = Math.hypot(
+						t1.clientX - t0.clientX,
+						t1.clientY - t0.clientY,
+					);
+					pinchScale = st.scale;
+					pinchTx = st.tx;
+					pinchTy = st.ty;
+					pinchCx = (t0.clientX + t1.clientX) / 2;
+					pinchCy = (t0.clientY + t1.clientY) / 2;
+				}
+			},
+			{ passive: false },
+		);
+		content.addEventListener(
+			"touchmove",
+			(e) => {
+				if (e.touches.length === 2) {
+					e.preventDefault();
+					const t0 = e.touches[0];
+					const t1 = e.touches[1];
+					const newDist = Math.hypot(
+						t1.clientX - t0.clientX,
+						t1.clientY - t0.clientY,
+					);
+					const newScale = Math.min(
+						MAX_SCALE,
+						Math.max(MIN_SCALE, pinchScale * (newDist / pinchDist)),
+					);
+					const ratio = newScale / pinchScale;
+					st.scale = newScale;
+					st.tx = pinchCx - ratio * (pinchCx - pinchTx);
+					st.ty = pinchCy - ratio * (pinchCy - pinchTy);
+					apply();
+				}
+			},
+			{ passive: false },
+		);
 
 		// 背景点击关闭
 		overlay.addEventListener("click", (e) => {
