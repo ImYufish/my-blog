@@ -276,13 +276,17 @@ a.card-github.fetch-error
 .mermaid-wrapper
   text-align: center
 
-.mermaid-svg
+.mermaid-svg-light,
+.mermaid-svg-dark
   display: flex
   justify-content: center
   align-items: center
+  overflow: hidden
 
   svg
+    display: block
     max-width: 100%
+    max-height: 420px
     height: auto
     border-radius: 0.5rem
     user-select: none
@@ -369,6 +373,9 @@ a.card-github.fetch-error
     filter: brightness(0.95)
 
 @media (max-width: 768px)
+  .mermaid-svg svg
+    max-height: 400px
+
   .plantuml-image
     max-height: 400px
 
