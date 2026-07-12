@@ -347,6 +347,10 @@
 		closeAll();
 		initAll();
 	});
+	// 加密文章解密后，内容注入 DOM，需要重新初始化 pan-zoom
+	document.addEventListener("password:decrypted", () => {
+		setTimeout(initAll, 100);
+	});
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", initAll, { once: true });
 	} else {
