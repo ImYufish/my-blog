@@ -165,7 +165,8 @@ if (isLocalSrcLogo) {
                         data-i18n-play={i18n(I18nKey.videoPlay)}
                         data-i18n-pause={i18n(I18nKey.videoPause)}
                     >
-                        <Icon is:inline name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" />
+                        <span class="bg-player-icon-play"><Icon is:inline name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" /></span>
+                        <span class="bg-player-icon-pause hidden"><Icon is:inline name="material-symbols:pause-rounded" class="text-[1.5rem]" /></span>
                     </button>
                 )}
                 {hasDisplaySettings && (
@@ -228,17 +229,23 @@ function loadButtonScript() {
         bgPlayerBtn.onclick = function () {
             window.dispatchEvent(new CustomEvent("bg-player-toggle"));
         };
-        window.addEventListener("bg-player-state-change", function (e) {
-            var ce = e as CustomEvent;
-            var playing = ce.detail && ce.detail.playing;
+        function toggleBgPlayerIcon(playing: boolean) {
+            var playIcon = bgPlayerBtn!.querySelector(".bg-player-icon-play");
+            var pauseIcon = bgPlayerBtn!.querySelector(".bg-player-icon-pause");
+            if (playIcon && pauseIcon) {
+                playIcon.classList.toggle("hidden", playing);
+                pauseIcon.classList.toggle("hidden", !playing);
+            }
             var i18nPlay = bgPlayerBtn!.getAttribute("data-i18n-play") ?? "";
             var i18nPause = bgPlayerBtn!.getAttribute("data-i18n-pause") ?? "";
             var label = playing ? i18nPause : i18nPlay;
-            bgPlayerBtn!.innerHTML = playing
-                ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16 19q-.825 0-1.412-.587T14 17V7q0-.825.588-1.412T16 5t1.413.588T18 7v10q0 .825-.587 1.413T16 19m-8 0q-.825 0-1.412-.587T6 17V7q0-.825.588-1.412T8 5t1.413.588T10 7v10q0 .825-.587 1.413T8 19"/></svg>'
-                : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475t-.112.475t-.338.375l-8.15 5.175q-.125.075-.262.113T9 18.175q-.4 0-.7-.288t-.3-.712"/></svg>';
             bgPlayerBtn!.setAttribute("title", label);
             bgPlayerBtn!.setAttribute("aria-label", label);
+        }
+        window.addEventListener("bg-player-state-change", function (e) {
+            var ce = e as CustomEvent;
+            var playing = ce.detail && ce.detail.playing;
+            toggleBgPlayerIcon(playing);
         });
         // 切换壁纸模式时隐藏/显示播放按钮
         window.addEventListener("wallpaperModeChange", function (e) {
@@ -249,14 +256,7 @@ function loadButtonScript() {
         // Swup 导航时同步播放按钮状态（BackgroundPlayer 可能被重建，也可能持久存在）
         function syncBgPlayerBtn() {
             var playing = document.documentElement.hasAttribute("data-bg-video-playing");
-            var i18nPlay = bgPlayerBtn!.getAttribute("data-i18n-play") ?? "";
-            var i18nPause = bgPlayerBtn!.getAttribute("data-i18n-pause") ?? "";
-            var label = playing ? i18nPause : i18nPlay;
-            bgPlayerBtn!.innerHTML = playing
-                ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16 19q-.825 0-1.412-.587T14 17V7q0-.825.588-1.412T16 5t1.413.588T18 7v10q0 .825-.587 1.413T16 19m-8 0q-.825 0-1.412-.587T6 17V7q0-.825.588-1.412T8 5t1.413.588T10 7v10q0 .825-.587 1.413T8 19"/></svg>'
-                : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475t-.112.475t-.338.375l-8.15 5.175q-.125.075-.262.113T9 18.175q-.4 0-.7-.288t-.3-.712"/></svg>';
-            bgPlayerBtn!.setAttribute("title", label);
-            bgPlayerBtn!.setAttribute("aria-label", label);
+            toggleBgPlayerIcon(playing);
         }
         if (window.swup && window.swup.hooks) {
             window.swup.hooks.on("content:replace", syncBgPlayerBtn);
