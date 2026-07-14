@@ -155,7 +155,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "semi" */
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="semi"]>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semi"]>div {
-        background: rgba(0, 0, 0, var(--opacity-55)) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
@@ -178,7 +178,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "semifull" (scrolled) */
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"].scrolled>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"].scrolled>div {
-        background: rgba(0, 0, 0, var(--opacity-55)) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 }
@@ -191,7 +191,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "semi" */
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="semi"][data-is-home="true"]>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"]>div {
-        background: rgba(0, 0, 0, var(--opacity-55)) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
@@ -214,7 +214,7 @@ body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"]:not(.scro
     /* "semifull" (scrolled) */
     :root.dark #wallpaper-wrapper~* #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div,
     :root.dark body:has(#wallpaper-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div {
-        background: rgba(0, 0, 0, var(--opacity-55)) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 }
