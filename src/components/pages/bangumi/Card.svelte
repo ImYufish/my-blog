@@ -58,7 +58,13 @@ const tags = $derived(
 const visibleTags = $derived(tags.slice(0, 3));
 const hiddenTagCount = $derived(Math.max(tags.length - visibleTags.length, 0));
 
-const coverSrc = $derived(item.subject?.images?.medium || "");
+const images = $derived(item.subject?.images);
+// fallback 链：medium(800) → common(400) → small(200) → large(原图)
+const coverFallbacks = $derived(
+	images
+		? [images.medium, images.common, images.small, images.large].filter(Boolean)
+		: [],
+);
 const title = $derived(item.subject?.name_cn || item.subject?.name || "");
 const year = $derived(
 	item.subject?.date ? item.subject.date.substring(0, 4) : "",
@@ -72,6 +78,18 @@ function handleLoad(e: Event) {
 	const ph = img.parentElement?.querySelector(".lqip-placeholder");
 	if (ph) ph.classList.add("loaded");
 }
+
+function handleError(e: Event) {
+	const img = e.currentTarget as HTMLImageElement;
+	const current = img.src;
+	const idx = coverFallbacks.indexOf(current);
+	if (idx >= 0 && idx < coverFallbacks.length - 1) {
+		img.src = coverFallbacks[idx + 1];
+	} else {
+		// 所有 fallback 都失败，隐藏图片
+		img.style.display = "none";
+	}
+}
 </script>
 
 <a
@@ -81,16 +99,17 @@ function handleLoad(e: Event) {
   class="group relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] block"
 >
   <div class="aspect-2/3 relative overflow-hidden">
-    {#if coverSrc}
+    {#if coverFallbacks.length > 0}
       <div class="lqip-placeholder absolute inset-0 pointer-events-none" style="background: var(--muted)" aria-hidden="true"></div>
       <img
-        src={loadImage ? coverSrc : undefined}
-        data-src={loadImage ? undefined : coverSrc}
+        src={loadImage ? coverFallbacks[0] : undefined}
+        data-src={loadImage ? undefined : coverFallbacks[0]}
         alt={title}
         class="w-full h-full object-cover pointer-events-none opacity-0 transition-all duration-500 ease-out group-hover:scale-105"
         loading="lazy"
         decoding="async"
         onload={handleLoad}
+        onerror={handleError}
       />
     {:else}
       <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
