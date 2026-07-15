@@ -7,10 +7,7 @@ import DynamicInlineComments from "@/components/pages/dynamic/DynamicInlineComme
 import { profileConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import {
-	formatDateI18nWithTime,
-	formatTimezoneOffset,
-} from "@/utils/date-utils";
+import { formatDynamicDate, formatTimezoneOffset } from "@/utils/date-utils";
 import { dynamicAnchor } from "@/utils/dynamic-utils";
 import { url } from "@/utils/url-utils";
 
@@ -29,7 +26,7 @@ const {
 } = Astro.props;
 const { Content } = await render(entry);
 const anchorId = dynamicAnchor(entry.id);
-const published = formatDateI18nWithTime(entry.data.published);
+const published = formatDynamicDate(entry.data.published);
 const timezone = formatTimezoneOffset(
 	siteConfig.timezone || "UTC",
 	entry.data.published,
@@ -45,7 +42,7 @@ const profileLabel = i18n(I18nKey.dynamicProfile).replace(
 	id={anchorId}
 	class="dynamic-entry card-base"
 	data-dynamic-entry
-	data-year={entry.data.published.getFullYear()}
+	data-year={entry.data.published.getUTCFullYear()}
 >
 	<article aria-labelledby={`${anchorId}-author`}>
 		<header class="dynamic-entry-header">
