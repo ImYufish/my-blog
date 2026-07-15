@@ -1,3 +1,5 @@
+import * as FancyboxModule from "@fancyapps/ui";
+
 type GalleryImage = {
 	alt: string;
 	element: HTMLImageElement;
@@ -117,9 +119,9 @@ export function registerDynamicGallery(): void {
 			);
 			this.querySelector("[data-gallery-lightbox]")?.addEventListener(
 				"click",
-				async (event) => {
+				(event) => {
 					event.preventDefault();
-					const { Fancybox } = await import("@fancyapps/ui");
+					const Fancybox = FancyboxModule.Fancybox;
 					Fancybox.show(
 						this.images.map((image) => ({
 							src: image.src,
