@@ -234,7 +234,7 @@ comment: true    # 是否允許留言
 pnpm new-d 今天天氣真不錯
 ```
 
-`pnpm new-dynamic <content>` 是功能相同的完整命令。檔名與 `published` 時間會使用 `src/config/siteConfig.ts` 中設定的時區：
+`pnpm new-dynamic <content>` 是功能相同的完整命令。
 
 ```yaml
 ---

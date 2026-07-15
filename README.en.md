@@ -231,7 +231,7 @@ Moment files are stored in `src/content/dynamic/`, with one Markdown file per mo
 pnpm new-d The weather is lovely today
 ```
 
-`pnpm new-dynamic <content>` is the equivalent full command. The filename and `published` value use the timezone configured in `src/config/siteConfig.ts`:
+`pnpm new-dynamic <content>` is the equivalent full command. 
 
 ```yaml
 ---

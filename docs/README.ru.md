@@ -233,7 +233,7 @@ comment: true    # Включить комментарии
 pnpm new-d Сегодня прекрасная погода
 ```
 
-`pnpm new-dynamic <content>` — эквивалентная полная команда. Имя файла и значение `published` используют часовой пояс из `src/config/siteConfig.ts`:
+`pnpm new-dynamic <content>` — эквивалентная полная команда. 
 
 ```yaml
 ---

@@ -231,7 +231,7 @@ comment: true    # コメントを有効化
 pnpm new-d 今日はとても良い天気です
 ```
 
-`pnpm new-dynamic <content>` も同じ機能の完全なコマンドです。ファイル名と `published` は `src/config/siteConfig.ts` で設定したタイムゾーンを使用します：
+`pnpm new-dynamic <content>` も同じ機能の完全なコマンドです。
 
 ```yaml
 ---

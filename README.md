@@ -233,7 +233,7 @@ comment: true    # 是否允许评论
 pnpm new-d 今天心情不错，出去吃了一顿火锅
 ```
 
-`pnpm new-dynamic <content>` 也可以使用，和 `new-d` 完全等价。生成的文件名和 `published` 时间会使用 `src/config/siteConfig.ts` 中配置的时区：
+`pnpm new-dynamic <content>` 也可以使用，和 `new-d` 完全等价。
 
 ```yaml
 ---
