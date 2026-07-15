@@ -1,5 +1,8 @@
 .dynamic-page {
+	box-sizing: border-box;
+	min-width: 0;
 	width: 100%;
+	max-width: 100%;
 }
 
 .dynamic-page-header {
@@ -167,6 +170,9 @@ dynamic-feed {
 
 .dynamic-entry {
 	display: block;
+	box-sizing: border-box;
+	min-width: 0;
+	max-width: 100%;
 	overflow: visible;
 	padding: 1.125rem;
 	scroll-margin-top: 5.5rem;
@@ -257,6 +263,10 @@ dynamic-feed {
 }
 
 .dynamic-content {
+	box-sizing: border-box;
+	min-width: 0;
+	max-width: 100%;
+	overflow-wrap: anywhere;
 	margin: 0.875rem 0 0 3.75rem;
 	color: rgb(0 0 0 / 90%);
 	font-size: 0.98rem;
@@ -295,6 +305,7 @@ dynamic-feed {
 
 .dynamic-gallery {
 	display: block;
+	box-sizing: border-box;
 	min-width: 0;
 	width: min(calc(100% - 3.75rem), 48rem);
 	max-width: 100%;
@@ -309,7 +320,10 @@ dynamic-feed {
 
 .dynamic-gallery-grid {
 	display: grid;
+	box-sizing: border-box;
+	min-width: 0;
 	width: min(100%, 34rem);
+	max-width: 100%;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 0.25rem;
 }
@@ -372,6 +386,8 @@ dynamic-feed {
 }
 
 .dynamic-gallery-viewer {
+	box-sizing: border-box;
+	min-width: 0;
 	width: 100%;
 	max-width: 100%;
 	overflow: hidden;
@@ -404,6 +420,7 @@ dynamic-feed {
 .dynamic-gallery-stage {
 	position: relative;
 	display: grid;
+	min-width: 0;
 	width: 100%;
 	max-width: 100%;
 	aspect-ratio: 16 / 9;
@@ -414,7 +431,9 @@ dynamic-feed {
 
 .dynamic-gallery-main-image {
 	display: block;
+	min-width: 0;
 	width: 100%;
+	max-width: 100%;
 	height: 100%;
 	margin: 0;
 	object-fit: contain;
@@ -643,8 +662,10 @@ dynamic-feed {
 	}
 
 	.dynamic-gallery {
+		box-sizing: border-box;
 		width: 100%;
 		max-width: 100%;
+		margin-left: 0;
 	}
 }
 
@@ -675,16 +696,21 @@ dynamic-feed {
 	}
 
 	.dynamic-gallery-nav {
-		width: 2.5rem;
-		height: 2.5rem;
+		width: 2.25rem;
+		height: 2.25rem;
+		font-size: 1.45rem;
 	}
 
 	.dynamic-gallery-prev {
-		left: 0.4rem;
+		left: 0.35rem;
 	}
 
 	.dynamic-gallery-next {
-		right: 0.4rem;
+		right: 0.35rem;
+	}
+
+	.dynamic-gallery-toolbar {
+		flex-wrap: wrap;
 	}
 
 	.dynamic-content {
