@@ -182,11 +182,6 @@ dynamic-feed {
 	display: none;
 }
 
-.enable-card-border .dynamic-entry {
-	border: 0;
-	box-shadow: none;
-}
-
 .dynamic-entry-header {
 	display: flex;
 	align-items: center;
