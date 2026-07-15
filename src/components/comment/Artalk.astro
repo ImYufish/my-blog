@@ -27,10 +27,12 @@ const config = {
     <script type="module" is:inline define:vars={{config}}>
         import Artalk from 'https://unpkg.com/artalk/dist/Artalk.mjs';
         const requestedPath = new URLSearchParams(window.location.search).get("path");
-        if (requestedPath) config.pageKey = requestedPath;
+        const effectiveConfig = requestedPath
+            ? { ...config, pageKey: requestedPath }
+            : config;
 
         // 初始化 Artalk
-        const artalk = Artalk.init(config);
+        const artalk = Artalk.init(effectiveConfig);
 
         // 深色模式
         function updateTheme() {
