@@ -58,8 +58,28 @@ const tags = $derived(
 const visibleTags = $derived(tags.slice(0, 3));
 const hiddenTagCount = $derived(Math.max(tags.length - visibleTags.length, 0));
 
+const FAILED_COVERS_KEY = "bangumi-failed-covers";
+
+function getFailedCovers(): Set<string> {
+	try {
+		return new Set(JSON.parse(localStorage.getItem(FAILED_COVERS_KEY) || "[]"));
+	} catch {
+		return new Set();
+	}
+}
+
+function markCoverFailed(url: string) {
+	try {
+		const failed = getFailedCovers();
+		failed.add(url);
+		const arr = [...failed];
+		localStorage.setItem(FAILED_COVERS_KEY, JSON.stringify(arr.slice(-200)));
+	} catch {
+		// localStorage 不可用时静默忽略
+	}
+}
+
 const images = $derived(item.subject?.images);
-// fallback 链：medium(800) → common(400) → small(200) → large(原图)
 const coverFallbacks = $derived(
 	images
 		? [images.medium, images.common, images.small, images.large].filter(Boolean)
@@ -72,6 +92,18 @@ const year = $derived(
 const statusColor = $derived(STATUS_COLORS[item.type] || "bg-gray-500");
 const score = $derived(item.subject?.score || 0);
 
+// SSR 阶段用第一个 URL，客户端挂载后跳过已知失败的 URL
+let initialSrc = $state("");
+
+$effect(() => {
+	const srcs = coverFallbacks;
+	initialSrc = srcs[0] || "";
+	if (typeof window === "undefined" || srcs.length === 0) return;
+	const failed = getFailedCovers();
+	const firstGood = srcs.find((url) => !failed.has(url));
+	if (firstGood) initialSrc = firstGood;
+});
+
 function handleLoad(e: Event) {
 	const img = e.currentTarget as HTMLImageElement;
 	img.style.opacity = "1";
@@ -82,11 +114,11 @@ function handleLoad(e: Event) {
 function handleError(e: Event) {
 	const img = e.currentTarget as HTMLImageElement;
 	const current = img.src;
+	markCoverFailed(current);
 	const idx = coverFallbacks.indexOf(current);
 	if (idx >= 0 && idx < coverFallbacks.length - 1) {
 		img.src = coverFallbacks[idx + 1];
 	} else {
-		// 所有 fallback 都失败，隐藏图片
 		img.style.display = "none";
 	}
 }
@@ -99,11 +131,11 @@ function handleError(e: Event) {
   class="group relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] block"
 >
   <div class="aspect-2/3 relative overflow-hidden">
-    {#if coverFallbacks.length > 0}
+    {#if initialSrc}
       <div class="lqip-placeholder absolute inset-0 pointer-events-none" style="background: var(--muted)" aria-hidden="true"></div>
       <img
-        src={loadImage ? coverFallbacks[0] : undefined}
-        data-src={loadImage ? undefined : coverFallbacks[0]}
+        src={loadImage ? initialSrc : undefined}
+        data-src={loadImage ? undefined : initialSrc}
         alt={title}
         class="w-full h-full object-cover pointer-events-none opacity-0 transition-all duration-500 ease-out group-hover:scale-105"
         loading="lazy"
