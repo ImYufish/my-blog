@@ -13,6 +13,7 @@ src/config/
 ├── backgroundWallpaper.ts    # 背景壁纸配置
 ├── commentConfig.ts          # 评论系统配置
 ├── coverImageConfig.ts       # 封面图配置
+├── displaySettingsConfig.ts  # 设置面板配置
 ├── dynamicConfig.ts          # 动态页面配置
 ├── effectsConfig.ts          # 动画特效配置（樱花等）
 ├── expressiveCodeConfig.ts   # 代码高亮配置
