@@ -199,7 +199,7 @@ let visibleTabs = $derived.by(() => {
 	if (hasAppearanceTab)
 		tabs.push({
 			key: "appearance",
-			icon: "material-symbols:palette-outline",
+			icon: "material-symbols:palette",
 			label: i18n(I18nKey.settingsTabAppearance),
 		});
 	if (hasWallpaperTab)
