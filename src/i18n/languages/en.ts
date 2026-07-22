@@ -300,6 +300,16 @@ export const en: Translation = {
 	[Key.overlayBlur]: "Background Blur",
 	[Key.overlayCardOpacity]: "Card Opacity",
 
+	// Settings Panel Tabs
+	[Key.settingsTabAppearance]: "Appearance",
+	[Key.settingsTabWallpaper]: "Wallpaper",
+	[Key.settingsTabEffects]: "Effects",
+
+	// Card Style
+	[Key.cardSettings]: "Card Style",
+	[Key.cardBorder]: "Card Border & Shadow",
+	[Key.cardFollowTheme]: "Card Follow Theme Color",
+
 	// Post List Layout
 	[Key.postListLayout]: "Post List Layout",
 	[Key.postListLayoutList]: "List",

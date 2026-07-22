@@ -299,6 +299,16 @@ export const ja: Translation = {
 	[Key.overlayBlur]: "背景ぼかし",
 	[Key.overlayCardOpacity]: "カード透明度",
 
+	// 設定パネルタブ
+	[Key.settingsTabAppearance]: "外観",
+	[Key.settingsTabWallpaper]: "壁紙",
+	[Key.settingsTabEffects]: "エフェクト",
+
+	// カードスタイル
+	[Key.cardSettings]: "カードスタイル",
+	[Key.cardBorder]: "カードのボーダーと影",
+	[Key.cardFollowTheme]: "カードのテーマカラー追随",
+
 	// 投稿リストレイアウト
 	[Key.postListLayout]: "投稿リストレイアウト",
 	[Key.postListLayoutList]: "リスト",

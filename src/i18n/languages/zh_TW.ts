@@ -294,6 +294,16 @@ export const zh_TW: Translation = {
 	[Key.overlayBlur]: "背景模糊度",
 	[Key.overlayCardOpacity]: "卡片透明度",
 
+	// 設定面板標籤
+	[Key.settingsTabAppearance]: "外觀",
+	[Key.settingsTabWallpaper]: "壁紙",
+	[Key.settingsTabEffects]: "特效",
+
+	// 卡片樣式
+	[Key.cardSettings]: "卡片樣式",
+	[Key.cardBorder]: "卡片邊框和陰影",
+	[Key.cardFollowTheme]: "卡片跟隨主題色",
+
 	// 文章佈局
 	[Key.postListLayout]: "文章佈局",
 	[Key.postListLayoutList]: "清單",

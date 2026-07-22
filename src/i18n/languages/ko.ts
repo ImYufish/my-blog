@@ -299,6 +299,16 @@ export const ko: Translation = {
 	[Key.overlayBlur]: "배경 흐림",
 	[Key.overlayCardOpacity]: "카드 불투명도",
 
+	// Settings Panel Tabs
+	[Key.settingsTabAppearance]: "외형",
+	[Key.settingsTabWallpaper]: "배경화면",
+	[Key.settingsTabEffects]: "효과",
+
+	// 카드 스타일
+	[Key.cardSettings]: "카드 스타일",
+	[Key.cardBorder]: "카드 테두리와 그림자",
+	[Key.cardFollowTheme]: "카드 테마 색상 따르기",
+
 	// Post List Layout
 	[Key.postListLayout]: "게시글 목록 레이아웃",
 	[Key.postListLayoutList]: "목록형",

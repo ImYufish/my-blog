@@ -292,6 +292,16 @@ enum I18nKey {
 	overlayBlur = "overlayBlur",
 	overlayCardOpacity = "overlayCardOpacity",
 
+	// 设置面板标签
+	settingsTabAppearance = "settingsTabAppearance",
+	settingsTabWallpaper = "settingsTabWallpaper",
+	settingsTabEffects = "settingsTabEffects",
+
+	// 卡片样式
+	cardSettings = "cardSettings",
+	cardBorder = "cardBorder",
+	cardFollowTheme = "cardFollowTheme",
+
 	// 文章布局
 	postListLayout = "postListLayout",
 	postListLayoutList = "postListLayoutList",

@@ -12,6 +12,7 @@ import {
 import type { LIGHT_DARK_MODE, WALLPAPER_MODE } from "@/types/config";
 import {
 	backgroundWallpaper,
+	displaySettingsConfig,
 	expressiveCodeConfig,
 	sakuraConfig,
 	siteConfig,
@@ -288,7 +289,7 @@ export function applyWallpaperModeToDocument(
 		) as WALLPAPER_MODE) || backgroundWallpaper.mode;
 
 	// 检查是否允许切换壁纸模式
-	const isSwitchable = backgroundWallpaper.switchable ?? true;
+	const isSwitchable = displaySettingsConfig.wallpaperModeSwitchable;
 	if (!isSwitchable) {
 		// 不允许切换时，仍需初始化当前模式的UI状态（添加 wallpaper-initialized 等）
 		if (currentMode === mode) {
@@ -874,7 +875,7 @@ export function getStoredWallpaperMode(): WALLPAPER_MODE {
 		return backgroundWallpaper.mode;
 	}
 
-	const isSwitchable = backgroundWallpaper.switchable ?? true;
+	const isSwitchable = displaySettingsConfig.wallpaperModeSwitchable;
 	if (!isSwitchable) {
 		localStorage.removeItem("wallpaperMode");
 		return backgroundWallpaper.mode;
@@ -1203,8 +1204,7 @@ export function getStoredBannerTitleEnabled(): boolean {
 }
 
 export function getStoredBannerCarouselEnabled(): boolean {
-	const isSwitchable =
-		backgroundWallpaper.common?.carousel?.switchable ?? false;
+	const isSwitchable = displaySettingsConfig.bannerCarouselSwitchable;
 	if (!isSwitchable) {
 		return getDefaultBannerCarouselEnabled();
 	}
@@ -1234,8 +1234,7 @@ export function setBannerTitleEnabled(enabled: boolean): void {
 
 export function setBannerCarouselEnabled(enabled: boolean): void {
 	const safeEnabled = !!enabled;
-	const isSwitchable =
-		backgroundWallpaper.common?.carousel?.switchable ?? false;
+	const isSwitchable = displaySettingsConfig.bannerCarouselSwitchable;
 	if (
 		isSwitchable &&
 		typeof localStorage !== "undefined" &&
@@ -1283,4 +1282,66 @@ export function applyBannerCarouselEnabledToDocument(enabled: boolean): void {
 		"data-banner-carousel-enabled",
 		String(enabled),
 	);
+}
+
+// Card border functions
+export function getDefaultCardBorderEnabled(): boolean {
+	return siteConfig.card?.border ?? false;
+}
+
+export function getStoredCardBorderEnabled(): boolean {
+	if (typeof localStorage === "undefined") {
+		return getDefaultCardBorderEnabled();
+	}
+	const stored = localStorage.getItem("cardBorderEnabled");
+	if (stored === null) {
+		return getDefaultCardBorderEnabled();
+	}
+	return stored === "true";
+}
+
+export function setCardBorderEnabled(enabled: boolean): void {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function"
+	) {
+		return;
+	}
+	localStorage.setItem("cardBorderEnabled", String(enabled));
+	if (enabled) {
+		document.documentElement.classList.add("enable-card-border");
+	} else {
+		document.documentElement.classList.remove("enable-card-border");
+	}
+}
+
+// Card follow theme functions
+export function getDefaultCardFollowThemeEnabled(): boolean {
+	return siteConfig.card?.followTheme ?? false;
+}
+
+export function getStoredCardFollowThemeEnabled(): boolean {
+	if (typeof localStorage === "undefined") {
+		return getDefaultCardFollowThemeEnabled();
+	}
+	const stored = localStorage.getItem("cardFollowThemeEnabled");
+	if (stored === null) {
+		return getDefaultCardFollowThemeEnabled();
+	}
+	return stored === "true";
+}
+
+export function setCardFollowThemeEnabled(enabled: boolean): void {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function"
+	) {
+		return;
+	}
+	localStorage.setItem("cardFollowThemeEnabled", String(enabled));
+	if (enabled) {
+		document.body.classList.add("card-follow-theme-hue");
+	} else {
+		document.body.classList.remove("card-follow-theme-hue");
+	}
 }

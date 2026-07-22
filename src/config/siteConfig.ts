@@ -33,8 +33,6 @@ export const siteConfig: SiteConfig = {
 	themeColor: {
 		// 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
 		hue: 165,
-		// 是否对访问者隐藏主题色选择器
-		fixed: false,
 		// 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 		defaultMode: "system",
 	},
@@ -127,8 +125,6 @@ export const siteConfig: SiteConfig = {
 		defaultMode: "list",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "grid",
-		// 是否允许用户切换布局
-		allowSwitch: true,
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 文章卡片底部统计和发布日期是否显示图标
