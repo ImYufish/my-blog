@@ -7,6 +7,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { onMount } from "svelte";
 import { formatDynamicDate } from "@/utils/date-utils";
+import { fetchWithDedup } from "@/utils/fetch-dedup";
 import { fetchMemos } from "@/utils/memos-adapter";
 import { url } from "@/utils/url-utils";
 
@@ -37,22 +38,6 @@ let entries: DynamicEntry[] = $state([]);
 let totalCount = $state(0);
 let loading = $state(true);
 let error = $state(false);
-
-// 请求去重缓存
-const pendingFetches = new Map<string, Promise<DynamicEntry[]>>();
-
-function fetchWithDedup(url: string): Promise<DynamicEntry[]> {
-	const pending = pendingFetches.get(url);
-	if (pending) return pending;
-
-	const promise = fetch(url).then((r) => {
-		if (!r.ok) throw new Error("Failed to fetch");
-		return r.json() as Promise<DynamicEntry[]>;
-	});
-	pendingFetches.set(url, promise);
-	promise.finally(() => pendingFetches.delete(url));
-	return promise;
-}
 
 onMount(async () => {
 	try {
