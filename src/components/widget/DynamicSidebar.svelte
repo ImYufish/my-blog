@@ -25,6 +25,7 @@ interface Props {
 let { apiUrl, limit }: Props = $props();
 
 let entries: DynamicEntry[] = $state([]);
+let totalCount = $state(0);
 let loading = $state(true);
 let error = $state(false);
 
@@ -40,8 +41,10 @@ onMount(async () => {
 				time: number;
 			};
 			if (Date.now() - time < CACHE_TTL) {
+				totalCount = data.length;
 				entries = data.slice(0, limit);
 				loading = false;
+				updateCountBadge();
 				return;
 			}
 		}
@@ -52,13 +55,22 @@ onMount(async () => {
 			cacheKey,
 			JSON.stringify({ data, time: Date.now() }),
 		);
+		totalCount = data.length;
 		entries = data.slice(0, limit);
+		updateCountBadge();
 	} catch {
 		error = true;
 	} finally {
 		loading = false;
 	}
 });
+
+function updateCountBadge() {
+	const badge = document.querySelector("[data-dynamic-count]");
+	if (badge && totalCount > 0) {
+		badge.textContent = `(${totalCount})`;
+	}
+}
 
 // 从 HTML 中提取纯文本摘要
 function getPlainText(html: string): string {

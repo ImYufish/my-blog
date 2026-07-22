@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { siteConfig } from "@/config";
@@ -27,7 +26,6 @@ const siteStartDate = siteConfig.siteStartDate || "2025-01-01";
 
 // 获取所有文章
 const posts = await getSortedPosts();
-const dynamics = siteConfig.pages.dynamic ? await getCollection("dynamic") : [];
 const categories = await getCategoryList();
 const tags = await getTagList();
 
@@ -78,15 +76,6 @@ const stats = [
 		label: i18n(I18nKey.siteStatsPostCount),
 		value: posts.length,
 	},
-	...(siteConfig.pages.dynamic
-		? [
-				{
-					icon: "material-symbols:dynamic-feed-rounded",
-					label: i18n(I18nKey.siteStatsDynamicCount),
-					value: dynamics.length,
-				},
-			]
-		: []),
 	{
 		icon: "material-symbols:folder-outline",
 		label: i18n(I18nKey.siteStatsCategoryCount),
