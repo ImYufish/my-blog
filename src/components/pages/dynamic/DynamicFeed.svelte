@@ -147,19 +147,30 @@ function createItem(entry: DynamicData) {
 	if (time) {
 		const date = new Date(entry.published);
 		time.dateTime = date.toISOString();
-		time.textContent = new Intl.DateTimeFormat(
-			document.documentElement.lang || undefined,
-			{
-				timeZone: "UTC",
+		// 第三方 API 使用浏览器本地时区，不做额外时区转换
+		if (source.startsWith("http")) {
+			time.textContent = date.toLocaleDateString("zh-CN", {
 				year: "numeric",
 				month: "2-digit",
 				day: "2-digit",
 				hour: "2-digit",
 				minute: "2-digit",
-				second: "2-digit",
-			},
-		).format(date);
-		time.textContent += ` ${formatTimezoneOffset(timezone, date)}`;
+			});
+		} else {
+			time.textContent = new Intl.DateTimeFormat(
+				document.documentElement.lang || undefined,
+				{
+					timeZone: "UTC",
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+				},
+			).format(date);
+			time.textContent += ` ${formatTimezoneOffset(timezone, date)}`;
+		}
 	}
 
 	const content = root.querySelector<HTMLElement>("[data-dynamic-content]");

@@ -23,7 +23,9 @@ const showInlineComments = Boolean(
 		commentConfig.type &&
 		commentConfig.type !== "none",
 );
-const dataUrl = url("/api/dynamic.json");
+const dataUrl = dynamicConfig.apiUrl?.startsWith("http")
+	? dynamicConfig.apiUrl
+	: url(dynamicConfig.apiUrl || "/api/dynamic.json");
 const dynamicCount = (await getCollection("dynamic")).length;
 ---
 
