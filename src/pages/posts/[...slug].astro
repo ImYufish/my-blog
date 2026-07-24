@@ -50,6 +50,7 @@ const { remarkPluginFrontmatter } = await render(entry);
 
 const bannerPostMeta = {
 	title: entry.data.title,
+	description: entry.data.description,
 	published: entry.data.published,
 	updated: entry.data.updated,
 	words: remarkPluginFrontmatter.words,

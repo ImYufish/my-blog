@@ -55,6 +55,7 @@ interface Props {
 	encrypted?: boolean;
 	bannerPostMeta?: {
 		title: string;
+		description?: string;
 		published: Date;
 		updated?: Date;
 		words?: number;
@@ -142,6 +143,30 @@ const showBannerPostMeta =
 	!isHomePageCheck &&
 	isPostPage &&
 	!!bannerPostMeta;
+
+const bannerPostInfoMode =
+	backgroundWallpaper.common?.postInfo?.mode ?? "description";
+
+const getBannerDescriptionWidth = (description?: string) => {
+	if (!description) return undefined;
+
+	const textUnits = Array.from(description).reduce((total, character) => {
+		if (/\s/u.test(character)) return total + 0.35;
+		const codePoint = character.codePointAt(0) ?? 0;
+		return total + (codePoint <= 0xff ? 0.55 : 1);
+	}, 0);
+	const maxLineUnits = 52;
+	const lineCount = Math.max(1, Math.ceil(textUnits / maxLineUnits));
+
+	if (lineCount === 1) return undefined;
+
+	const targetLineUnits = Math.min(maxLineUnits, textUnits / (lineCount - 0.5));
+	return `${Math.max(28, targetLineUnits).toFixed(1)}em`;
+};
+
+const bannerDescriptionWidth = getBannerDescriptionWidth(
+	bannerPostMeta?.description,
+);
 
 const showBannerDim = (isBannerMode || isFullscreenMode) && isBackgroundEnabled;
 const dimOpacity = backgroundWallpaper.common?.dimOpacity ?? 0.15;
@@ -414,21 +439,7 @@ const hasMultipleImages =
             var switchable = container.dataset.carouselSwitchable === 'true';
             var defaultEnabled = container.dataset.carouselEnabled === 'true';
             var effect = container.dataset.carouselEffect || 'fade';
-            var FADE_MS = 800;
             var transitioning = false;
-
-            // 创建过渡遮罩（用于效果切换时的桥接）
-            var overlay = null;
-
-            // 从 slide-item 中提取 LQIP 渐变样式
-            function getSlideLqipStyle(slide) {
-                var ph = slide.querySelector('.lqip-placeholder');
-                if (ph) {
-                    var bg = ph.style.background || ph.style.backgroundImage;
-                    if (bg) return bg;
-                }
-                return '#000';
-            }
 
             function isCarouselEnabled() {
                 if (!switchable) return defaultEnabled;
@@ -685,35 +696,62 @@ const hasMultipleImages =
                     <div class="banner-post-title font-bold text-white leading-tight">
                         {bannerPostMeta.title}
                     </div>
-                    <div class="banner-post-meta-list flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-white/90 text-sm md:text-base">
-                        <span class="inline-flex items-center gap-1.5">
-                            <Icon is:inline name="material-symbols:calendar-month-outline-rounded" class="text-[1.05em]" />
-                            <span>{i18n(I18nKey.publishedAt)} {formatDateToYYYYMMDD(bannerPostMeta.published)}</span>
-                        </span>
-                        {bannerPostMeta.updated &&
-                            bannerPostMeta.updated.getTime() !== bannerPostMeta.published.getTime() && (
+                    {bannerPostInfoMode === "description" && bannerPostMeta.description && (
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="banner-post-description-divider h-px w-12 bg-white/60"></div>
+                            <div
+                                class="banner-post-description text-left text-white/85"
+                                style={bannerDescriptionWidth
+                                    ? `--banner-post-description-width: ${bannerDescriptionWidth}`
+                                    : undefined}
+                            >
+                                <Icon
+                                    is:inline
+                                    name="material-symbols:format-quote-rounded"
+                                    class="banner-post-description-quote banner-post-description-quote-start"
+                                    aria-hidden="true"
+                                />
+                                {bannerPostMeta.description}
+                                <Icon
+                                    is:inline
+                                    name="material-symbols:format-quote-rounded"
+                                    class="banner-post-description-quote banner-post-description-quote-end"
+                                    aria-hidden="true"
+                                />
+                            </div>
+                        </div>
+                    )}
+                    {bannerPostInfoMode === "meta" && (
+                        <div class="banner-post-meta-list flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-white/90 text-sm md:text-base">
+                            <span class="inline-flex items-center gap-1.5">
+                                <Icon is:inline name="material-symbols:calendar-month-outline-rounded" class="text-[1.05em]" />
+                                <span>{i18n(I18nKey.publishedAt)} {formatDateToYYYYMMDD(bannerPostMeta.published)}</span>
+                            </span>
+                            {bannerPostMeta.updated &&
+                                bannerPostMeta.updated.getTime() !== bannerPostMeta.published.getTime() && (
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <Icon is:inline name="material-symbols:update-rounded" class="text-[1.05em]" />
+                                        <span>{i18n(I18nKey.updatedAt)} {formatDateToYYYYMMDD(bannerPostMeta.updated)}</span>
+                                    </span>
+                                )}
+                            {typeof bannerPostMeta.words === "number" && (
                                 <span class="inline-flex items-center gap-1.5">
-                                    <Icon is:inline name="material-symbols:update-rounded" class="text-[1.05em]" />
-                                    <span>{i18n(I18nKey.updatedAt)} {formatDateToYYYYMMDD(bannerPostMeta.updated)}</span>
+                                    <Icon is:inline name="material-symbols:ink-pen-outline-rounded" class="text-[1.05em]" />
+                                    <span>
+                                        {bannerPostMeta.words} {i18n(bannerPostMeta.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
+                                    </span>
                                 </span>
                             )}
-                        {typeof bannerPostMeta.words === "number" && (
-                            <span class="inline-flex items-center gap-1.5">
-                                <Icon is:inline name="material-symbols:ink-pen-outline-rounded" class="text-[1.05em]" />
-                                <span>
-                                    {bannerPostMeta.words} {i18n(bannerPostMeta.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
+                            {typeof bannerPostMeta.minutes === "number" && (
+                                <span class="inline-flex items-center gap-1.5">
+                                    <Icon is:inline name="material-symbols:schedule-outline-rounded" class="text-[1.05em]" />
+                                    <span>
+                                        {bannerPostMeta.minutes} {i18n(bannerPostMeta.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)} · {i18n(I18nKey.readTime)}
+                                    </span>
                                 </span>
-                            </span>
-                        )}
-                        {typeof bannerPostMeta.minutes === "number" && (
-                            <span class="inline-flex items-center gap-1.5">
-                                <Icon is:inline name="material-symbols:schedule-outline-rounded" class="text-[1.05em]" />
-                                <span>
-                                    {bannerPostMeta.minutes} {i18n(bannerPostMeta.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)} · {i18n(I18nKey.readTime)}
-                                </span>
-                            </span>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -925,4 +963,3 @@ const hasMultipleImages =
   }
 
 </style>
-
