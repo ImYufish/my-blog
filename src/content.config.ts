@@ -1,8 +1,43 @@
 import { defineCollection } from "astro:content";
+import type { CollectionConfig } from "astro/content/config";
 import { glob } from "astro/loaders";
-import { z } from "astro/zod";
+import { type ZodType, z } from "astro/zod";
 
-const postsCollection = defineCollection({
+type PostData = {
+	title: string;
+	published: Date;
+	updated?: Date;
+	draft: boolean;
+	description: string;
+	image: string;
+	tags: string[];
+	category: string | null;
+	lang: string;
+	pinned: boolean;
+	author: string;
+	sourceLink: string;
+	licenseName: string;
+	licenseUrl: string;
+	comment: boolean;
+	password: string;
+	passwordHint: string;
+	prevTitle: string;
+	prevSlug: string;
+	nextTitle: string;
+	nextSlug: string;
+};
+
+type DynamicData = {
+	published: Date;
+	pinned: boolean;
+};
+
+type ContentCollection<T> = CollectionConfig<
+	ZodType<T>,
+	ReturnType<typeof glob>
+>;
+
+const postsCollection: ContentCollection<PostData> = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
 	schema: z.object({
 		title: z.string(),
@@ -31,12 +66,13 @@ const postsCollection = defineCollection({
 	}),
 });
 
-const specCollection = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
-	schema: z.object({}),
-});
+const specCollection: ContentCollection<Record<string, never>> =
+	defineCollection({
+		loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
+		schema: z.object({}),
+	});
 
-const dynamicCollection = defineCollection({
+const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/dynamic" }),
 	schema: z.object({
 		published: z.date(),
@@ -44,7 +80,11 @@ const dynamicCollection = defineCollection({
 	}),
 });
 
-export const collections = {
+export const collections: {
+	dynamic: typeof dynamicCollection;
+	posts: typeof postsCollection;
+	spec: typeof specCollection;
+} = {
 	dynamic: dynamicCollection,
 	posts: postsCollection,
 	spec: specCollection,
