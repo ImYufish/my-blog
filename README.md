@@ -234,6 +234,7 @@ pnpm new-d 今天心情不错，出去吃了一顿火锅
 ---
 published: 2026-07-15 16:15:29
 pinned: true  # 置顶
+location: China # 位置
 ---
 
 动态内容可以使用 Markdown 语法。

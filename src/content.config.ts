@@ -30,6 +30,7 @@ type PostData = {
 type DynamicData = {
 	published: Date;
 	pinned: boolean;
+	location: string;
 };
 
 type ContentCollection<T> = CollectionConfig<
@@ -77,6 +78,7 @@ const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
 	schema: z.object({
 		published: z.date(),
 		pinned: z.boolean().optional().default(false),
+		location: z.string().optional().default(""),
 	}),
 });
 

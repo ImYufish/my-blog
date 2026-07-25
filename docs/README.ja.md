@@ -232,6 +232,7 @@ pnpm new-d 今日はとても良い天気です
 ---
 published: 2026-07-15 16:15:29
 pinned: true  # 記事を固定
+location: China # 場所
 ---
 
 本文では Markdown を使用できます。

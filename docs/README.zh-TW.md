@@ -235,6 +235,7 @@ pnpm new-d 今天天氣真不錯
 ---
 published: 2026-07-15 16:15:29
 pinned: true  # 置頂
+location: China # 位置
 ---
 
 動態內容支援 Markdown 語法。

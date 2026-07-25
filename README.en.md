@@ -232,6 +232,7 @@ pnpm new-d The weather is lovely today
 ---
 published: 2026-07-15 16:15:29
 pinned: true  # Pin article
+location: China # Location
 ---
 
 Moment content supports Markdown.
