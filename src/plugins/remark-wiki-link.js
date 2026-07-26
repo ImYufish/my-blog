@@ -59,6 +59,11 @@ function createPostUrl(contentPath) {
 }
 
 function readPostMeta(contentPath) {
+	// 优先按 frontmatter slug 匹配
+	const bySlug = findMetaBySlug(contentPath);
+	if (bySlug) return bySlug;
+
+	// 其次按文件路径匹配
 	const candidates = [
 		`${contentPath}.md`,
 		`${contentPath}.mdx`,
@@ -97,6 +102,53 @@ function readPostMeta(contentPath) {
 	}
 
 	return null;
+}
+
+function findMetaBySlug(targetSlug) {
+	const exts = [".md", ".mdx", ".markdown"];
+
+	function walk(dir) {
+		let entries;
+		try {
+			entries = fs.readdirSync(dir, { withFileTypes: true });
+		} catch {
+			return null;
+		}
+		for (const entry of entries) {
+			const fullPath = path.join(dir, entry.name);
+			if (entry.isDirectory()) {
+				const found = walk(fullPath);
+				if (found) return found;
+			} else if (exts.some((ext) => entry.name.endsWith(ext))) {
+				let stats;
+				try {
+					stats = statSync(fullPath);
+				} catch {
+					continue;
+				}
+
+				const cached = frontmatterCache.get(fullPath);
+				if (cached && cached.mtimeMs === stats.mtimeMs) {
+					if (cached.meta.data.slug === targetSlug) return cached.meta;
+					continue;
+				}
+
+				let data;
+				try {
+					data = matter(readFileSync(fullPath, "utf8")).data ?? {};
+				} catch {
+					continue;
+				}
+
+				const meta = { filePath: fullPath, data };
+				frontmatterCache.set(fullPath, { mtimeMs: stats.mtimeMs, meta });
+				if (data.slug === targetSlug) return meta;
+			}
+		}
+		return null;
+	}
+
+	return walk(POSTS_DIR);
 }
 
 function formatPublishedDate(value) {
