@@ -1,7 +1,7 @@
 {
   "name": "firefly",
   "type": "module",
-  "version": "6.15.1",
+  "version": "6.15.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
