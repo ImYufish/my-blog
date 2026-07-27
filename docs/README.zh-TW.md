@@ -66,7 +66,7 @@
 >
 >Firefly 也保留了原版 fuwari 的版面，可根據自己的喜好在配置檔案中自由切換。
 >
->**更多版面配置及示範請查看：[Firefly 版面配置系統詳解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
+>**更多版面配置及示範請查看：[Firefly 版面配置系統詳解](https://firefly.cuteleaf.cn/posts/guide/firefly-layout-system/)**
 >
 >Firefly 支援 i18n 多語言 UI，但除了簡體中文，其他語言均為 AI 翻譯轉換，如有錯誤，歡迎提交 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls) 修正。
 
