@@ -100,6 +100,10 @@ body.wallpaper-transparent .expressive-code .ec-collapse__gradient {
  * 只把颜色换成主题变量，并处理横向滚动与外边距。
  */
 
+.rehype-code-group {
+  margin: 1rem 0;
+}
+
 .rehype-code-group .rcg-tab-container {
   /* 标签多时可换行，避免溢出 */
   flex-wrap: wrap;
