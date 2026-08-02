@@ -191,6 +191,12 @@ html {
         transition: none !important;
         backdrop-filter: none !important;
     }
+
+    /* 导航栏的毛玻璃层现在挂在 ::before 上（见 navbar.css），要单独关掉 */
+    .is-theme-transitioning:not(.use-view-transition) #navbar > div::before {
+        transition: none !important;
+        backdrop-filter: none !important;
+    }
     
     /* 导航栏相关浮动面板的过渡禁用 */
     .is-theme-transitioning .dropdown-content,
@@ -262,12 +268,12 @@ html {
 
     /* Overlay 模式下，滚动后提高导航栏背景模糊度，增强与正文区分 */
     .wallpaper-transparent #navbar.navbar-sticky-shadow > div {
-        backdrop-filter: blur(20px) !important;
-     
+        --navbar-surface-blur: 20px !important;
+
     }
 
     :root.dark .wallpaper-transparent #navbar.navbar-sticky-shadow > div {
-        backdrop-filter: blur(20px) !important;
+        --navbar-surface-blur: 20px !important;
     }
     
     .wallpaper-transparent .btn-card {

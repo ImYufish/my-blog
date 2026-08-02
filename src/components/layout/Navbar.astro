@@ -31,13 +31,7 @@ const navbarTransparentMode =
 		? backgroundWallpaper.common?.navbar?.transparentMode || "semi"
 		: "semi";
 
-// 获取导航栏毛玻璃效果配置
-const navbarEnableBlur =
-	backgroundWallpaper.mode === "banner"
-		? (backgroundWallpaper.common?.navbar?.enableBlur ?? true)
-		: false;
-
-// 获取导航栏模糊度
+// 获取导航栏模糊度（0 即关闭导航栏毛玻璃）
 const navbarBlur =
 	backgroundWallpaper.mode === "banner"
 		? (backgroundWallpaper.common?.navbar?.blur ?? 20)
@@ -140,7 +134,7 @@ const logoVariants = await Promise.all(
 		})),
 );
 ---
-<div id="navbar" class="z-50" style={`--navbar-glass-blur: ${navbarBlur}px;`} data-transparent-mode={navbarTransparentMode} data-enable-blur={String(navbarEnableBlur)} data-is-home={isHomePageCheck} data-full-width={navbarWidthFull}>
+<div id="navbar" class="z-50" style={`--navbar-glass-blur: ${navbarBlur}px;`} data-transparent-mode={navbarTransparentMode} data-is-home={isHomePageCheck} data-full-width={navbarWidthFull}>
     <div class:list={[
         className,
         "overflow-visible! h-18 px-4"
