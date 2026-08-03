@@ -99,6 +99,8 @@ export type SiteConfig = {
 	postListLayout: {
 		defaultMode: "list" | "grid"; // 默认布局模式：list=列表模式，grid=网格模式
 		mobileDefaultMode?: "list" | "grid"; // 移动端默认布局模式（视口宽度<780px时使用），不设置则跟随 defaultMode
+		// 列表模式下封面图的位置："right"=右侧（默认），"left"=左侧。网格模式封面固定在顶部，不受此项影响
+		coverPosition?: "left" | "right";
 		descriptionLines?: number; // 文章简介显示行数，设为 0 则不截断，默认 2
 		showStatsIcons?: boolean; // 文章卡片底部统计是否显示图标
 		// 标签显示位置："meta"=跟随元数据行（默认），"bottom"=卡片底部独立一行（将替换stats显示，二者只能选其一）
