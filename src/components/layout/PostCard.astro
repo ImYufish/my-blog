@@ -82,6 +82,12 @@ const showTagsAtBottom = metaShowTags && tagsPosition === "bottom";
 const descriptionClampLines = String(descriptionLines);
 const shouldClampDescription = descriptionLines > 0;
 
+// 底部标签：超出 tagCount 的部分折叠成一个 +N 提示，tagCount 为 0 时不限制
+const tagList = tags ?? [];
+const bottomTags = metaTagCount > 0 ? tagList.slice(0, metaTagCount) : tagList;
+const hiddenTags = tagList.slice(bottomTags.length);
+const hiddenTagCount = hiddenTags.length;
+
 const { remarkPluginFrontmatter } = await render(entry);
 const descriptionText = description || remarkPluginFrontmatter.excerpt || "";
 const words = remarkPluginFrontmatter.words;
@@ -161,9 +167,9 @@ const minutes = remarkPluginFrontmatter.minutes;
     </div>
 
     <!-- bottom tags（与 stats 二选一） -->
-    {showTagsAtBottom && tags && tags.length > 0 && (
+    {showTagsAtBottom && bottomTags.length > 0 && (
       <div class="post-card-bottom-tags flex flex-wrap items-center gap-1.5 mt-auto pt-3">
-        {(metaTagCount > 0 ? tags.slice(0, metaTagCount) : tags).map((tag) => (
+        {bottomTags.map((tag) => (
           <a
             href={getTagUrl(tag)}
             aria-label={`View all posts with the ${tag.trim()} tag`}
@@ -174,6 +180,15 @@ const minutes = remarkPluginFrontmatter.minutes;
             #{tag.trim()}
           </a>
         ))}
+        {hiddenTagCount > 0 && (
+          <span
+            title={hiddenTags.map((tag) => `#${tag.trim()}`).join(" ")}
+            class="text-xs font-medium px-2.5 py-1 rounded-full
+              bg-black/5 dark:bg-white/10 text-neutral-400 dark:text-neutral-500"
+          >
+            +{hiddenTagCount}
+          </span>
+        )}
       </div>
     )}
 

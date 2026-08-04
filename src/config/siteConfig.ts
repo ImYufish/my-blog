@@ -151,7 +151,7 @@ export const siteConfig: SiteConfig = {
 			// 是否显示标签
 			showTags: true,
 			// 标签数量，设为 0 则不限制
-			tagCount: 5,
+			tagCount: 3,
 			// 是否显示字数
 			showWords: false,
 			// 是否显示阅读时间
