@@ -17,7 +17,7 @@ export const friendsPageConfig: FriendsPageConfig = {
 	showComment: true,
 
 	// 是否开启随机排序配置，如果开启，就会忽略权重，构建时进行一次随机排序
-	randomizeSort: false,
+	randomizeSort: true,
 };
 
 // 友链配置
@@ -38,7 +38,7 @@ export const friendsConfig: FriendLink[] = [
 		desc: "Firefly主题模板文档",
 		siteurl: "https://docs-firefly.cuteleaf.cn",
 		tags: ["Docs"],
-		weight: 9,
+		weight: 8,
 		enabled: true,
 	},
 	{
@@ -47,7 +47,16 @@ export const friendsConfig: FriendLink[] = [
 		desc: "The web framework for content-driven websites. ⭐️ Star to support our work!",
 		siteurl: "https://github.com/withastro/astro",
 		tags: ["Framework"],
-		weight: 8,
+		weight: 7,
+		enabled: true,
+	},
+	{
+		title: "Firefly-Markdown",
+		imgurl: "",
+		desc: "一个适用于Firefly主题字段的MD编辑器",
+		siteurl: "https://github.com/ly-x1anyu/firefly-Markdown/",
+		tags: ["instrument"],
+		weight: 9,
 		enabled: true,
 	},
 ];

@@ -98,8 +98,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				icon: "fa7-brands:github",
 			},
 			{
-				name: "Gitee",
-				url: "https://gitee.com/CuteLeaf/Firefly",
+				name: "Firefly-Markdown",
+				url: "https://github.com/ly-x1anyu/firefly-Markdown/",
 				external: true,
 				icon: "fa7-brands:gitee",
 			},
