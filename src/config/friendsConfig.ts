@@ -52,13 +52,22 @@ export const friendsConfig: FriendLink[] = [
 	},
 	{
 		title: "Firefly-Markdown",
-		imgurl: "",
+		imgurl: "https://md.x1anyu.cn/assets/favicon.png",
 		desc: "一个适用于Firefly主题字段的MD编辑器",
 		siteurl: "https://github.com/ly-x1anyu/firefly-Markdown/",
 		tags: ["instrument"],
 		weight: 9,
 		enabled: true,
 	},
+	{
+		title: "一言",
+		imgurl: "https://developer.hitokoto.cn/logo.png",
+		desc: "用代码表达言语的魅力，用代码书写山河的壮丽。",
+		siteurl: "https://hitokoto.cn/",
+		tags: ["instrument"],
+		weight: 8,
+		enabled: true,
+	}
 ];
 
 // 获取启用的友链并进行排序
