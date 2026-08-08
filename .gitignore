@@ -33,6 +33,9 @@ yarn.lock
 # docs
 Firefly-docs/
 
+# lite 版本
+Firefly-Lite/
+
 cache/
 package/
 .obsidian/
