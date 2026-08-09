@@ -252,6 +252,7 @@ export const zh_CN: Translation = {
 	[Key.paginationOf]: "页，共",
 	[Key.paginationTotal]: "页，总计",
 	[Key.paginationRecords]: "条记录",
+	[Key.paginationJump]: "跳转到指定页",
 
 	// 404页面
 	[Key.notFound]: "404",

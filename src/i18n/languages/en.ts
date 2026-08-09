@@ -257,6 +257,7 @@ export const en: Translation = {
 	[Key.paginationOf]: "of",
 	[Key.paginationTotal]: ", Total",
 	[Key.paginationRecords]: " records",
+	[Key.paginationJump]: "Jump to page",
 
 	// 404 Page
 	[Key.notFound]: "404",

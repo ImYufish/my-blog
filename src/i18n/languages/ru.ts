@@ -258,6 +258,7 @@ export const ru: Translation = {
 	[Key.paginationOf]: "из",
 	[Key.paginationTotal]: ", всего",
 	[Key.paginationRecords]: " записей",
+	[Key.paginationJump]: "Перейти к странице",
 
 	// 404 Страница
 	[Key.notFound]: "404",

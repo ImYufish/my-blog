@@ -252,6 +252,7 @@ enum I18nKey {
 	paginationOf = "paginationOf",
 	paginationTotal = "paginationTotal",
 	paginationRecords = "paginationRecords",
+	paginationJump = "paginationJump",
 
 	// 404页面
 	notFound = "notFound",

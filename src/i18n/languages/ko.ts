@@ -256,6 +256,7 @@ export const ko: Translation = {
 	[Key.paginationOf]: "/",
 	[Key.paginationTotal]: ", 총",
 	[Key.paginationRecords]: "개",
+	[Key.paginationJump]: "지정한 페이지로 이동",
 
 	// 404 Page
 	[Key.notFound]: "404",
