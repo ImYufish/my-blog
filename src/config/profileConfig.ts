@@ -36,7 +36,7 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "Email",
 			icon: "fa7-solid:envelope",
-			url: "mailto:z1yum@foxmail.com",
+			url: "mailto:blog@x1anyu.cn",
 			showName: false,
 		},
 		{
