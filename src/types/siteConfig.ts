@@ -134,6 +134,8 @@ export type SiteConfig = {
 			masonry: boolean;
 			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数，默认 320
 			columnWidth?: number;
+			// 网格模式封面是否撑满卡片贴边，false 则按卡片内边距内缩
+			coverFullWidth?: boolean;
 		};
 	};
 

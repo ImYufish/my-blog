@@ -187,6 +187,10 @@ export const siteConfig: SiteConfig = {
 			masonry: false,
 			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
 			columnWidth: 320,
+			// 网格模式封面是否撑满卡片贴边
+			// true：封面顶到卡片左右和上边缘，只有上面两角是圆角
+			// false：封面按卡片内边距内缩，上、左、右留出间距，四角都是圆角
+			coverFullWidth: false,
 		},
 	},
 
