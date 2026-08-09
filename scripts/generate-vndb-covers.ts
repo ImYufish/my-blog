@@ -96,6 +96,11 @@ async function mapLimit<T>(
 }
 
 async function main() {
+	if (!siteConfig.pages.vndb) {
+		console.log("[VNDB] 页面未启用，跳过封面下载");
+		return;
+	}
+
 	const config = siteConfig.vndb;
 	const userId = config?.userId?.trim();
 	if (!userId || userId === "you-user-id") {
