@@ -29,13 +29,13 @@ const topMaxCount = topTags.length > 0 ? topTags[0].count : 1;
             <div class="flex flex-wrap gap-2.5">
                 {tags.map((t) => (
                     <a href={getTagUrl(t.name)}
-                       class="tag-item group inline-flex items-center gap-1.5 rounded-full
+                       class="tag-item group inline-flex items-center gap-1.5
                               text-sm font-medium px-3 py-1.5 transition-all duration-200"
                     >
                         <span>
                             {t.name.trim()}
                         </span>
-                        <span class="tag-count-badge text-xs font-bold px-1.5 rounded-full
+                        <span class="tag-count-badge text-xs font-bold px-1.5
                                      min-w-[1.5rem] text-center">
                             {t.count}
                         </span>

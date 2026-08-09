@@ -92,6 +92,12 @@ export type SiteConfig = {
 	// 分类导航栏开关
 	categoryBar?: boolean;
 
+	// 分类导航栏按钮样式："pill"=胶囊，"rectangle"=矩形（配色同胶囊）
+	categoryStyle?: "pill" | "rectangle";
+
+	// 标签样式："pill"=胶囊，"rectangle"=主题色矩形
+	tagStyle?: "pill" | "rectangle";
+
 	// 归档页是否折叠非最新年份文章
 	foldArticle?: boolean;
 
@@ -105,6 +111,8 @@ export type SiteConfig = {
 		showStatsIcons?: boolean; // 文章卡片底部统计是否显示图标
 		// 标签显示位置："meta"=跟随元数据行（默认），"bottom"=卡片底部独立一行（将替换stats显示，二者只能选其一）
 		tagsPosition?: "meta" | "bottom";
+		// 底部标签样式："chip"=按钮样式，跟随 tagStyle 的胶囊/矩形（默认），"text"=无底色，只有文字
+		tagsBottomStyle?: "chip" | "text";
 		// PostMeta 元数据显示控制
 		meta?: {
 			showPublished?: boolean; // 是否显示发布日期

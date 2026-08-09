@@ -79,6 +79,9 @@ const statsShowReadingTime = statsConfig.showReadingTime ?? true;
 const tagsPosition = siteConfig.postListLayout.tagsPosition ?? "meta";
 const showTagsInMeta = metaShowTags && tagsPosition === "meta";
 const showTagsAtBottom = metaShowTags && tagsPosition === "bottom";
+// 底部标签样式："chip" 按钮样式，"text" 纯文字无底色
+const bottomTagsAsText =
+	(siteConfig.postListLayout.tagsBottomStyle ?? "chip") === "text";
 const descriptionClampLines = String(descriptionLines);
 const shouldClampDescription = descriptionLines > 0;
 
@@ -168,14 +171,22 @@ const minutes = remarkPluginFrontmatter.minutes;
 
     <!-- bottom tags（与 stats 二选一） -->
     {showTagsAtBottom && bottomTags.length > 0 && (
-      <div class="post-card-bottom-tags flex flex-wrap items-center gap-1.5 mt-auto pt-3">
+      <div
+        class:list={[
+          "post-card-bottom-tags flex flex-wrap items-center mt-auto pt-3",
+          bottomTagsAsText ? "gap-x-3 gap-y-1" : "gap-1.5",
+        ]}
+      >
         {bottomTags.map((tag) => (
           <a
             href={getTagUrl(tag)}
             aria-label={`View all posts with the ${tag.trim()} tag`}
-            class="transition text-xs font-medium px-2.5 py-1 rounded-full
-              bg-black/5 dark:bg-white/10 text-neutral-500 dark:text-neutral-400
-              hover:bg-(--btn-regular-bg) hover:text-(--btn-content)"
+            class:list={[
+              "transition text-xs font-medium",
+              bottomTagsAsText
+                ? "text-50 hover:text-(--primary)"
+                : "tag-item px-2.5 py-1",
+            ]}
           >
             #{tag.trim()}
           </a>
@@ -183,8 +194,12 @@ const minutes = remarkPluginFrontmatter.minutes;
         {hiddenTagCount > 0 && (
           <span
             title={hiddenTags.map((tag) => `#${tag.trim()}`).join(" ")}
-            class="text-xs font-medium px-2.5 py-1 rounded-full
-              bg-black/5 dark:bg-white/10 text-neutral-400 dark:text-neutral-500"
+            class:list={[
+              "text-xs font-medium",
+              bottomTagsAsText
+                ? "text-50"
+                : "tag-item tag-item-static px-2.5 py-1",
+            ]}
           >
             +{hiddenTagCount}
           </span>
