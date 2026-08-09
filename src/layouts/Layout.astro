@@ -102,7 +102,7 @@ const siteLang = lang.replace("_", "-");
 ---
 
 <!doctype html>
-<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode}>
+<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode} data-tag-style={siteConfig.tagStyle ?? "rectangle"} data-category-style={siteConfig.categoryStyle ?? "rectangle"}>
   <head>
     <meta charset="UTF-8" />
     <style is:inline>

@@ -11,7 +11,7 @@ Firefly is a feature-rich static blog theme built on **Astro 7** with **Svelte 5
 | Command | Purpose |
 |---|---|
 | `pnpm dev` | Dev server at `localhost:4321` |
-| `pnpm build` | Production build (LQIPs → Astro build → font subsetting → Pagefind indexing) |
+| `pnpm build` | Production build (LQIPs → VNDB covers → Astro build → font subsetting → Pagefind indexing) |
 | `pnpm preview` | Preview production build |
 | `pnpm check` | `astro check` for type/error checking |
 | `pnpm type-check` | `tsc --noEmit --isolatedDeclarations` |
@@ -58,7 +58,7 @@ Defined in `src/content.config.ts`:
 - `src/i18n/` — translation keys in `i18nKey.ts`, language files in `languages/*.ts`, lookup via `translation.ts`
 - `src/utils/` — content sorting, crypto (encrypted posts), date formatting, image processing/LQIP, TOC generation
 - `src/pages/` — Astro file-based routing
-- `scripts/` — build-time utilities (`generate-lqips.ts`, `subset-fonts.ts`, `new-post.js`, `new-dynamic.js`)
+- `scripts/` — build-time utilities (`generate-lqips.ts`, `generate-vndb-covers.ts`, `subset-fonts.ts`, `new-post.js`, `new-dynamic.js`)
 
 ### Path Aliases (tsconfig.json)
 
@@ -72,9 +72,11 @@ Defined in `src/content.config.ts`:
 
 ## Build Pipeline
 
-Multi-step: `scripts/generate-lqips.ts` → `astro build` → `scripts/subset-fonts.ts` → `pagefind --site dist`
+Multi-step: `scripts/generate-lqips.ts` → `scripts/generate-vndb-covers.ts` → `astro build` → `scripts/subset-fonts.ts` → `pagefind --site dist`
 
 LQIP data is generated into `src/constants/lqips.json` and committed — regenerate with `pnpm lqips`. Icon data lives in `src/constants/icons-data.json` (committed, Biome-ignored, consumed by `src/components/common/Icon.svelte`) but has no generator script in the current build.
+
+`generate-vndb-covers.ts` downloads VNDB cover art into `public/vndb-covers/` (gitignored, skips files that already exist). It no-ops unless `siteConfig.vndb` has a `userId`, `downloadCovers: true`, and `mode: "static"`.
 
 ## Deployment
 
