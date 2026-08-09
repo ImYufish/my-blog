@@ -358,72 +358,147 @@ const hasMultipleImages =
          data-carousel-switchable={bannerCarouselSwitchable}
          data-carousel-interval={bannerCarouselInterval}
          data-carousel-effect={bannerCarouselEffect}>
+        {/* 图片放在 <template> 里，浏览器不会发起请求；由轮播脚本挑中随机那张后克隆进 DOM */}
         {backgroundImages.mobile.map((src, index) => (
             <div class:list={["slide-item block lg:hidden", index === 0 && "active"]} data-index={index}>
-                <ImageWrapper
-                    alt="Mobile background image of the blog"
-                    class="object-cover h-full w-full"
-                    src={src}
-                    position={backgroundWallpaper.banner?.position}
-                    widths={[640, 1080]}
-                    sizes="100vw"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    fetchpriority={index === 0 ? "high" : undefined}
-                    quality={mobileQuality}
-                />
+                <template>
+                    <ImageWrapper
+                        alt="Mobile background image of the blog"
+                        class="object-cover h-full w-full"
+                        src={src}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[640, 1080]}
+                        sizes="100vw"
+                        loading="eager"
+                        quality={mobileQuality}
+                    />
+                </template>
             </div>
         ))}
         {backgroundImages.desktop.map((src, index) => (
             <div class:list={["slide-item hidden lg:block", index === 0 && "active"]} data-index={index}>
-                <ImageWrapper
-                    id="banner"
-                    alt="Desktop background image of the blog"
-                    class="object-cover h-full"
-                    src={src}
-                    position={backgroundWallpaper.banner?.position}
-                    widths={[1280, 1920]}
-                    sizes="100vw"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    fetchpriority={index === 0 ? "high" : undefined}
-                    quality={configQuality}
-                />
+                <template>
+                    <ImageWrapper
+                        id="banner"
+                        alt="Desktop background image of the blog"
+                        class="object-cover h-full"
+                        src={src}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[1280, 1920]}
+                        sizes="100vw"
+                        loading="eager"
+                        quality={configQuality}
+                    />
+                </template>
             </div>
         ))}
+        <noscript>
+            {backgroundImages.mobile.length > 0 && (
+                <div class="slide-item active block lg:hidden">
+                    <ImageWrapper
+                        alt="Mobile background image of the blog"
+                        class="object-cover h-full w-full"
+                        src={backgroundImages.mobile[0]}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[640, 1080]}
+                        sizes="100vw"
+                        loading="eager"
+                        fetchpriority="high"
+                        fadeIn={false}
+                        quality={mobileQuality}
+                    />
+                </div>
+            )}
+            {backgroundImages.desktop.length > 0 && (
+                <div class="slide-item active hidden lg:block">
+                    <ImageWrapper
+                        alt="Desktop background image of the blog"
+                        class="object-cover h-full"
+                        src={backgroundImages.desktop[0]}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[1280, 1920]}
+                        sizes="100vw"
+                        loading="eager"
+                        fetchpriority="high"
+                        fadeIn={false}
+                        quality={configQuality}
+                    />
+                </div>
+            )}
+        </noscript>
     </div>
     ) : (
     /* 单图模式 */
     <div class="relative h-full w-full" id="banner-images-container">
+        {/* 两侧都放在 <template> 里，由下面的脚本按 matchMedia 只实例化匹配的那一侧，
+            避免桌面端白下一张手机图（display:none 挡不住 loading="eager"） */}
         {backgroundImages.mobile.length > 0 && (
-            <div class="banner-image-slot-mobile absolute inset-0 block lg:hidden">
-                <ImageWrapper
-                    alt="Mobile background image of the blog"
-                    class="object-cover h-full w-full"
-                    src={backgroundImages.mobile[0]}
-                    position={backgroundWallpaper.banner?.position}
-                    widths={[640, 1080]}
-                    sizes="100vw"
-                    loading="eager"
-                    fetchpriority="high"
-                    quality={mobileQuality}
-                />
+            <div class="banner-image-slot absolute inset-0 block lg:hidden">
+                <template>
+                    <ImageWrapper
+                        alt="Mobile background image of the blog"
+                        class="object-cover h-full w-full"
+                        src={backgroundImages.mobile[0]}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[640, 1080]}
+                        sizes="100vw"
+                        loading="eager"
+                        quality={mobileQuality}
+                    />
+                </template>
             </div>
         )}
         {backgroundImages.desktop.length > 0 && (
-            <div class="banner-image-slot-desktop absolute inset-0 hidden lg:block">
-                <ImageWrapper
-                    id="banner"
-                    alt="Desktop background image of the blog"
-                    class="object-cover h-full"
-                    src={backgroundImages.desktop[0]}
-                    position={backgroundWallpaper.banner?.position}
-                    widths={[1280, 1920]}
-                    sizes="100vw"
-                    loading="eager"
-                    fetchpriority="high"
-                    quality={configQuality}
-                />
+            <div class="banner-image-slot absolute inset-0 hidden lg:block">
+                <template>
+                    <ImageWrapper
+                        id="banner"
+                        alt="Desktop background image of the blog"
+                        class="object-cover h-full"
+                        src={backgroundImages.desktop[0]}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[1280, 1920]}
+                        sizes="100vw"
+                        loading="eager"
+                        quality={configQuality}
+                    />
+                </template>
             </div>
         )}
+        <noscript>
+            {backgroundImages.mobile.length > 0 && (
+                <div class="absolute inset-0 block lg:hidden">
+                    <ImageWrapper
+                        alt="Mobile background image of the blog"
+                        class="object-cover h-full w-full"
+                        src={backgroundImages.mobile[0]}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[640, 1080]}
+                        sizes="100vw"
+                        loading="eager"
+                        fetchpriority="high"
+                        fadeIn={false}
+                        quality={mobileQuality}
+                    />
+                </div>
+            )}
+            {backgroundImages.desktop.length > 0 && (
+                <div class="absolute inset-0 hidden lg:block">
+                    <ImageWrapper
+                        alt="Desktop background image of the blog"
+                        class="object-cover h-full"
+                        src={backgroundImages.desktop[0]}
+                        position={backgroundWallpaper.banner?.position}
+                        widths={[1280, 1920]}
+                        sizes="100vw"
+                        loading="eager"
+                        fetchpriority="high"
+                        fadeIn={false}
+                        quality={configQuality}
+                    />
+                </div>
+            )}
+        </noscript>
     </div>
     )}
 
@@ -451,6 +526,49 @@ const hasMultipleImages =
             function isBannerWallpaperMode() {
                 var mode = document.documentElement.getAttribute('data-wallpaper-mode');
                 return mode === WALLPAPER_BANNER || mode === 'fullscreen';
+            }
+
+            // 图片淡入：Layout 里的全局 initImageLoadFadeIn 只在解析期扫一次，
+            // 之后克隆进来的图片得自己接管，否则会一直停在 opacity-0
+            function fadeInWhenLoaded(root) {
+                var ph = root.querySelector('.lqip-placeholder');
+                var img = root.querySelector('img');
+                if (!img) return;
+                function done() {
+                    img.style.opacity = '1';
+                    if (ph) ph.classList.add('loaded');
+                }
+                if (img.complete && img.naturalWidth > 0) {
+                    done();
+                } else {
+                    img.addEventListener('load', done, { once: true });
+                    img.addEventListener('error', function () {
+                        if (ph) ph.classList.add('loaded');
+                    }, { once: true });
+                }
+            }
+
+            // 把 <template> 里的图片实例化进 DOM —— 插入的那一刻才开始下载
+            function materialize(slideEl, high) {
+                if (!slideEl) return false;
+                var tpl = slideEl.querySelector('template');
+                if (!tpl) return false;
+                var frag = tpl.content.cloneNode(true);
+                if (high) {
+                    var img = frag.querySelector('img');
+                    // 必须在插入前写，插入即发起请求
+                    if (img) img.setAttribute('fetchpriority', 'high');
+                }
+                slideEl.appendChild(frag);
+                tpl.remove();
+                fadeInWhenLoaded(slideEl);
+                return true;
+            }
+
+            // 预取下一张，避免切换时闪一帧黑
+            function materializeAhead(slides, index) {
+                if (slides.length < 2) return;
+                materialize(slides[(index + 1) % slides.length], false);
             }
 
             // 获取当前设备可见的 slide-item
@@ -512,6 +630,10 @@ const hasMultipleImages =
 
                 var currentIndex = getCurrentIndex(slides);
                 if (nextIndex === currentIndex) return;
+
+                // 目标图可能还躺在 <template> 里，先实例化再切
+                materialize(slides[nextIndex], false);
+                materializeAhead(slides, nextIndex);
 
                 // 直接切换（CSS 处理过渡动画）
                 applySlideChange(slides, nextIndex);
@@ -592,19 +714,100 @@ const hasMultipleImages =
                 }
             });
 
-            // 随机首张
+            // 随机首张：只有被抽中的这一张会真的下载，其余仍留在 <template> 里
             var slides = getVisibleSlides();
-            if (slides.length > 1) {
-                var randomIdx = Math.floor(Math.random() * slides.length);
-                for (var k = 0; k < slides.length; k++) {
-                    if (k === randomIdx) slides[k].classList.add('active');
-                    else slides[k].classList.remove('active');
-                }
+            var startIdx = slides.length > 1 ? Math.floor(Math.random() * slides.length) : 0;
+            for (var k = 0; k < slides.length; k++) {
+                if (k === startIdx) slides[k].classList.add('active');
+                else slides[k].classList.remove('active');
+            }
+            materialize(slides[startIdx], true);
+
+            // 断点跨过 1024px 时，另一侧那组还没有实例化过的 active，需要补上
+            if (window.matchMedia) {
+                var lgQuery = window.matchMedia('(min-width: 1024px)');
+                var onBreakpointChange = function () {
+                    var s = getVisibleSlides();
+                    if (!s.length) return;
+                    var hasActive = false;
+                    for (var i = 0; i < s.length; i++) {
+                        if (s[i].classList.contains('active')) { hasActive = true; break; }
+                    }
+                    if (!hasActive) s[0].classList.add('active');
+                    var idx = getCurrentIndex(s);
+                    materialize(s[idx], false);
+                    if (isCarouselEnabled()) materializeAhead(s, idx);
+                };
+                if (lgQuery.addEventListener) lgQuery.addEventListener('change', onBreakpointChange);
+                else if (lgQuery.addListener) lgQuery.addListener(onBreakpointChange);
+            }
+
+            // 空闲时预取下一张（轮播关掉时其余图片永远不会显示，一张都不下）
+            if (isCarouselEnabled()) {
+                var schedulePrefetch = function () {
+                    var idle = window.requestIdleCallback || function (cb) { return setTimeout(cb, 1500); };
+                    idle(function () { materializeAhead(getVisibleSlides(), startIdx); });
+                };
+                if (document.readyState === 'complete') schedulePrefetch();
+                else window.addEventListener('load', schedulePrefetch, { once: true });
             }
 
             // 启动
             if (isCarouselEnabled() && isBannerWallpaperMode()) {
                 startAutoPlay();
+            }
+        })();
+    </script>
+    )}
+
+    <!-- 单图模式：只实例化当前断点匹配的那一侧 -->
+    {!hasMultipleImages && (
+    <script is:inline data-swup-ignore-script>
+        (function initBannerSingle() {
+            var container = document.getElementById('banner-images-container');
+            if (!container) return;
+
+            function materialize(slot, high) {
+                var tpl = slot.querySelector('template');
+                if (!tpl) return;
+                var frag = tpl.content.cloneNode(true);
+                var img = frag.querySelector('img');
+                if (img && high) img.setAttribute('fetchpriority', 'high');
+                slot.appendChild(frag);
+                tpl.remove();
+                // Layout 的全局淡入只扫解析期的图片，克隆进来的要自己接管
+                var ph = slot.querySelector('.lqip-placeholder');
+                if (!img) return;
+                function done() {
+                    img.style.opacity = '1';
+                    if (ph) ph.classList.add('loaded');
+                }
+                if (img.complete && img.naturalWidth > 0) done();
+                else {
+                    img.addEventListener('load', done, { once: true });
+                    img.addEventListener('error', function () {
+                        if (ph) ph.classList.add('loaded');
+                    }, { once: true });
+                }
+            }
+
+            function sync() {
+                var all = container.querySelectorAll('.banner-image-slot');
+                var isLg = window.innerWidth >= 1024;
+                for (var i = 0; i < all.length; i++) {
+                    var el = all[i];
+                    if (isLg && el.classList.contains('lg:hidden')) continue;
+                    if (!isLg && el.classList.contains('hidden') && !el.classList.contains('lg:hidden')) continue;
+                    materialize(el, true);
+                }
+            }
+
+            sync();
+
+            if (window.matchMedia) {
+                var lgQuery = window.matchMedia('(min-width: 1024px)');
+                if (lgQuery.addEventListener) lgQuery.addEventListener('change', sync);
+                else if (lgQuery.addListener) lgQuery.addListener(sync);
             }
         })();
     </script>
