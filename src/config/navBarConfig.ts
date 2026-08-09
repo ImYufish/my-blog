@@ -62,10 +62,11 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 追番
 			LinkPresets.Anime,
 
-			// 番组计划
-			LinkPresets.Bangumi,
 			// VNDB
 			LinkPresets.VNDB,
+
+			// 番组计划
+			LinkPresets.Bangumi,
 
 			// 书签导航
 			LinkPresets.Booknav,
