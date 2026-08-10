@@ -450,6 +450,8 @@ enum I18nKey {
 	videoPrev = "videoPrev",
 	videoNext = "videoNext",
 	videoLoadError = "videoLoadError",
+	
+	weather = "weather",
 }
 
 export default I18nKey;

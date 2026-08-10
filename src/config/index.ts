@@ -34,6 +34,7 @@ export type {
 	WidgetComponentConfig,
 	WidgetComponentType,
 	WidgetSpecificConfig,
+	WeatherConfig,
 } from "../types/config";
 export type {
 	BuiltinFontProvider,
@@ -70,3 +71,5 @@ export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
 // 核心配置
 export { siteConfig } from "./siteConfig"; // 站点基础配置
 export { sponsorConfig } from "./sponsorConfig"; // 打赏配置
+
+export { weatherConfig } from "./weatherConfig"; // 天气组件配置

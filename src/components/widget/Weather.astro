@@ -1,0 +1,1070 @@
+---
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import { weatherConfig } from "@/config/weatherConfig";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+
+interface Props {
+  class?: string;
+  style?: string;
+  widgetConfig?: any;
+}
+const { class: className, style, widgetConfig } = Astro.props;
+const showTitle = widgetConfig?.showTitle !== false;
+
+const widgetId = "weather-widget";
+const cfg = JSON.stringify({
+  defaultCity: weatherConfig.defaultCity,
+  defaultLat: weatherConfig.defaultLat,
+  defaultLon: weatherConfig.defaultLon,
+  autoLocate: weatherConfig.autoLocate,
+  unit: weatherConfig.unit ?? "celsius",
+  qweatherKey: weatherConfig.qweatherKey,
+  qweatherHost: weatherConfig.qweatherHost,
+  qweatherGeoHost: weatherConfig.qweatherGeoHost,
+  enableUapis: weatherConfig.enableUapis,
+  enableQWeather: weatherConfig.enableQWeather,
+  enableOpenMeteo: weatherConfig.enableOpenMeteo,
+  enableWttr: weatherConfig.enableWttr,
+});
+---
+
+<WidgetLayout
+  id={widgetId}
+  name={i18n(I18nKey.weather)}
+  showTitle={showTitle}
+  class={className}
+  style={style}
+>
+  <div class="weather-widget flex flex-col" data-widget>
+    <!-- 收起态：图标 + 温度(含高低) + 城市(到区) | 天气描述 | 箭头 -->
+    <div class="weather-header flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <span class="weather-icon text-[2rem] leading-none">🌤️</span>
+        <div class="flex flex-col">
+          <div class="flex items-baseline gap-2">
+            <span class="weather-temp text-2xl font-bold text-neutral-900 dark:text-neutral-100 leading-none">--°</span>
+            <span class="weather-temp-range text-xs text-neutral-400 dark:text-neutral-500"></span>
+          </div>
+          <span class="weather-city text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">定位中…</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="weather-desc text-sm text-neutral-600 dark:text-neutral-300"></span>
+        <button
+          type="button"
+          class="weather-toggle inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs text-neutral-500 transition-colors hover:bg-neutral-200/60 dark:text-neutral-400 dark:hover:bg-neutral-700/60"
+          aria-label="展开天气详情"
+          aria-expanded="false"
+        >
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 展开详情区 -->
+    <div class="weather-details">
+      <div class="weather-grid">
+        <!-- 风力 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">💨</span><span class="detail-label">风力</span></div><span class="detail-val weather-wind-detail"></span></div>
+        <!-- 能见度 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">👁️</span><span class="detail-label">能见度</span></div><span class="detail-val weather-vis"></span></div>
+        <!-- 体感温度 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌡️</span><span class="detail-label">体感温度</span></div><span class="detail-val weather-feel"></span></div>
+        <!-- 湿度 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">💧</span><span class="detail-label">湿度</span></div><span class="detail-val weather-humidity"></span></div>
+        <!-- 气压 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌡️</span><span class="detail-label">气压</span></div><span class="detail-val weather-pressure"></span></div>
+        <!-- 空气质量（大数字 + 彩色标签） -->
+        <div class="detail-card detail-aqi-card"><div class="detail-top"><span class="detail-icon">🍃</span><span class="detail-label">空气质量</span></div><div class="aqi-display"><span class="aqi-num weather-aqi-num"></span><span class="aqi-badge weather-aqi-badge"></span></div></div>
+        <!-- 云量 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">☁️</span><span class="detail-label">云量</span></div><span class="detail-val weather-cloud"></span></div>
+        <!-- 紫外线 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">☀️</span><span class="detail-label">紫外线</span></div><span class="detail-val weather-uv"></span></div>
+        <!-- 降水量 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌧️</span><span class="detail-label">降水量</span></div><span class="detail-val weather-precip"></span></div>
+        <!-- 降水概率 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">💦</span><span class="detail-label">降水概率</span></div><span class="detail-val weather-precip-prob"></span></div>
+        <!-- 日出 / 日落 -->
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌅</span><span class="detail-label">日出</span></div><span class="detail-val weather-sunrise"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌇</span><span class="detail-label">日落</span></div><span class="detail-val weather-sunset"></span></div>
+        <!-- 污染物浓度（跨两列，内联文本格式） -->
+        <div class="detail-card detail-full"><div class="detail-top"><span class="detail-icon">🧪</span><span class="detail-label">污染物浓度</span></div><div class="weather-pollutants"></div></div>
+      </div>
+
+      <!-- 底部：更新时间（居中） -->
+      <div class="weather-footer flex items-center justify-center pt-2 border-t border-neutral-200/60 dark:border-neutral-700/60">
+        <span class="weather-update text-[10px] text-neutral-400"></span>
+      </div>
+    </div>
+  </div>
+</WidgetLayout>
+
+<style>
+  .weather-widget .weather-icon {
+    min-width: 2rem;
+    text-align: center;
+  }
+
+  /* ===== 折叠动画 ===== */
+  .weather-details {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 0.3s ease,
+      opacity 0.3s ease;
+  }
+  .weather-details > div {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .weather-widget.is-open .weather-details {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  /* 箭头旋转：收起时朝下（默认），展开时朝上 */
+  .weather-toggle .chevron {
+    transition: transform 0.3s ease;
+  }
+  .weather-widget.is-open .weather-toggle .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* ===== 展开详情网格：3 列，上下布局 ===== */
+  .weather-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem 0.625rem;
+    padding-top: 0.625rem;
+  }
+
+  /* 每个详情卡片：垂直居中，图标+标签在上，数值在下 */
+  .detail-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.55rem 0.4rem;
+    border-radius: 0.5rem;
+    background: var(--color-neutral-50, #fafafa);
+    transition: background 0.15s;
+  }
+  :global(.dark) .detail-card {
+    background: var(--color-neutral-800, #262626);
+  }
+
+  .detail-card.detail-full {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+  }
+
+  /* 上行：图标 + 标签 */
+  .detail-top {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    color: var(--color-neutral-500, #737373);
+    white-space: nowrap;
+  }
+  :global(.dark) .detail-top {
+    color: var(--color-neutral-400, #a3a3a3);
+  }
+  .detail-icon {
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+
+  /* 下行：数值（加粗、深色） */
+  .detail-val {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-neutral-800, #262626);
+    line-height: 1.2;
+  }
+  :global(.dark) .detail-val {
+    color: var(--color-neutral-200, #e5e5e5);
+  }
+
+  /* ===== 空气质量：数字 + 彩色圆角标签（与其他卡片字号一致） ===== */
+  .detail-aqi-card .aqi-display {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .aqi-num {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-neutral-800, #262626);
+    line-height: 1.2;
+  }
+  :global(.dark) .aqi-num {
+    color: var(--color-neutral-100, #e5e5e5);
+  }
+  .aqi-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.08rem 0.45rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  /* AQI 等级颜色（badge 背景色 + 文字色） */
+  .aqi-good { background: #dcfce7; color: #16a34a !important; }
+  .aqi-moderate { background: #fef9c3; color: #ca8a04 !important; }
+  .aqi-unhealthy-sg { background: #ffedd5; color: #ea580c !important; }
+  .aqi-unhealthy { background: #fee2e2; color: #dc2626 !important; }
+  .aqi-very-unhealthy { background: #ede9fe; color: #7c3aed !important; }
+  .aqi-hazardous { background: #fecaca; color: #991b1b !important; }
+  :global(.dark) .aqi-good { background: #166534; color: #86efac !important; }
+  :global(.dark) .aqi-moderate { background: #713f12; color: #fde047 !important; }
+  :global(.dark) .aqi-unhealthy-sg { background: #7c2d12; color: #fdba74 !important; }
+  :global(.dark) .aqi-unhealthy { background: #7f1d1d; color: #fca5a5 !important; }
+  :global(.dark) .aqi-very-unhealthy { background: #4c1d95; color: #c4b5fd !important; }
+  :global(.dark) .aqi-hazardous { background: #450a0a; color: #f87171 !important; }
+
+  /* ===== 污染物浓度：3列网格，标签在上/数值在下 ===== */
+  /* 注意：这些元素由 JS document.createElement 动态创建，
+     不带 Astro scoped 属性，必须用 :global() 才能命中 */
+  .weather-pollutants {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem 0.5rem;
+    width: 100%;
+  }
+  :global(.pollutant-chip) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05rem;
+  }
+  :global(.pollutant-chip .pc-label) {
+    font-size: 0.68rem;
+    color: var(--color-neutral-500, #737373);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  :global(.pollutant-chip .pc-val) {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-neutral-800, #262626);
+    line-height: 1.2;
+  }
+  :global(.dark .pollutant-chip .pc-label) {
+    color: var(--color-neutral-400, #a3a3a3);
+  }
+  :global(.dark .pollutant-chip .pc-val) {
+    color: var(--color-neutral-200, #e5e5e5);
+  }
+</style>
+
+<script define:vars={{ cfg, widgetId }} is:inline>
+  const C = JSON.parse(cfg);
+
+  // WMO weather_code -> [图标, 中文描述]
+  const CODE = {
+    0: ["☀️", "晴"],
+    1: ["🌤️", "大致晴朗"],
+    2: ["⛅", "局部多云"],
+    3: ["☁️", "阴"],
+    45: ["🌫️", "雾"],
+    48: ["🌫️", "雾凇"],
+    51: ["🌦️", "毛毛雨"],
+    53: ["🌦️", "小雨"],
+    55: ["🌧️", "中雨"],
+    56: ["🌧️", "冻毛雨"],
+    57: ["🌧️", "冻雨"],
+    61: ["🌧️", "小雨"],
+    63: ["🌧️", "中雨"],
+    65: ["🌧️", "大雨"],
+    66: ["🌧️", "冻雨"],
+    67: ["🌧️", "强冻雨"],
+    71: ["🌨️", "小雪"],
+    73: ["🌨️", "中雪"],
+    75: ["❄️", "大雪"],
+    77: ["🌨️", "雪粒"],
+    80: ["🌦️", "阵雨"],
+    81: ["🌦️", "强阵雨"],
+    82: ["⛈️", "暴雨"],
+    85: ["🌨️", "阵雪"],
+    86: ["🌨️", "强阵雪"],
+    95: ["⛈️", "雷阵雨"],
+    96: ["⛈️", "雷暴伴雹"],
+    99: ["⛈️", "强雷暴伴雹"],
+  };
+
+  // 和风天气天气现象代码 -> [图标, 中文描述]（代码段 100+，与 WMO 0-99 不冲突）
+  const QW = {
+    100: ["☀️", "晴"], 101: ["⛅", "多云"], 102: ["🌤️", "少云"], 103: ["🌤️", "晴间多云"], 104: ["☁️", "阴"],
+    150: ["🌙", "晴"], 151: ["⛅", "多云"], 152: ["🌤️", "少云"], 153: ["🌤️", "晴间多云"],
+    300: ["🌦️", "阵雨"], 301: ["🌦️", "强阵雨"], 302: ["⛈️", "雷阵雨"], 303: ["⛈️", "强雷阵雨"], 304: ["⛈️", "雷阵雨伴冰雹"],
+    305: ["🌧️", "小雨"], 306: ["🌧️", "中雨"], 307: ["🌧️", "大雨"], 308: ["🌧️", "极端降雨"], 309: ["🌦️", "细雨"], 310: ["🌦️", "毛毛雨"],
+    311: ["🌧️", "暴雨"], 312: ["🌧️", "大暴雨"], 313: ["🌧️", "特大暴雨"], 314: ["🌧️", "小到中雨"], 315: ["🌧️", "中到大雨"], 316: ["🌧️", "大到暴雨"], 317: ["🌧️", "暴雨到大暴雨"], 318: ["🌧️", "大暴雨到特大暴雨"],
+    350: ["🌦️", "阵雨"], 351: ["🌦️", "强阵雨"], 399: ["🌧️", "雨"],
+    400: ["🌨️", "小雪"], 401: ["🌨️", "中雪"], 402: ["❄️", "大雪"], 403: ["❄️", "暴雪"], 404: ["🌨️", "雨夹雪"], 405: ["🌨️", "雨雪天气"], 406: ["🌨️", "阵雨夹雪"], 407: ["🌨️", "阵雪"], 408: ["🌨️", "小到中雪"], 409: ["🌨️", "中到大雪"], 410: ["🌨️", "大到暴雪"], 456: ["🌨️", "阵雪"], 457: ["🌨️", "小雪"], 499: ["❄️", "雪"],
+    500: ["🌫️", "薄雾"], 501: ["🌫️", "雾"], 502: ["🌫️", "霾"], 503: ["🌫️", "扬沙"], 504: ["🌫️", "浮尘"], 507: ["🌫️", "沙尘暴"], 508: ["🌫️", "强沙尘暴"], 509: ["🌫️", "浓雾"], 510: ["🌫️", "强浓雾"], 511: ["🌫️", "中度霾"], 512: ["🌫️", "重度霾"], 513: ["🌫️", "严重霾"], 514: ["🌫️", "大雾"], 515: ["🌫️", "特强浓雾"],
+    900: ["🔥", "热"], 901: ["🥶", "冷"], 999: ["🌡️", "未知"],
+  };
+
+  const CACHE_KEY = "firefly-weather-cache";
+  const tUnit = C.unit === "fahrenheit" ? "fahrenheit" : "celsius";
+  const tempSign = tUnit === "fahrenheit" ? "°F" : "°";
+
+  async function fetchWeather(lat, lon) {
+    const url =
+      "https://api.open-meteo.com/v1/forecast?latitude=" +
+      lat +
+      "&longitude=" +
+      lon +
+      "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure,cloud_cover,precipitation,uv_index,is_day,visibility" +
+      "&daily=sunrise,sunset,precipitation_probability_max,temperature_2m_max,temperature_2m_min" +
+      "&temperature_unit=" +
+      tUnit +
+      "&wind_speed_unit=kmh&timezone=auto&forecast_days=1";
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("weather http " + r.status);
+    return r.json();
+  }
+
+  // Open-Meteo 空气质量接口（免费，无需 Key）
+  // ⚠ 污染物变量名必须用全称 ozone / nitrogen_dioxide / sulphur_dioxide / carbon_monoxide。
+  //   写成 o3 / no2 / so2 / co 会被接口判为非法参数，整个请求直接 400，
+  //   导致 fetchAirQuality 返回 null → 国外用户的 AQI 卡片和全部污染物恒显示 "--"。
+  async function fetchAirQuality(lat, lon) {
+    try {
+      const r = await fetch(
+        "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" +
+          lat +
+          "&longitude=" +
+          lon +
+          "&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide",
+      );
+      if (!r.ok) return null;
+      const j = await r.json();
+      const c = j && j.current;
+      if (!c) return null;
+      // 归一化成 render() 认的短名，与和风 / uapis 的 aqi.current 结构保持一致
+      return {
+        current: {
+          us_aqi: c.us_aqi,
+          pm2_5: c.pm2_5,
+          pm10: c.pm10,
+          o3: c.ozone,
+          no2: c.nitrogen_dioxide,
+          so2: c.sulphur_dioxide,
+          co: c.carbon_monoxide,
+        },
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  // 风向角度 → 中文方位
+  function windDir(deg) {
+    const dirs = ["北", "东北", "东", "东南", "南", "西南", "西", "西北"];
+    // 每 45° 一档，22.5° 为分界线（北风范围：348.75° ~ 11.25°）
+    const i = Math.round(((deg + 180 / 8) % 360) / 45) % 8;
+    return dirs[i];
+  }
+
+  // 风速 km/h → 蒲福风力等级
+  function beaufort(kmh) {
+    if (kmh < 1) return 0;
+    if (kmh <= 5) return 1;
+    if (kmh <= 11) return 2;
+    if (kmh <= 19) return 3;
+    if (kmh <= 28) return 4;
+    if (kmh <= 38) return 5;
+    if (kmh <= 49) return 6;
+    if (kmh <= 61) return 7;
+    if (kmh <= 74) return 8;
+    if (kmh <= 88) return 9;
+    if (kmh <= 102) return 10;
+    if (kmh <= 117) return 11;
+    return 12;
+  }
+
+  // 风向文本（如"东北风"）→ 角度（uapis.cn 等只给文字风向的接口用）
+  function dirTextToDeg(t) {
+    const m = { 东北: 45, 东南: 135, 西南: 225, 西北: 315, 北: 0, 东: 90, 南: 180, 西: 270 };
+    if (!t) return 0;
+    // 先匹配两字方向，再匹配单字，避免"东北风"被"北"抢先
+    const order = ["东北", "东南", "西南", "西北", "北", "东", "南", "西"];
+    for (const k of order) if (t.indexOf(k) >= 0) return m[k];
+    return 0;
+  }
+
+  // 风力等级文本（如"3级"）→ 近似 km/h（取蒲福级中点），用于 beaufort 反推等级
+  function windPowerToKmh(p) {
+    const m = p && p.match(/(\d+)/);
+    const lvl = m ? Math.min(Number(m[1]), 12) : 0;
+    const tbl = [0, 3, 8, 15, 24, 33, 44, 56, 68, 82, 96, 110, 120];
+    return tbl[lvl] != null ? tbl[lvl] : 0;
+  }
+
+  // US AQI → 中文等级 + 颜色标签
+  function aqiLabel(usAqi) {
+    if (usAqi == null || isNaN(usAqi)) return { text: "--", cls: "" };
+    if (usAqi <= 50) return { text: usAqi + " 优", cls: "aqi-good" };
+    if (usAqi <= 100) return { text: usAqi + " 良", cls: "aqi-moderate" };
+    if (usAqi <= 150) return { text: usAqi + " 轻度污染", cls: "aqi-unhealthy-sg" };
+    if (usAqi <= 200) return { text: usAqi + " 中度污染", cls: "aqi-unhealthy" };
+    if (usAqi <= 300) return { text: usAqi + " 重度污染", cls: "aqi-very-unhealthy" };
+    return { text: usAqi + " 严重污染", cls: "aqi-hazardous" };
+  }
+
+  // 取站点当前语言 → 映射成地理编码接口的语言码
+  // 跟随 Firefly 的 i18n：html lang 会变（zh-CN/zh-TW/en/ja/ko/ru），
+  // 城市名自动跟随站点语言，不写死简体
+  function getGeocodeLang() {
+    const lang = (document.documentElement.lang || "zh-CN").toLowerCase();
+    if (lang.startsWith("zh")) {
+      // ⚠ BigDataCloud 只认 zh-Hans/zh-Hant，传 zh-CN 或 zh 会返回繁体（实测"欽北區"）
+      if (lang.includes("tw") || lang.includes("hk") || lang.includes("hant")) return "zh-Hant";
+      return "zh-Hans";
+    }
+    if (lang.startsWith("en")) return "en";
+    if (lang.startsWith("ja")) return "ja";
+    if (lang.startsWith("ko")) return "ko";
+    if (lang.startsWith("ru")) return "ru";
+    return "zh-CN";
+  }
+
+  // 免费反向地理编码（无需 Key），把坐标转成城市名
+  async function reverseGeocode(lat, lon, lang) {
+    try {
+      const r = await fetch(
+        "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
+          lat +
+          "&longitude=" +
+          lon +
+          "&localityLanguage=" + encodeURIComponent(lang),
+      );
+      if (!r.ok) return null;
+      return r.json();
+    } catch {
+      return null;
+    }
+  }
+
+  // 坐标是否在中国大陆（粗略包围盒）：纬度 18~54N，经度 73~135E
+  function isInChina(lat, lon) {
+    return lat >= 18 && lat <= 54 && lon >= 73 && lon <= 135;
+  }
+
+  // 行政区划后缀归一化：三个数据源对后缀的处理各不相同
+  //   和风  -> "钦州" / "钦北"（无后缀，但"浦东新区"又带后缀）
+  //   uapis -> "钦州市" / "钦北区"（带后缀）
+  //   BDC   -> "钦州市" / "钦北区"（带后缀）
+  // 统一剥成短名，否则同一个地方在不同源之间会显示成两种写法。
+  // 反向补后缀行不通：无法判断"钦北"是区还是县、"昆山"是市还是区，猜错更糟。
+  function stripAdm(s) {
+    if (!s) return "";
+    const raw = String(s).trim();
+    if (raw === "市辖区") return ""; // 无意义的占位，直接丢掉
+    // 这些后缀是专名的一部分，剥了就错（"神农架林区"→"神农架林"）
+    if (/(自治州|自治县|自治区|特别行政区|林区|矿区|特区)$/.test(raw)) return raw;
+    // 两字后缀先剥，否则"浦东新区"会被下面的"区"切成"浦东新"
+    let t = raw.replace(/(新区|地区|盟)$/, "");
+    // ⚠ 绝不能剥"州"：钦州/苏州/广州/杭州 全会毁掉
+    t = t.replace(/(市|区|县|旗)$/, "");
+    // 剥完只剩一个字（"蓟县"→"蓟"）说明剥过头了，回退原值
+    return t.length >= 2 ? t : raw;
+  }
+
+  // 和风地理编码结果整理成"城市+区"（adm2=市, name=区/县）
+  function formatCity(adm1, adm2, name) {
+    const a2 = stripAdm(adm2);
+    const nm = stripAdm(name);
+    if (nm && a2 && nm !== a2) {
+      if (a2.includes(nm)) return a2; // "北京" ⊇ "北京" → 不重复
+      if (nm.includes(a2)) return nm; // name 已含市名 → 直接用
+      return a2 + nm; // 钦州 + 钦北
+    }
+    return nm || a2 || stripAdm(adm1) || "";
+  }
+
+  // 和风空气质量等级（中文 AQI 的 category）-> 颜色类
+  function mapCategory(cat) {
+    if (cat === "优") return "aqi-good";
+    if (cat === "良") return "aqi-moderate";
+    if (cat === "轻度污染") return "aqi-unhealthy-sg";
+    if (cat === "中度污染") return "aqi-unhealthy";
+    if (cat === "重度污染") return "aqi-very-unhealthy";
+    if (cat === "严重污染") return "aqi-hazardous";
+    return "";
+  }
+
+  // 和风天气（实时优先，7 天兜底）：
+  //   /weather/v1/current  实时天气（温度/体感/湿度/风/压/能见度/云量/紫外/降水）
+  //   /weather/v1/hourly   逐小时（取今日最高/最低温、最大降水概率）
+  //   /v7/astronomy/sun    日出日落
+  //   /v7/weather/7d       7 天预报当日（实时缺字段时兜底：最高/最低温、日出日落）
+  //   /airquality/v1/current + /geo/v2/city/lookup  空气质量 + 城市（到区）
+  // 全部用 API Key（?key=）鉴权，归一化成与 Open-Meteo 相同结构，render() 无需区分数据源
+  async function fetchQWeather(lat, lon, key) {
+    const loc = lon + "," + lat;
+    const base = (C.qweatherHost || "https://api.qweather.com/v7").replace(/\/$/, "");
+    const geoBase = (C.qweatherGeoHost || "https://geoapi.qweather.com/v2").replace(/\/$/, "");
+    // 实时天气 / 空气质量 走独立根路径（去掉 /v7），同样用 API Key（?key=）鉴权
+    const aqHost = base.replace(/\/v7$/, "");
+    // astronomy 接口要紧凑日期 YYYYMMDD
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const ymd = "" + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate());
+    // 本地"今天"日期串，用来从 hourly 24h（UTC）里筛出属于今天的数据
+    const todayKey = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+
+    const [curR, hrR, d7R, aqR, geoR, sunR] = await Promise.all([
+      fetch(aqHost + "/weather/v1/current/" + lat + "/" + lon + "?key=" + key),
+      fetch(aqHost + "/weather/v1/hourly/" + lat + "/" + lon + "?key=" + key),
+      fetch(base + "/weather/7d?location=" + encodeURIComponent(loc) + "&key=" + key),
+      fetch(aqHost + "/airquality/v1/current/" + lat + "/" + lon + "?key=" + key),
+      fetch(geoBase + "/city/lookup?location=" + encodeURIComponent(loc) + "&key=" + key),
+      // ⚠ base 末尾本来就是 /v7，这里不能再写一遍 /v7，否则拼出 /v7/v7/... 直接 404
+      fetch(base + "/astronomy/sun?location=" + encodeURIComponent(loc) + "&date=" + ymd + "&key=" + key),
+    ]);
+    if (!curR.ok) throw new Error("qweather current " + curR.status);
+    // 注意：实时天气字段直接位于 JSON 顶层，没有 now/current 包裹键
+    const curJ = await curR.json();
+    const hr = hrR.ok ? await hrR.json() : null;
+    const d7 = d7R.ok ? await d7R.json() : null;
+    const aq = aqR.ok ? await aqR.json() : null;
+    const geo = geoR.ok ? await geoR.json() : null;
+    const sun = sunR.ok ? await sunR.json() : null;
+
+    // 7 天预报当日数据，作为实时缺字段时的兜底（7 天无降水概率字段）
+    const day0 = (d7 && d7.daily && d7.daily[0]) || {};
+
+    const cond = curJ.condition || {};
+
+    // 归一化 current（字段名对齐 Open-Meteo）
+    // 单位差异：湿度 0~1→%，云量 0~1→%，风速 m/s→km/h（render 用 beaufort），能见度已是米
+    const cur = {
+      temperature_2m: Number(curJ.temperature?.value),
+      apparent_temperature: Number(curJ.feelsLike?.value),
+      relative_humidity_2m: Math.round(Number(curJ.humidity) * 100),
+      weather_code: Number(cond.code), // 和风代码（字符串→数字），render 用 QW/CODE 映射
+      wind_direction_10m: Number(curJ.wind?.direction?.degree),
+      wind_speed_10m: Number(curJ.wind?.speed?.value) * 3.6, // m/s → km/h
+      surface_pressure: Number(curJ.pressure?.value),
+      cloud_cover: Math.round(Number(curJ.cloudCover) * 100), // 0~1 → %
+      visibility: Number(curJ.visibility?.value), // 米
+      precipitation: Number(curJ.precipitation?.amount?.value) || 0,
+      uv_index: curJ.uvIndex != null ? Number(curJ.uvIndex) : null,
+    };
+
+    // 从 hourly 24h 里筛出"今天"，取最高/最低温与最大降水概率
+    // precipitation.probability 为 0~1 小数，转成 %
+    let tempMax = null,
+      tempMin = null,
+      popPct = null;
+    if (hr && Array.isArray(hr.hours) && hr.hours.length) {
+      const todayHours = hr.hours.filter((h) => {
+        const d = new Date(h.forecastTime);
+        if (isNaN(d.getTime())) return false;
+        const k = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+        return k === todayKey;
+      });
+      const src = todayHours.length ? todayHours : hr.hours;
+      let mx = -Infinity,
+        mn = Infinity,
+        popMax = 0;
+      src.forEach((h) => {
+        const t = Number(h.temperature?.value);
+        if (!isNaN(t)) {
+          if (t > mx) mx = t;
+          if (t < mn) mn = t;
+        }
+        const p = Number(h.precipitation?.probability);
+        if (!isNaN(p) && p > popMax) popMax = p;
+      });
+      if (mx > -Infinity) tempMax = mx;
+      if (mn < Infinity) tempMin = mn;
+      popPct = Math.round(popMax * 100);
+    }
+
+    // 实时逐小时缺数据时，用 7 天当日最高/最低温兜底
+    if (tempMax == null && day0.tempMax != null) tempMax = Number(day0.tempMax);
+    if (tempMin == null && day0.tempMin != null) tempMin = Number(day0.tempMin);
+
+    const daily = {
+      // 日出日落：实时 astronomy 优先，缺失用 7 天当日兜底（7 天为 HH:mm，render 兼容）
+      sunrise: sun && sun.sunrise ? [sun.sunrise] : day0.sunrise ? [day0.sunrise] : [],
+      sunset: sun && sun.sunset ? [sun.sunset] : day0.sunset ? [day0.sunset] : [],
+      // 降水概率仅实时逐小时有（7 天无该字段），缺失则留空显示 "--"
+      precipitation_probability_max: popPct != null ? [popPct] : [],
+      temperature_2m_max: tempMax != null ? [tempMax] : [],
+      temperature_2m_min: tempMin != null ? [tempMin] : [],
+    };
+
+    // 归一化 aqi（和风空气质量 v1：indexes[0] 为综合 AQI，pollutants[] 为各项浓度）
+    let aqi = null;
+    if (aq && aq.indexes && aq.indexes[0]) {
+      const idx = aq.indexes[0];
+      const ps = aq.pollutants || [];
+      const conc = (code) => {
+        const p = ps.find((x) => x.code === code);
+        return p && p.concentration && p.concentration.value != null ? Number(p.concentration.value) : null;
+      };
+      aqi = {
+        current: {
+          label: idx.category || "--",
+          cls: mapCategory(idx.category),
+          aqi: idx.aqi != null ? Number(idx.aqi) : null,
+          pm2_5: conc("pm2p5"),
+          pm10: conc("pm10"),
+          o3: conc("o3"),
+          no2: conc("no2"),
+          so2: conc("so2"),
+          co: conc("co"),
+        },
+      };
+    }
+
+    // 城市名（到区）
+    let city = C.defaultCity;
+    if (geo && geo.location && geo.location[0]) {
+      const g = geo.location[0];
+      city = formatCity(g.adm1, g.adm2, g.name) || C.defaultCity;
+    }
+
+    return { cur, daily, aqi, city };
+  }
+
+  // uapis.cn：国内第一数据源，完全免费、无需 Key、单接口返回全部数据
+  // 浏览器端直接 fetch 即可：该接口会反射 Origin 头返回 Access-Control-Allow-Origin，跨域放行
+  // 归一化成与 QWeather / Open-Meteo 相同结构，render() 无需区分数据源
+  async function fetchUapis(_lat, _lon) {
+    // 不传 city/adcode 时按客户端 IP 自动定位（兜底场景最稳妥）
+    const url =
+      "https://uapis.cn/api/v1/misc/weather?lang=zh&extended=true&forecast=true&hourly=true";
+    const r = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!r.ok) throw new Error("uapis " + r.status);
+    const j = await r.json();
+    if (!j || (j.city == null && j.weather == null)) throw new Error("uapis empty");
+
+    const hourly = Array.isArray(j.hourly_forecast) ? j.hourly_forecast : [];
+    const dirDeg = dirTextToDeg(j.wind_direction);
+    const windKmh =
+      hourly[0] && hourly[0].wind_speed != null
+        ? Number(hourly[0].wind_speed)
+        : windPowerToKmh(j.wind_power);
+
+    // 归一化 current（字段名对齐 Open-Meteo；weather_icon 复用 QWeather 代码映射）
+    const cur = {
+      temperature_2m: Number(j.temperature),
+      apparent_temperature: j.feels_like != null ? Number(j.feels_like) : Number(j.temperature),
+      relative_humidity_2m: Number(j.humidity),
+      weather_code: Number(j.weather_icon),
+      wind_direction_10m: dirDeg,
+      wind_speed_10m: windKmh,
+      surface_pressure: Number(j.pressure),
+      cloud_cover: Number(j.cloud),
+      visibility: Number(j.visibility) * 1000, // km → m 对齐 render
+      precipitation: Number(j.precipitation) || 0,
+      uv_index: j.uv != null ? Number(j.uv) : null,
+    };
+
+    const f0 = j.forecast && j.forecast[0] ? j.forecast[0] : {};
+
+    // 降水概率：实测 hourly_forecast 的每项只有 time/temperature/weather/wind_*/humidity/
+    // feels_like/visibility，压根没有 pop，真正的降水概率在 forecast[].pop（整数百分比）。
+    // 这里以 forecast[0].pop 为准，逐小时扫描留作兜底（万一以后接口补上该字段）。
+    // 注意用 null 判空而不是 >0，否则今天概率真是 0% 会被当成"没数据"显示成 --
+    let popVal = null;
+    hourly.forEach((h) => {
+      const p = Number(h.pop);
+      if (!isNaN(p) && (popVal == null || p > popVal)) popVal = p;
+    });
+    if (popVal == null && f0.pop != null && !isNaN(Number(f0.pop))) popVal = Number(f0.pop);
+
+    const daily = {
+      // 日出日落来自 forecast[0]（HH:mm）
+      sunrise: f0.sunrise ? [f0.sunrise] : [],
+      sunset: f0.sunset ? [f0.sunset] : [],
+      precipitation_probability_max: popVal != null ? [Math.round(popVal)] : [],
+      temperature_2m_max: j.temp_max != null ? [Number(j.temp_max)] : [],
+      temperature_2m_min: j.temp_min != null ? [Number(j.temp_min)] : [],
+    };
+
+    // 归一化 aqi（air_pollutants 各项浓度；co 有的数据源不返回）
+    const ap = j.air_pollutants || {};
+    const aqi = {
+      current: {
+        label: j.aqi_category || "--",
+        cls: mapCategory(j.aqi_category),
+        aqi: j.aqi != null ? Number(j.aqi) : null,
+        pm2_5: ap.pm25 != null ? Number(ap.pm25) : null,
+        pm10: ap.pm10 != null ? Number(ap.pm10) : null,
+        o3: ap.o3 != null ? Number(ap.o3) : null,
+        no2: ap.no2 != null ? Number(ap.no2) : null,
+        so2: ap.so2 != null ? Number(ap.so2) : null,
+        co: ap.co != null ? Number(ap.co) : null,
+      },
+    };
+
+    // 城市名：接口按 IP 定位会同时给 province / city / district
+    // 走 stripAdm 剥掉"市/区"后缀，输出跟和风的 formatCity 完全一致（钦州钦北）
+    const city = (() => {
+      const c = stripAdm(j.city); // "钦州市" → "钦州"
+      const d = stripAdm(j.district); // "钦北区" → "钦北"；"市辖区" → ""
+      if (c && d && d !== c && !c.includes(d)) return c + d;
+      return c || d || C.defaultCity;
+    })();
+
+    return { cur, daily, aqi, city };
+  }
+
+  // 统一写入文本，避免 querySelector 返回 null 触发 strictNullChecks 报错
+  function setText(parent, sel, val) {
+    const n = parent.querySelector(sel);
+    if (n) n.textContent = val;
+  }
+
+  function render(el, cur, daily, aqi, city) {
+    const pair = QW[cur.weather_code] || CODE[cur.weather_code] || ["🌡️", "未知"];
+    setText(el, ".weather-icon", pair[0]);
+    setText(el, ".weather-temp", Math.round(cur.temperature_2m) + tempSign);
+    setText(el, ".weather-city", city);
+    setText(el, ".weather-desc", pair[1]);
+
+    // 最高温 / 最低温（收起态显示）
+    if (daily?.temperature_2m_max?.[0] != null && daily?.temperature_2m_min?.[0] != null) {
+      const tMax = Math.round(daily.temperature_2m_max[0]);
+      const tMin = Math.round(daily.temperature_2m_min[0]);
+      setText(el, ".weather-temp-range", tMin + "° / " + tMax + "°");
+    }
+
+    // 风力：方位 + 等级
+    const wDir = windDir(cur.wind_direction_10m);
+    const wBft = beaufort(cur.wind_speed_10m);
+    setText(el, ".weather-wind-detail", wDir + "风 " + wBft + "级");
+
+    // 能见度（km，保留 1 位小数）
+    if (cur.visibility != null) {
+      setText(el, ".weather-vis", (cur.visibility / 1000).toFixed(1) + "km");
+    }
+
+    // 体感 / 湿度 / 气压 / 云量 / 紫外线 / 降水量
+    setText(el, ".weather-feel", Math.round(cur.apparent_temperature) + tempSign);
+    setText(el, ".weather-humidity", Math.round(cur.relative_humidity_2m) + "%");
+    if (cur.surface_pressure != null) {
+      setText(el, ".weather-pressure", Math.round(cur.surface_pressure) + "hPa");
+    }
+    if (cur.cloud_cover != null) {
+      setText(el, ".weather-cloud", Math.round(cur.cloud_cover) + "%");
+    }
+    if (cur.uv_index != null) {
+      setText(el, ".weather-uv", Math.round(cur.uv_index));
+    }
+    if (cur.precipitation != null) {
+      setText(el, ".weather-precip", cur.precipitation.toFixed(1) + "mm");
+    }
+
+    // 降水概率（来自 daily；QWeather 7d 无此字段，Open-Meteo 有）
+    if (daily?.precipitation_probability_max?.[0] != null) {
+      setText(el, ".weather-precip-prob", daily.precipitation_probability_max[0] + "%");
+    } else {
+      setText(el, ".weather-precip-prob", "--");
+    }
+
+    // 日出 / 日落（和风返回 "HH:mm"，Open-Meteo 返回 ISO datetime）
+    const fmtTime = (s) => (s.length <= 5 ? s : s.slice(11, 16));
+    if (daily?.sunrise?.[0]) {
+      setText(el, ".weather-sunrise", fmtTime(daily.sunrise[0]));
+    }
+    if (daily?.sunset?.[0]) {
+      setText(el, ".weather-sunset", fmtTime(daily.sunset[0]));
+    }
+
+    // 空气质量 AQI（大数字 + 彩色圆角标签）
+    const aqiNumEl = el.querySelector(".weather-aqi-num");
+    const aqiBadgeEl = el.querySelector(".weather-aqi-badge");
+    // 兼容：缓存可能直接存了 .current 内层对象（无外层 {current:{}} 包裹）
+    const aqiRaw = aqi;
+    const aqiCur = (aqiRaw && aqiRaw.current) ? aqiRaw.current : ((aqiRaw && typeof aqiRaw.aqi === "number") ? aqiRaw : null);
+    if (aqiCur?.label) {
+      // 和风：数字 + 分类标签（如 27 + 优）
+      if (aqiNumEl) aqiNumEl.textContent = aqiCur.aqi != null ? String(aqiCur.aqi) : "--";
+      if (aqiBadgeEl) { aqiBadgeEl.textContent = aqiCur.label; aqiBadgeEl.className = "aqi-badge " + (aqiCur.cls || ""); }
+    } else if (aqiCur?.us_aqi != null) {
+      // Open-Meteo：用 US AQI 算等级
+      const a = aqiLabel(aqiCur.us_aqi);
+      if (aqiNumEl) aqiNumEl.textContent = String(aqiCur.us_aqi);
+      if (aqiBadgeEl) { aqiBadgeEl.textContent = a.text; aqiBadgeEl.className = "aqi-badge " + a.cls; }
+    } else {
+      if (aqiNumEl) aqiNumEl.textContent = "--";
+      if (aqiBadgeEl) { aqiBadgeEl.textContent = ""; aqiBadgeEl.className = "aqi-badge"; }
+    }
+
+    // 污染物浓度（3列网格：标签在上，数值在下）
+    const c = aqiCur;
+    const pc = el.querySelector(".weather-pollutants");
+    if (pc) {
+      pc.textContent = "";
+      // 每项: [显示名(化学式下标), 数据key, 值格式化函数]
+      const items = [
+        ["PM\u2082.\u2085", "pm2_5", null],
+        ["PM\u2081\u2080", "pm10", null],
+        ["O\u2083", "o3", null],
+        ["NO\u2082", "no2", null],
+        ["SO\u2082", "so2", null],
+        ["CO", "co", (v) => (v != null && isFinite(v)) ? (Number.isInteger(Number(v)) ? String(Number(v)) : Number(v).toFixed(1)) : null],
+      ];
+      const has = items.some(([, k]) => c?.[k] != null);
+      if (c && has) {
+        items.forEach(([label, key, fmt]) => {
+          const val = fmt ? fmt(c?.[key]) : c?.[key];
+          const chip = document.createElement("span");
+          chip.className = "pollutant-chip";
+          const lab = document.createElement("span");
+          lab.className = "pc-label";
+          lab.innerHTML = label;
+          const v = document.createElement("span");
+          v.className = "pc-val";
+          v.textContent = (val != null && val !== "" && Number(val) === Number(val)) ? String(val) : "--";
+          chip.appendChild(lab);
+          chip.appendChild(v);
+          pc.appendChild(chip);
+        });
+      } else {
+        pc.textContent = "--";
+      }
+    }
+
+    // 更新时间
+    const t = new Date();
+    const hh = t.getHours().toString().padStart(2, "0");
+    const mm = t.getMinutes().toString().padStart(2, "0");
+    setText(el, ".weather-update", "更新于 " + hh + ":" + mm);
+  }
+
+  // Open-Meteo 国外源：天气 + 空气质量 + 反向地理编码，打包成一个归一化结果
+  // 这样它跟国内源一样是"一个函数返回 {cur,daily,aqi,city}"，能塞进下面的注册表
+  async function fetchOpenMeteoSource(lat, lon) {
+    const [d, aqi] = await Promise.all([fetchWeather(lat, lon), fetchAirQuality(lat, lon)]);
+    let city = C.defaultCity;
+    const g = await reverseGeocode(lat, lon, getGeocodeLang());
+    if (g) {
+      // 同样走 stripAdm，跟国内两个源统一成"钦州钦北"这种短名
+      const c = stripAdm(g.city);
+      const l = stripAdm(g.locality);
+      if (c && l && l !== c) {
+        if (l.startsWith(c)) city = l; // locality 已含市名，避免"北京北京朝阳"
+        else if (c.includes(l)) city = c;
+        // 中文直接拼（上海浦东）；英文拼起来是"ShanghaiPudong Xinqu"，只留市名
+        else city = /[\u4e00-\u9fa5]/.test(c + l) ? c + l : c;
+      } else {
+        city = c || l || stripAdm(g.principalSubdivision) || C.defaultCity;
+      }
+    }
+    return { cur: d.current, daily: d.daily, aqi, city };
+  }
+
+  // wttr.in：免费免 Key，还带 CORS 头，浏览器直接能 fetch。按经纬度出 JSON
+  // 它的天气代码是 weather.com 那套（113=晴），转成 WMO 让 CODE 表能出图标
+  const WTTR_WMO = {
+    113: 0, 116: 2, 119: 3, 122: 3, 143: 45, 176: 61, 179: 71, 182: 80, 185: 56, 200: 95,
+    227: 73, 230: 73, 248: 45, 260: 48, 263: 53, 266: 53, 281: 56, 284: 57, 293: 61, 296: 61,
+    299: 63, 302: 63, 305: 65, 308: 65, 311: 66, 314: 67, 317: 67, 320: 71, 323: 71, 326: 71,
+    329: 73, 332: 73, 335: 75, 338: 75, 350: 77, 353: 80, 356: 81, 359: 82, 362: 80, 365: 81,
+    368: 85, 371: 86, 374: 80, 377: 81, 386: 95, 389: 95, 392: 95, 395: 95,
+  };
+  // 日出日落是 "06:35 AM" 这种 12 小时制，转成 24 小时给 render
+  function ampmToHHmm(s) {
+    const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(s || "");
+    if (!m) return null;
+    let h = parseInt(m[1], 10);
+    const min = m[2];
+    if (m[3].toUpperCase() === "PM" && h !== 12) h += 12;
+    if (m[3].toUpperCase() === "AM" && h === 12) h = 0;
+    return String(h).padStart(2, "0") + ":" + min;
+  }
+  async function fetchWttr(lat, lon) {
+    // ⚠ 路径前不能加冒号：wttr.in 把 /:xxx 视为内部特殊页，会忽略坐标返回固定地点的天气
+    const r = await fetch("https://wttr.in/" + lat + "," + lon + "?format=j1");
+    if (!r.ok) throw new Error("wttr.in " + r.status);
+    const d = await r.json();
+    const c = d.current_condition && d.current_condition[0];
+    if (!c) throw new Error("wttr.in 无当前天气");
+    const w0 = d.weather && d.weather[0];
+    const astro = w0 && w0.astronomy && w0.astronomy[0];
+    // 逐小时里的降雨概率取个最大值，填到 daily（没有就空着，render 显示 --）
+    let pop = 0;
+    if (w0 && Array.isArray(w0.hourly)) {
+      for (const h of w0.hourly) {
+        const p = parseInt(h.chanceofrain, 10);
+        if (!isNaN(p) && p > pop) pop = p;
+      }
+    }
+    const cur = {
+      weather_code: WTTR_WMO[parseInt(c.weatherCode, 10)] != null ? WTTR_WMO[parseInt(c.weatherCode, 10)] : 3,
+      temperature_2m: Number(c.temp_C),
+      apparent_temperature: Number(c.FeelsLikeC),
+      relative_humidity_2m: Number(c.humidity),
+      wind_direction_10m: Number(c.winddirDegree),
+      wind_speed_10m: Number(c.windspeedKmph), // 已经是 km/h，beaufort 直接用
+      visibility: Number(c.visibility) * 1000,  // km → m，对齐 render
+      surface_pressure: Number(c.pressure),
+      cloud_cover: Number(c.cloudcover),
+      uv_index: Number(c.uvIndex),
+      precipitation: Number(c.precipMM) || 0,
+    };
+    const daily = {
+      temperature_2m_max: w0 ? [Number(w0.maxtempC)] : [],
+      temperature_2m_min: w0 ? [Number(w0.mintempC)] : [],
+      sunrise: astro && ampmToHHmm(astro.sunrise) ? [ampmToHHmm(astro.sunrise)] : [],
+      sunset: astro && ampmToHHmm(astro.sunset) ? [ampmToHHmm(astro.sunset)] : [],
+      precipitation_probability_max: pop > 0 ? [pop] : [],
+    };
+    const area = d.nearest_area && d.nearest_area[0];
+    const city = (area && area.areaName && area.areaName[0] && area.areaName[0].value) || C.defaultCity;
+    // 免费接口不带空气质量，aqi 给 null，render 会显示 --
+    return { cur, daily, aqi: null, city };
+  }
+
+  // 数据源注册表：想加自己的 API，照着 push 一个对象、写个 fetch 函数就行，不用动主流程
+  // region: "cn" = 国内, "global" = 国外；数组顺序即优先级：uapis（国内免 Key，第一优先）→ 和风（国内兜底，需 Key）→ Open-Meteo（国外）→ wttr（全球兜底）；enabled 由配置开关控制（和风还需有 Key）
+  const SOURCES = [
+    { name: "uapis", region: "cn", enabled: C.enableUapis, fetch: (lat, lon) => fetchUapis(lat, lon) },
+    { name: "qweather", region: "cn", enabled: C.enableQWeather && !!C.qweatherKey, fetch: (lat, lon) => fetchQWeather(lat, lon, C.qweatherKey) },
+    { name: "openmeteo", region: "global", enabled: C.enableOpenMeteo, fetch: (lat, lon) => fetchOpenMeteoSource(lat, lon) },
+    { name: "wttr", region: "global", enabled: C.enableWttr, fetch: (lat, lon) => fetchWttr(lat, lon) },
+  ];
+
+  // 按坐标判断国内/国外：先试本区 enabled 的源，按 SOURCES 数组顺序依次兜底；本区全失败才跨区兜底。
+  // 例：国内定位时优先用 uapis；只有 uapis 关了才轮到和风；两者都关才跨区到 Open-Meteo。
+  async function pickSource(lat, lon, region) {
+    const primary = SOURCES.filter((s) => s.region === region && s.enabled);
+    const fallback = SOURCES.filter((s) => s.region !== region && s.enabled);
+    const order = primary.concat(fallback);
+    if (order.length === 0) throw new Error("没有启用任何天气源");
+    let lastErr;
+    for (const s of order) {
+      try {
+        const data = await s.fetch(lat, lon);
+        if (data && data.cur) return data;
+      } catch (e) {
+        lastErr = e;
+        console.warn("[weather] 数据源 " + s.name + " 失败，尝试下一个：", e);
+      }
+    }
+    throw lastErr || new Error("所有数据源都失败了");
+  }
+
+  // 带硬性超时的定位：getCurrentPosition 的 timeout 选项在不少环境下不靠谱，
+  // 这里用 Promise + setTimeout 兜底，最多等 5 秒，超时/失败一律回退 null（走默认城市）
+  async function getPosition() {
+    if (!C.autoLocate || !navigator.geolocation) return null;
+    return new Promise((res) => {
+      let done = false;
+      const finish = (v) => {
+        if (!done) {
+          done = true;
+          res(v);
+        }
+      };
+      const timer = setTimeout(() => finish(null), 5000);
+      try {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            clearTimeout(timer);
+            finish(pos);
+          },
+          () => {
+            clearTimeout(timer);
+            finish(null);
+          },
+          { timeout: 5000, maximumAge: 10 * 60 * 1000 },
+        );
+      } catch {
+        clearTimeout(timer);
+        finish(null);
+      }
+    });
+  }
+
+  async function initWeather() {
+    const root = document.getElementById(widgetId);
+    if (!root) return;
+    const el = root.querySelector("[data-widget]");
+    if (!el) return;
+
+    // 折叠/展开按钮（header 右侧）：切换详情区
+    const toggle = root.querySelector(".weather-toggle");
+    if (toggle && !toggle.dataset.bound) {
+      toggle.dataset.bound = "1";
+      toggle.addEventListener("click", () => {
+        const open = el.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        toggle.setAttribute("aria-label", open ? "收起天气详情" : "展开天气详情");
+      });
+    }
+
+    // 10 分钟内读缓存，避免反复弹定位授权 / 重复请求接口
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        const o = JSON.parse(cached);
+        if (Date.now() - o.t < 10 * 60 * 1000) {
+          render(el, o.cur || o.current, o.daily, o.aqi, o.city);
+          return;
+        }
+      } catch {}
+    }
+
+    let lat, lon;
+
+    const p = await getPosition();
+    if (p) {
+      lat = p.coords.latitude;
+      lon = p.coords.longitude;
+    }
+    if (lat == null) {
+      lat = C.defaultLat;
+      lon = C.defaultLon;
+    }
+
+    try {
+      // 按坐标判断国内/国外，从注册表里挑一个能用的源（本区优先，失败再试其它区兜底）
+      const region = isInChina(lat, lon) ? "cn" : "global";
+      const data = await pickSource(lat, lon, region);
+      render(el, data.cur, data.daily, data.aqi, data.city);
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ t: Date.now(), cur: data.cur, daily: data.daily, aqi: data.aqi, city: data.city }),
+      );
+    } catch {
+      setText(el, ".weather-city", "获取失败");
+      setText(el, ".weather-desc", "请检查网络");
+    }
+  }
+
+  // 首屏兜底：astro:page-load 在脚本执行前就已派发时会“错过”监听，
+  // 导致 initWeather 永不触发、一直卡在“定位中”。这里直接执行一次，
+  // 并用 ran 标记防止与后续 astro:page-load 重复渲染。
+  let ran = false;
+  function runWeather() {
+    if (ran) return;
+    ran = true;
+    initWeather();
+  }
+
+  // 首屏直接跑（侧边栏 DOM 已就绪），保证一定能渲染出数据
+  runWeather();
+  // Swup 每次 SPA 导航都会派发，保证脚本重入（已渲染过的页面会被 ran 拦掉）
+  document.addEventListener("astro:page-load", runWeather);
+</script>
