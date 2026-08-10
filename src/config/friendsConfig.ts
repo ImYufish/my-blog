@@ -54,7 +54,7 @@ export const friendsConfig: FriendLink[] = [
 		title: "Firefly-Markdown",
 		imgurl: "https://md.x1anyu.cn/assets/favicon.png",
 		desc: "一个适用于Firefly主题字段的MD编辑器",
-		siteurl: "https://github.com/ly-x1anyu/firefly-Markdown/",
+		siteurl: "https://github.com/ImYufish/Firefly-Markdown",
 		tags: ["instrument"],
 		weight: 9,
 		enabled: true,
