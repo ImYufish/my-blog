@@ -346,7 +346,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                           <SharePoster
                             client:load
                             title={entry.data.title}
-                            author={profileConfig.name}
+                            author={entry.data.author || profileConfig.name}
                             description={entry.data.description || entry.data.title}
                             pubDate={formatDateToYYYYMMDD(entry.data.published)}
                             coverImage={posterCoverUrl}
@@ -436,7 +436,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                           <SharePoster
                             client:load
                             title={entry.data.title}
-                            author={profileConfig.name}
+                            author={entry.data.author || profileConfig.name}
                             description={entry.data.description || entry.data.title}
                             pubDate={formatDateToYYYYMMDD(entry.data.published)}
                             coverImage={posterCoverUrl}

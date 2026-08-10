@@ -428,11 +428,10 @@ if (document.readyState === 'loading') {
                 }
             }
 
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', loadPagefind);
-            } else {
-                loadPagefind();
-            }
+            window.__loadPagefind = function () {
+                if (!window.__pagefindLoading) window.__pagefindLoading = loadPagefind();
+                return window.__pagefindLoading;
+            };
         </script>
     )
 }
