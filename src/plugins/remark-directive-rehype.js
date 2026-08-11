@@ -78,23 +78,45 @@ export function parseDirectiveNode() {
 					// 关键：清除可能存在的 hProperties，防止变为自定义标签
 					delete node.data.hProperties;
 				} else {
-					// 其他 Directive，保留原有逻辑：转换为自定义 HTML 标签
-					const data = node.data || {};
-					node.data = data;
-					node.attributes = node.attributes || {};
+					// 一言指令：转换为带 data 属性的占位 div/span，由全局客户端脚本填充
+					if (name === "hitokoto") {
+						const a = node.attributes || {};
+						const isInline = node.type === "textDirective";
+						const props = {
+							class: "hitokoto-inline",
+							"data-hitokoto-inline": "",
+						};
+						const typeVal = a.type || a.categories;
+						if (typeVal) props["data-type"] = String(typeVal);
+						if (a.source !== undefined) props["data-source"] = String(a.source);
+						if (a.author !== undefined) props["data-author"] = String(a.author);
+						if (a.category !== undefined) props["data-category"] = String(a.category);
+						if (a.mode) props["data-mode"] = String(a.mode);
+						if (a.text) props["data-text"] = String(a.text);
+						const data = node.data || {};
+						node.data = data;
+						// 行内指令用 span，块级（leaf/container）用 div
+						data.hName = isInline ? "span" : "div";
+						data.hProperties = props;
+					} else {
+						// 其他 Directive，保留原有逻辑：转换为自定义 HTML 标签
+						const data = node.data || {};
+						node.data = data;
+						node.attributes = node.attributes || {};
 
-					// Add specific attributes for directive labels
-					if (
-						node.children.length > 0 &&
-						node.children[0].data &&
-						node.children[0].data.directiveLabel
-					) {
-						node.attributes["has-directive-label"] = true;
+						// Add specific attributes for directive labels
+						if (
+							node.children.length > 0 &&
+							node.children[0].data &&
+							node.children[0].data.directiveLabel
+						) {
+							node.attributes["has-directive-label"] = true;
+						}
+
+						const hast = h(node.name, node.attributes);
+						data.hName = hast.tagName;
+						data.hProperties = hast.properties;
 					}
-
-					const hast = h(node.name, node.attributes);
-					data.hName = hast.tagName;
-					data.hProperties = hast.properties;
 				}
 			}
 		});

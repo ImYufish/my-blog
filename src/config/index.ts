@@ -35,6 +35,7 @@ export type {
 	WidgetComponentType,
 	WidgetSpecificConfig,
 	WeatherConfig,
+	HitokotoConfig,
 } from "../types/config";
 export type {
 	BuiltinFontProvider,
@@ -73,3 +74,4 @@ export { siteConfig } from "./siteConfig"; // 站点基础配置
 export { sponsorConfig } from "./sponsorConfig"; // 打赏配置
 
 export { weatherConfig } from "./weatherConfig"; // 天气组件配置
+export { hitokotoConfig } from "./hitokotoConfig"; // 一言组件配置

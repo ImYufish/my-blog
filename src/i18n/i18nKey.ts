@@ -452,6 +452,7 @@ enum I18nKey {
 	videoLoadError = "videoLoadError",
 	
 	weather = "weather",
+	hitokoto = "hitokoto",
 }
 
 export default I18nKey;

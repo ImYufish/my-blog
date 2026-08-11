@@ -12,6 +12,7 @@ import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
+import { hitokotoConfig } from "@/config/hitokotoConfig";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import {
 	backgroundWallpaper,
@@ -131,6 +132,14 @@ const getRandomSubtitle = () => {
 	return subtitle;
 };
 const randomSubtitle = getRandomSubtitle();
+
+// ↓ 横幅副标题读一言配置中心，决定走一言模式还是英文 preset
+const subtitleMode = hitokotoConfig.banner.enable ? "hitokoto" : "preset";
+// hitokoto 模式下即使没配 subtitle 数组，横幅副标题也要渲染（去拉一言）
+const showSubtitle =
+  !!backgroundWallpaper.common?.homeText?.subtitle || subtitleMode === "hitokoto";
+// 安全引用 homeText，避免 common/homeText 为 undefined 时报类型错误
+const ht = backgroundWallpaper.common?.homeText;
 
 // 主页横幅文本只在首页且全局开关为 true 时显示，不区分设备
 const homeTextEnable = backgroundWallpaper.common?.homeText?.enable;
@@ -869,17 +878,25 @@ const hasMultipleImages =
                             {backgroundWallpaper.common.homeText.title}
                         </div>
                     )}
-                    {backgroundWallpaper.common?.homeText?.subtitle && (
-                        <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.common.homeText.subtitleSize || "1.5rem" }} data-subtitles={JSON.stringify(backgroundWallpaper.common.homeText.subtitle)}>
-                            {backgroundWallpaper.common.homeText.typewriter?.enable ? (
+                    {showSubtitle && (
+                        <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: ht?.subtitleSize || "1.5rem" }}
+                            {...(subtitleMode === "hitokoto"
+                            ? { "data-hitokoto": "1", "data-subtitles-en": JSON.stringify(ht?.subtitle ?? []) }
+                            : { "data-subtitles": JSON.stringify(ht?.subtitle ?? []) })}
+                        >
+                            {subtitleMode === "hitokoto" ? (
+                            <span class="hitokoto-banner-loading">…</span>
+                            ) : (
+                            ht?.typewriter?.enable ? (
                                 <TypewriterText
-                                    text={backgroundWallpaper.common.homeText.subtitle}
-                                    speed={backgroundWallpaper.common.homeText.typewriter.speed}
-                                    deleteSpeed={backgroundWallpaper.common.homeText.typewriter.deleteSpeed}
-                                    pauseTime={backgroundWallpaper.common.homeText.typewriter.pauseTime}
+                                text={ht?.subtitle ?? ""}
+                                speed={ht?.typewriter?.speed ?? 100}
+                                deleteSpeed={ht?.typewriter?.deleteSpeed ?? 50}
+                                pauseTime={ht?.typewriter?.pauseTime ?? 2000}
                                 />
                             ) : (
                                 randomSubtitle
+                            )
                             )}
                         </div>
                     )}
@@ -915,6 +932,163 @@ const hasMultipleImages =
 
         // Run on initial load
         setRandomSubtitle();
+    </script>
+
+    <script>
+        import { getRandomHitokoto, formatHitokoto } from "@/utils/hitokoto";
+        import { hitokotoConfig, HITOKOTO_CAT_NAMES } from "@/config/hitokotoConfig";
+
+        // 横幅一言循环打字机：拉一条→逐字打出来→停留→往回删→拉下一条，无限轮播
+        // 用递增 token 在 Swup 重入/页面切换时作废上一段动画，避免新旧两段打架
+        let _bannerTwToken = 0;
+        let _bannerTwTimer: number | null = null;
+
+        function clearBannerTw() {
+            _bannerTwToken++;
+            if (_bannerTwTimer !== null) {
+            clearTimeout(_bannerTwTimer);
+            _bannerTwTimer = null;
+            }
+        }
+
+        function sleepBanner(ms: number): Promise<void> {
+            return new Promise((resolve) => {
+            _bannerTwTimer = window.setTimeout(resolve, ms);
+            });
+        }
+
+        async function bannerHitokotoLoop(
+            el: HTMLElement,
+            opts: {
+            eff: Record<string, boolean>;
+            showSource: boolean;
+            showAuthor: boolean;
+            showCategory: boolean;
+            typeSpeed: number;
+            deleteSpeed: number;
+            pause: number;
+            }
+        ) {
+            const myToken = _bannerTwToken;
+            const fetchOne = () =>
+            getRandomHitokoto({ ...hitokotoConfig, enableCategories: opts.eff }).then((item) => {
+                const suffix = formatHitokoto(item, {
+                showSource: opts.showSource,
+                showAuthor: opts.showAuthor,
+                showCategory: opts.showCategory,
+                catNames: HITOKOTO_CAT_NAMES,
+                });
+                return item.hitokoto + (suffix ? "　" + suffix : "");
+            });
+
+            while (myToken === _bannerTwToken) {
+            let full: string;
+            try {
+                full = await fetchOne();
+            } catch (e) {
+                if (myToken !== _bannerTwToken) return;
+                console.warn("[banner-hitokoto] 加载失败：", e);
+                // 关掉回退开关且远程取不到：横幅副标题不隐藏，自动切回英文预设副标题（若有），避免留空难看；无英文预设才隐藏
+                if (!hitokotoConfig.fallbackToLocal) {
+                const en = JSON.parse((el.dataset.subtitlesEn as string) ?? "[]");
+                if (Array.isArray(en) && en.length) {
+                    el.textContent = en[Math.floor(Math.random() * en.length)];
+                    el.classList.remove("hitokoto-tw-cursor");
+                } else {
+                el.style.display = "none";
+                }
+                return;
+                }
+                el.textContent = "一言加载失败，请检查网络";
+                return;
+            }
+            if (myToken !== _bannerTwToken) return;
+            const chars = Array.from(full); // 按码点切分，避免 CJK/emoji 截断
+            el.textContent = "";
+            el.classList.add("hitokoto-tw-cursor");
+            // 正向逐字打出
+            for (let i = 1; i <= chars.length; i++) {
+                if (myToken !== _bannerTwToken) return;
+                el.textContent = chars.slice(0, i).join("");
+                await sleepBanner(opts.typeSpeed);
+            }
+            // 一句打完，停留一会儿
+            await sleepBanner(opts.pause);
+            if (myToken !== _bannerTwToken) return;
+            // 往回逐字删除（i >= 0：把最后一个字也删干净，否则会残留一个字）
+            for (let i = chars.length - 1; i >= 0; i--) {
+                if (myToken !== _bannerTwToken) return;
+                el.textContent = chars.slice(0, i).join("");
+                await sleepBanner(opts.deleteSpeed);
+            }
+            el.classList.remove("hitokoto-tw-cursor");
+            // 删完后停顿，再拉下一条
+            await sleepBanner(opts.pause);
+            }
+        }
+
+        function renderBannerHitokoto() {
+            const el = document.getElementById("banner-subtitle");
+            if (!el || el.dataset.hitokoto !== "1") return;
+            // 横幅展示参数/分类/打字机直接读一言配置中心，不再经 data 属性中转
+            const b = hitokotoConfig.banner;
+            const showSource = b.showSource;
+            const showAuthor = b.showAuthor;
+            const showCategory = b.showCategory;
+            // 横幅分类白名单：指定则只从这些分类抽，并与总开关取交集；空数组则用全部
+            const master = hitokotoConfig.enableCategories as Record<string, boolean>;
+            const eff = b.categories && b.categories.length
+            ? b.categories.reduce((acc, c) => {
+                acc[c] = !!master[c];
+                return acc;
+                }, {} as Record<string, boolean>)
+            : master;
+            clearBannerTw();
+            if (!b.typewriter) {
+            // 关掉打字机：拉一条直接显示，不打字也不循环
+            getRandomHitokoto({ ...hitokotoConfig, enableCategories: eff })
+                .then((item) => {
+                if (el.dataset.hitokoto !== "1") return;
+                const suffix = formatHitokoto(item, {
+                    showSource,
+                    showAuthor,
+                    showCategory,
+                    catNames: HITOKOTO_CAT_NAMES,
+                });
+                el.textContent = item.hitokoto + (suffix ? "　" + suffix : "");
+                })
+                .catch((e) => {
+                console.warn("[banner-hitokoto] 加载失败：", e);
+                // 关掉回退开关且远程取不到：横幅副标题不隐藏，自动切回英文预设副标题（若有），避免留空难看；无英文预设才隐藏
+                if (!hitokotoConfig.fallbackToLocal) {
+                    const en = JSON.parse((el.dataset.subtitlesEn as string) ?? "[]");
+                    if (Array.isArray(en) && en.length) {
+                    el.textContent = en[Math.floor(Math.random() * en.length)];
+                    el.classList.remove("hitokoto-tw-cursor");
+                    } else {
+                    el.style.display = "none";
+                    }
+                return;
+                }
+                el.textContent = "一言加载失败，请检查网络";
+                });
+            return;
+            }
+            // 打字机：拉一条→打完→删→拉下一条，无限轮播
+            bannerHitokotoLoop(el, {
+            eff,
+            showSource,
+            showAuthor,
+            showCategory,
+            typeSpeed: b.typewriterSpeed,
+            deleteSpeed: b.typewriterDeleteSpeed,
+            pause: b.typewriterPause,
+            });
+        }
+
+        // Swup 页面过渡会替换 DOM 但不重载脚本，靠此事件重新绑定到新节点；初次加载也会触发
+        document.addEventListener("astro:page-load", renderBannerHitokoto);
+        renderBannerHitokoto();
     </script>
 
     <!-- Non-home non-post page title overlay (desktop only) -->
@@ -1235,4 +1409,109 @@ const hasMultipleImages =
     }
   }
 
+  .hitokoto-inline {
+    display: block;
+    margin: 1rem 0;
+    padding: 0.6rem 1rem;
+    border-left: 3px solid var(--primary, #6366f1);
+    background: color-mix(in srgb, var(--primary, #6366f1) 8%, transparent);
+    border-radius: 0.5rem;
+    font-style: italic;
+    color: var(--color-neutral-700, #404040);
+    word-break: break-word;
+  }
+  span.hitokoto-inline {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 0;
+    color: inherit;
+  }
+  /* 底部 footer 内的一言：去掉边框/背景，改成居中浅色小字，融入备案信息区 */
+  .hitokoto-inline.hitokoto-footer {
+    display: block;
+    margin: 0.6rem auto 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 0;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--color-neutral-500, #737373);
+    text-align: center;
+    max-width: 42rem;
+  }
+  /* 横幅一言打字机光标（独立 keyframes，避免与 TypewriterText 的 blink 冲突） */
+  #banner-subtitle.hitokoto-tw-cursor::after {
+    content: "|";
+    margin-left: 2px;
+    animation: hitokoto-blink 1s steps(1, end) infinite;
+  }
+  @keyframes hitokoto-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
 </style>
+
+<script>
+  // 这一段接在上面 <style> 段之后，同样粘到文件最末尾（文章内/页脚填充脚本）：
+  import { getRandomHitokoto, formatHitokoto } from "@/utils/hitokoto";
+  import { hitokotoConfig, HITOKOTO_CAT_NAMES } from "@/config/hitokotoConfig";
+
+  function renderInlineHitokoto(el: HTMLElement) {
+    if (el.dataset.filled === "1") return;
+    el.dataset.filled = "1";
+    // 分类白名单：data-type 可填 "i" 或 "i,d"，与总开关取交集
+    const typeVal = el.dataset.type || "";
+    const cats = typeVal ? typeVal.split(/[,\s]+/).filter(Boolean) : [];
+    const master = hitokotoConfig.enableCategories as Record<string, boolean>;
+    const eff = cats.length
+      ? cats.reduce((acc, c) => {
+          acc[c] = !!master[c];
+          return acc;
+        }, {} as Record<string, boolean>)
+      : master;
+    const mode = (el.dataset.mode as "local" | "remote") || hitokotoConfig.bundleSource;
+    // 参数开关：写了就用写的值，没写用 hitokotoConfig 默认
+    const showSource = el.dataset.source ? el.dataset.source === "true" : hitokotoConfig.showSource;
+    const showAuthor = el.dataset.author ? el.dataset.author === "true" : hitokotoConfig.showAuthor;
+    const showCategory = el.dataset.category ? el.dataset.category === "true" : hitokotoConfig.showCategory;
+    getRandomHitokoto({ ...hitokotoConfig, enableCategories: eff, bundleSource: mode })
+      .then((item) => {
+        const suffix = formatHitokoto(item, {
+          showSource,
+          showAuthor,
+          showCategory,
+          catNames: HITOKOTO_CAT_NAMES,
+        });
+        const prefix = el.dataset.text ? el.dataset.text + " " : "";
+        el.textContent = prefix + item.hitokoto + (suffix ? "　—— " + suffix : "");
+      })
+      .catch((e) => {
+        console.warn("[hitokoto-inline] 加载失败：", e);
+        // 关掉回退开关且远程取不到：直接隐藏该内联元素，而不是显示错误文案
+        if (!hitokotoConfig.fallbackToLocal) {
+          el.style.display = "none";
+          return;
+        }
+        el.textContent = "一言加载失败";
+      });
+  }
+
+  function renderAllInlineHitokoto() {
+    document.querySelectorAll("[data-hitokoto-inline]").forEach((el) => {
+      // 底部 footer 在 Swup 容器之外、跨页面不换 DOM，需每次导航都强制重新拉一条
+      if ((el as HTMLElement).classList.contains("hitokoto-footer")) {
+        (el as HTMLElement).dataset.filled = "0";
+      }
+      renderInlineHitokoto(el as HTMLElement);
+    });
+  }
+
+  // Swup 页面过渡会替换 DOM 但不重载脚本，靠此事件重新绑定到新节点；初次加载也会触发
+  document.addEventListener("astro:page-load", renderAllInlineHitokoto);
+  renderAllInlineHitokoto();
+</script>

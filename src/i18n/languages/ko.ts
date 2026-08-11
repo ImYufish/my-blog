@@ -464,4 +464,5 @@ export const ko: Translation = {
 	[Key.videoLoadError]: "영상을 불러오지 못했습니다",
 
 	[Key.weather]: "날씨",    // ko
+	[Key.hitokoto]: "한 마디", // ko
 };

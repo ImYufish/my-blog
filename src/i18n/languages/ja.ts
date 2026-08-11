@@ -465,4 +465,5 @@ export const ja: Translation = {
 	[Key.videoLoadError]: "動画の読み込みに失敗しました",
 
 	[Key.weather]: "天気",   // ja
+	[Key.hitokoto]: "一言",
 };

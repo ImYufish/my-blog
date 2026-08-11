@@ -62,5 +62,6 @@ export type ResponsiveImageLayout = "constrained" | "full-width" | "none";
 // 图像格式类型
 export type ImageFormat = "avif" | "webp" | "png" | "jpg" | "jpeg" | "gif";
 
-// 天气组件
+// 天气组件，一言
 export type { WeatherConfig } from "./weatherConfig";
+export type { HitokotoConfig, HitokotoCategory } from "./hitokotoConfig";

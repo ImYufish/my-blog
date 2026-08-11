@@ -457,4 +457,5 @@ export const zh_TW: Translation = {
 	[Key.videoLoadError]: "影片載入失敗",
 
 	[Key.weather]: "天氣",   // zh_TW
+	[Key.hitokoto]: "一言",
 };

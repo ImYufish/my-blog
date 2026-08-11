@@ -11,6 +11,7 @@ export type WidgetComponentType =
 	| "music"
 	| "siteInfo"
 	| "weather"
+	| "hitokoto"
 	| "dynamic";
 
 export type WidgetComponentConfig = {

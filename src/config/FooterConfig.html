@@ -7,3 +7,13 @@
 <div style="text-align: center; font-size: 12px;">
   <a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral">本网站由又拍云提供云存储服务</a>
 </div>
+<!-- 打开 src/config/FooterConfig.html，在备案信息那行【下面】加这个 div： -->
+<!-- 一言（Hitokoto）底部展示：放在这里会被 Footer.astro 的 set:html 编译进同一份 DOM，
+     由 MainGridLayout.astro 内的全局脚本在页面加载时填充。
+     可用参数（与文章 ::hitokoto 指令一致）：
+       data-type="a"          只从某分类抽取；可多分类 data-type="i,d"；省略则用全局启用分类
+       data-source="true"     显示出处
+       data-author="true"     显示作者
+       data-category="true"   显示分类
+     示例：只显示一句动漫(a)分类、不带出处 -->
+<div class="hitokoto-inline hitokoto-footer" data-hitokoto-inline data-type="a"></div>
