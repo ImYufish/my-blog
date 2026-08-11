@@ -117,7 +117,11 @@ export function formatHitokoto(item: HitokotoItem, opts: HitokotoFormatOptions):
   }
   const tail: string[] = [];
   if (opts.showSource && item.from) tail.push("《" + item.from + "》");
-  if (opts.showAuthor && item.from_who) tail.push(item.from_who);
+  // 作者与出处相同时（原创/网络/抖机灵类投稿人既是来源也是作者）只在出处已显示的前提下跳过作者，
+  // 避免「《X》 X」冗余；出处没开时作者仍照常显示，不会误删
+  if (opts.showAuthor && item.from_who && !(opts.showSource && item.from && item.from_who === item.from)) {
+    tail.push(item.from_who);
+  }
   if (tail.length) parts.push("—— " + tail.join(" "));
   return parts.join(" ");
 }
