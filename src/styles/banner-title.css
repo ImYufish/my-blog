@@ -11,10 +11,34 @@
     font-family: var(--font-banner-title, inherit);
 }
 
+.banner-subtitle-wrap {
+    position: relative;
+    width: 100%;
+}
+
 .banner-subtitle {
+    /* 脱离文档流：叠在 .banner-subtitle-wrap 的一行占位之上，
+       高度变化只向下溢出 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
     /* 独立字体设置，通过 fontConfig.bannerSubtitleFont 配置 */
     font-family: var(--font-banner-subtitle, inherit);
+}
+
+/* 透明占位：永远占一行，把标题固定在「原本（一行副标题）的位置」；
+   真实副标题在其上绝对定位，高度变化只向下溢出，标题零位移（见 banner-title.css） */
+.banner-subtitle-placeholder {
+    position: static !important;
+    /* 必须 block：inline 占位生成的 line box 会被容器继承字体的 strut 行高撑高，
+       导致 wrap 比原本 block 副标题那一行高几个像素、整块居中后标题往下偏。
+       block 后高度 = 自身 1 行 line-height，与重构前副标题 block div 完全相等，标题回到原位置。 */
+    display: block !important;
+    visibility: hidden;
+    animation: none !important;
+    pointer-events: none;
 }
 
 /* 横幅背景暗层透明度 - 通过配置文件 common.dimOpacity 控制，内联样式覆盖 */

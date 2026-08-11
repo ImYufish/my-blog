@@ -879,24 +879,43 @@ const hasMultipleImages =
                         </div>
                     )}
                     {showSubtitle && (
-                        <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: ht?.subtitleSize || "1.5rem" }}
-                            {...(subtitleMode === "hitokoto"
-                            ? { "data-hitokoto": "1", "data-subtitles-en": JSON.stringify(ht?.subtitle ?? []) }
-                            : { "data-subtitles": JSON.stringify(ht?.subtitle ?? []) })}
-                        >
-                            {subtitleMode === "hitokoto" ? (
-                            <span class="hitokoto-banner-loading">…</span>
-                            ) : (
-                            ht?.typewriter?.enable ? (
-                                <TypewriterText
-                                text={ht?.subtitle ?? ""}
-                                speed={ht?.typewriter?.speed ?? 100}
-                                deleteSpeed={ht?.typewriter?.deleteSpeed ?? 50}
-                                pauseTime={ht?.typewriter?.pauseTime ?? 2000}
-                                />
-                            ) : (
-                                randomSubtitle
-                            )
+                        <div class="banner-subtitle-wrap">
+                            {/* 占位精确镜像真实副标题盒模型
+                                真实副标题 position:absolute 叠其上，超长只向下突破、不反推标题（见 banner-title.css） */}
+                            <span class="banner-subtitle banner-subtitle-placeholder text-white/90 leading-snug" aria-hidden="true" style={{ fontSize: ht?.subtitleSize || "1.5rem" }}>&nbsp;</span>
+                            <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: ht?.subtitleSize || "1.5rem" }}
+                                {...(subtitleMode === "hitokoto"
+                                ? { "data-hitokoto": "1" }
+                                : { "data-subtitles": JSON.stringify(ht?.subtitle ?? []) })}
+                            >
+                                {subtitleMode === "hitokoto" ? (
+                                <span class="hitokoto-banner-loading">…</span>
+                                ) : (
+                                ht?.typewriter?.enable ? (
+                                    <TypewriterText
+                                    text={ht?.subtitle ?? ""}
+                                    speed={ht?.typewriter?.speed ?? 100}
+                                    deleteSpeed={ht?.typewriter?.deleteSpeed ?? 50}
+                                    pauseTime={ht?.typewriter?.pauseTime ?? 2000}
+                                    />
+                                ) : (
+                                    randomSubtitle
+                                )
+                                )}
+                            </div>
+                            {subtitleMode === "hitokoto" && (
+                                <div id="banner-subtitle-fallback" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: ht?.subtitleSize || "1.5rem", display: "none" }} aria-hidden="true">
+                                    {ht?.typewriter?.enable ? (
+                                        <TypewriterText
+                                        text={ht?.subtitle ?? ""}
+                                        speed={ht?.typewriter?.speed ?? 100}
+                                        deleteSpeed={ht?.typewriter?.deleteSpeed ?? 50}
+                                        pauseTime={ht?.typewriter?.pauseTime ?? 2000}
+                                        />
+                                    ) : (
+                                        randomSubtitle
+                                    )}
+                                </div>
                             )}
                         </div>
                     )}
@@ -957,6 +976,29 @@ const hasMultipleImages =
             });
         }
 
+        // 副标题高度不再由 JS 控制：position:absolute 脱离文档流（见 banner-title.css），
+        // 高度变化只向下溢出，标题零位移。下方仅打字机轮播逻辑。
+
+        // 一言加载失败回退：关回退开关→显示主题预设池（模板已预渲染 #banner-subtitle-fallback，自带 TypewriterText 或静态）；
+        // 开回退开关且连本地回退也取不到→没有可用数据，隐藏一言槽与预设回退槽（不显示错误文案）
+        function fallbackBannerSubtitle(el: HTMLElement) {
+            clearBannerTw(); // 作废可能还在跑的一言打字机（递增 token + 清计时器）；TypewriterText 有独立计时器，不受影响
+            const fallback = document.getElementById("banner-subtitle-fallback");
+            if (!hitokotoConfig.fallbackToLocal) {
+                // 预设池已在模板渲染好（沿用 ht?.typewriter 配置），此处只切显隐
+                if (fallback) {
+                    el.style.display = "none";   // 隐藏一言文本槽
+                    fallback.style.display = ""; // 显示预设池：TypewriterText 自动接管逐字打，或静态单句
+                    return;
+                }
+                el.style.display = "none"; // 兜底：没有预设回退节点则直接隐藏一言槽
+            } else {
+                // 开回退开关还走到这，说明远程挂且本地回退也取不到——没数据就隐藏副标题，留空占位保标题原位
+                el.style.display = "none";
+                if (fallback) fallback.style.display = "none";
+            }
+        }
+
         async function bannerHitokotoLoop(
             el: HTMLElement,
             opts: {
@@ -988,18 +1030,7 @@ const hasMultipleImages =
             } catch (e) {
                 if (myToken !== _bannerTwToken) return;
                 console.warn("[banner-hitokoto] 加载失败：", e);
-                // 关掉回退开关且远程取不到：横幅副标题不隐藏，自动切回英文预设副标题（若有），避免留空难看；无英文预设才隐藏
-                if (!hitokotoConfig.fallbackToLocal) {
-                const en = JSON.parse((el.dataset.subtitlesEn as string) ?? "[]");
-                if (Array.isArray(en) && en.length) {
-                    el.textContent = en[Math.floor(Math.random() * en.length)];
-                    el.classList.remove("hitokoto-tw-cursor");
-                } else {
-                el.style.display = "none";
-                }
-                return;
-                }
-                el.textContent = "一言加载失败，请检查网络";
+                fallbackBannerSubtitle(el);
                 return;
             }
             if (myToken !== _bannerTwToken) return;
@@ -1026,6 +1057,7 @@ const hasMultipleImages =
             await sleepBanner(opts.pause);
             }
         }
+
 
         function renderBannerHitokoto() {
             const el = document.getElementById("banner-subtitle");
@@ -1059,18 +1091,7 @@ const hasMultipleImages =
                 })
                 .catch((e) => {
                 console.warn("[banner-hitokoto] 加载失败：", e);
-                // 关掉回退开关且远程取不到：横幅副标题不隐藏，自动切回英文预设副标题（若有），避免留空难看；无英文预设才隐藏
-                if (!hitokotoConfig.fallbackToLocal) {
-                    const en = JSON.parse((el.dataset.subtitlesEn as string) ?? "[]");
-                    if (Array.isArray(en) && en.length) {
-                    el.textContent = en[Math.floor(Math.random() * en.length)];
-                    el.classList.remove("hitokoto-tw-cursor");
-                    } else {
-                    el.style.display = "none";
-                    }
-                return;
-                }
-                el.textContent = "一言加载失败，请检查网络";
+                fallbackBannerSubtitle(el);
                 });
             return;
             }
@@ -1089,6 +1110,7 @@ const hasMultipleImages =
         // Swup 页面过渡会替换 DOM 但不重载脚本，靠此事件重新绑定到新节点；初次加载也会触发
         document.addEventListener("astro:page-load", renderBannerHitokoto);
         renderBannerHitokoto();
+
     </script>
 
     <!-- Non-home non-post page title overlay (desktop only) -->
@@ -1492,12 +1514,9 @@ const hasMultipleImages =
       })
       .catch((e) => {
         console.warn("[hitokoto-inline] 加载失败：", e);
-        // 关掉回退开关且远程取不到：直接隐藏该内联元素，而不是显示错误文案
-        if (!hitokotoConfig.fallbackToLocal) {
-          el.style.display = "none";
-          return;
-        }
-        el.textContent = "一言加载失败";
+        // 走到这里就是所有数据源都拿不到（本地包缺失 / 远程挂且回退本地也挂），
+        // 直接隐藏该内联元素，不显示错误文案
+        el.style.display = "none";
       });
   }
 
