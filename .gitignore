@@ -49,3 +49,4 @@ package/
 .mimocode
 .vercel
 .env*
+.workbuddy
