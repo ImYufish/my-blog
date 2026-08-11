@@ -2,7 +2,6 @@
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import { hitokotoConfig, HITOKOTO_CAT_NAMES } from "@/config/hitokotoConfig";
 
 interface Props {
   class?: string;
@@ -12,18 +11,6 @@ interface Props {
 const { class: className, style, widgetConfig } = Astro.props;
 const showTitle = widgetConfig?.showTitle !== false;
 const widgetId = "hitokoto-widget";
-
-// 把配置序列化给客户端脚本（分类开关、参数开关、远程地址、分类中文名都在这）
-const cfg = JSON.stringify({
-  bundleSource: hitokotoConfig.bundleSource,
-  remoteUrl: hitokotoConfig.remoteUrl,
-  fallbackToLocal: hitokotoConfig.fallbackToLocal,
-  enableCategories: hitokotoConfig.enableCategories,
-  showSource: hitokotoConfig.showSource,
-  showAuthor: hitokotoConfig.showAuthor,
-  showCategory: hitokotoConfig.showCategory,
-  catNames: HITOKOTO_CAT_NAMES,
-});
 ---
 
 <WidgetLayout
@@ -68,136 +55,48 @@ const cfg = JSON.stringify({
   }
 </style>
 
-<script define:vars={{ cfg, widgetId }} is:inline>
-  // 配置从服务端序列化进来：分类开关、参数开关、远程地址都在 C 里
-  const C = JSON.parse(cfg);
-  // 当前启用的分类 key 列表
-  const CATS = Object.keys(C.enableCategories).filter((t) => C.enableCategories[t]);
-  // 缓存 key：来源 + 启用的分类 + 远程地址，配置一变就自动失效重拉
-  const CACHE_KEY = "firefly-hitokoto-" + C.bundleSource + "-" + CATS.join("") + "-" + (C.remoteUrl || "");
+<script>
+  import { getRandomHitokoto, formatHitokoto } from "@/utils/hitokoto";
+  import { hitokotoConfig, HITOKOTO_CAT_NAMES } from "@/config/hitokotoConfig";
 
-  let pool = null;
-  let loading = null;
-
-  // 统一整理成 { hitokoto, from, from_who, type }，顺手 trim
-  function strip(arr) {
-    return (arr || []).map((x) => ({
-      hitokoto: (x.hitokoto || "").trim(),
-      from: (x.from || "").trim(),
-      from_who: (x.from_who || "").trim(),
-      type: x.type || "",
-    }));
-  }
-
-  // 本地模式：读构建时生成的 public/hitokoto/hitokoto.json
-  async function loadLocal() {
-    const r = await fetch("/hitokoto/hitokoto.json");
-    if (!r.ok) throw new Error("本地语句包 " + r.status);
-    return strip(await r.json());
-  }
-
-  // 远程模式：按启用的分类分别拉取再合并（远程语句包支持外部依赖，别人可自选）
-  async function loadRemote() {
-    const tasks = CATS.map((t) =>
-      fetch(C.remoteUrl + "/" + t + ".json")
-        .then((r) => (r.ok ? r.json() : []))
-        .catch(() => [])
-    );
-    const lists = await Promise.all(tasks);
-    let all = [];
-    lists.forEach((arr, i) => {
-      if (Array.isArray(arr)) {
-        all = all.concat(strip(arr.map((x) => ({ ...x, type: CATS[i] }))));
-      }
+  // 拉一条随机一言并填进组件：正文 + 出处行（分类 / 出处 / 作者按配置中心开关拼）
+  // 取数走共享模块，侧边栏和横幅共用同一份内存池，不会重复拉取
+  function fillOne(el: HTMLElement) {
+    const contentEl = el.querySelector<HTMLElement>(".hitokoto-content");
+    const srcEl = el.querySelector<HTMLElement>(".hitokoto-source");
+    if (!contentEl || !srcEl) return Promise.resolve();
+    return getRandomHitokoto({
+      bundleSource: hitokotoConfig.bundleSource,
+      remoteUrl: hitokotoConfig.remoteUrl,
+      fallbackToLocal: hitokotoConfig.fallbackToLocal,
+      enableCategories: hitokotoConfig.enableCategories,
+    }).then((item) => {
+      contentEl.textContent = item.hitokoto || "";
+      const s = formatHitokoto(item, {
+        showSource: hitokotoConfig.showSource,
+        showAuthor: hitokotoConfig.showAuthor,
+        showCategory: hitokotoConfig.showCategory,
+        catNames: HITOKOTO_CAT_NAMES,
+      });
+      srcEl.textContent = s;
+      // 啥都不显示就把出处行藏起来，免得留个空行
+      srcEl.style.display = s ? "" : "none";
     });
-    if (all.length === 0) throw new Error("远程语句包为空");
-    return all;
   }
 
-  async function getPool() {
-    if (pool) return pool;
-    // 先试缓存，配置没变就不用重新拉
-    try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const arr = JSON.parse(cached);
-        if (Array.isArray(arr) && arr.length) {
-          pool = arr;
-          return pool;
-        }
-      }
-    } catch (_) {}
-    if (loading) return loading;
-    loading = (async () => {
-      let p;
-      try {
-        p = C.bundleSource === "remote" ? await loadRemote() : await loadLocal();
-      } catch (e) {
-        // 远程挂了且允许回退，就退到本地打包
-        if (C.bundleSource === "remote" && C.fallbackToLocal) {
-          console.warn("[hitokoto] 远程拉取失败，回退本地：", e);
-          p = await loadLocal();
-        } else {
-          throw e;
-        }
-      }
-      // 本地模式也按分类开关再过滤一遍（打包时可能带了别的分类，或你改了开关没重打）
-      if (C.bundleSource !== "remote") {
-        p = p.filter((x) => !x.type || C.enableCategories[x.type]);
-      }
-      pool = p;
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(p));
-      } catch (_) {}
-      return p;
-    })();
-    return loading;
-  }
-
-  // 拼出处那行：分类标签 + 《出处》 + 作者，按开关决定显示哪些
-  function buildSource(item) {
-    const parts = [];
-    if (C.showCategory && item.type && C.catNames[item.type]) {
-      parts.push("【" + C.catNames[item.type] + "】");
-    }
-    const tail = [];
-    if (C.showSource && item.from) tail.push("《" + item.from + "》");
-    if (C.showAuthor && item.from_who) tail.push(item.from_who);
-    if (tail.length) parts.push("—— " + tail.join(" "));
-    return parts.join(" ");
-  }
-
-  function pickOne(el) {
-    const contentEl = el.querySelector(".hitokoto-content");
-    const srcEl = el.querySelector(".hitokoto-source");
-    if (!contentEl || !srcEl || !pool || !pool.length) return;
-    const item = pool[Math.floor(Math.random() * pool.length)];
-    contentEl.textContent = item.hitokoto || "";
-    const s = buildSource(item);
-    srcEl.textContent = s;
-    // 啥都不显示就把出处行藏起来，免得留个空行
-    srcEl.style.display = s ? "" : "none";
-  }
-
-  function initHitokoto(root) {
-    const el = root.querySelector(".hitokoto-widget");
+  function initHitokoto(root: ParentNode) {
+    const el = root.querySelector<HTMLElement>(".hitokoto-widget");
     if (!el || el.dataset.bound === "1") return;
     el.dataset.bound = "1";
-    const btn = el.querySelector(".hitokoto-refresh");
-    if (btn) btn.addEventListener("click", () => getPool().then(() => pickOne(el)).catch(() => {}));
-    getPool()
-      .then(() => pickOne(el))
-      .catch((e) => {
-        console.warn("[hitokoto] 加载失败：", e);
-        // 关掉回退开关且远程取不到：直接隐藏整个组件（含标题），而不是显示错误文案
-        if (!C.fallbackToLocal) {
-          const root = el && el.closest("widget-layout");
-          if (root) root.style.display = "none";
-          return;
-        }
-        const c = el.querySelector(".hitokoto-content");
-        if (c) c.textContent = "一言加载失败，请检查网络";
-      });
+    const btn = el.querySelector<HTMLElement>(".hitokoto-refresh");
+    if (btn) btn.addEventListener("click", () => fillOne(el).catch(() => {}));
+    fillOne(el).catch((e) => {
+      console.warn("[hitokoto] 加载失败：", e);
+      // 走到这里就是所有数据源都拿不到（本地包缺失 / 远程挂且回退本地也挂），
+      // 直接隐藏整个组件（含标题），不显示错误文案
+      const layout = el.closest<HTMLElement>("widget-layout");
+      if (layout) layout.style.display = "none";
+    });
   }
 
   // Swup 页面过渡会替换 DOM 但不重载脚本，靠这个事件重新绑定到新节点

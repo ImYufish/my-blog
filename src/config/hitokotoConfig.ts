@@ -32,12 +32,12 @@ export const HITOKOTO_CAT_NAMES: Record<HitokotoCategory, string> = {
 };
 
 export const hitokotoConfig: HitokotoConfig = {
-  // 默认本地打包，不沾任何外部依赖
-  bundleSource: "local",
+  // 默认本地打包，本地/远程：local/remote
+  bundleSource: "remote",
   // 远程包根地址，远程模式按 {remoteUrl}/{分类}.json 拉
-  remoteUrl: "https://cdn.jsdelivr.net/gh/hitokoto-osc/sentences-bundle@master/sentences",
+  remoteUrl: "https://cdn.jsdelivr.net/gh/hitoko11to-osc/sentences-bundle@master/sentences",
   // 远程失败才看这个开关：开就退本地；关的话远程一挂，侧边栏 / 页脚 / 文章内直接没，横幅退回英文
-  fallbackToLocal: true,
+  fallbackToLocal: false,
   // 12 个分类默认全开，想关哪个改 false（名字看上面 HITOKOTO_CAT_NAMES）
   enableCategories: {
     a: true,
@@ -61,7 +61,7 @@ export const hitokotoConfig: HitokotoConfig = {
   samplePerCategory: 40,
   // 横幅一言：一个总开关 + 独立的展示参数 + 分类白名单 + 打字机
   banner: {
-    enable: true, // 横幅走一言；改 false 回 preset 英文
+    enable: true, // 横幅走一言；改 false 回自定义语句池
     showSource: false,
     showAuthor: false,
     showCategory: false,
@@ -69,6 +69,6 @@ export const hitokotoConfig: HitokotoConfig = {
     typewriterSpeed: 100, // 打字速度（毫秒）
     typewriterDeleteSpeed: 45, // 往回删速度（毫秒）
     typewriterPause: 2200, // 一句停留 / 删完停顿（毫秒）
-    categories: ["a"], // 只放动漫 / 动画；留空 [] 就用全部启用分类
+    categories: ["a","b"], // 只放动漫 / 动画；留空 [] 就用全部启用分类
   },
 };
