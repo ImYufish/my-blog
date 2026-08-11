@@ -33,11 +33,11 @@ export const HITOKOTO_CAT_NAMES: Record<HitokotoCategory, string> = {
 
 export const hitokotoConfig: HitokotoConfig = {
   // 默认本地打包，本地/远程：local/remote
-  bundleSource: "remote",
+  bundleSource: "local",
   // 远程包根地址，远程模式按 {remoteUrl}/{分类}.json 拉
   remoteUrl: "https://cdn.jsdelivr.net/gh/hitoko11to-osc/sentences-bundle@master/sentences",
   // 远程失败才看这个开关：开就退本地；关的话远程一挂，侧边栏 / 页脚 / 文章内直接没，横幅退回英文
-  fallbackToLocal: false,
+  fallbackToLocal: true,
   // 12 个分类默认全开，想关哪个改 false（名字看上面 HITOKOTO_CAT_NAMES）
   enableCategories: {
     a: true,
@@ -58,7 +58,7 @@ export const hitokotoConfig: HitokotoConfig = {
   showAuthor: true,
   showCategory: false,
   // 本地每类抽 40 条，整包大概 70KB；想更全就调大或者设 0 全量
-  samplePerCategory: 40,
+  samplePerCategory: 60,
   // 横幅一言：一个总开关 + 独立的展示参数 + 分类白名单 + 打字机
   banner: {
     enable: true, // 横幅走一言；改 false 回自定义语句池
