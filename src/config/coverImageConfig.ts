@@ -19,7 +19,7 @@ import type { CoverImageConfig } from "../types/coverImageConfig";
  */
 export const coverImageConfig: CoverImageConfig = {
 	// 是否在文章详情页显示封面图
-	enableInPost: true,
+	enableInPost: false,
 
 	// 是否使用标题和元数据叠加在封面上的布局
 	enableInPostOverlay: false,
