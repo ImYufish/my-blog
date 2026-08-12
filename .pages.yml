@@ -1,0 +1,181 @@
+# PagesCMS 配置 — 针对 Firefly (Fuwari fork) Astro 博客
+# 文档: https://pagescms.org/docs
+# 注意: 默认 merge: false, 保存时整篇重写 frontmatter,
+#       任何未在下方声明的字段都会被丢弃(见各 hidden 字段)。
+
+media:
+  - name: assets
+    label: 站点资源
+    # Firefly 的 public/ 在站点根路径下, 上传后正文里用 /assets/xxx 引用
+    input: public/assets
+    output: /assets
+    categories: [image]
+
+content:
+  - name: blog
+    label: 📝 博客
+    type: group
+    items:
+      - name: posts
+        label: 📝 文章
+        type: collection
+        path: src/content/posts
+        format: yaml-frontmatter
+        # 排除文章配图目录, 避免被当成内容条目读取
+        exclude: ["images"]
+        # 中文标题 slugify 会被清空, 用 field: create 手动输文件名
+        filename:
+          field: create
+        view:
+          primary: title
+          fields: [title, published, category, tags, draft, pinned]
+          sort: ["published desc", "title asc"]
+        fields:
+          - name: title
+            label: 标题
+            type: string
+            required: true
+          - name: published
+            label: 发布时间
+            type: date
+            required: true
+            options:
+              time: false
+              format: yyyy-MM-dd
+          - name: updated
+            label: 更新时间
+            type: date
+            options:
+              time: false
+              format: yyyy-MM-dd
+          - name: draft
+            label: 草稿
+            type: boolean
+            default: false
+          - name: pinned
+            label: 置顶
+            type: boolean
+            default: false
+          - name: description
+            label: 摘要
+            type: text
+          - name: image
+            label: 封面图
+            type: string
+          - name: tags
+            label: 标签
+            type: select
+            options:
+              multiple: true
+              creatable: true
+          - name: category
+            label: 分类
+            type: string
+          - name: lang
+            label: 语言
+            type: string
+          - name: author
+            label: 作者
+            type: string
+          - name: sourceLink
+            label: 原文链接
+            type: string
+          - name: licenseName
+            label: 许可名称
+            type: string
+          - name: licenseUrl
+            label: 许可链接
+            type: string
+          - name: comment
+            label: 允许评论
+            type: boolean
+            default: true
+          - name: password
+            label: 访问密码
+            type: string
+            hidden: true
+          - name: passwordHint
+            label: 密码提示
+            type: string
+            hidden: true
+          # 以下为 Astro / 主题内部字段, 不在 zod schema 中,
+          # 必须 hidden 保留, 否则保存时被整篇重写丢弃。
+          - name: slug
+            type: string
+            hidden: true
+          - name: prevTitle
+            type: string
+            hidden: true
+          - name: prevSlug
+            type: string
+            hidden: true
+          - name: nextTitle
+            type: string
+            hidden: true
+          - name: nextSlug
+            type: string
+            hidden: true
+          - name: body
+            label: 正文
+            type: rich-text
+            required: true
+
+      - name: dynamic
+        label: 💬 动态
+        type: collection
+        path: src/content/dynamic
+        format: yaml-frontmatter
+        filename:
+          field: create
+        view:
+          primary: title
+          fields: [title, published, pinned]
+          sort: ["published desc"]
+        # dynamic schema 无 title, 这里补一个(空 schema 会忽略, 不影响构建)
+        fields:
+          - name: title
+            label: 标题
+            type: string
+          - name: published
+            label: 发布时间
+            type: date
+            required: true
+            options:
+              time: false
+              format: yyyy-MM-dd
+          - name: pinned
+            label: 置顶
+            type: boolean
+            default: false
+          - name: location
+            label: 地点
+            type: string
+          - name: body
+            label: 内容
+            type: rich-text
+            required: true
+
+      - name: spec
+        label: 📄 文档页
+        type: collection
+        path: src/content/spec
+        format: yaml-frontmatter
+        filename:
+          field: create
+        view:
+          primary: title
+        # 警告: spec 集合 schema 为 z.object({}) (空),
+        # 若你的 spec 文件带有自定义 frontmatter, 必须在此补声明为 hidden,
+        # 否则 merge:false 重写时会丢失。下方仅保留 title + body。
+        fields:
+          - name: title
+            label: 标题
+            type: string
+          - name: body
+            label: 正文
+            type: rich-text
+            required: true
+
+settings:
+  content:
+    merge: false
