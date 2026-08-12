@@ -1,0 +1,66 @@
+media:
+  input: public
+  output: /
+
+content:
+  - name: posts
+    label: Posts
+    type: collection
+    path: src/content/posts
+    filename:
+      field: create
+    view:
+      primary: title
+      fields: [ title, draft, published, pinned ]
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: published, label: Published, type: date }
+      - { name: updated, label: Updated, type: date }
+      - { name: draft, label: Draft, type: boolean }
+      - { name: pinned, label: Pinned, type: boolean }
+      - { name: description, label: Description, type: string }
+      - { name: image, label: Cover, type: string }
+      - { name: tags, label: Tags, type: string, list: true }
+      - { name: category, label: Category, type: string }
+      - { name: lang, label: Lang, type: string }
+      - { name: author, label: Author, type: string }
+      - { name: sourceLink, label: Source, type: string }
+      - { name: licenseName, label: License, type: string }
+      - { name: licenseUrl, label: License URL, type: string }
+      - { name: comment, label: Comment, type: boolean }
+      - { name: password, label: Password, type: string, hidden: true }
+      - { name: passwordHint, label: Password Hint, type: string, hidden: true }
+      - { name: slug, label: Slug, type: string, hidden: true }
+      - { name: prevTitle, label: PrevTitle, type: string, hidden: true }
+      - { name: prevSlug, label: PrevSlug, type: string, hidden: true }
+      - { name: nextTitle, label: NextTitle, type: string, hidden: true }
+      - { name: nextSlug, label: NextSlug, type: string, hidden: true }
+      - { name: body, label: Body, type: rich-text, options: { input: public/assets, output: /assets } }
+
+  - name: dynamic
+    label: Dynamic
+    type: collection
+    path: src/content/dynamic
+    filename:
+      field: create
+    view:
+      primary: title
+      fields: [ title, published, pinned ]
+    fields:
+      - { name: title, label: Title, type: string }
+      - { name: published, label: Published, type: date }
+      - { name: pinned, label: Pinned, type: boolean }
+      - { name: location, label: Location, type: string }
+      - { name: body, label: Body, type: rich-text, options: { input: public/assets, output: /assets } }
+
+  - name: spec
+    label: Spec
+    type: collection
+    path: src/content/spec
+    filename:
+      field: create
+    view:
+      primary: title
+    fields:
+      - { name: title, label: Title, type: string }
+      - { name: body, label: Body, type: rich-text, options: { input: public/assets, output: /assets } }
