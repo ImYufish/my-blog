@@ -321,6 +321,19 @@ const cfg = JSON.stringify({
   const tUnit = C.unit === "fahrenheit" ? "fahrenheit" : "celsius";
   const tempSign = tUnit === "fahrenheit" ? "°F" : "°";
 
+  const FETCH_TIMEOUT = 8000;
+
+  // 带硬性超时的 fetch：每个请求最多 ms 毫秒，超时自动 abort，避免外网源（如 wttr.in）永久 pending、组件卡在"定位中"
+  function fetchWithTimeout(url, opts, ms) {
+    opts = opts || {};
+    ms = ms || FETCH_TIMEOUT;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, Object.assign({}, opts, { signal: ctrl.signal })).finally(() =>
+      clearTimeout(timer),
+    );
+  }
+
   async function fetchWeather(lat, lon) {
     const url =
       "https://api.open-meteo.com/v1/forecast?latitude=" +
@@ -332,7 +345,7 @@ const cfg = JSON.stringify({
       "&temperature_unit=" +
       tUnit +
       "&wind_speed_unit=kmh&timezone=auto&forecast_days=1";
-    const r = await fetch(url);
+    const r = await fetchWithTimeout(url);
     if (!r.ok) throw new Error("weather http " + r.status);
     return r.json();
   }
@@ -343,7 +356,7 @@ const cfg = JSON.stringify({
   //   导致 fetchAirQuality 返回 null → 国外用户的 AQI 卡片和全部污染物恒显示 "--"。
   async function fetchAirQuality(lat, lon) {
     try {
-      const r = await fetch(
+      const r = await fetchWithTimeout(
         "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" +
           lat +
           "&longitude=" +
@@ -439,13 +452,14 @@ const cfg = JSON.stringify({
     if (lang.startsWith("ja")) return "ja";
     if (lang.startsWith("ko")) return "ko";
     if (lang.startsWith("ru")) return "ru";
-    return "zh-CN";
+    // BigDataCloud 只认 zh-Hans / zh-Hant，其余罕见语言兜底回简体（注释见上）
+    return "zh-Hans";
   }
 
   // 免费反向地理编码（无需 Key），把坐标转成城市名
   async function reverseGeocode(lat, lon, lang) {
     try {
-      const r = await fetch(
+      const r = await fetchWithTimeout(
         "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
           lat +
           "&longitude=" +
@@ -528,17 +542,23 @@ const cfg = JSON.stringify({
     const todayKey = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
 
     const [curR, hrR, d7R, aqR, geoR, sunR] = await Promise.all([
-      fetch(aqHost + "/weather/v1/current/" + lat + "/" + lon + "?key=" + key),
-      fetch(aqHost + "/weather/v1/hourly/" + lat + "/" + lon + "?key=" + key),
-      fetch(base + "/weather/7d?location=" + encodeURIComponent(loc) + "&key=" + key),
-      fetch(aqHost + "/airquality/v1/current/" + lat + "/" + lon + "?key=" + key),
-      fetch(geoBase + "/city/lookup?location=" + encodeURIComponent(loc) + "&key=" + key),
+      fetchWithTimeout(aqHost + "/weather/v1/current/" + lat + "/" + lon + "?key=" + key),
+      fetchWithTimeout(aqHost + "/weather/v1/hourly/" + lat + "/" + lon + "?key=" + key),
+      fetchWithTimeout(base + "/weather/7d?location=" + encodeURIComponent(loc) + "&key=" + key),
+      fetchWithTimeout(aqHost + "/airquality/v1/current/" + lat + "/" + lon + "?key=" + key),
+      fetchWithTimeout(geoBase + "/city/lookup?location=" + encodeURIComponent(loc) + "&key=" + key),
       // ⚠ base 末尾本来就是 /v7，这里不能再写一遍 /v7，否则拼出 /v7/v7/... 直接 404
-      fetch(base + "/astronomy/sun?location=" + encodeURIComponent(loc) + "&date=" + ymd + "&key=" + key),
+      fetchWithTimeout(base + "/astronomy/sun?location=" + encodeURIComponent(loc) + "&date=" + ymd + "&key=" + key),
     ]);
     if (!curR.ok) throw new Error("qweather current " + curR.status);
     // 注意：实时天气字段直接位于 JSON 顶层，没有 now/current 包裹键
     const curJ = await curR.json();
+    // 和风 API 顶部的 code 是请求状态码：200=成功，其余都算失败（401 鉴权失败 / 429 限流 / 404 无数据 / 500 等）。
+    // 只认 200 才算“取到正确数据”；错误 JSON（即便 HTTP 200）也抛错，让 pickSource 继续试下一个源，
+    // 否则会把鉴权失败/错误响应当成“有参数”渲染出 NaN°、一堆 --。
+    if (curJ.code == null || String(curJ.code) !== "200") {
+      throw new Error("qweather current code " + curJ.code);
+    }
     const hr = hrR.ok ? await hrR.json() : null;
     const d7 = d7R.ok ? await d7R.json() : null;
     const aq = aqR.ok ? await aqR.json() : null;
@@ -651,7 +671,7 @@ const cfg = JSON.stringify({
     // 不传 city/adcode 时按客户端 IP 自动定位（兜底场景最稳妥）
     const url =
       "https://uapis.cn/api/v1/misc/weather?lang=zh&extended=true&forecast=true&hourly=true";
-    const r = await fetch(url, { headers: { Accept: "application/json" } });
+    const r = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
     if (!r.ok) throw new Error("uapis " + r.status);
     const j = await r.json();
     if (!j || (j.city == null && j.weather == null)) throw new Error("uapis empty");
@@ -759,7 +779,13 @@ const cfg = JSON.stringify({
     }
 
     // 体感 / 湿度 / 气压 / 云量 / 紫外线 / 降水量
-    setText(el, ".weather-feel", Math.round(cur.apparent_temperature) + tempSign);
+    // 体感温度可能为 null（兜底源缺字段）或 NaN（和风 feelsLike 缺失时 Number(undefined)），
+    // 这俩若直接 Math.round 会变 0 / NaN，故判空后显示 "--"
+    if (cur.apparent_temperature != null && isFinite(cur.apparent_temperature)) {
+      setText(el, ".weather-feel", Math.round(cur.apparent_temperature) + tempSign);
+    } else {
+      setText(el, ".weather-feel", "--");
+    }
     setText(el, ".weather-humidity", Math.round(cur.relative_humidity_2m) + "%");
     if (cur.surface_pressure != null) {
       setText(el, ".weather-pressure", Math.round(cur.surface_pressure) + "hPa");
@@ -895,7 +921,7 @@ const cfg = JSON.stringify({
   }
   async function fetchWttr(lat, lon) {
     // ⚠ 路径前不能加冒号：wttr.in 把 /:xxx 视为内部特殊页，会忽略坐标返回固定地点的天气
-    const r = await fetch("https://wttr.in/" + lat + "," + lon + "?format=j1");
+    const r = await fetchWithTimeout("https://wttr.in/" + lat + "," + lon + "?format=j1");
     if (!r.ok) throw new Error("wttr.in " + r.status);
     const d = await r.json();
     const c = d.current_condition && d.current_condition[0];
@@ -997,6 +1023,13 @@ const cfg = JSON.stringify({
     });
   }
 
+  // 全部数据源失败保底：直接隐藏整个组件（含标题），不留"获取失败"占位或"半旧数据"
+  // root 即 WidgetLayout 根（id=widgetId），display:none 把它整块（标题 + 内容）一起收掉
+  function hideWeatherWidget(root) {
+    if (!root) return;
+    root.style.display = "none";
+  }
+
   async function initWeather() {
     const root = document.getElementById(widgetId);
     if (!root) return;
@@ -1048,8 +1081,8 @@ const cfg = JSON.stringify({
         JSON.stringify({ t: Date.now(), cur: data.cur, daily: data.daily, aqi: data.aqi, city: data.city }),
       );
     } catch {
-      setText(el, ".weather-city", "获取失败");
-      setText(el, ".weather-desc", "请检查网络");
+      // 所有数据源都取不到数据 → 保底隐藏整个组件，不残留空白占位
+      hideWeatherWidget(root);
     }
   }
 
