@@ -17,11 +17,20 @@ export const friendsPageConfig: FriendsPageConfig = {
 	showComment: true,
 
 	// 是否开启随机排序配置，如果开启，就会忽略权重，构建时进行一次随机排序
-	randomizeSort: true,
+	randomizeSort: false,
 };
 
 // 友链配置
 export const friendsConfig: FriendLink[] = [
+	{
+		title: "临渊羡鱼",
+		imgurl: "https://imgapi.x1anyu.cn/avatar.gif",
+		desc: "久有羡鱼意，不甘空望川. 躬身耕岁月，步步赴清澜",
+		siteurl: "https://x1anyu.cn",
+		tags: ["Blog"],
+		weight: 10,
+		enabled: true,
+	},
 	{
 		title: "夏夜流萤",
 		imgurl:
@@ -29,7 +38,7 @@ export const friendsConfig: FriendLink[] = [
 		desc: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
 		siteurl: "https://blog.cuteleaf.cn",
 		tags: ["Blog"],
-		weight: 10, // 权重，数字越大排序越靠前
+		weight: 9, // 权重，数字越大排序越靠前
 		enabled: true, // 是否启用
 	},
 	{
@@ -38,7 +47,7 @@ export const friendsConfig: FriendLink[] = [
 		desc: "躬身入局，心为主理，行有尺度，自持本心.",
 		siteurl: "https://fqzlr.com/",
 		tags: ["Blog"],
-		weight: 8,
+		weight: 5,
 		enabled: true,
 	}, 
 	{
@@ -47,7 +56,7 @@ export const friendsConfig: FriendLink[] = [
 		desc: "如果你喜欢那么欢迎来到我的世界！",
 		siteurl: "https://blog.tsh520.cn",
 		tags: ["Blog"],
-		weight: 9,
+		weight: 5,
 		enabled: true,
 	},
 ];
