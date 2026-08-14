@@ -75,7 +75,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅主标题
 			title: "Swim through the tides",
 			// 主页横幅主标题字体大小
-			titleSize: "4.5rem",
+			titleSize: "3.5rem",   //4.5
 			// 主页横幅副标题
 			subtitle: [
 				"In Reddened Chrysalis, I Once Rest",
