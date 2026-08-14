@@ -33,41 +33,23 @@ export const friendsConfig: FriendLink[] = [
 		enabled: true, // 是否启用
 	},
 	{
-		title: "Firefly Docs",
-		imgurl: "https://docs-firefly.cuteleaf.cn/logo.png",
-		desc: "Firefly主题模板文档",
-		siteurl: "https://docs-firefly.cuteleaf.cn",
-		tags: ["Docs"],
+		title: "fqzlr",
+		imgurl: "https://q1.qlogo.cn/g?b=qq&nk=20447289&s=640",
+		desc: "躬身入局，心为主理，行有尺度，自持本心.",
+		siteurl: "https://fqzlr.com/",
+		tags: ["Blog"],
 		weight: 8,
 		enabled: true,
-	},
-	{
-		title: "Astro",
-		imgurl: "https://avatars.githubusercontent.com/u/44914786?v=4&s=640",
-		desc: "The web framework for content-driven websites. ⭐️ Star to support our work!",
-		siteurl: "https://github.com/withastro/astro",
-		tags: ["Framework"],
-		weight: 7,
-		enabled: true,
-	},
+	}, 
 	{
 		title: "团子和蛋糕",
-		imgurl: "/assets/ziyuan/tx.webp",
+		imgurl: "https://blog.tsh520.cn/assets/ziyuan/tx.webp",
 		desc: "如果你喜欢那么欢迎来到我的世界！",
 		siteurl: "https://blog.tsh520.cn",
-		tags: ["blog"],
+		tags: ["Blog"],
 		weight: 9,
 		enabled: true,
 	},
-	{
-		title: "一言",
-		imgurl: "https://developer.hitokoto.cn/logo.png",
-		desc: "用代码表达言语的魅力，用代码书写山河的壮丽。",
-		siteurl: "https://hitokoto.cn/",
-		tags: ["instrument"],
-		weight: 8,
-		enabled: true,
-	}
 ];
 
 // 获取启用的友链并进行排序

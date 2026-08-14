@@ -81,6 +81,13 @@ export const booknavConfig: BooknavGroup[] = [
 				icon: "/favicon/firefly-32.png",
 				weight: 10,
 			},
+			{
+				title: "一言",
+				url: "https://hitokoto.cn/",
+				desc: "用代码表达言语的魅力，用代码书写山河的壮丽。",
+				icon: "https://developer.hitokoto.cn/logo.png",
+				weight: 9,
+			}
 		],
 	},
 	{
