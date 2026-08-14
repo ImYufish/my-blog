@@ -3,9 +3,8 @@ export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
 
-  // imgbed Worker 在 Cloudflare 上的真实地址，去 CF 控制台 Workers 概览页复制
-  // 常见是 https://imgbed.x1anyu.workers.dev 或 https://imgbed.yufish.workers.dev
-  const IMG_BED = 'https://imgbed.x1anyu.workers.dev';
+  // imgbed 图床在 Cloudflare 上绑的真实自定义域名（国内可达，别用 *.workers.dev 子域，会被掐/超时）
+  const IMG_BED = 'https://imgbed.yufish.cn';
 
   const target = new URL(url.pathname + url.search, IMG_BED);
 
@@ -17,7 +16,22 @@ export async function onRequest(context) {
     init.body = request.body;
   }
 
-  const resp = await fetch(new Request(target, init));
+  // 兜底超时：图床不可达时 10s 内快速失败，而不是卡到边缘函数 504
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  init.signal = controller.signal;
+
+  let resp;
+  try {
+    resp = await fetch(new Request(target, init));
+  } catch (e) {
+    return new Response('Image proxy error: ' + (e && e.message || e), {
+      status: 502,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+  } finally {
+    clearTimeout(timer);
+  }
 
   // 透传图片响应，并加 CDN 缓存头，减轻 imgbed 压力
   const out = new Headers(resp.headers);
