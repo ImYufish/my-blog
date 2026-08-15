@@ -3,6 +3,8 @@ dist/
 
 # generated vndb covers
 public/vndb-covers/
+# 一言语句包：改由 build 脚本自动生成（scripts/build-hitokoto.ts），不再入库
+public/hitokoto/hitokoto.json
 
 # generated types
 .astro/
@@ -50,3 +52,5 @@ package/
 .vercel
 .env*
 .workbuddy
+
+public/hitokoto/hitokoto.json

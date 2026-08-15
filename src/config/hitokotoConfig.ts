@@ -57,8 +57,8 @@ export const hitokotoConfig: HitokotoConfig = {
   showSource: true,
   showAuthor: true,
   showCategory: false,
-  // 本地每类抽 40 条，整包大概 70KB；想更全就调大或者设 0 全量
-  samplePerCategory: 60,
+  // 本地每类抽 200 条，整包大概数百 KB（gzip 后仍可控）；想更全就调大或者设 0 全量
+  samplePerCategory: 100,
   // 横幅一言：一个总开关 + 独立的展示参数 + 分类白名单 + 打字机
   banner: {
     enable: true, // 横幅走一言；改 false 回自定义语句池

@@ -60,7 +60,10 @@ async function loadRemote(opts: HitokotoClientOptions): Promise<HitokotoItem[]> 
   return all;
 }
 
-// 模块级缓存：同配置只拉一次；同时落 localStorage，跨刷新也复用
+// 模块级缓存：同配置只拉一次；同时落 localStorage，跨刷新也复用。
+// 注意：localStorage 缓存带 TTL，避免句子库更新后老访客永远读到旧库（之前没有 TTL，
+// 部署更新了 hitokoto.json 也对已缓存的老访客无效，表现就是「换不了句子」）。
+const HITOKOTO_CACHE_TTL = 6 * 60 * 60 * 1000; // 6 小时
 let _cacheKey = "";
 let _cachePool: HitokotoItem[] | null = null;
 
@@ -71,8 +74,11 @@ async function getPool(opts: HitokotoClientOptions): Promise<HitokotoItem[]> {
   try {
     const cached = localStorage.getItem(key);
     if (cached) {
-      const arr = JSON.parse(cached);
-      if (Array.isArray(arr) && arr.length) {
+      const obj = JSON.parse(cached);
+      // 兼容旧格式（裸数组）：当成 ts=0，TTL 校验时必然失效、走重拉
+      const arr = Array.isArray(obj) ? obj : obj?.data;
+      const ts = Array.isArray(obj) ? 0 : obj?.ts || 0;
+      if (Array.isArray(arr) && arr.length && Date.now() - ts < HITOKOTO_CACHE_TTL) {
         _cacheKey = key;
         _cachePool = arr;
         return arr;
@@ -97,7 +103,7 @@ async function getPool(opts: HitokotoClientOptions): Promise<HitokotoItem[]> {
   _cacheKey = key;
   _cachePool = p;
   try {
-    localStorage.setItem(key, JSON.stringify(p));
+    localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: p }));
   } catch (_) {}
   return p;
 }

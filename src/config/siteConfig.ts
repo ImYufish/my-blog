@@ -9,7 +9,7 @@ export const siteConfig: SiteConfig = {
 	title: "临渊羡鱼",
 
 	// 站点副标题
-	subtitle: "退而结网",
+	subtitle: "Wander like a fish",
 
 	// 站点 URL
 	site_url: "https://x1anyu.cn",
@@ -20,6 +20,8 @@ export const siteConfig: SiteConfig = {
 
 	// 站点关键词
 	keywords: [
+		"yufish",
+		"x1anyu",
 		"Firefly",
 		"Fuwari",
 		"Astro",
@@ -55,7 +57,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			// 图标文件路径
-			src: "/favicon/firefly-32.png",
+			src: "/favicon/yufish-32.png",
 			// 可选，指定主题 'light' | 'dark'
 			// theme: "light",
 			// 可选，图标大小
