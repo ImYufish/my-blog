@@ -1,7 +1,11 @@
 {
   "name": "firefly",
   "type": "module",
-  "version": "6.15.8",
+  "version": "6.15.9",
+  "engines": {
+    "node": ">=22.23.0"
+  },
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -99,6 +103,5 @@
     "postcss-nesting": "^14.0.1",
     "rehype-callouts": "^2.2.0",
     "subset-font": "^2.5.0"
-  },
-  "packageManager": "pnpm@9.14.4"
+  }
 }
