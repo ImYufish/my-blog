@@ -13,6 +13,13 @@ export const ja: Translation = {
 	[Key.searchContent]: "内容",
 	[Key.searchViewMore]: "さらに結果を表示 ({count} 件)",
 	[Key.other]: "その他",
+
+	// ナビバーメニューグループ
+	[Key.navArticles]: "記事",
+	[Key.navSocial]: "ソーシャル",
+	[Key.navMine]: "マイ",
+	[Key.navAbout]: "について",
+	[Key.navLinks]: "リンク",
 	[Key.all]: "すべて",
 
 	[Key.tags]: "タグ",
@@ -111,10 +118,10 @@ export const ja: Translation = {
 	[Key.updatedAt]: "更新日",
 	[Key.readTime]: "読了時間",
 	[Key.license]: "ライセンス",
-	[Key.bangumi]: "バングミ",
+	[Key.bangumi]: "Bangumi",
 
 	// バングミフィルターと状態文本
-	[Key.bangumiTitle]: "私のバングミ",
+	[Key.bangumiTitle]: "私のBangumi",
 	[Key.bangumiSubtitle]: "私の二次元の旅を記録する",
 	[Key.bangumiFilterAll]: "すべて",
 	[Key.bangumiFilterWatched]: "見た",

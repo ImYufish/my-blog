@@ -104,7 +104,7 @@ async function loadDynamicData() {
 		activeTab = newTabs[0]?.id || "all";
 		fetchLoading = false;
 	} catch (e) {
-		console.error("[VNDB] 获取数据失败:", e);
+		console.error("[VNDB] Failed to fetch data:", e);
 		fetchLoading = false;
 		error = true;
 		errorTitle = i18n(I18nKey.vndbFetchError);

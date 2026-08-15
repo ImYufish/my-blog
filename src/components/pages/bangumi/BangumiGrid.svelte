@@ -140,7 +140,7 @@ async function loadDynamicData() {
 			newData[catKey] = data;
 			newTabs.push({ id: catKey, name: info.name, count: data.length });
 		} catch (e) {
-			console.error(`[Bangumi] 获取 ${catKey} 数据失败:`, e);
+			console.error(`[Bangumi] Failed to fetch ${catKey} data:`, e);
 			fetchLoading = false;
 			error = true;
 			errorTitle = i18n(I18nKey.bangumiFetchError);

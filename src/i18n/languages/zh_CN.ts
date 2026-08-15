@@ -13,6 +13,13 @@ export const zh_CN: Translation = {
 	[Key.searchContent]: "内容",
 	[Key.searchViewMore]: "查看更多结果 ({count} 个更多)",
 	[Key.other]: "其他",
+
+	// 导航栏菜单分组
+	[Key.navArticles]: "文章",
+	[Key.navSocial]: "社交",
+	[Key.navMine]: "我的",
+	[Key.navAbout]: "关于",
+	[Key.navLinks]: "链接",
 	[Key.all]: "全部",
 
 	[Key.tags]: "标签",

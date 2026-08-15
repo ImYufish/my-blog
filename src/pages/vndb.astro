@@ -91,7 +91,7 @@ if (!isDynamic && isUserIdConfigured) {
 		vndbData.all = allItems;
 		tabs.push(...buildVndbTabs(allItems));
 	} catch (error) {
-		console.error("[VNDB] 获取数据失败:", error);
+		console.error("[VNDB] Failed to fetch data:", error);
 		fetchFailed = true;
 	}
 }

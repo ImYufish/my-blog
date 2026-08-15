@@ -26,9 +26,9 @@ let animeList: StandardizedAnime[] = [];
 if (BILIBILI_UID) {
 	try {
 		animeList = await fetchBilibiliList(BILIBILI_UID);
-		console.log(`[Bilibili] 页面数据: ${animeList.length} 条`);
+		console.log(`[Bilibili] Page data: ${animeList.length} items`);
 	} catch (error) {
-		console.error("[Bilibili] 获取数据失败:", error);
+		console.error("[Bilibili] Failed to fetch data:", error);
 	}
 }
 

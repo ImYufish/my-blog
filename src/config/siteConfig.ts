@@ -1,8 +1,42 @@
 import type { SiteConfig } from "@/types/siteConfig";
+import { resolvePageToggles } from "../utils/page-toggle-utils";
+import { resolveSiteLang } from "../utils/site-config-utils";
 
 // 定义站点语言
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru', 'ko'。
-const SITE_LANG = "zh_CN";
+const SITE_LANG = resolveSiteLang("zh_CN");
+
+// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404并自动隐藏对应的导航栏菜单项
+const pages = resolvePageToggles({
+	// ── 社交 (Social) ──────────────────────────────────
+
+	// 友链页面开关
+	friends: true,
+	// 留言板页面开关，需要配置评论系统
+	guestbook: true,
+
+	// ── 我的 (My) ──────────────────────────────────
+
+	// 动态页面开关
+	dynamic: true,
+	// 相册页面开关
+	gallery: true,
+	// 书签导航页面开关
+	booknav: true,
+	// 哔哩哔哩追番页面开关
+	bilibili: false,
+	// 番组计划页面开关
+	bangumi: false,
+	// VNDB页面开关
+	vndb: false,
+	// MyAnimeList页面开关
+	mal: false,
+
+	// ── 关于 (About) ──────────────────────────────────
+
+	// 打赏页面开关
+	sponsor: true,
+});
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
@@ -100,28 +134,6 @@ export const siteConfig: SiteConfig = {
 	timezone: "Asia/Shanghai",
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404并自动隐藏对应的导航栏菜单项
-	pages: {
-		// 友链页面开关
-		friends: true,
-		// 打赏页面开关
-		sponsor: true,
-		// 留言板页面开关，需要配置评论系统
-		guestbook: true,
-		// 番组计划页面开关，含追番、游戏、书籍和音乐
-		bangumi: true,
-		// VNDB页面开关。
-		vndb: true,
-		// MyAnimeList页面开关。
-		mal: true,
-		// 相册页面开关
-		gallery: true,
-		// 哔哩哔哩追番页面开关
-		bilibili: true,
-		// 动态页面开关
-		dynamic: true,
-		// 书签导航页面开关
-		booknav: true,
-	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
 	categoryBar: true,
@@ -139,7 +151,7 @@ export const siteConfig: SiteConfig = {
 	// 归档页是否折叠非最新年份文章，禁用后默认展开全部年份
 	foldArticle: true,
 
-	// 文章列表布局配置
+	// ── 文章列表布局配置 ──────────────────────────────────
 	postListLayout: {
 		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（多列布局）
 		defaultMode: "list",
@@ -198,7 +210,13 @@ export const siteConfig: SiteConfig = {
 		},
 	},
 
-	// 文章内容页配置
+	// 分页配置
+	pagination: {
+		// 每页显示的文章数量
+		postsPerPage: 10,
+	},
+
+	// ── 文章内容页配置 ──────────────────────────────────
 	post: {
 		// 提醒框（Admonitions）配置，修改后需要重启开发服务器才能生效
 		// 主题：'github' | 'obsidian' | 'vitepress' | 'docusaurus'，每个主题风格和语法不同，可根据喜好选择
@@ -218,7 +236,13 @@ export const siteConfig: SiteConfig = {
 		generateOgImages: false,
 	},
 
-	// bangumi配置
+	// ── Bilibili配置 ──────────────────────────────────
+	bilibili: {
+		// 你的 Bilibili 用户 UID
+		uid: "38932988",
+	},
+
+	// ── 番组计划bangumi配置 ──────────────────────────────────
 	bangumi: {
 		// Bangumi用户ID
 		userId: "1143164",
@@ -240,7 +264,7 @@ export const siteConfig: SiteConfig = {
 		// },
 	},
 
-	// VNDB 配置
+	// ── VNDB配置 ──────────────────────────────────
 	vndb: {
 		// VNDB 用户 ID
 		userId: "u358128",
@@ -249,7 +273,7 @@ export const siteConfig: SiteConfig = {
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
 		mode: "static",
 		// 构建时下载并压缩封面到 public/vndb-covers，图片由本站服务器提供
-		downloadCovers: true,
+		downloadCovers: false,
 		// VNDB API 地址
 		apiUrl: "https://api.vndb.org/kana",
 		// 条目详情页地址，末尾需要带 /
@@ -260,7 +284,7 @@ export const siteConfig: SiteConfig = {
 		blurNsfw: true,
 	},
 
-	// MyAnimeList 配置
+	// ── MyAnimeList配置 ──────────────────────────────────
 	mal: {
 		// MyAnimeList 用户名（列表需为公开状态，私密列表无法读取）
 		username: "cuteleaf",
@@ -274,19 +298,7 @@ export const siteConfig: SiteConfig = {
 		mangaBaseUrl: "https://myanimelist.net/manga/",
 	},
 
-	// Bilibili 配置
-	bilibili: {
-		// 你的 Bilibili 用户 UID
-		uid: "38932988",
-	},
-
-	// 分页配置
-	pagination: {
-		// 每页显示的文章数量
-		postsPerPage: 10,
-	},
-
-	// 图像优化及响应式配置
+	// ── 图像优化配置 ──────────────────────────────────
 	// 图像优化压缩只保留avif或webp
 	// 响应式图像是为在不同设备上提高性能而调整的图像。这些图像可以调整大小以适应其容器，并且可以根据访问者的屏幕尺寸和分辨率以不同的大小提供。
 	// Astro 仅能对 src 目录下的图像进行优化，src 目录下的图像越多，构建时间会越长
@@ -302,9 +314,17 @@ export const siteConfig: SiteConfig = {
 		// 为特定域名的图片添加 referrerpolicy="no-referrer" 属性
 		// 支持通配符 *，例如：["i0.hdslb.com", "*.bilibili.com"]
 		// 可解决指定域名图片加载时的 403 问题（如防盗链图片）
-		noReferrerDomains: ["*.hdslb.com", "*.bilibili.com", "*.myanimelist.net"],
+		noReferrerDomains: [
+			"*.hdslb.com",
+			"*.bilibili.com",
+			"*.myanimelist.net",
+			"*.vndb.org",
+		],
 	},
 
 	// 站点语言，在本配置文件顶部SITE_LANG定义
 	lang: SITE_LANG,
+
+	// 页面开关配置，在本配置文件顶部pages定义
+	pages,
 };

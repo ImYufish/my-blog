@@ -13,6 +13,13 @@ export const ko: Translation = {
 	[Key.searchContent]: "내용",
 	[Key.searchViewMore]: "더 많은 결과 보기 ({count}개 더)",
 	[Key.other]: "기타",
+
+	// 네비게이션 메뉴 그룹
+	[Key.navArticles]: "글",
+	[Key.navSocial]: "소셜",
+	[Key.navMine]: "마이",
+	[Key.navAbout]: "소개",
+	[Key.navLinks]: "링크",
 	[Key.all]: "전체",
 
 	[Key.tags]: "태그",
@@ -111,10 +118,10 @@ export const ko: Translation = {
 	[Key.updatedAt]: "수정일",
 	[Key.readTime]: "읽는 시간",
 	[Key.license]: "라이선스",
-	[Key.bangumi]: "반구미",
+	[Key.bangumi]: "Bangumi",
 
 	// Bangumi Filter and Status Text
-	[Key.bangumiTitle]: "나의 반구미",
+	[Key.bangumiTitle]: "나의 Bangumi",
 	[Key.bangumiSubtitle]: "나의 ACG 기록",
 	[Key.bangumiFilterAll]: "전체",
 	[Key.bangumiFilterWatched]: "시청 완료",

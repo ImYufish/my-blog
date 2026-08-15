@@ -13,6 +13,13 @@ export const ru: Translation = {
 	[Key.searchContent]: "Содержание",
 	[Key.searchViewMore]: "Показать еще ({count} шт)",
 	[Key.other]: "Прочее",
+
+	// Группы меню навигации
+	[Key.navArticles]: "Статьи",
+	[Key.navSocial]: "Соцсети",
+	[Key.navMine]: "Моё",
+	[Key.navAbout]: "Обо мне",
+	[Key.navLinks]: "Ссылки",
 	[Key.all]: "Все",
 
 	[Key.tags]: "Теги",
@@ -112,10 +119,10 @@ export const ru: Translation = {
 	[Key.updatedAt]: "Обновлено",
 	[Key.readTime]: "Время чтения",
 	[Key.license]: "Лицензия",
-	[Key.bangumi]: "Бангуми",
+	[Key.bangumi]: "Bangumi",
 
 	// Фильтр и статус Бангуми текст
-	[Key.bangumiTitle]: "Мой план группы",
+	[Key.bangumiTitle]: "Мой Bangumi",
 	[Key.bangumiSubtitle]: "Запись моего аниме путешествия",
 	[Key.bangumiFilterAll]: "Все",
 	[Key.bangumiFilterWatched]: "Просмотрено",

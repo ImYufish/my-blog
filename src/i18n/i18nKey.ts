@@ -11,6 +11,13 @@ enum I18nKey {
 	searchViewMore = "searchViewMore",
 	other = "other",
 
+	// 导航栏菜单分组
+	navArticles = "navArticles",
+	navSocial = "navSocial",
+	navMine = "navMine",
+	navAbout = "navAbout",
+	navLinks = "navLinks",
+
 	tags = "tags",
 	categories = "categories",
 	allCategories = "allCategories",

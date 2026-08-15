@@ -56,13 +56,13 @@ async function fetchAll(kind: MalListKind): Promise<MalListItem[]> {
 	while (true) {
 		// 开发模式限制：只获取一页
 		if (isDev && maxPages > 0 && allItems.length >= limit * maxPages) {
-			console.log(`[MAL] 开发模式：已获取 ${maxPages} 页数据，停止获取`);
+			console.log(`[MAL] Dev mode: fetched ${maxPages} page(s), stopping`);
 			break;
 		}
 
 		// 检查是否超过最大获取限制
 		if (maxTotal > 0 && allItems.length >= maxTotal) {
-			console.log(`[MAL] 已达到最大获取限制 ${maxTotal}，停止获取`);
+			console.log(`[MAL] Reached max fetch limit ${maxTotal}, stopping`);
 			break;
 		}
 
@@ -95,20 +95,20 @@ let mangaFailed = false;
 
 if (isConfigured) {
 	console.log(
-		`[MAL] ${isDev ? "🔧 开发模式" : "🌐 生产模式"} - 开始获取用户 ${malConfig.username} 的列表...`,
+		`[MAL] ${isDev ? "🔧 Dev mode" : "🌐 Prod mode"} - fetching list for user ${malConfig.username}...`,
 	);
 	try {
 		animeItems = await fetchAll("anime");
-		console.log(`[MAL] 动画列表: ${animeItems.length} 条`);
+		console.log(`[MAL] Anime list: ${animeItems.length} items`);
 	} catch (error) {
-		console.error("[MAL] 获取动画列表失败:", error);
+		console.error("[MAL] Failed to fetch anime list:", error);
 		animeFailed = true;
 	}
 	try {
 		mangaItems = await fetchAll("manga");
-		console.log(`[MAL] 漫画列表: ${mangaItems.length} 条`);
+		console.log(`[MAL] Manga list: ${mangaItems.length} items`);
 	} catch (error) {
-		console.error("[MAL] 获取漫画列表失败:", error);
+		console.error("[MAL] Failed to fetch manga list:", error);
 		mangaFailed = true;
 	}
 }

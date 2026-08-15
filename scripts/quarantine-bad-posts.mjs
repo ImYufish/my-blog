@@ -64,7 +64,9 @@ function hasMissingImage(file) {
 		({ data, content } = matter(raw));
 	} catch (err) {
 		// 某篇 frontmatter 写崩了（比如重复键）就隔离并告警，别让整轮跟着死
-		console.warn(`⚠️ frontmatter 解析失败，将隔离: ${file}\n   ${err.message}`);
+		console.warn(
+			`⚠️ frontmatter parse failed, quarantining: ${file}\n   ${err.message}`,
+		);
 		return true;
 	}
 
