@@ -206,9 +206,14 @@ export const zh_TW: Translation = {
 	[Key.vndbLengthLong]: "長",
 	[Key.vndbLengthVeryLong]: "極長",
 
-	// 追番
-	[Key.anime]: "追番",
-	[Key.animeSubtitle]: "我的追番列表，數據來自 Bilibili 和 TMDB",
+	// 追番 - Bilibili
+	[Key.bilibili]: "嗶哩嗶哩",
+	[Key.bilibiliSubtitle]: "我的嗶哩嗶哩追番與追劇列表",
+	[Key.bilibiliNotConfigured]: "未配置嗶哩嗶哩資料來源",
+	[Key.bilibiliNotConfiguredDesc]:
+		"請在 src/config/siteConfig.ts 中配置 bilibili.uid",
+
+	// 追番 - 公共組件
 	[Key.animeTotal]: "總追番",
 	[Key.animeAverageRating]: "平均評分",
 	[Key.animeSearch]: "搜尋番劇...",
@@ -221,20 +226,13 @@ export const zh_TW: Translation = {
 	[Key.animeDateAsc]: "最早發布",
 	[Key.animeNoResults]: "沒有找到匹配的番劇",
 	[Key.animeLastUpdated]: "數據更新於",
-	[Key.animeSource]: "數據來源",
 	[Key.animeEpStatus]: "進度",
 	[Key.animeViewDetails]: "查看詳情",
-	[Key.animeNotConfigured]: "未配置追番資料來源",
-	[Key.animeNotConfiguredDesc]:
-		"請在 src/config/siteConfig.ts 中配置 Bilibili UID 或 TMDB API Key",
 	[Key.animeBilibiliAvg]: "Bilibili 均分",
-	[Key.animeTmdbAvg]: "TMDB 均分",
-	[Key.animeDualSynced]: "雙源已同步",
 	[Key.animeNoOverview]: "暫無簡介",
 	[Key.animeClose]: "關閉",
 	[Key.animeSynopsis]: "劇情簡介",
 	[Key.animeWatchNow]: "立即觀看",
-	[Key.animeViewTmdb]: "查看 TMDB 詳情",
 	[Key.animeAllWithCount]: "全部 ({count})",
 	[Key.animeTVWithCount]: "TV ({count})",
 	[Key.animeMovieWithCount]: "電影 ({count})",

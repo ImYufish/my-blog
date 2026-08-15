@@ -59,15 +59,14 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 相册
 			LinkPresets.Gallery,
 
-			// 追番
-			LinkPresets.Anime,
+			// 书签导航
+			LinkPresets.Booknav,
 
+			// 哔哩哔哩追番
+			LinkPresets.Bilibili,
 
 			// 番组计划
 			LinkPresets.Bangumi,
-
-			// 书签导航
-			LinkPresets.Booknav,
 
 			// VNDB
 			LinkPresets.VNDB,
@@ -207,11 +206,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		icon: "material-symbols:photo-library",
 		pageKey: "gallery",
 	},
-	Anime: {
-		name: "追番",
-		url: "/anime/",
-		icon: "material-symbols:live-tv",
-		pageKey: "anime",
+	Bilibili: {
+		name: "哔哩哔哩",
+		url: "/bilibili/",
+		icon: "fa7-brands:bilibili",
+		pageKey: "bilibili",
 	},
 	Booknav: {
 		name: "书签导航",

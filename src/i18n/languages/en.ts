@@ -209,9 +209,14 @@ export const en: Translation = {
 	[Key.vndbLengthLong]: "Long",
 	[Key.vndbLengthVeryLong]: "Very long",
 
-	// Anime Tracking
-	[Key.anime]: "Anime",
-	[Key.animeSubtitle]: "My anime tracking list, data from Bilibili and TMDB",
+	// Anime Tracking - Bilibili
+	[Key.bilibili]: "Bilibili",
+	[Key.bilibiliSubtitle]: "My Bilibili follow list (anime + drama)",
+	[Key.bilibiliNotConfigured]: "Bilibili not configured",
+	[Key.bilibiliNotConfiguredDesc]:
+		"Configure bilibili.uid in src/config/siteConfig.ts",
+
+	// Anime Tracking - Shared components
 	[Key.animeTotal]: "Total",
 	[Key.animeAverageRating]: "Avg Rating",
 	[Key.animeSearch]: "Search anime...",
@@ -224,20 +229,13 @@ export const en: Translation = {
 	[Key.animeDateAsc]: "Oldest",
 	[Key.animeNoResults]: "No matching anime found",
 	[Key.animeLastUpdated]: "Data updated at",
-	[Key.animeSource]: "Source",
 	[Key.animeEpStatus]: "Progress",
 	[Key.animeViewDetails]: "View Details",
-	[Key.animeNotConfigured]: "Anime data source not configured",
-	[Key.animeNotConfiguredDesc]:
-		"Please configure Bilibili UID or TMDB API Key in src/config/siteConfig.ts",
 	[Key.animeBilibiliAvg]: "Bilibili Avg",
-	[Key.animeTmdbAvg]: "TMDB Avg",
-	[Key.animeDualSynced]: "Dual Synced",
 	[Key.animeNoOverview]: "No synopsis available",
 	[Key.animeClose]: "Close",
 	[Key.animeSynopsis]: "Synopsis",
 	[Key.animeWatchNow]: "Watch Now",
-	[Key.animeViewTmdb]: "View TMDB Details",
 	[Key.animeAllWithCount]: "All ({count})",
 	[Key.animeTVWithCount]: "TV ({count})",
 	[Key.animeMovieWithCount]: "Movie ({count})",

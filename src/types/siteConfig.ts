@@ -87,7 +87,7 @@ export type SiteConfig = {
 		vndb: boolean;
 		mal: boolean; // MyAnimeList 页面开关
 		gallery: boolean; // 相册页面开关
-		anime: boolean; // 追番页面开关
+		bilibili: boolean; // 哔哩哔哩追番页面开关
 		dynamic: boolean; // 动态页面开关
 	};
 
@@ -195,15 +195,9 @@ export type SiteConfig = {
 		mangaBaseUrl?: string; // 漫画条目详情页地址，末尾需要带 /
 	};
 
-	// 追番配置（Bilibili + TMDB）
-	anime?: {
-		bilibili?: {
-			uid: string; // Bilibili 用户 UID
-		};
-		tmdb?: {
-			apiKey: string; // TMDB API Key
-			listId: string; // TMDB 列表 ID
-		};
+	// Bilibili 配置
+	bilibili?: {
+		uid?: string; // Bilibili 用户 UID
 	};
 
 	// 分页配置

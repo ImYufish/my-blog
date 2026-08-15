@@ -1,7 +1,7 @@
 <script lang="ts">
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import type { StandardizedAnime } from "@/types/anime";
+import type { StandardizedAnime } from "@/types/bilibili";
 
 interface Props {
 	anime: StandardizedAnime | null;
@@ -141,8 +141,8 @@ function getTypeColor(seasonType: number): string {
 								{anime.epStatus}
 							</span>
 						{/if}
-						<span class="inline-flex items-center rounded-lg {anime.source === 'bilibili' ? 'bg-pink-500/10 border-pink-500/20 text-pink-600 dark:text-pink-400' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400'} border px-3 py-1 text-xs font-bold">
-							{anime.source === 'bilibili' ? 'Bilibili' : 'TMDB'}
+						<span class="inline-flex items-center rounded-lg bg-pink-500/10 border-pink-500/20 text-pink-600 dark:text-pink-400 border px-3 py-1 text-xs font-bold">
+							Bilibili
 						</span>
 					</div>
 
@@ -163,18 +163,11 @@ function getTypeColor(seasonType: number): string {
 						rel="noopener noreferrer"
 						class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-(--primary) px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-(--primary)/90 hover:shadow-lg"
 					>
-						{#if anime.source === 'bilibili'}
-							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							{i18n(I18nKey.animeWatchNow)}
-						{:else}
-							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-							</svg>
-							{i18n(I18nKey.animeViewTmdb)}
-						{/if}
+						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						{i18n(I18nKey.animeWatchNow)}
 					</a>
 				</div>
 			</div>

@@ -209,10 +209,14 @@ export const ru: Translation = {
 	[Key.vndbLengthLong]: "Длинная",
 	[Key.vndbLengthVeryLong]: "Очень длинная",
 
-	// Отслеживание аниме
-	[Key.anime]: "Аниме",
-	[Key.animeSubtitle]:
-		"Мой список отслеживания аниме, данные из Bilibili и TMDB",
+	// Отслеживание аниме - Bilibili
+	[Key.bilibili]: "Bilibili",
+	[Key.bilibiliSubtitle]: "Мой список Bilibili (аниме и сериалы)",
+	[Key.bilibiliNotConfigured]: "Источник данных Bilibili не настроен",
+	[Key.bilibiliNotConfiguredDesc]:
+		"Настройте bilibili.uid в src/config/siteConfig.ts",
+
+	// Отслеживание аниме - общие компоненты
 	[Key.animeTotal]: "Всего",
 	[Key.animeAverageRating]: "Средний рейтинг",
 	[Key.animeSearch]: "Поиск аниме...",
@@ -225,20 +229,13 @@ export const ru: Translation = {
 	[Key.animeDateAsc]: "Сначала старые",
 	[Key.animeNoResults]: "Аниме не найдено",
 	[Key.animeLastUpdated]: "Данные обновлены",
-	[Key.animeSource]: "Источник",
 	[Key.animeEpStatus]: "Прогресс",
 	[Key.animeViewDetails]: "Подробнее",
-	[Key.animeNotConfigured]: "Источник данных не настроен",
-	[Key.animeNotConfiguredDesc]:
-		"Настройте Bilibili UID или TMDB API Key в src/config/siteConfig.ts",
 	[Key.animeBilibiliAvg]: "Bilibili ср.",
-	[Key.animeTmdbAvg]: "TMDB ср.",
-	[Key.animeDualSynced]: "Два источника",
 	[Key.animeNoOverview]: "Нет описания",
 	[Key.animeClose]: "Закрыть",
 	[Key.animeSynopsis]: "Описание",
 	[Key.animeWatchNow]: "Смотреть",
-	[Key.animeViewTmdb]: "Подробнее на TMDB",
 	[Key.animeAllWithCount]: "Все ({count})",
 	[Key.animeTVWithCount]: "ТВ ({count})",
 	[Key.animeMovieWithCount]: "Фильм ({count})",

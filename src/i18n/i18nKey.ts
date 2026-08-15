@@ -205,9 +205,13 @@ enum I18nKey {
 	vndbLengthLong = "vndbLengthLong",
 	vndbLengthVeryLong = "vndbLengthVeryLong",
 
-	// 追番
-	anime = "anime",
-	animeSubtitle = "animeSubtitle",
+	// 追番 - Bilibili
+	bilibili = "bilibili",
+	bilibiliSubtitle = "bilibiliSubtitle",
+	bilibiliNotConfigured = "bilibiliNotConfigured",
+	bilibiliNotConfiguredDesc = "bilibiliNotConfiguredDesc",
+
+	// 追番 - 公共组件
 	animeTotal = "animeTotal",
 	animeAverageRating = "animeAverageRating",
 	animeSearch = "animeSearch",
@@ -220,19 +224,13 @@ enum I18nKey {
 	animeDateAsc = "animeDateAsc",
 	animeNoResults = "animeNoResults",
 	animeLastUpdated = "animeLastUpdated",
-	animeSource = "animeSource",
 	animeEpStatus = "animeEpStatus",
 	animeViewDetails = "animeViewDetails",
-	animeNotConfigured = "animeNotConfigured",
-	animeNotConfiguredDesc = "animeNotConfiguredDesc",
 	animeBilibiliAvg = "animeBilibiliAvg",
-	animeTmdbAvg = "animeTmdbAvg",
-	animeDualSynced = "animeDualSynced",
 	animeNoOverview = "animeNoOverview",
 	animeClose = "animeClose",
 	animeSynopsis = "animeSynopsis",
 	animeWatchNow = "animeWatchNow",
-	animeViewTmdb = "animeViewTmdb",
 	animeAllWithCount = "animeAllWithCount",
 	animeTVWithCount = "animeTVWithCount",
 	animeMovieWithCount = "animeMovieWithCount",

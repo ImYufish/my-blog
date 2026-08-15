@@ -208,9 +208,14 @@ export const ko: Translation = {
 	[Key.vndbLengthLong]: "김",
 	[Key.vndbLengthVeryLong]: "매우 김",
 
-	// Anime Tracking
-	[Key.anime]: "애니메이션",
-	[Key.animeSubtitle]: "저의 애니메이션 시청 기록, Bilibili와 TMDB 데이터 기반",
+	// Anime Tracking - Bilibili
+	[Key.bilibili]: "Bilibili",
+	[Key.bilibiliSubtitle]: "저의 Bilibili 시청 목록 (애니메이션 + 드라마)",
+	[Key.bilibiliNotConfigured]: "Bilibili 데이터 소스가 설정되지 않았습니다",
+	[Key.bilibiliNotConfiguredDesc]:
+		"src/config/siteConfig.ts에서 bilibili.uid를 설정하세요",
+
+	// Anime Tracking - Shared components
 	[Key.animeTotal]: "총계",
 	[Key.animeAverageRating]: "평균 평점",
 	[Key.animeSearch]: "애니메이션 검색...",
@@ -223,20 +228,13 @@ export const ko: Translation = {
 	[Key.animeDateAsc]: "오래된 순",
 	[Key.animeNoResults]: "일치하는 애니메이션이 없습니다",
 	[Key.animeLastUpdated]: "데이터 업데이트 시각",
-	[Key.animeSource]: "출처",
 	[Key.animeEpStatus]: "진행 상황",
 	[Key.animeViewDetails]: "상세 보기",
-	[Key.animeNotConfigured]: "애니메이션 데이터 소스가 설정되지 않았습니다",
-	[Key.animeNotConfiguredDesc]:
-		"src/config/siteConfig.ts에서 Bilibili UID 또는 TMDB API 키를 설정하세요",
 	[Key.animeBilibiliAvg]: "Bilibili 평균",
-	[Key.animeTmdbAvg]: "TMDB 평균",
-	[Key.animeDualSynced]: "이중 동기화됨",
 	[Key.animeNoOverview]: "줄거리 정보 없음",
 	[Key.animeClose]: "닫기",
 	[Key.animeSynopsis]: "줄거리",
 	[Key.animeWatchNow]: "지금 시청하기",
-	[Key.animeViewTmdb]: "TMDB 상세 정보 보기",
 	[Key.animeAllWithCount]: "전체 ({count})",
 	[Key.animeTVWithCount]: "TV ({count})",
 	[Key.animeMovieWithCount]: "극장판 ({count})",

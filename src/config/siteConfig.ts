@@ -115,8 +115,8 @@ export const siteConfig: SiteConfig = {
 		mal: true,
 		// 相册页面开关
 		gallery: true,
-		// 追番页面开关
-		anime: true,
+		// 哔哩哔哩追番页面开关
+		bilibili: true,
 		// 动态页面开关
 		dynamic: true,
 		// 书签导航页面开关
@@ -274,20 +274,10 @@ export const siteConfig: SiteConfig = {
 		mangaBaseUrl: "https://myanimelist.net/manga/",
 	},
 
-	// 追番配置（Bilibili + TMDB）
-	anime: {
-		// Bilibili 配置
-		bilibili: {
-			// 你的 Bilibili 用户 UID
-			uid: "38932988",
-		},
-		// TMDB 配置（可选，需要翻墙）
-		// tmdb: {
-		//   // TMDB API 密钥
-		//   apiKey: "your_tmdb_api_key",
-		//   // TMDB 列表 ID
-		//   listId: "your_list_id",
-		// },
+	// Bilibili 配置
+	bilibili: {
+		// 你的 Bilibili 用户 UID
+		uid: "38932988",
 	},
 
 	// 分页配置

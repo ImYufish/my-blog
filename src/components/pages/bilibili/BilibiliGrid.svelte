@@ -3,18 +3,17 @@ import ClientPagination from "@components/common/ClientPagination.svelte";
 import { untrack } from "svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import type { StandardizedAnime } from "@/types/anime";
+import type { StandardizedAnime } from "@/types/bilibili";
 import TabNav from "../bangumi/TabNav.svelte";
-import AnimeCard from "./AnimeCard.svelte";
-import AnimeDetailModal from "./AnimeDetailModal.svelte";
+import BilibiliCard from "./BilibiliCard.svelte";
+import BilibiliDetailModal from "./BilibiliDetailModal.svelte";
 
 interface Props {
 	items: StandardizedAnime[];
-	bilibiliAverageRating?: string;
 	itemsPerPage?: number;
 }
 
-let { items, bilibiliAverageRating, itemsPerPage = 24 }: Props = $props();
+let { items, itemsPerPage = 24 }: Props = $props();
 
 // 状态
 let searchQuery = $state("");
@@ -179,7 +178,7 @@ function closeDetail() {
 	{#if pagedItems().length > 0}
 		<div class="anime-card-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 			{#each pagedItems() as anime (anime.id)}
-				<AnimeCard {anime} onclick={openDetail} />
+				<BilibiliCard {anime} onclick={openDetail} />
 			{/each}
 		</div>
 	{:else}
@@ -201,5 +200,5 @@ function closeDetail() {
 </div>
 
 <!-- 详情弹窗 -->
-<AnimeDetailModal anime={selectedAnime} onclose={closeDetail} />
+<BilibiliDetailModal anime={selectedAnime} onclose={closeDetail} />
 

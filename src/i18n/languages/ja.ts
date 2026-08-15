@@ -208,9 +208,14 @@ export const ja: Translation = {
 	[Key.vndbLengthLong]: "長い",
 	[Key.vndbLengthVeryLong]: "非常に長い",
 
-	// 追番（アニメ追跡）
-	[Key.anime]: "追番",
-	[Key.animeSubtitle]: "私のアニメ追跡リスト、Bilibili と TMDB からデータ取得",
+	// 追番 - Bilibili
+	[Key.bilibili]: "Bilibili",
+	[Key.bilibiliSubtitle]: "私のBilibili追番・追劇リスト",
+	[Key.bilibiliNotConfigured]: "Bilibiliデータソースが未設定",
+	[Key.bilibiliNotConfiguredDesc]:
+		"src/config/siteConfig.ts で bilibili.uid を設定してください",
+
+	// 追番 - 共通コンポーネント
 	[Key.animeTotal]: "合計",
 	[Key.animeAverageRating]: "平均評価",
 	[Key.animeSearch]: "アニメを検索...",
@@ -223,20 +228,13 @@ export const ja: Translation = {
 	[Key.animeDateAsc]: "古い順",
 	[Key.animeNoResults]: "一致するアニメが見つかりません",
 	[Key.animeLastUpdated]: "データ更新",
-	[Key.animeSource]: "データソース",
 	[Key.animeEpStatus]: "進捗",
 	[Key.animeViewDetails]: "詳細を見る",
-	[Key.animeNotConfigured]: "アニメデータソースが未設定",
-	[Key.animeNotConfiguredDesc]:
-		"src/config/siteConfig.ts で Bilibili UID または TMDB API Key を設定してください",
 	[Key.animeBilibiliAvg]: "Bilibili 平均",
-	[Key.animeTmdbAvg]: "TMDB 平均",
-	[Key.animeDualSynced]: "デュアル同期済み",
 	[Key.animeNoOverview]: "あらすじなし",
 	[Key.animeClose]: "閉じる",
 	[Key.animeSynopsis]: "あらすじ",
 	[Key.animeWatchNow]: "今すぐ視聴",
-	[Key.animeViewTmdb]: "TMDB 詳細を見る",
 	[Key.animeAllWithCount]: "すべて ({count})",
 	[Key.animeTVWithCount]: "TV ({count})",
 	[Key.animeMovieWithCount]: "映画 ({count})",
