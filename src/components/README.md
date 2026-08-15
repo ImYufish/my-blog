@@ -72,6 +72,11 @@ Firefly 项目中所有可复用组件的集中管理。组件按照功能和职
 - `ClientPagination.svelte` - 客户端分页（JavaScript 控制）
 - `Pagination.astro` - 静态路由分页（Astro 原生）
 
+**列表与筛选组件**
+- `FilterControls.svelte` - 筛选控制组件（胶囊筛选按钮，bangumi/vndb/mal 共用）
+- `TabNav.svelte` - 标签导航组件（支持 URL hash 深链，bangumi/vndb/mal/bilibili 共用）
+- `GridSkeleton.svelte` - 媒体网格加载骨架
+
 ### 🧩 widget/ - 小部件
 
 侧边栏中使用的各种功能小部件。
@@ -115,10 +120,8 @@ Firefly 项目中所有可复用组件的集中管理。组件按照功能和职
 
 **pages/bangumi/** - 番组计划页面组件
 - `BangumiGrid.svelte` - 番组网格布局组件
-- `BangumiSection.astro` - 番组分类展示组件
+- `BangumiSection.svelte` - 番组分类展示组件
 - `Card.svelte` - 番组卡片组件
-- `FilterControls.svelte` - 筛选控制组件
-- `TabNav.svelte` - 标签导航组件
 
 **pages/gallery/** - 相册页面组件
 - `AlbumCard.astro` - 相册卡片组件

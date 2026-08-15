@@ -1,10 +1,11 @@
 <script lang="ts">
 import ClientPagination from "@components/common/ClientPagination.svelte";
 import { untrack } from "svelte";
+import TabNav from "@/components/common/TabNav.svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { StandardizedAnime } from "@/types/bilibili";
-import TabNav from "../bangumi/TabNav.svelte";
+
 import BilibiliCard from "./BilibiliCard.svelte";
 import BilibiliDetailModal from "./BilibiliDetailModal.svelte";
 
@@ -137,7 +138,7 @@ function closeDetail() {
 }
 </script>
 
-<div class="anime-grid">
+<div class="media-list">
 	<!-- 工具栏 -->
 	<div class="mb-6 flex flex-col gap-3">
 		<!-- 搜索和排序 -->
@@ -176,7 +177,7 @@ function closeDetail() {
 
 	<!-- 卡片网格 -->
 	{#if pagedItems().length > 0}
-		<div class="anime-card-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+		<div class="media-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 			{#each pagedItems() as anime (anime.id)}
 				<BilibiliCard {anime} onclick={openDetail} />
 			{/each}

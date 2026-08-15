@@ -1,5 +1,6 @@
 <script lang="ts">
 import ClientPagination from "@/components/common/ClientPagination.svelte";
+import FilterControls from "@/components/common/FilterControls.svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { MalListItem } from "@/types/mal";
@@ -9,7 +10,6 @@ import {
 	type MalListKind,
 } from "@/utils/mal-utils";
 import Card from "./Card.svelte";
-import FilterControls from "./FilterControls.svelte";
 
 interface Props {
 	sectionId: string;
@@ -85,7 +85,7 @@ function goToPage(page: number) {
 }
 </script>
 
-<div class="mal-section" class:hidden={!isActive} data-section={sectionId}>
+<div class="media-section" class:hidden={!isActive} data-section={sectionId}>
   {#if items.length > 0}
     <FilterControls
       filters={filters}
@@ -93,10 +93,10 @@ function goToPage(page: number) {
       onFilterChange={handleFilterChange}
     />
 
-    <div class="bangumi-masonry grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+    <div class="media-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
       {#each pagedItems as item (item.node.id)}
         <div
-          class="mal-item"
+          class="media-item"
           data-item-section={sectionId}
           data-item-status={item.list_status?.status || "unknown"}
         >

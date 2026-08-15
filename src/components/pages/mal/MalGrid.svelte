@@ -1,7 +1,7 @@
 <script lang="ts">
+import TabNav from "@/components/common/TabNav.svelte";
 import type { MalCategory } from "@/utils/mal-utils";
 import MalSection from "./MalSection.svelte";
-import TabNav from "./TabNav.svelte";
 
 interface Props {
 	categories: MalCategory[];

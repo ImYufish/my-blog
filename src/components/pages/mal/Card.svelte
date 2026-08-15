@@ -2,6 +2,7 @@
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { MalListItem } from "@/types/mal";
+import { getFailedCovers, markCoverFailed } from "@/utils/failed-covers";
 import {
 	getMalSeasonText,
 	getMalStatusText,
@@ -100,32 +101,13 @@ const progressText = $derived(
 		: episodesText,
 );
 const genreNames = $derived((node.genres || []).map((g) => g.name));
-const visibleGenres = $derived(genreNames.slice(0, 3));
+const visibleGenres = $derived(genreNames.slice(0, 2));
 const hiddenGenreCount = $derived(
 	Math.max(genreNames.length - visibleGenres.length, 0),
 );
 const link = $derived(`${baseUrl}${node.id}`);
 
 const FAILED_COVERS_KEY = "mal-failed-covers";
-
-function getFailedCovers(): Set<string> {
-	try {
-		return new Set(JSON.parse(localStorage.getItem(FAILED_COVERS_KEY) || "[]"));
-	} catch {
-		return new Set();
-	}
-}
-
-function markCoverFailed(url: string) {
-	try {
-		const failed = getFailedCovers();
-		failed.add(url);
-		const arr = [...failed];
-		localStorage.setItem(FAILED_COVERS_KEY, JSON.stringify(arr.slice(-200)));
-	} catch {
-		// localStorage 不可用时静默忽略
-	}
-}
 
 const srcs = $derived(coverUrl ? [coverUrl] : []);
 let initialSrc = $state("");
@@ -134,7 +116,7 @@ $effect(() => {
 	const sources = srcs;
 	initialSrc = sources[0] || "";
 	if (typeof window === "undefined" || sources.length === 0) return;
-	const failed = getFailedCovers();
+	const failed = getFailedCovers(FAILED_COVERS_KEY);
 	const firstGood = sources.find((url) => !failed.has(url));
 	if (firstGood) initialSrc = firstGood;
 });
@@ -148,7 +130,7 @@ function handleLoad(e: Event) {
 
 function handleError(e: Event) {
 	const img = e.currentTarget as HTMLImageElement;
-	markCoverFailed(img.src);
+	markCoverFailed(img.src, FAILED_COVERS_KEY);
 	img.style.display = "none";
 }
 </script>
