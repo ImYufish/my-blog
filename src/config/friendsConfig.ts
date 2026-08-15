@@ -68,6 +68,24 @@ export const friendsConfig: FriendLink[] = [
 		weight: 5,
 		enabled: true,
 	},
+	{
+		title: "Xixmu",
+		imgurl: "https://xixmu.top/_astro/head_ima.rsW3s28l_1KtIxl.avif",
+		desc: "在记忆干枯前描绘。",
+		siteurl: "https://xixmu.top",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
+	{
+		title: "Silvaire",
+		imgurl: "https://wsrv.nl/?url=avatars.githubusercontent.com/u/184231508?s=400&u=0a370792ba6bbb95a04d309171b562bcd7283a0f&v=3",
+		desc: "Per Aspera Ad Astra",
+		siteurl: "https://silvaire.top/",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
 ];
 
 // 获取启用的友链并进行排序
