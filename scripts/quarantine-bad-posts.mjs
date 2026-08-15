@@ -25,7 +25,7 @@ function isExternalUrl(url) {
 // 围栏块（``` / ~~~）和行内代码（反引号）直接删；
 // 缩进块只在“前面是空行”的连续缩进行才算代码，免得把列表嵌套子项也误删。
 function stripCode(md) {
-	let out = md
+	const out = md
 		.replace(/```[\s\S]*?```/g, "")
 		.replace(/~~~[\s\S]*?~~~/g, "")
 		.replace(/`[^`\n]+`/g, "");
@@ -58,7 +58,8 @@ function walk(dir) {
 
 function hasMissingImage(file) {
 	const raw = fs.readFileSync(file, "utf8");
-	let data, content;
+	let data;
+	let content;
 	try {
 		({ data, content } = matter(raw));
 	} catch (err) {
@@ -70,7 +71,11 @@ function hasMissingImage(file) {
 	const images = new Set();
 
 	// "api" 是主题内置的随机封面，不是真路径，跳过；外链也跳过
-	if (typeof data.image === "string" && data.image !== "api" && !isExternalUrl(data.image)) {
+	if (
+		typeof data.image === "string" &&
+		data.image !== "api" &&
+		!isExternalUrl(data.image)
+	) {
 		images.add(data.image);
 	}
 
@@ -97,8 +102,11 @@ function main() {
 
 	for (const file of files) {
 		if (hasMissingImage(file)) {
-			// Windows 正反斜杠不一致，直接 replace 会失效、文件其实没挪走；用 relative + join 
-			const target = path.resolve(QUARANTINE_DIR, path.relative(POSTS_DIR, file));
+			// Windows 正反斜杠不一致，直接 replace 会失效、文件其实没挪走；用 relative + join
+			const target = path.resolve(
+				QUARANTINE_DIR,
+				path.relative(POSTS_DIR, file),
+			);
 			fs.mkdirSync(path.dirname(target), { recursive: true });
 			fs.renameSync(file, target);
 			console.log(`🚫 Quarantined: ${file}`);
