@@ -201,12 +201,6 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		icon: "material-symbols:movie",
 		pageKey: "bangumi",
 	},
-	VNDB: {
-		name: "VNDB",
-		url: "/vndb/",
-		icon: "material-symbols:menu-book",
-		pageKey: "vndb",
-	},
 	Gallery: {
 		name: "相册",
 		url: "/gallery/",
@@ -224,6 +218,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/booknav/",
 		icon: "material-symbols:bookmarks",
 		pageKey: "booknav",
+	},
+	VNDB: {
+		name: "VNDB",
+		url: "/vndb/",
+		icon: "material-symbols:chrome-reader-mode-rounded",
+		pageKey: "vndb",
 	},
 	MAL: {
 		name: "AnimeList",
