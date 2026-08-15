@@ -111,6 +111,8 @@ export const siteConfig: SiteConfig = {
 		bangumi: true,
 		// VNDB页面开关。
 		vndb: true,
+		// MyAnimeList页面开关。
+		mal: true,
 		// 相册页面开关
 		gallery: true,
 		// 追番页面开关
@@ -241,7 +243,7 @@ export const siteConfig: SiteConfig = {
 	// VNDB 配置
 	vndb: {
 		// VNDB 用户 ID
-		userId: "",
+		userId: "u358128",
 		// 数据模式：static=构建时获取，dynamic=客户端实时获取
 		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
@@ -256,6 +258,20 @@ export const siteConfig: SiteConfig = {
 		apiToken: "",
 		// 对Nsfw的游戏封面模糊化
 		blurNsfw: true,
+	},
+
+	// MyAnimeList 配置
+	mal: {
+		// MyAnimeList 用户名（列表需为公开状态，私密列表无法读取）
+		username: "cuteleaf",
+		// MyAnimeList Client ID，在 https://myanimelist.net/apiconfig 注册免费应用后获取
+		clientId: "	***REMOVED***",
+		// MAL API 地址
+		apiUrl: "https://api.myanimelist.net/v2",
+		// 动画条目详情页地址，末尾需要带 /
+		animeBaseUrl: "https://myanimelist.net/anime/",
+		// 漫画条目详情页地址，末尾需要带 /
+		mangaBaseUrl: "https://myanimelist.net/manga/",
 	},
 
 	// 追番配置（Bilibili + TMDB）
@@ -296,7 +312,7 @@ export const siteConfig: SiteConfig = {
 		// 为特定域名的图片添加 referrerpolicy="no-referrer" 属性
 		// 支持通配符 *，例如：["i0.hdslb.com", "*.bilibili.com"]
 		// 可解决指定域名图片加载时的 403 问题（如防盗链图片）
-		noReferrerDomains: ["*.hdslb.com", "*.bilibili.com"],
+		noReferrerDomains: ["*.hdslb.com", "*.bilibili.com", "*.myanimelist.net"],
 	},
 
 	// 站点语言，在本配置文件顶部SITE_LANG定义

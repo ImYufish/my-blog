@@ -247,6 +247,36 @@ export const ja: Translation = {
 	[Key.animeTypeDrama]: "ドラマ",
 	[Key.animeTypeConcert]: "コンサート",
 
+	// MyAnimeList
+	[Key.mal]: "MyAnimeList",
+	[Key.malSubtitle]: "私の MyAnimeList アニメ・マンガリスト",
+	[Key.malCategoryAnime]: "アニメ",
+	[Key.malCategoryManga]: "マンガ",
+	[Key.malFilterAll]: "すべて",
+	[Key.malStatusWatching]: "視聴中",
+	[Key.malStatusReading]: "読んでいる",
+	[Key.malStatusCompleted]: "見た",
+	[Key.malStatusOnHold]: "保留",
+	[Key.malStatusDropped]: "中断",
+	[Key.malStatusPlanToWatch]: "見たい",
+	[Key.malStatusPlanToRead]: "読みたい",
+	[Key.malNoData]: "データなし",
+	[Key.malNoDataDescription]: "このカテゴリに項目がありません",
+	[Key.malEmpty]: "データなし",
+	[Key.malEmptyReason]:
+		"考えられる理由：ユーザー名が存在しない、リストが非公開、Client ID が無効、またはネットワーク接続の問題",
+	[Key.malFetchError]: "MyAnimeList データ取得失敗",
+	[Key.malFetchErrorDesc]:
+		"ビルド時に MyAnimeList API からのデータ取得に失敗しました。ユーザー名と Client ID を確認し、リストが公開であることを確認してください。",
+	[Key.malNotConfigured]: "MyAnimeList が未設定です",
+	[Key.malNotConfiguredDesc]:
+		"src/config/siteConfig.ts で MyAnimeList のユーザー名と Client ID を設定してください（リストは公開にする必要があります）",
+	[Key.malLastUpdated]: "データ更新",
+	[Key.malSeasonWinter]: "冬",
+	[Key.malSeasonSpring]: "春",
+	[Key.malSeasonSummer]: "夏",
+	[Key.malSeasonFall]: "秋",
+
 	// ページネーション
 	[Key.paginationFirst]: "最初",
 	[Key.paginationPrev]: "前へ",

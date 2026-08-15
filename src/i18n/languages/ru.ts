@@ -249,6 +249,36 @@ export const ru: Translation = {
 	[Key.animeTypeDrama]: "Сериал",
 	[Key.animeTypeConcert]: "Концерт",
 
+	// MyAnimeList
+	[Key.mal]: "MyAnimeList",
+	[Key.malSubtitle]: "Мои списки аниме и манги из MyAnimeList",
+	[Key.malCategoryAnime]: "Аниме",
+	[Key.malCategoryManga]: "Манга",
+	[Key.malFilterAll]: "Все",
+	[Key.malStatusWatching]: "Смотрю",
+	[Key.malStatusReading]: "Читаю",
+	[Key.malStatusCompleted]: "Просмотрено",
+	[Key.malStatusOnHold]: "Отложено",
+	[Key.malStatusDropped]: "Брошено",
+	[Key.malStatusPlanToWatch]: "Хочу посмотреть",
+	[Key.malStatusPlanToRead]: "Хочу прочитать",
+	[Key.malNoData]: "Нет данных",
+	[Key.malNoDataDescription]: "В этой категории нет элементов",
+	[Key.malEmpty]: "Нет данных",
+	[Key.malEmptyReason]:
+		"Возможные причины: имя пользователя не существует, список закрыт, неверный Client ID или проблема с сетью",
+	[Key.malFetchError]: "Ошибка загрузки данных MyAnimeList",
+	[Key.malFetchErrorDesc]:
+		"Не удалось загрузить данные из MyAnimeList API при сборке. Проверьте имя пользователя и Client ID, а также убедитесь, что список открыт.",
+	[Key.malNotConfigured]: "MyAnimeList не настроен",
+	[Key.malNotConfiguredDesc]:
+		"Укажите имя пользователя и Client ID MyAnimeList в src/config/siteConfig.ts (список должен быть открытым)",
+	[Key.malLastUpdated]: "Данные обновлены",
+	[Key.malSeasonWinter]: "Зима",
+	[Key.malSeasonSpring]: "Весна",
+	[Key.malSeasonSummer]: "Лето",
+	[Key.malSeasonFall]: "Осень",
+
 	// Пагинация
 	[Key.paginationFirst]: "Первая",
 	[Key.paginationPrev]: "Предыдущая",

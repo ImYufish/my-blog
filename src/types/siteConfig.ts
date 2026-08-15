@@ -85,6 +85,7 @@ export type SiteConfig = {
 		guestbook: boolean; // 留言板页面开关
 		bangumi: boolean;
 		vndb: boolean;
+		mal: boolean; // MyAnimeList 页面开关
 		gallery: boolean; // 相册页面开关
 		anime: boolean; // 追番页面开关
 		dynamic: boolean; // 动态页面开关
@@ -183,6 +184,15 @@ export type SiteConfig = {
 		vnBaseUrl?: string; // VNDB 条目详情页地址，末尾需要带 /
 		apiToken?: string; // 私密列表访问令牌，仅 static 模式下使用
 		blurNsfw?: boolean; // 对Nsfw的游戏封面模糊化，默认为true
+	};
+
+	// MyAnimeList 配置
+	mal?: {
+		username?: string; // MyAnimeList 用户名，列表需为公开状态
+		clientId?: string; // MyAnimeList Client ID，从 https://myanimelist.net/apiconfig 注册免费应用后获取
+		apiUrl?: string; // MAL API 地址
+		animeBaseUrl?: string; // 动画条目详情页地址，末尾需要带 /
+		mangaBaseUrl?: string; // 漫画条目详情页地址，末尾需要带 /
 	};
 
 	// 追番配置（Bilibili + TMDB）

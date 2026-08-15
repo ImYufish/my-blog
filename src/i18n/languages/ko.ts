@@ -247,6 +247,36 @@ export const ko: Translation = {
 	[Key.animeTypeDrama]: "드라마",
 	[Key.animeTypeConcert]: "콘서트",
 
+	// MyAnimeList
+	[Key.mal]: "MyAnimeList",
+	[Key.malSubtitle]: "MyAnimeList 애니메이션 및 만화 목록",
+	[Key.malCategoryAnime]: "애니메이션",
+	[Key.malCategoryManga]: "만화",
+	[Key.malFilterAll]: "전체",
+	[Key.malStatusWatching]: "시청 중",
+	[Key.malStatusReading]: "읽는 중",
+	[Key.malStatusCompleted]: "시청 완료",
+	[Key.malStatusOnHold]: "보류",
+	[Key.malStatusDropped]: "중단",
+	[Key.malStatusPlanToWatch]: "보고 싶음",
+	[Key.malStatusPlanToRead]: "읽고 싶음",
+	[Key.malNoData]: "데이터 없음",
+	[Key.malNoDataDescription]: "이 카테고리에는 항목이 없습니다",
+	[Key.malEmpty]: "데이터 없음",
+	[Key.malEmptyReason]:
+		"가능한 원인: 사용자 이름이 존재하지 않음, 목록이 비공개, Client ID가 유효하지 않음, 또는 네트워크 연결 문제",
+	[Key.malFetchError]: "MyAnimeList 데이터 가져오기 실패",
+	[Key.malFetchErrorDesc]:
+		"빌드 중 MyAnimeList API에서 데이터를 가져오지 못했습니다. 사용자 이름과 Client ID를 확인하고 목록이 공개인지 확인하세요.",
+	[Key.malNotConfigured]: "MyAnimeList가 설정되지 않았습니다",
+	[Key.malNotConfiguredDesc]:
+		"src/config/siteConfig.ts에서 MyAnimeList 사용자 이름과 Client ID를 설정하세요 (목록은 공개여야 합니다)",
+	[Key.malLastUpdated]: "데이터 업데이트 시각",
+	[Key.malSeasonWinter]: "겨울",
+	[Key.malSeasonSpring]: "봄",
+	[Key.malSeasonSummer]: "여름",
+	[Key.malSeasonFall]: "가을",
+
 	// Pagination
 	[Key.paginationFirst]: "처음",
 	[Key.paginationPrev]: "이전",

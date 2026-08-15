@@ -248,6 +248,36 @@ export const en: Translation = {
 	[Key.animeTypeDrama]: "Drama",
 	[Key.animeTypeConcert]: "Concert",
 
+	// MyAnimeList
+	[Key.mal]: "MyAnimeList",
+	[Key.malSubtitle]: "My anime and manga lists from MyAnimeList",
+	[Key.malCategoryAnime]: "Anime",
+	[Key.malCategoryManga]: "Manga",
+	[Key.malFilterAll]: "All",
+	[Key.malStatusWatching]: "Watching",
+	[Key.malStatusReading]: "Reading",
+	[Key.malStatusCompleted]: "Completed",
+	[Key.malStatusOnHold]: "On Hold",
+	[Key.malStatusDropped]: "Dropped",
+	[Key.malStatusPlanToWatch]: "Plan to Watch",
+	[Key.malStatusPlanToRead]: "Plan to Read",
+	[Key.malNoData]: "No Data",
+	[Key.malNoDataDescription]: "No items in this category",
+	[Key.malEmpty]: "No Data",
+	[Key.malEmptyReason]:
+		"Possible reasons: username does not exist, list is private, invalid Client ID, or network issue",
+	[Key.malFetchError]: "MyAnimeList Data Fetch Failed",
+	[Key.malFetchErrorDesc]:
+		"Failed to fetch data from MyAnimeList API during build. Please check the username and Client ID, and make sure the list is public.",
+	[Key.malNotConfigured]: "MyAnimeList Not Configured",
+	[Key.malNotConfiguredDesc]:
+		"Please configure your MyAnimeList username and Client ID in src/config/siteConfig.ts. The list must be public.",
+	[Key.malLastUpdated]: "Data updated at",
+	[Key.malSeasonWinter]: "Winter",
+	[Key.malSeasonSpring]: "Spring",
+	[Key.malSeasonSummer]: "Summer",
+	[Key.malSeasonFall]: "Fall",
+
 	// Pagination
 	[Key.paginationFirst]: "First",
 	[Key.paginationPrev]: "Previous",

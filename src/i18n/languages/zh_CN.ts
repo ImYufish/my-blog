@@ -243,6 +243,36 @@ export const zh_CN: Translation = {
 	[Key.animeTypeDrama]: "电视剧",
 	[Key.animeTypeConcert]: "演唱会",
 
+	// MyAnimeList
+	[Key.mal]: "MyAnimeList",
+	[Key.malSubtitle]: "我的 MyAnimeList 动画与漫画列表",
+	[Key.malCategoryAnime]: "动画",
+	[Key.malCategoryManga]: "漫画",
+	[Key.malFilterAll]: "全部",
+	[Key.malStatusWatching]: "在看",
+	[Key.malStatusReading]: "在读",
+	[Key.malStatusCompleted]: "已看完",
+	[Key.malStatusOnHold]: "搁置",
+	[Key.malStatusDropped]: "抛弃",
+	[Key.malStatusPlanToWatch]: "想看",
+	[Key.malStatusPlanToRead]: "想读",
+	[Key.malNoData]: "暂无数据",
+	[Key.malNoDataDescription]: "该分类下还没有任何条目",
+	[Key.malEmpty]: "暂无数据",
+	[Key.malEmptyReason]:
+		"可能的原因：用户名不存在、列表为私密、Client ID 无效或网络连接问题",
+	[Key.malFetchError]: "MyAnimeList 数据拉取失败",
+	[Key.malFetchErrorDesc]:
+		"构建时从 MyAnimeList API 获取数据失败。请确认用户名和 Client ID 正确，且列表为公开状态。",
+	[Key.malNotConfigured]: "未配置 MyAnimeList 用户信息",
+	[Key.malNotConfiguredDesc]:
+		"请在 src/config/siteConfig.ts 中配置你的 MyAnimeList 用户名和 Client ID（列表需为公开状态）",
+	[Key.malLastUpdated]: "数据更新于",
+	[Key.malSeasonWinter]: "冬季",
+	[Key.malSeasonSpring]: "春季",
+	[Key.malSeasonSummer]: "夏季",
+	[Key.malSeasonFall]: "秋季",
+
 	// 分页
 	[Key.paginationFirst]: "首页",
 	[Key.paginationPrev]: "上一页",
