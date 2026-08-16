@@ -1,3 +1,4 @@
+import rss from '@astrojs/rss';
 // 友链配置
 export type FriendLink = {
 	title: string; // 友链标题
@@ -6,6 +7,7 @@ export type FriendLink = {
 	siteurl: string; // 友链地址
 	tags?: string[]; // 标签数组
 	linkpage?: string; //友链页面 URL
+	rss?: string; //rss地址
 	weight: number; // 权重，数字越大排序越靠前
 	enabled: boolean; // 是否启用
 };

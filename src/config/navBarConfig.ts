@@ -100,6 +100,18 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				external: true,
 				icon: "fa7-brands:github",
 			},
+			{
+				name: "E-mail",
+				url: "mailto:blog@x1anyu.cn",
+				external: true,
+				icon: "material-symbols:mail-outline"
+			},
+			{
+				name: "友链检测",
+				url: "https://friends.yufish.cn/",
+				external: true,
+				icon: "material-symbols:link-2"
+			}
 		],
 	});
 
