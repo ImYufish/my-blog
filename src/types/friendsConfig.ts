@@ -5,6 +5,7 @@ export type FriendLink = {
 	desc: string; // 友链描述
 	siteurl: string; // 友链地址
 	tags?: string[]; // 标签数组
+	linkpage?: string; //友链页面 URL
 	weight: number; // 权重，数字越大排序越靠前
 	enabled: boolean; // 是否启用
 };
