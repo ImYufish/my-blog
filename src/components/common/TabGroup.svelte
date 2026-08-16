@@ -9,14 +9,14 @@ import type { Snippet } from "svelte";
 // 代码组，也方便日后扩展更多 UI 组件。
 //
 // 用法（.mdx）：
-//   <CodeGroup labels={["js", "py"]} client:load>
+//   <TabGroup labels={["js", "py"]} client:load>
 //     ```js
 //     console.log(1)
 //     ```
 //     ```py
 //     print(1)
 //     ```
-//   </CodeGroup>
+//   </TabGroup>
 
 interface Props {
 	labels: string[];
@@ -32,9 +32,15 @@ const tabs = $derived(Array.isArray(labels) ? labels : []);
 // 根据 active 切换代码块显示（hydrate 后生效）
 $effect(() => {
 	if (!container) return;
-	const blocks = Array.from(
-		container.querySelectorAll<HTMLElement>(".code-group-blocks > *"),
-	);
+	const group = container.querySelector(".code-group-blocks");
+	if (!group) return;
+	// Astro 会把框架组件的 children 包在 <astro-slot> 里，需要穿透一层取真实代码块
+	const source =
+		group.children.length === 1 &&
+		group.firstElementChild?.tagName === "ASTRO-SLOT"
+			? group.firstElementChild
+			: group;
+	const blocks = Array.from(source.children) as HTMLElement[];
 	blocks.forEach((block, i) => {
 		block.style.display = i === active ? "" : "none";
 	});
