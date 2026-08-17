@@ -146,6 +146,11 @@ const iconHtml = icon ? ICONS[icon] : undefined;
 		color: var(--deep-text);
 	}
 
+	/* 暗色下 --deep-text 仍为深色，需覆盖为亮色文字 */
+	:global(.dark) .timeline-item-title {
+		color: var(--btn-content);
+	}
+
 	.timeline-item-body {
 		margin-top: var(--spacing-sm);
 	}
