@@ -82,8 +82,10 @@ const {
 const isBannerMode = backgroundWallpaper.mode === "banner";
 const isFullscreenMode = backgroundWallpaper.mode === "fullscreen";
 const isOverlayMode = backgroundWallpaper.mode === "overlay";
-const isBackgroundEnabled = backgroundWallpaper.mode !== "none";
 const isWallpaperSwitchable = displaySettingsConfig.wallpaperModeSwitchable;
+// 是否启用壁纸背景：配置非 none，或允许运行时切换（即使默认 none，运行时也可能切到有壁纸的模式）
+const isBackgroundEnabled =
+	backgroundWallpaper.mode !== "none" || isWallpaperSwitchable;
 
 // 检查是否启用水波纹动画效果
 const wavesConfig = backgroundWallpaper.banner?.waves?.enable;
@@ -170,7 +172,10 @@ const bannerDescriptionWidth = getBannerDescriptionWidth(
 	bannerPostMeta?.description,
 );
 
-const showBannerDim = (isBannerMode || isFullscreenMode) && isBackgroundEnabled;
+// 壁纸遮罩暗度层：banner/全屏模式，或允许切换时渲染（运行时可能切到有壁纸的模式，需保证元素存在）
+const showBannerDim =
+	(isBannerMode || isFullscreenMode || isWallpaperSwitchable) &&
+	isBackgroundEnabled;
 const dimOpacity = backgroundWallpaper.common?.dimOpacity ?? 0.15;
 
 const showBannerPageTitle =

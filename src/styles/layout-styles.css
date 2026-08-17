@@ -740,17 +740,24 @@ html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
 }
 
 /* Fullscreen 模式下图片全屏覆盖；模糊度由 JS 通过 --fullscreen-blur 变量实时驱动：
-   首页随滚动从 0 缓缓升到配置值，非首页固定为配置值（均复用 overlay 的 blur 配置） */
+   首页随滚动从 0 缓缓升到配置值，非首页固定为配置值（均复用 overlay 的 blur 配置）。
+   非首页的 filter fallback 到 --overlay-blur，避免壁纸显示后等 JS 设置 --fullscreen-blur 才模糊 */
 #wallpaper-wrapper.wallpaper-fullscreen img,
 #wallpaper-wrapper.wallpaper-fullscreen img[class*="object-cover"] {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     object-position: center !important;
-    filter: blur(var(--fullscreen-blur, 0px)) !important;
+    filter: blur(var(--fullscreen-blur, var(--overlay-blur, 0px))) !important;
     /* 始终放大 1.05，让 blur 采样始终落在图片内，避免采样到容器 bg-black 黑底而在四周闪黑影 */
     transform: scale(1.05);
     opacity: 1 !important;
+}
+
+/* 首页首屏保持清晰：模糊只由 JS 按滚动驱动（--fullscreen-blur 未设置时 fallback 为 0） */
+body.is-home #wallpaper-wrapper.wallpaper-fullscreen img,
+body.is-home #wallpaper-wrapper.wallpaper-fullscreen img[class*="object-cover"] {
+    filter: blur(var(--fullscreen-blur, 0px)) !important;
 }
 
 /* Fullscreen 模式隐藏 overlay 专属的半透明效果 */
