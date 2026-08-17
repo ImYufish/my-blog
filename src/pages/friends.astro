@@ -32,8 +32,8 @@ const isCommentEnabled =
 	commentConfig.type !== "none" &&
 	friendsPageConfig.showComment !== false;
 
-// 使用配置文件中的友链数据，按权重排序
-const items = getEnabledFriends();
+// 友链数据：优先读取远程 friends.json（实时更新），失败则回退本地 friendsConfig.ts 保底
+const items = await loadFriends();
 const allTags = [...new Set(items.flatMap((item) => item.tags || []))].sort();
 
 // 拉取 check-flink 的 result.json，获取封面截图和延迟状态
@@ -69,6 +69,45 @@ try {
 	}
 } catch (e) {
 	console.warn("[friends] fetch check-flink result.json failed:", e);
+}
+
+// 远程友链清单（check-flink/static/friends.json），字段与 friendsConfig.ts 保持一致
+interface RemoteFriend {
+	title: string;
+	imgurl: string;
+	desc: string;
+	siteurl: string;
+	tags?: string[];
+	linkpage?: string;
+	rss?: string;
+	weight: number;
+	enabled: boolean;
+}
+
+// 读取远程友链清单；远程不可用（网络异常 / 404 / 空数据）时回退本地配置，保证构建不中断
+async function loadFriends(): Promise<RemoteFriend[]> {
+	try {
+		const res = await fetch(
+			"https://friends.yufish.cn/friends.json",
+			{ signal: AbortSignal.timeout(15000) },
+		);
+		if (res.ok) {
+			const data = (await res.json()) as { friends?: RemoteFriend[] };
+			const remote = (data.friends || [])
+				.filter((f) => f.enabled !== false)
+				.sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0));
+			if (remote.length > 0) {
+				console.log(`[friends] 使用远程 friends.json（${remote.length} 条）`);
+				return remote;
+			}
+			console.warn("[friends] friends.json 为空，回退本地配置");
+		} else {
+			console.warn(`[friends] friends.json HTTP ${res.status}，回退本地配置`);
+		}
+	} catch (e) {
+		console.warn("[friends] 读取远程 friends.json 失败，回退本地配置:", e);
+	}
+	return getEnabledFriends();
 }
 
 function normalizeMatchUrl(url: string): string {
