@@ -846,13 +846,11 @@ html[data-wallpaper-mode="fullscreen"] body:not(.wallpaper-initialized) .w-full.
     visibility: hidden;
 }
 
-/* Fullscreen 模式下移动端非首页隐藏壁纸（与横幅模式一致） */
-@media (max-width: 1023px) {
-    #wallpaper-wrapper.wallpaper-fullscreen.mobile-hide-banner {
-        display: none !important;
-    }
+/* Fullscreen 模式移动端：壁纸始终显示（非首页与 overlay 一致）；
+   banner 模式的移动端隐藏仍由 .mobile-hide-banner 的横幅规则控制 */
 
-    /* Fullscreen 模式下主内容使用 relative 定位，需要匹配 pointer-events-none 类 */
+/* Fullscreen 模式下主内容使用 relative 定位，需要匹配 pointer-events-none 类 */
+@media (max-width: 1023px) {
     .w-full.z-30.pointer-events-none.mobile-main-no-banner {
         top: 5.5rem !important;
         min-height: calc(100vh - 5.5rem) !important;
