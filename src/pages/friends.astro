@@ -410,4 +410,99 @@ const description =
       gap: 0.75rem;
     }
   </style>
+
+  <script is:inline>
+    // 客户端实时刷新友链：页面加载即 fetch 远程 friends.json / result.json 重渲染，
+    // 新申请的友链无需重新构建博客即可出现。失败则沿用构建时 SSR 数据。
+    (function () {
+      const FRIENDS_URL = "https://friends.yufish.cn/friends.json";
+      const RESULT_URL = "https://friends.yufish.cn/result.json";
+
+      function normUrl(u) {
+        return (u || "").trim().replace(/^https?:\/\//i, "").replace(/\/$/, "").toLowerCase();
+      }
+      function latencyColor(status, latency) {
+        if (status == null || latency == null) return "#6b7280";
+        if (status !== "ok") return "#ef4444";
+        if (latency < 0.8) return "#22c55e";
+        if (latency <= 2.0) return "#eab308";
+        return "#ef4444";
+      }
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function cardHtml(f, rm) {
+        const status = rm.get(normUrl(f.siteurl)) || null;
+        const cover = status && status.siteshot ? status.siteshot : f.imgurl;
+        const latencyMs = status && status.latency != null ? Math.round(status.latency * 1000) : null;
+        const color = latencyColor(status && status.status, status ? (status.latency != null ? status.latency : null) : null);
+        const tags = (f.tags || []).slice(0, 3).map(function (t) {
+          return '<span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">' + esc(t) + "</span>";
+        }).join("");
+        const desc = f.desc
+          ? '<div data-desc class="px-3 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.5rem]" title="' + esc(f.desc) + '">' + esc(f.desc) + "</div>"
+          : "";
+        const tagBox = f.tags && f.tags.length > 0
+          ? '<div class="mt-auto px-3 pb-3 pt-2 flex flex-wrap gap-1">' + tags + "</div>"
+          : "";
+        return (
+          '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
+            '<div class="relative h-32 w-full overflow-hidden">' +
+              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />' +
+              '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
+              '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
+                '<span class="w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +
+                '<span style="color:' + color + '">' + (latencyMs != null ? latencyMs + " MS" : "OFFLINE") + "</span>" +
+              "</div>" +
+            "</div>" +
+            '<div class="p-3 flex items-center gap-3">' +
+              '<div class="relative w-10 h-10 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
+                '<img src="' + esc(f.imgurl) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover" loading="lazy" />' +
+              "</div>" +
+              '<div data-title class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">' + esc(f.title) + "</div>" +
+            "</div>" +
+            desc +
+            tagBox +
+          "</a>"
+        );
+      }
+      async function refreshFriends() {
+        try {
+          const [fr, rr] = await Promise.all([
+            fetch(FRIENDS_URL, { cache: "no-store" }),
+            fetch(RESULT_URL, { cache: "no-store" }).catch(function () { return null; }),
+          ]);
+          if (!fr.ok) return;
+          const fd = await fr.json();
+          const list = (fd.friends || [])
+            .filter(function (f) { return f.enabled !== false; })
+            .sort(function (a, b) { return (b.weight || 0) - (a.weight || 0); });
+          const rm = new Map();
+          if (rr && rr.ok) {
+            const rd = await rr.json();
+            (rd.link_status || []).forEach(function (s) {
+              const k = normUrl(s.link);
+              if (k) rm.set(k, s);
+            });
+          }
+          const grid = document.querySelector(".friends-grid");
+          if (!grid) return;
+          if (list.length === 0) {
+            grid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500"><div class="text-sm">暂无友链</div></div>';
+          } else {
+            grid.innerHTML = list.map(function (f) { return cardHtml(f, rm); }).join("");
+          }
+          // 重新套用当前筛选 / 搜索
+          const active = document.querySelector("friend-filter button[data-active]");
+          if (active) active.click();
+        } catch (e) {
+          console.warn("[friends] 客户端实时刷新失败，沿用构建时数据:", e);
+        }
+      }
+      if (document.readyState !== "loading") refreshFriends();
+      else document.addEventListener("DOMContentLoaded", refreshFriends);
+    })();
+  </script>
 </MainGridLayout>
