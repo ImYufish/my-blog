@@ -293,10 +293,11 @@ html {
         box-shadow: none !important;
     }
 
-    /* 全屏壁纸非首页（none）：禁用 1px 边框，避免从首页 semifull 切换时
-       边框颜色从 currentColor(黑) 过渡到 transparent 而闪出黑边框 */
-    html[data-wallpaper-mode="fullscreen"] #navbar[data-transparent-mode="none"] > div {
+    /* 全屏壁纸模式：导航栏统一禁用边框/轮廓（覆盖 semifull/none 及 enable-card-border 的卡片边框），
+       避免切换页面瞬间 enable-card-border 边框闪现黑色边框 */
+    html[data-wallpaper-mode="fullscreen"] #navbar > div {
         border: none !important;
+        outline: none !important;
     }
 
     /* Overlay 模式下，滚动后提高导航栏背景模糊度，增强与正文区分 */
