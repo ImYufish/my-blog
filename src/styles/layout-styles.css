@@ -711,19 +711,25 @@ html[data-wallpaper-mode="fullscreen"] .absolute.w-full.z-30.no-banner-layout {
 
 /* ============================================
  * Fullscreen 模式 - 全屏壁纸
- * 壁纸全屏显示，水波纹在底部，内容在壁纸下方
+ * 壁纸 fixed 固定全屏，标题首屏居中；内容区通过 margin-top:100vh
+ * 推到首屏之下，下滑时内容覆盖壁纸；复用 overlay 的透明/模糊配置
  * ============================================ */
 #wallpaper-wrapper.wallpaper-fullscreen {
-    position: relative !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
     height: 100vh !important;
-    min-height: 100vh !important;
-    max-height: 100vh !important;
-    top: 0 !important;
-    transform: none !important;
-    overflow: hidden !important;
+    height: 100lvh !important;
+    z-index: var(--overlay-z-index, -1) !important;
+    /* 全屏壁纸不透明（不需要背景透明度），壁纸本身全不透明显示 */
     opacity: 1 !important;
     pointer-events: none !important;
-    transition: none !important;
+    overflow: hidden !important;
+    top: 0 !important;
+    min-height: unset !important;
+    max-height: unset !important;
+    transform: none !important;
+    transition: opacity 0.6s ease !important;
 }
 
 /* Fullscreen 模式下非 sticky 导航栏：隐藏 top-row 占位，避免顶部空白 */
@@ -733,14 +739,17 @@ html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
     transition: none !important;
 }
 
-/* Fullscreen 模式下图片全屏覆盖，无模糊 */
+/* Fullscreen 模式下图片全屏覆盖；模糊度由 JS 通过 --fullscreen-blur 变量实时驱动：
+   首页随滚动从 0 缓缓升到配置值，非首页固定为配置值（均复用 overlay 的 blur 配置） */
 #wallpaper-wrapper.wallpaper-fullscreen img,
 #wallpaper-wrapper.wallpaper-fullscreen img[class*="object-cover"] {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     object-position: center !important;
-    filter: none !important;
+    filter: blur(var(--fullscreen-blur, 0px)) !important;
+    /* 始终放大 1.05，让 blur 采样始终落在图片内，避免采样到容器 bg-black 黑底而在四周闪黑影 */
+    transform: scale(1.05);
     opacity: 1 !important;
 }
 
@@ -751,16 +760,27 @@ html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
     display: flex !important;
 }
 
+/* 非首页全屏壁纸模式：与 overlay 一致，隐藏首屏标题/遮罩/水波纹/渐变/滚动指示器（内容在最上面） */
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen .banner-home-text-overlay,
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen .banner-page-title-overlay,
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen .banner-post-meta-overlay,
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen #banner-dim-container,
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen #header-waves,
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen #wallpaper-gradient,
+body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicator {
+    display: none !important;
+}
+
 /* Fullscreen 模式下非首页隐藏主页标题文字（Swup 页面切换时通过 hidden 类控制） */
 #wallpaper-wrapper.wallpaper-fullscreen .banner-home-text-overlay.hidden {
     display: none !important;
 }
 
-/* Fullscreen 模式下 waves 显示在底部 */
-#wallpaper-wrapper.wallpaper-fullscreen .waves {
-    position: absolute !important;
-    bottom: -1px !important;
-    z-index: 15 !important;
+/* Fullscreen 模式不需要水波纹和渐变过渡 */
+#wallpaper-wrapper.wallpaper-fullscreen .waves,
+#wallpaper-wrapper.wallpaper-fullscreen #header-waves,
+#wallpaper-wrapper.wallpaper-fullscreen #wallpaper-gradient {
+    display: none !important;
 }
 
 /* Fullscreen 模式下滚动向下指示器 */
@@ -779,6 +799,13 @@ html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
     pointer-events: auto;
     color: rgba(255, 255, 255, 0.8);
     transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* 首页下滑超过一定距离后隐藏滚动指示器（ScrollDownIndicator 脚本添加 .hide 类） */
+#wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicator.hide {
+    opacity: 0 !important;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 @media (max-width: 1023px) {

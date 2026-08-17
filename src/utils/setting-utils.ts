@@ -474,7 +474,7 @@ function showBannerMode(animate = false) {
 	if (navbar) {
 		// 获取导航栏透明模式配置（banner模式）
 		const transparentMode =
-			backgroundWallpaper.common?.navbar?.transparentMode || "semi";
+			backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
 		navbar.setAttribute("data-transparent-mode", transparentMode);
 
 		// 重新初始化半透明模式滚动检测（如果需要）
@@ -543,22 +543,21 @@ function showFullscreenMode(animate = false) {
 	// 调整主内容位置
 	adjustMainContentPosition("fullscreen", animate);
 
-	// 移除透明效果（全屏壁纸模式不使用半透明）
-	adjustMainContentTransparency(false);
+	// 调整主内容透明度：全屏壁纸模式卡片半透明，复用 overlay 的 cardOpacity 配置
+	adjustMainContentTransparency(true);
 
-	// 调整导航栏透明度
+	// 调整导航栏透明度：全屏壁纸模式脱离 banner 导航栏配置，导航栏默认完全透明
+	// （透明度由卡片透明度 cardOpacity 经 wallpaper-transparent 控制）；
+	// 若开启 fullscreen.navbar.dynamicTransparent，首页顶部透明、下滑后变不透明（semifull）
 	const navbar = document.getElementById("navbar");
 	if (navbar) {
-		const transparentMode =
-			backgroundWallpaper.common?.navbar?.transparentMode || "semi";
-		navbar.setAttribute("data-transparent-mode", transparentMode);
-
-		if (
-			transparentMode === "semifull" &&
-			typeof window.initSemifullScrollDetection === "function"
-		) {
-			window.initSemifullScrollDetection();
-		}
+		const isHomePage = checkIsHomePage(window.location.pathname);
+		const dynamicTransparent =
+			backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false;
+		navbar.setAttribute(
+			"data-transparent-mode",
+			isHomePage && dynamicTransparent ? "semifull" : "none",
+		);
 	}
 }
 
@@ -617,7 +616,7 @@ function hideAllWallpapers() {
 	adjustMainContentTransparency(false);
 }
 
-function updateNavbarTransparency(mode: WALLPAPER_MODE) {
+export function updateNavbarTransparency(mode: WALLPAPER_MODE): void {
 	const navbar = document.getElementById("navbar");
 	if (!navbar) return;
 
@@ -634,15 +633,24 @@ function updateNavbarTransparency(mode: WALLPAPER_MODE) {
 		transparentMode = "none";
 		blurAmount = 0;
 	} else if (mode === WALLPAPER_FULLSCREEN) {
-		// 全屏壁纸模式：使用 fullscreen 配置的透明模式和模糊效果
-		transparentMode =
-			backgroundWallpaper.common?.navbar?.transparentMode || "semi";
-		blurAmount = backgroundWallpaper.common?.navbar?.blur ?? 20;
+		// 全屏壁纸模式：脱离 banner 导航栏配置，导航栏默认完全透明
+		// （透明度由卡片透明度 cardOpacity 经 wallpaper-transparent 控制）；
+		// 若开启 fullscreen.navbar.dynamicTransparent，首页顶部透明、下滑后变不透明（semifull）
+		const isHomePage = checkIsHomePage(window.location.pathname);
+		const dynamicTransparent =
+			backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false;
+		if (isHomePage && dynamicTransparent) {
+			transparentMode = "semifull";
+			blurAmount = 0;
+		} else {
+			transparentMode = "none";
+			blurAmount = 0;
+		}
 	} else {
 		// Banner模式：使用配置的透明模式和模糊效果
 		transparentMode =
-			backgroundWallpaper.common?.navbar?.transparentMode || "semi";
-		blurAmount = backgroundWallpaper.common?.navbar?.blur ?? 20;
+			backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
+		blurAmount = backgroundWallpaper.banner?.navbar?.blur ?? 20;
 	}
 
 	// 更新导航栏的透明模式属性
@@ -730,7 +738,8 @@ function adjustMainContentPosition(
 			break;
 		}
 		case "fullscreen": {
-			// 全屏壁纸模式：壁纸已在文档流中占100vh，主内容紧跟其后
+			// 全屏壁纸模式：壁纸 fixed 固定全屏。首页 hero 用 margin-top:100vh 推到首屏之下；
+			// 非首页与 overlay 一致，内容在最上面
 			const isFullscreenMobile = window.innerWidth < 1024;
 			const isFullscreenHome = checkIsHomePage(window.location.pathname);
 			if (isFullscreenMobile && !isFullscreenHome) {
@@ -744,6 +753,17 @@ function adjustMainContentPosition(
 				mainContent.style.transition = "";
 				break;
 			}
+			// 桌面端非首页：与 overlay 模式一致，内容在最上面（无首屏 hero）
+			if (!isFullscreenHome) {
+				mainContent.classList.add("no-banner-layout");
+				mainContent.style.setProperty("top", "5.5rem", "important");
+				mainContent.style.setProperty("margin-top", "0", "important");
+				mainContent.style.position = "";
+				mainContent.style.zIndex = "";
+				mainContent.style.minHeight = "";
+				mainContent.style.transition = "";
+				break;
+			}
 
 			if (animate) {
 				// 运行时切换：从当前位置动画滑到壁纸下方，完成后切换为 relative
@@ -753,7 +773,7 @@ function adjustMainContentPosition(
 				mainContent.style.zIndex = "30";
 				mainContent.style.setProperty("top", `${computedTop}px`, "important");
 				// absolute 定位下 margin-top 不影响布局，提前设好最终值避免切换 relative 时跳变
-				mainContent.style.setProperty("margin-top", "1rem", "important");
+				mainContent.style.setProperty("margin-top", "100vh", "important");
 				mainContent.classList.add("no-banner-layout");
 				void mainContent.offsetWidth;
 				mainContent.style.setProperty(
@@ -775,7 +795,7 @@ function adjustMainContentPosition(
 				mainContent.style.position = "relative";
 				mainContent.style.zIndex = "30";
 				mainContent.style.setProperty("top", "0", "important");
-				mainContent.style.setProperty("margin-top", "1rem", "important");
+				mainContent.style.setProperty("margin-top", "100vh", "important");
 				mainContent.style.transition = "";
 			}
 			break;
@@ -1029,7 +1049,7 @@ export function applyStoredOverlaySettingsToDocument(): void {
 
 // Waves animation functions
 export function getDefaultWavesEnabled(): boolean {
-	const wavesConfig = backgroundWallpaper.common?.waves?.enable;
+	const wavesConfig = backgroundWallpaper.banner?.waves?.enable;
 	if (typeof wavesConfig === "object") {
 		// 如果是分设备配置，检查当前设备
 		const isMobile =
@@ -1087,7 +1107,7 @@ export function applyWavesEnabledToDocument(enabled: boolean): void {
 
 // Gradient transition functions
 export function getDefaultGradientEnabled(): boolean {
-	const gradientConfig = backgroundWallpaper.common?.gradient?.enable;
+	const gradientConfig = backgroundWallpaper.banner?.gradient?.enable;
 	if (typeof gradientConfig === "object") {
 		const isMobile =
 			typeof window !== "undefined" ? window.innerWidth < 768 : false;

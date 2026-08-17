@@ -285,6 +285,20 @@ html {
         background-color: var(--card-bg-transparent) !important;
     }
 
+    /* 全屏壁纸首页动态透明（semifull）：顶部透明，下滑后显示卡片底色。
+       需要比上面 wallpaper-transparent 的固定底色更高特异性，才能让顶部透明生效 */
+    html[data-wallpaper-mode="fullscreen"] #navbar[data-transparent-mode="semifull"]:not(.scrolled) > div {
+        background: transparent !important;
+        --navbar-surface-blur: 0px !important;
+        box-shadow: none !important;
+    }
+
+    /* 全屏壁纸非首页（none）：禁用 1px 边框，避免从首页 semifull 切换时
+       边框颜色从 currentColor(黑) 过渡到 transparent 而闪出黑边框 */
+    html[data-wallpaper-mode="fullscreen"] #navbar[data-transparent-mode="none"] > div {
+        border: none !important;
+    }
+
     /* Overlay 模式下，滚动后提高导航栏背景模糊度，增强与正文区分 */
     .wallpaper-transparent #navbar.navbar-sticky-shadow > div {
         --navbar-surface-blur: 20px !important;

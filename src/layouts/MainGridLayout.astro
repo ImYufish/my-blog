@@ -86,7 +86,7 @@ const isBackgroundEnabled = backgroundWallpaper.mode !== "none";
 const isWallpaperSwitchable = displaySettingsConfig.wallpaperModeSwitchable;
 
 // 检查是否启用水波纹动画效果
-const wavesConfig = backgroundWallpaper.common?.waves?.enable;
+const wavesConfig = backgroundWallpaper.banner?.waves?.enable;
 const wavesSwitchable = displaySettingsConfig.wavesSwitchable;
 // 处理分设备控制的水波纹动画
 const wavesEnabledOnDesktop =
@@ -98,7 +98,7 @@ const shouldRenderWaves =
 	wavesEnabledOnDesktop || wavesEnabledOnMobile || wavesSwitchable;
 
 // 渐变过渡配置
-const gradientConfig = backgroundWallpaper.common?.gradient?.enable;
+const gradientConfig = backgroundWallpaper.banner?.gradient?.enable;
 const gradientSwitchable = displaySettingsConfig.gradientSwitchable;
 const gradientEnabledOnDesktop =
 	typeof gradientConfig === "object"
@@ -108,7 +108,7 @@ const gradientEnabledOnMobile =
 	typeof gradientConfig === "object"
 		? gradientConfig.mobile
 		: (gradientConfig ?? true);
-const gradientHeight = backgroundWallpaper.common?.gradient?.height ?? "30vh";
+const gradientHeight = backgroundWallpaper.banner?.gradient?.height ?? "30vh";
 // 是否需要渲染渐变元素（任一设备启用 或 允许用户切换）
 const shouldRenderGradient =
 	gradientEnabledOnDesktop || gradientEnabledOnMobile || gradientSwitchable;
@@ -137,15 +137,17 @@ const homeTextEnable = backgroundWallpaper.common?.homeText?.enable;
 const showHomeText =
 	(isBannerMode || isFullscreenMode) && !!homeTextEnable && isHomePageCheck;
 
+// 横幅标题/文章元信息覆盖层：banner 模式或允许切换时渲染（切换模式下运行时可能为 banner）。
+// 全屏模式非首页由 CSS(body:not(.is-home)) 与 syncFullscreenOverlays() 隐藏，不影响 overlay 化显示
 const showBannerPostMeta =
-	(isBannerMode || isFullscreenMode) &&
+	(isBannerMode || isWallpaperSwitchable) &&
 	isBackgroundEnabled &&
 	!isHomePageCheck &&
 	isPostPage &&
 	!!bannerPostMeta;
 
 const bannerPostInfoMode =
-	backgroundWallpaper.common?.postInfo?.mode ?? "description";
+	backgroundWallpaper.banner?.postInfo?.mode ?? "description";
 
 const getBannerDescriptionWidth = (description?: string) => {
 	if (!description) return undefined;
@@ -172,7 +174,7 @@ const showBannerDim = (isBannerMode || isFullscreenMode) && isBackgroundEnabled;
 const dimOpacity = backgroundWallpaper.common?.dimOpacity ?? 0.15;
 
 const showBannerPageTitle =
-	(isBannerMode || isFullscreenMode) &&
+	(isBannerMode || isWallpaperSwitchable) &&
 	isBackgroundEnabled &&
 	!isHomePageCheck &&
 	!isPostPage &&
@@ -282,7 +284,8 @@ if (
 const footerClassName = footerClass.join(" ");
 
 // 检查是否应该启用半透明效果
-const shouldEnableTransparency = isOverlayMode && isBackgroundEnabled;
+const shouldEnableTransparency =
+	(isOverlayMode || isFullscreenMode) && isBackgroundEnabled;
 
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
@@ -346,7 +349,7 @@ const hasMultipleImages =
 		: isOverlayMode
 			? `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
 			: isFullscreenMode
-				? ``
+				? `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
 				: `top: -${BANNER_HEIGHT_EXTEND}vh`
 }>
     <!-- 背景图片显示 -->
@@ -998,9 +1001,10 @@ const hasMultipleImages =
         </div>
     )}
 
-    <!-- Fullscreen 模式下显示向下滚动指示器 -->
-    {(isFullscreenMode || isWallpaperSwitchable) && <ScrollDownIndicator />}
     </div>
+
+    <!-- Fullscreen 模式下显示向下滚动指示器（仅首页；放在 overlay 容器外，避免被标题视差 transform 带离） -->
+    {isHomePageCheck && (isFullscreenMode || isWallpaperSwitchable) && <ScrollDownIndicator />}
 
     <!-- Water waves effect - 如果允许切换或任一设备启用则渲染 -->
     {shouldRenderWaves ? (
@@ -1073,7 +1077,7 @@ const hasMultipleImages =
 )}
 
 <!-- Main content -->
-<div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${!(isBannerMode && isBackgroundEnabled) ? 'no-banner-layout' : ''}`} style={isFullscreenMode ? 'top: 0;' : `top: ${finalMainPanelTop}`}>
+<div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${!(isBannerMode && isBackgroundEnabled) ? 'no-banner-layout' : ''}`} style={isFullscreenMode && isHomePageCheck ? 'top: 0;' : `top: ${finalMainPanelTop}`}>
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative w-full xl:w-[92vw] max-w-(--page-width) mx-auto pointer-events-auto">
         <div id="main-grid"

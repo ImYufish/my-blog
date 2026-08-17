@@ -187,7 +187,9 @@ const hasAppearanceTab = $derived(
 );
 const hasWallpaperTab = $derived(
 	isWallpaperSwitchable ||
-		(wallpaperMode === WALLPAPER_OVERLAY && hasOverlaySettings) ||
+		((wallpaperMode === WALLPAPER_OVERLAY ||
+			wallpaperMode === WALLPAPER_FULLSCREEN) &&
+			hasOverlaySettings) ||
 		((wallpaperMode === WALLPAPER_BANNER ||
 			wallpaperMode === WALLPAPER_FULLSCREEN) &&
 			hasBannerSettings),
@@ -227,9 +229,13 @@ $effect(() => {
 	}
 });
 
-// Auto-switch to wallpaper tab when entering overlay mode
+// Auto-switch to wallpaper tab when entering overlay/fullscreen mode
 $effect(() => {
-	if (wallpaperMode === WALLPAPER_OVERLAY && hasOverlaySettings) {
+	if (
+		(wallpaperMode === WALLPAPER_OVERLAY ||
+			wallpaperMode === WALLPAPER_FULLSCREEN) &&
+		hasOverlaySettings
+	) {
 		activeTab = "wallpaper";
 	}
 });
@@ -237,7 +243,9 @@ $effect(() => {
 let overlaySliderItems = $derived<OverlaySliderItem[]>([
 	{
 		key: "opacity",
-		enabled: isOverlayOpacitySwitchable,
+		// 全屏壁纸模式不需要背景透明度，隐藏该滑块（仍显示模糊与卡片透明度）
+		enabled:
+			isOverlayOpacitySwitchable && wallpaperMode !== WALLPAPER_FULLSCREEN,
 		label: i18n(I18nKey.overlayOpacity),
 		displayValue: `${Math.round(overlayOpacity * 100)}%`,
 		ariaLabel: i18n(I18nKey.overlayOpacity),
@@ -412,7 +420,7 @@ function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 	setWallpaperMode(newMode);
 	window.scrollTo({ top: 0 });
 
-	if (newMode === WALLPAPER_OVERLAY) {
+	if (newMode === WALLPAPER_OVERLAY || newMode === WALLPAPER_FULLSCREEN) {
 		requestAnimationFrame(refreshAllRangeProgress);
 	}
 }
@@ -581,6 +589,14 @@ $effect(() => {
 		if (isOverlayOpacitySwitchable) {
 			setOverlayOpacity(overlayOpacity);
 		}
+		if (isOverlayBlurSwitchable) {
+			setOverlayBlur(overlayBlur);
+		}
+		if (isOverlayCardOpacitySwitchable) {
+			setOverlayCardOpacity(overlayCardOpacity);
+		}
+	} else if (wallpaperMode === WALLPAPER_FULLSCREEN) {
+		// 全屏壁纸不透明，只应用模糊与卡片透明度
 		if (isOverlayBlurSwitchable) {
 			setOverlayBlur(overlayBlur);
 		}
@@ -800,8 +816,8 @@ $effect(() => {
 		</div>
 		{/if}
 
-		<!-- Overlay Settings Section -->
-		{#if wallpaperMode === WALLPAPER_OVERLAY && hasOverlaySettings}
+		<!-- Overlay Settings Section（全屏壁纸模式也复用 overlay 的透明/模糊/卡片透明度设置） -->
+		{#if (wallpaperMode === WALLPAPER_OVERLAY || wallpaperMode === WALLPAPER_FULLSCREEN) && hasOverlaySettings}
 		<div class="">
 			<div class="section-title">
 				{i18n(I18nKey.overlaySettings)}
@@ -888,8 +904,8 @@ $effect(() => {
 					</div>
 				</button>
 				{/if}
-				<!-- Waves Animation Switch -->
-				{#if isWavesSwitchable}
+				<!-- Waves Animation Switch（仅横幅模式，全屏壁纸无水波纹） -->
+				{#if isWavesSwitchable && wallpaperMode === WALLPAPER_BANNER}
 				<button
 					class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
 					class:bg-(--btn-regular-bg-hover)={wavesEnabled}
@@ -906,8 +922,8 @@ $effect(() => {
 					</div>
 				</button>
 				{/if}
-				<!-- Gradient Transition Switch -->
-				{#if isGradientSwitchable}
+				<!-- Gradient Transition Switch（仅横幅模式，全屏壁纸无渐变过渡） -->
+				{#if isGradientSwitchable && wallpaperMode === WALLPAPER_BANNER}
 				<button
 					class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
 					class:bg-(--btn-regular-bg-hover)={gradientEnabled}

@@ -26,16 +26,26 @@ import NavMenuPanel from "./NavMenuPanel.astro";
 
 const className = Astro.props.class;
 
-// 获取导航栏透明模式配置
+// 检查是否为首页
+const isHomePageCheck = isHomePage(Astro.url.pathname);
+
+// 获取导航栏透明模式配置：
+// banner 模式用 banner.navbar 配置；fullscreen 模式用 fullscreen.navbar，
+// 首页开启动态透明时用 semifull（顶部透明、下滑不透明），否则完全透明
 const navbarTransparentMode =
 	backgroundWallpaper.mode === "banner"
-		? backgroundWallpaper.common?.navbar?.transparentMode || "semi"
-		: "semi";
+		? backgroundWallpaper.banner?.navbar?.transparentMode || "semi"
+		: backgroundWallpaper.mode === "fullscreen"
+			? isHomePageCheck &&
+				(backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false)
+				? "semifull"
+				: "none"
+			: "semi";
 
 // 获取导航栏模糊度（0 即关闭导航栏毛玻璃）
 const navbarBlur =
 	backgroundWallpaper.mode === "banner"
-		? (backgroundWallpaper.common?.navbar?.blur ?? 20)
+		? (backgroundWallpaper.banner?.navbar?.blur ?? 20)
 		: 0;
 
 // 获取导航栏标题，如果没有设置则使用 siteConfig.title
@@ -45,9 +55,6 @@ const navbarTitle = siteConfig.navbar.title || siteConfig.title;
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 const navbarMenuAlign = siteConfig.navbar.menuAlign ?? "center";
 const isNavbarMenuCentered = navbarMenuAlign === "center";
-
-// 检查是否为首页
-const isHomePageCheck = isHomePage(Astro.url.pathname);
 
 // 检查是否有任何显示设置可用（总开关关闭时下方各项均为 false）
 const isDisplaySettingsEnabled = displaySettingsConfig.enable;
@@ -353,7 +360,14 @@ function initSemifullScrollDetection() {
 
     function updateNavbarState() {
         if (document.documentElement.classList.contains('is-page-transitioning')) {
-            navbar!.classList.remove('scrolled');
+            // 全屏壁纸模式：切换期间保持当前 scrolled 状态，避免点击瞬间导航栏背景突然消失
+            // （否则导航栏会闪一下透明、切完又恢复成卡片底色）；其他模式沿用旧的强制透明逻辑
+            if (
+                document.documentElement.getAttribute('data-wallpaper-mode') !==
+                'fullscreen'
+            ) {
+                navbar!.classList.remove('scrolled');
+            }
             ticking = false;
             return;
         }

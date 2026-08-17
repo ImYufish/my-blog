@@ -1,7 +1,7 @@
 import type { BackgroundWallpaperConfig } from "@/types/backgroundWallpaper";
 
 export const backgroundWallpaper: BackgroundWallpaperConfig = {
-	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 全屏透明，"none" 纯色背景无壁纸
+	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 覆盖透明，"none" 纯色背景无壁纸
 	mode: "banner",
 	// 是否启用背景视频播放，配置后将在导航栏显示视频播放按钮
 	playerEnable: true,
@@ -100,6 +100,22 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				pauseTime: 2000,
 			},
 		},
+		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
+		carousel: {
+			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
+			enable: false,
+			// 轮播切换间隔（毫秒）
+			interval: 5000,
+			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
+			transitionEffect: "zoom",
+		},
+	},
+	// Banner模式特有配置
+	banner: {
+		// 图片位置
+		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
+		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
+		position: "0% 20%",
 		// 文章横幅信息："description" 显示描述，"meta" 显示日期、字数和阅读时长
 		postInfo: {
 			mode: "description",
@@ -132,24 +148,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 渐变高度
 			height: "10%",
 		},
-		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
-		carousel: {
-			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
-			enable: false,
-			// 轮播切换间隔（毫秒）
-			interval: 5000,
-			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
-			transitionEffect: "zoom",
-		},
 	},
-	// Banner模式特有配置
-	banner: {
-		// 图片位置
-		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
-		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
-		position: "0% 20%",
-	},
-	// 全屏透明覆盖模式特有配置
+	// 覆盖透明覆盖模式特有配置
 	overlay: {
 		// 层级，确保壁纸在背景层
 		zIndex: -1,
@@ -161,8 +161,16 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		cardOpacity: 0.5,
 	},
 	// 全屏壁纸模式特有配置
+	// 全屏模式下壁纸固定全屏显示，首屏居中标题，内容区在首屏之下、下滑时覆盖壁纸
+	// 壁纸模糊度(blur)、卡片透明度(cardOpacity)、层级(zIndex) 复用上方 overlay 模式的配置；
+	// 背景透明度(opacity)不适用（全屏壁纸不透明）；导航栏透明模式由卡片透明度控制，脱离 banner 的 navbar 配置
 	fullscreen: {
 		// 图片位置
 		position: "center",
+		// 全屏壁纸模式的导航栏配置
+		navbar: {
+			// 是否开启动态透明：开启后首页顶部导航栏透明，下滑后变不透明（仅首页生效）
+			dynamicTransparent: true,
+		},
 	},
 };
