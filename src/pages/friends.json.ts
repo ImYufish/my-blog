@@ -28,7 +28,7 @@ export const GET: APIRoute = () => {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
         // 5 分钟缓存（浏览器 + CDN），check-flink 每 12 小时跑一次，远小于此间隔
-        "Cache-Control": "public, max-age=300, s-maxage=300",
+        "Cache-Control": "public, max-age=60, s-maxage=60",
       },
     },
   );
