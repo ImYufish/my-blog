@@ -1496,93 +1496,37 @@ function disableAnimation() {
     document.addEventListener("swup:enable", setup);
   }
 
-  // 全屏壁纸模式：标题橡皮筋回弹 —— 小幅下滑时标题弹簧抵抗并回弹居中（Q 弹过冲），
-  // 超过阈值后才随滚动上移离开首屏，壁纸保持 fixed
-  const RUBBER_BAND_THRESHOLD = 120; // px，橡皮筋区间；区间内标题以 resistance 比例抵抗滚动
-  const RUBBER_BAND_RESISTANCE = 0.4; // 区间内标题移动比例（越小抵抗越强）
-  const SPRING_STIFFNESS = 110; // 弹簧刚度
-  const SPRING_DAMPING = 15; // 阻尼（低于临界阻尼，产生 Q 弹过冲）
+  // 全屏壁纸模式：首页标题随滚动平滑上移并渐变消失（首屏完整显示，下滑淡出；壁纸保持 fixed）
+  const TITLE_FADE_RATIO = 0.5; // 滚动到半个视口高度后标题完全淡出
   const BLUR_RAMP_SCROLL = 300; // px，首页下滑该距离后壁纸模糊达到配置的最大值（期间从 0 连续渐变）
   let parallaxTicking = false;
-  let parallaxRunning = false;
-  let parallaxRaf = 0;
-  let parallaxLast = 0;
-  let parallaxCurrent = 0;
-  let parallaxVelocity = 0;
-  let parallaxTarget = 0;
-
-  function getRubberBandTarget(scrollY: number) {
-    if (scrollY <= 0) return 0;
-    if (scrollY <= RUBBER_BAND_THRESHOLD) {
-      return -scrollY * RUBBER_BAND_RESISTANCE;
-    }
-    return -(
-      RUBBER_BAND_THRESHOLD * RUBBER_BAND_RESISTANCE +
-      (scrollY - RUBBER_BAND_THRESHOLD)
-    );
-  }
-
-  function stopTitleParallax() {
-    parallaxRunning = false;
-    parallaxCurrent = 0;
-    parallaxVelocity = 0;
-    parallaxTarget = 0;
-    if (parallaxRaf) {
-      cancelAnimationFrame(parallaxRaf);
-      parallaxRaf = 0;
-    }
-    const overlay = document.getElementById("banner-overlay-container");
-    if (overlay) overlay.style.transform = "";
-  }
-
-  function titleParallaxTick(now: number) {
-    parallaxRaf = 0;
-    const dt = Math.min((now - parallaxLast) / 1000, 0.05);
-    parallaxLast = now;
-    const acceleration =
-      SPRING_STIFFNESS * (parallaxTarget - parallaxCurrent) -
-      SPRING_DAMPING * parallaxVelocity;
-    parallaxVelocity += acceleration * dt;
-    parallaxCurrent += parallaxVelocity * dt;
-    const overlay = document.getElementById("banner-overlay-container");
-    if (overlay) overlay.style.transform = `translateY(${parallaxCurrent}px)`;
-    // 稳定后停止循环，后续滚动事件会重新触发
-    if (
-      Math.abs(parallaxTarget - parallaxCurrent) < 0.5 &&
-      Math.abs(parallaxVelocity) < 0.5
-    ) {
-      parallaxRunning = false;
-      return;
-    }
-    parallaxRaf = requestAnimationFrame(titleParallaxTick);
-  }
 
   function updateFullscreenTitleParallax() {
     const html = document.documentElement;
     const overlay = document.getElementById("banner-overlay-container");
-    // 非全屏或页面过渡中：停止循环并复位，避免覆盖 transition-swup-fade 的 CSS transform
+    if (!overlay) return;
+    // 非全屏或页面过渡中：复位（让 transition-swup-fade 的 CSS 生效）
     if (
       html.getAttribute("data-wallpaper-mode") !== "fullscreen" ||
       html.classList.contains("is-animating") ||
       html.classList.contains("is-changing")
     ) {
-      if (parallaxRunning || parallaxRaf || overlay?.style.transform) {
-        stopTitleParallax();
-      }
+      overlay.style.transform = "";
+      overlay.style.opacity = "";
       return;
     }
-    // 仅首页使用 hero 标题橡皮筋；非首页与 overlay 一致（无标题覆盖层）
+    // 仅首页使用 hero 标题；非首页与 overlay 一致（无标题覆盖层）
     if (!pathsEqual(window.location.pathname, url("/"))) {
-      if (parallaxRunning || parallaxRaf) stopTitleParallax();
+      overlay.style.transform = "";
+      overlay.style.opacity = "";
       return;
     }
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-    parallaxTarget = getRubberBandTarget(scrollY);
-    if (!parallaxRunning) {
-      parallaxRunning = true;
-      parallaxLast = performance.now();
-      parallaxRaf = requestAnimationFrame(titleParallaxTick);
-    }
+    // 标题随滚动上移，同时透明度渐变到 0（渐变消失，不弹跳）
+    const fadeScroll = window.innerHeight * TITLE_FADE_RATIO;
+    const ratio = Math.min(scrollY / fadeScroll, 1);
+    overlay.style.transform = `translateY(${-scrollY}px)`;
+    overlay.style.opacity = String(1 - ratio);
   }
 
   function requestFullscreenTitleParallax() {
