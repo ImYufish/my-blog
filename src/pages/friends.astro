@@ -36,6 +36,73 @@ const isCommentEnabled =
 const items = getEnabledFriends();
 const allTags = [...new Set(items.flatMap((item) => item.tags || []))].sort();
 
+// 拉取 check-flink 的 result.json，获取封面截图和延迟状态
+interface CheckFlinkStatus {
+	name: string;
+	link: string;
+	latency: number;
+	fail_count: number;
+	status: string;
+	geo_hint: string | null;
+	geo_streak: number;
+	has_author_link: boolean;
+	linkpage: string;
+	siteshot: string;
+}
+
+let checkFlinkStatusMap: Map<string, CheckFlinkStatus> = new Map();
+try {
+	const res = await fetch(
+		"https://friends.yufish.cn/result.json",
+		{ signal: AbortSignal.timeout(15000) },
+	);
+	if (res.ok) {
+		const data = (await res.json()) as {
+			link_status?: CheckFlinkStatus[];
+		};
+		for (const s of data.link_status || []) {
+			const key = normalizeMatchUrl(s.link);
+			if (key) checkFlinkStatusMap.set(key, s);
+		}
+	} else {
+		console.warn(`[friends] check-flink result.json HTTP ${res.status}`);
+	}
+} catch (e) {
+	console.warn("[friends] fetch check-flink result.json failed:", e);
+}
+
+function normalizeMatchUrl(url: string): string {
+	return url
+		.trim()
+		.replace(/^https?:\/\//i, "")
+		.replace(/\/$/, "")
+		.toLowerCase();
+}
+
+function getSiteStatus(item: (typeof items)[number]) {
+	return checkFlinkStatusMap.get(normalizeMatchUrl(item.siteurl));
+}
+
+function extractHost(url: string): string {
+	try {
+		return new URL(url).host;
+	} catch {
+		return url.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+	}
+}
+
+// 延迟数字配色：绿(快) / 黄(中) / 红(慢或异常) / 黑(无数据)
+function latencyColor(
+	status: string | undefined,
+	latency: number | null,
+): string {
+	if (status == null || latency == null) return "#6b7280"; // 黑/灰：无数据
+	if (status !== "ok") return "#ef4444"; // 红：访问异常
+	if (latency < 0.8) return "#22c55e"; // 绿：快
+	if (latency <= 2.0) return "#eab308"; // 黄：中
+	return "#ef4444"; // 红：慢
+}
+
 // 页面标题和描述
 const title = friendsPageConfig.title || i18n(I18nKey.friends);
 const description =
@@ -115,61 +182,79 @@ const description =
           )
         }
         {
-          items.map((item) => (
-            <a
-              href={item.siteurl}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-tags={item.tags?.join(",")}
-              class="friend-card group flex items-center gap-3 p-2.5 rounded-xl border border-(--line-divider) hover:border-(--primary) hover:bg-(--card-bg) transition-all duration-300 hover:shadow-lg relative overflow-hidden"
-            >
-              {/* 背景装饰 - 仅悬停显示 */}
-              <div class="absolute inset-0 bg-(--primary) opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none" />
+          items.map((item) => {
+            const status = getSiteStatus(item);
+            const cover = status?.siteshot || item.imgurl;
+            const latencyMs =
+              status?.latency != null ? Math.round(status.latency * 1000) : null;
+            const color = latencyColor(status?.status, status?.latency ?? null);
+            return (
+              <a
+                href={item.siteurl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tags={item.tags?.join(",")}
+                class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative"
+              >
+                {/* 顶部封面（纯装饰截图，不放站点名） */}
+                <div class="relative h-32 w-full overflow-hidden">
+                  <img
+                    src={cover}
+                    alt={item.title}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  {/* 封面底部渐变融入卡片背景 */}
+                  <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent" />
+                  {/* 延迟徽章：数字与原点颜色随状态变化 */}
+                  <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full" style={`background:${color}`} />
+                    <span style={`color:${color}`}>{latencyMs != null ? `${latencyMs} MS` : "OFFLINE"}</span>
+                  </div>
+                </div>
 
-              {/* 头像 */}
-              <div class="relative w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
-                <img
-                  src={item.imgurl}
-                  alt={item.title}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* 内容 */}
-              <div class="grow min-w-0 flex flex-col justify-center gap-0.5">
-                <div class="flex items-center justify-between">
-                  <div class="font-bold text-base text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors truncate pr-4">
+                {/* 主体：圆形头像 + 站点名（加粗变黑） */}
+                <div class="p-3 flex items-center gap-3">
+                  <div class="relative w-10 h-10 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
+                    <img
+                      src={item.imgurl}
+                      alt={item.title}
+                      class="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div
+                    data-title
+                    class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate"
+                  >
                     {item.title}
                   </div>
-                  {/* 外部链接图标 */}
-                  <Icon is:inline
-                    name="material-symbols:arrow-outward-rounded"
-                    class="text-(--primary) text-lg opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
-                  />
                 </div>
 
-                <div
-                  class="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-1"
-                  title={item.desc}
-                >
-                  {item.desc}
-                </div>
+                {/* 描述：固定两行高度，超两行省略 */}
+                {item.desc && (
+                  <div
+                    data-desc
+                    class="px-3 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.5rem]"
+                    title={item.desc}
+                  >
+                    {item.desc}
+                  </div>
+                )}
 
-                {/* 标签 */}
-                <div class="flex flex-wrap gap-1 mt-1">
-                  {item.tags && item.tags.length > 0
-                    ? item.tags
-                        .slice(0, 3)
-                        .map((tag) => (
-                          <span class="text-[0.65rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
-                            {tag}
-                          </span>
-                        ))
-                    : null}
-                </div>
-              </div>
-            </a>
-          ))
+                {/* 标签：固定底部，保证多行描述也对齐 */}
+                {item.tags && item.tags.length > 0 && (
+                  <div class="mt-auto px-3 pb-3 pt-2 flex flex-wrap gap-1">
+                    {item.tags.slice(0, 3).map((tag) => (
+                      <span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            );
+          })
         }
       </div>
 
@@ -246,8 +331,8 @@ const description =
           cards.forEach((card) => {
             const cardEl = card;
             const tags = (cardEl.dataset.tags || "").split(",");
-            const name = (cardEl.querySelector(".font-bold")?.textContent || "").toLowerCase();
-            const desc = (cardEl.querySelector(".line-clamp-1")?.textContent || "").toLowerCase();
+            const name = (cardEl.querySelector("[data-title]")?.textContent || "").toLowerCase();
+            const desc = (cardEl.querySelector("[data-desc]")?.textContent || "").toLowerCase();
 
             const tagMatch =
               this.selectedTag === "all" ||
