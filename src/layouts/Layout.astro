@@ -1149,6 +1149,10 @@ function disableAnimation() {
         } else {
           bodyElement!.classList.remove("wallpaper-transparent");
         }
+      } else {
+        // banner 模式：确保不残留全屏/覆盖的透明效果（切页注入的内联脚本可能误加）
+        bodyElement!.classList.add("enable-banner");
+        bodyElement!.classList.remove("wallpaper-transparent");
       }
 
       // Control navbar transparency based on page
@@ -1595,9 +1599,9 @@ function disableAnimation() {
 
   // 设置面板调整模糊滑块（--overlay-blur 变化）时，同步全屏壁纸的 --fullscreen-blur，
   // 否则非首页的模糊只在滚动/切页时才更新，滑块会表现为失效
-  const overlayBlurObserver = (() => {
+  (() => {
     const wrapper = document.getElementById("wallpaper-wrapper");
-    if (!wrapper) return undefined;
+    if (!wrapper) return;
     let lastOverlayBlur = wrapper.style.getPropertyValue("--overlay-blur");
     const observer = new MutationObserver(() => {
       const current = wrapper.style.getPropertyValue("--overlay-blur");
@@ -1607,7 +1611,6 @@ function disableAnimation() {
       }
     });
     observer.observe(wrapper, { attributes: true, attributeFilter: ["style"] });
-    return observer;
   })();
 
   document.addEventListener("astro:page-load", scheduleContentOverflowEnhancements);
