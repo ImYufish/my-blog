@@ -28,6 +28,7 @@ import {
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
+import { encodeMailto, MAILTO_ONCLICK_SCRIPT } from "@/utils/email-utils";
 import { getImageQuality } from "@/utils/image-utils";
 import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
 import {
@@ -138,6 +139,10 @@ const randomSubtitle = getRandomSubtitle();
 const homeTextEnable = backgroundWallpaper.common?.homeText?.enable;
 const showHomeText =
 	(isBannerMode || isFullscreenMode) && !!homeTextEnable && isHomePageCheck;
+// 横幅标题下方的链接图标（可选）
+const homeTextLinks = backgroundWallpaper.common?.homeText?.links;
+const homeTextLinksEnable =
+	backgroundWallpaper.common?.homeText?.linksEnable !== false;
 
 // 横幅标题/文章元信息覆盖层：banner 模式或允许切换时渲染（切换模式下运行时可能为 banner）。
 // 全屏模式非首页由 CSS(body:not(.is-home)) 与 syncFullscreenOverlays() 隐藏，不影响 overlay 化显示
@@ -894,6 +899,36 @@ const hasMultipleImages =
                             ) : (
                                 randomSubtitle
                             )}
+                        </div>
+                    )}
+                    {/* 横幅标题下方的链接图标（subtitle 的兄弟节点，避免被打字机/随机副标题的 textContent 覆盖清掉） */}
+                    {homeTextLinksEnable && homeTextLinks && homeTextLinks.length > 0 && (
+                        <div class="banner-links mt-5 flex items-center justify-center gap-3 pointer-events-auto">
+                            {homeTextLinks.map((link) => {
+                                // mailto 链接做 base64 加密防爬虫（点击时才解码导航，与 Profile 一致）
+                                const isMailto = link.url.startsWith("mailto:");
+                                const encodedEmail = isMailto
+                                    ? encodeMailto(link.url)
+                                    : undefined;
+                                const isExternal = link.url.startsWith("http");
+                                return (
+                                    <a
+                                        href={isMailto ? "#" : link.url}
+                                        aria-label={link.name}
+                                        title={link.name}
+                                        data-encoded-email={encodedEmail}
+                                        target={!isMailto && isExternal ? "_blank" : undefined}
+                                        rel={!isMailto && isExternal ? "noopener" : undefined}
+                                        class={link.showName ? "banner-link banner-link-text" : "banner-link"}
+                                        style="color: #fff"
+                                        onclick={isMailto ? MAILTO_ONCLICK_SCRIPT : undefined}
+                                    >
+                                        {/* 内联 fill: currentColor，避免 CSS 加载前 SVG 默认黑色图标闪现 */}
+                                        <Icon is:inline name={link.icon} class="text-[1.25rem]" style="fill: currentColor" />
+                                        {link.showName && <span>{link.name}</span>}
+                                    </a>
+                                );
+                            })}
                         </div>
                     )}
                 </div>

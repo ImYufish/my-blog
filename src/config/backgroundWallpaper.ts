@@ -99,6 +99,33 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				// 完全显示后的暂停时间（毫秒）
 				pauseTime: 2000,
 			},
+			// 是否显示标题下方的链接图标
+			linksEnable: true,
+			// 首页横幅标题下方的链接图标（可选，支持 showName 显示文字）
+			// 图标支持 Iconify 格式：fa7-brands:github、fa7-solid:envelope、mdi:rss 等
+			links: [
+				{
+					name: "GitHub",
+					icon: "fa7-brands:github",
+					url: "https://github.com/CuteLeaf",
+					showName: true,
+				},
+				{
+					name: "Email",
+					icon: "fa7-solid:envelope",
+					url: "mailto:xiaye@msn.com",
+				},
+				{
+					name: "Sponsor",
+					icon: "material-symbols:favorite",
+					url: "https://blog.cuteleaf.cn/sponsor/",
+				},
+				{
+					name: "RSS",
+					icon: "fa7-solid:rss",
+					url: "/rss/",
+				},
+			],
 		},
 		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
 		carousel: {
@@ -170,7 +197,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 全屏壁纸模式的导航栏配置
 		navbar: {
 			// 是否开启动态透明：开启后首页顶部导航栏透明，下滑后变不透明（仅首页生效）
-			dynamicTransparent: true,
+			dynamicTransparent: false,
 		},
 	},
 };

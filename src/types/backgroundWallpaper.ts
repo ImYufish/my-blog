@@ -25,6 +25,14 @@ export type BackgroundWallpaperConfig = {
 				deleteSpeed: number; // 删除速度（毫秒）
 				pauseTime: number; // 完整显示后的暂停时间（毫秒）
 			};
+			// 首页横幅标题下方的链接图标（可选）
+			linksEnable?: boolean; // 是否显示标题下方的链接图标（默认 true）
+			links?: {
+				name: string; // 名称（用于 aria-label / title / 可选 showName 显示）
+				url: string; // 链接地址
+				icon: string; // Iconify 图标，如 "fa7-brands:github"
+				showName?: boolean; // 是否显示文字（默认 false）
+			}[];
 		};
 		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享
 		carousel?: {
