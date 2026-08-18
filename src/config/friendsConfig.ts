@@ -27,7 +27,7 @@ export const friendsPageConfig: FriendsPageConfig = {
 export const friendsConfig: FriendLink[] = [
 	{
 		title: "临渊羡鱼",
-		imgurl: "https://imgapi.x1anyu.cn/avatar.gif",
+		imgurl: "/assets/images/avatar.png",
 		desc: "久有羡鱼意，不甘空望川. 躬身耕岁月，步步赴清澜",
 		siteurl: "https://x1anyu.cn",
 		tags: ["Blog"],

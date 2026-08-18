@@ -44,7 +44,7 @@ export const HITOKOTO_CAT_NAMES: Record<HitokotoCategory, string> = {
 
 export const hitokotoConfig: HitokotoConfig = {
 	// 默认本地打包，本地/远程：local/remote
-	bundleSource: "local",
+	bundleSource: "remote",
 	// 远程包根地址，远程模式按 {remoteUrl}/{分类}.json 拉
 	remoteUrl:
 		"https://cdn.jsdelivr.net/gh/hitoko11to-osc/sentences-bundle@master/sentences",
