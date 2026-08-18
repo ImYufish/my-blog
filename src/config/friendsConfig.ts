@@ -96,16 +96,16 @@ export const friendsConfig: FriendLink[] = [
 		enabled: true,
 	},
 	{
-      	title: "MmzMing的知识库",
-      	imgurl: "https://i.stardots.io/784774835/StarDots-2026052116374135506.jpg",
-      	desc: "哈基米，南北绿豆",
-      	siteurl: "https://tblog.mmzhiku.xyz",
-      	linkpage: "https://tblog.mmzhiku.xyz/friends/",
-      	rss: "https://tblog.mmzhiku.xyz/rss.xml",
-      	tags: ["Blog"],
-      	weight: 5,
-      	enabled: true
-    },
+		title: "MmzMing的知识库",
+		imgurl: "https://i.stardots.io/784774835/StarDots-2026052116374135506.jpg",
+		desc: "哈基米，南北绿豆",
+		siteurl: "https://tblog.mmzhiku.xyz",
+		linkpage: "https://tblog.mmzhiku.xyz/friends/",
+		rss: "https://tblog.mmzhiku.xyz/rss.xml",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true
+	},
 ];
 
 // 获取启用的友链并进行排序
