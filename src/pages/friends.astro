@@ -32,6 +32,9 @@ const isCommentEnabled =
 	commentConfig.type !== "none" &&
 	friendsPageConfig.showComment !== false;
 
+// 友链数据源开关：useRemote 为 false 时强制仅用本地 friendsConfig.ts（不拉远程）
+const useRemoteFriends = friendsPageConfig.useRemote !== false;
+
 // 友链数据：优先读取远程 friends.json（实时更新），失败则回退本地 friendsConfig.ts 保底
 const items = await loadFriends();
 const allTags = [...new Set(items.flatMap((item) => item.tags || []))].sort();
@@ -86,6 +89,10 @@ interface RemoteFriend {
 
 // 读取远程友链清单；远程不可用（网络异常 / 404 / 空数据）时回退本地配置，保证构建不中断
 async function loadFriends(): Promise<RemoteFriend[]> {
+	if (!useRemoteFriends) {
+		console.log("[friends] 已配置 useRemote=false，仅使用本地 friendsConfig.ts");
+		return getEnabledFriends();
+	}
 	try {
 		const res = await fetch(
 			"https://friends.yufish.cn/friends.json",
@@ -411,8 +418,8 @@ const description =
     }
   </style>
 
-  <script is:inline>
-    // 客户端实时刷新友链：页面加载即 fetch 远程 friends.json / result.json 重渲染，
+	<script is:inline define:vars={{ USE_REMOTE: useRemoteFriends }}>
+		// 客户端实时刷新友链：页面加载即 fetch 远程 friends.json / result.json 重渲染，
     // 新申请的友链无需重新构建博客即可出现。失败则沿用构建时 SSR 数据。
     (function () {
       const FRIENDS_URL = "https://friends.yufish.cn/friends.json";
@@ -468,8 +475,12 @@ const description =
           "</a>"
         );
       }
-      async function refreshFriends() {
-        try {
+		async function refreshFriends() {
+			if (!USE_REMOTE) {
+				console.log("[friends] 已配置仅用本地友链，跳过远程刷新");
+				return;
+			}
+			try {
           const [fr, rr] = await Promise.all([
             fetch(FRIENDS_URL, { cache: "no-store" }),
             fetch(RESULT_URL, { cache: "no-store" }).catch(function () { return null; }),
