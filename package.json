@@ -3,10 +3,10 @@
   "type": "module",
   "version": "6.15.8",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node scripts/sync-friends.mjs && astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "npx tsx scripts/build-hitokoto.ts || true && npx tsx scripts/generate-lqips.ts && npx tsx scripts/generate-vndb-covers.ts && astro build && npx tsx scripts/prune-pio-assets.ts && npx tsx scripts/subset-fonts.ts && npx tsx scripts/minify-inline-scripts.ts && pagefind --site dist",
+    "build": "node scripts/sync-friends.mjs && npx tsx scripts/build-hitokoto.ts || true && npx tsx scripts/generate-lqips.ts && npx tsx scripts/generate-vndb-covers.ts && astro build && npx tsx scripts/prune-pio-assets.ts && npx tsx scripts/subset-fonts.ts && npx tsx scripts/minify-inline-scripts.ts && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",

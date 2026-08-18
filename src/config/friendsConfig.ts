@@ -33,12 +33,12 @@ export const friendsConfig: FriendLink[] = [
 	},
 	{
 		title: "夏夜流萤",
-		imgurl:"https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
+		imgurl: "https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
 		desc: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
 		siteurl: "https://blog.cuteleaf.cn",
 		tags: ["Blog"],
-		weight: 9, // 权重，数字越大排序越靠前
-		enabled: true, // 是否启用
+		weight: 9,
+		enabled: true,
 	},
 	{
 		title: "fqzlr",
@@ -50,7 +50,7 @@ export const friendsConfig: FriendLink[] = [
 		tags: ["Blog"],
 		weight: 5,
 		enabled: true,
-	}, 
+	},
 	{
 		title: "团子和蛋糕",
 		imgurl: "https://blog.tsh520.cn/assets/ziyuan/tx.webp",
@@ -104,7 +104,7 @@ export const friendsConfig: FriendLink[] = [
 		rss: "https://tblog.mmzhiku.xyz/rss.xml",
 		tags: ["Blog"],
 		weight: 5,
-		enabled: true
+		enabled: true,
 	},
 ];
 
