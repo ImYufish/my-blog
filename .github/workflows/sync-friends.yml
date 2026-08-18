@@ -1,0 +1,45 @@
+name: Sync Friends Fallback
+
+# 自动同步友链兜底文件：定时 fetch 远程真源，比对本地 friendsConfig.ts，
+# 有变动才 commit+push 回仓库，无变动直接退出（"有变动就同步，没变动就不管"）。
+# 注：GitHub 的 scheduled 事件只在默认分支（master）运行，故本文件置于 master。
+
+on:
+  schedule:
+    # 每 6 小时跑一次（UTC 时间）。可按需调整，例如每天 03:17 UTC：'17 3 * * *'
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {} # 允许在 Actions 页面手动触发
+
+permissions:
+  contents: write # 允许 workflow 把同步结果 commit+push 回本仓库
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Sync remote friends into local fallback
+        # scripts/sync-friends.mjs 只用 node 内置模块，无需 pnpm install；
+        # 无网络/解析异常时只告警并跳过，绝不报错中断。
+        run: node scripts/sync-friends.mjs
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/config/friendsConfig.ts
+          if git diff --cached --quiet; then
+            echo "远端无变动，跳过提交"
+          else
+            git commit -m "chore: 自动同步友链兜底 (sync-friends)"
+            git push
+          fi
