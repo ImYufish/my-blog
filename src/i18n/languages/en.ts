@@ -466,6 +466,6 @@ export const en: Translation = {
 	[Key.videoNext]: "Next video",
 	[Key.videoLoadError]: "Video failed to load",
 
-	[Key.weather]: "Weather",// en
+	[Key.weather]: "Weather", // en
 	[Key.hitokoto]: "Hitokoto", // en
 };

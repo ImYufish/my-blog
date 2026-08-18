@@ -4,28 +4,33 @@ import { weatherConfig } from "@/config/weatherConfig";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 
+interface WidgetConfig {
+	showTitle?: boolean;
+	[key: string]: unknown;
+}
+
 interface Props {
-  class?: string;
-  style?: string;
-  widgetConfig?: any;
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetConfig;
 }
 const { class: className, style, widgetConfig } = Astro.props;
 const showTitle = widgetConfig?.showTitle !== false;
 
 const widgetId = "weather-widget";
 const cfg = JSON.stringify({
-  defaultCity: weatherConfig.defaultCity,
-  defaultLat: weatherConfig.defaultLat,
-  defaultLon: weatherConfig.defaultLon,
-  autoLocate: weatherConfig.autoLocate,
-  unit: weatherConfig.unit ?? "celsius",
-  qweatherKey: weatherConfig.qweatherKey,
-  qweatherHost: weatherConfig.qweatherHost,
-  qweatherGeoHost: weatherConfig.qweatherGeoHost,
-  enableUapis: weatherConfig.enableUapis,
-  enableQWeather: weatherConfig.enableQWeather,
-  enableOpenMeteo: weatherConfig.enableOpenMeteo,
-  enableWttr: weatherConfig.enableWttr,
+	defaultCity: weatherConfig.defaultCity,
+	defaultLat: weatherConfig.defaultLat,
+	defaultLon: weatherConfig.defaultLon,
+	autoLocate: weatherConfig.autoLocate,
+	unit: weatherConfig.unit ?? "celsius",
+	qweatherKey: weatherConfig.qweatherKey,
+	qweatherHost: weatherConfig.qweatherHost,
+	qweatherGeoHost: weatherConfig.qweatherGeoHost,
+	enableUapis: weatherConfig.enableUapis,
+	enableQWeather: weatherConfig.enableQWeather,
+	enableOpenMeteo: weatherConfig.enableOpenMeteo,
+	enableWttr: weatherConfig.enableWttr,
 });
 ---
 

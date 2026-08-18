@@ -87,7 +87,7 @@ export const booknavConfig: BooknavGroup[] = [
 				desc: "用代码表达言语的魅力，用代码书写山河的壮丽。",
 				icon: "https://developer.hitokoto.cn/logo.png",
 				weight: 9,
-			}
+			},
 		],
 	},
 	{

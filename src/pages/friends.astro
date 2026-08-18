@@ -55,10 +55,9 @@ interface CheckFlinkStatus {
 
 let checkFlinkStatusMap: Map<string, CheckFlinkStatus> = new Map();
 try {
-	const res = await fetch(
-		"https://friends.yufish.cn/result.json",
-		{ signal: AbortSignal.timeout(15000) },
-	);
+	const res = await fetch("https://friends.yufish.cn/result.json", {
+		signal: AbortSignal.timeout(15000),
+	});
 	if (res.ok) {
 		const data = (await res.json()) as {
 			link_status?: CheckFlinkStatus[];
@@ -90,14 +89,15 @@ interface RemoteFriend {
 // 读取远程友链清单；远程不可用（网络异常 / 404 / 空数据）时回退本地配置，保证构建不中断
 async function loadFriends(): Promise<RemoteFriend[]> {
 	if (!useRemoteFriends) {
-		console.log("[friends] 已配置 useRemote=false，仅使用本地 friendsConfig.ts");
+		console.log(
+			"[friends] 已配置 useRemote=false，仅使用本地 friendsConfig.ts",
+		);
 		return getEnabledFriends();
 	}
 	try {
-		const res = await fetch(
-			"https://friends.yufish.cn/friends.json",
-			{ signal: AbortSignal.timeout(15000) },
-		);
+		const res = await fetch("https://friends.yufish.cn/friends.json", {
+			signal: AbortSignal.timeout(15000),
+		});
 		if (res.ok) {
 			const data = (await res.json()) as { friends?: RemoteFriend[] };
 			const remote = (data.friends || [])

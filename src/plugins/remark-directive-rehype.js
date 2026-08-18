@@ -90,7 +90,8 @@ export function parseDirectiveNode() {
 						if (typeVal) props["data-type"] = String(typeVal);
 						if (a.source !== undefined) props["data-source"] = String(a.source);
 						if (a.author !== undefined) props["data-author"] = String(a.author);
-						if (a.category !== undefined) props["data-category"] = String(a.category);
+						if (a.category !== undefined)
+							props["data-category"] = String(a.category);
 						if (a.mode) props["data-mode"] = String(a.mode);
 						if (a.text) props["data-text"] = String(a.text);
 						const data = node.data || {};

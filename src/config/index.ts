@@ -19,6 +19,7 @@ export type {
 	FooterConfig,
 	GalleryAlbum,
 	GalleryConfig,
+	HitokotoConfig,
 	LicenseConfig,
 	MermaidConfig,
 	MusicPlayerConfig,
@@ -31,11 +32,10 @@ export type {
 	SponsorConfig,
 	SponsorItem,
 	SponsorMethod,
+	WeatherConfig,
 	WidgetComponentConfig,
 	WidgetComponentType,
 	WidgetSpecificConfig,
-	WeatherConfig,
-	HitokotoConfig,
 } from "../types/config";
 export type {
 	BuiltinFontProvider,
@@ -59,6 +59,7 @@ export { fontConfig, fontsList } from "./fontConfig"; // 字体配置
 export { footerConfig } from "./footerConfig"; // 页脚配置
 export { friendsPageConfig, getEnabledFriends } from "./friendsConfig"; // 友链配置
 export { galleryConfig } from "./galleryConfig"; // 相册配置
+export { hitokotoConfig } from "./hitokotoConfig"; // 一言组件配置
 export { licenseConfig } from "./licenseConfig"; // 许可证配置
 // 组件配置
 export { mermaidConfig } from "./mermaidConfig"; // Mermaid 图表配置
@@ -72,6 +73,4 @@ export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
 // 核心配置
 export { siteConfig } from "./siteConfig"; // 站点基础配置
 export { sponsorConfig } from "./sponsorConfig"; // 打赏配置
-
 export { weatherConfig } from "./weatherConfig"; // 天气组件配置
-export { hitokotoConfig } from "./hitokotoConfig"; // 一言组件配置

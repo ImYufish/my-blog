@@ -469,5 +469,5 @@ export const ru: Translation = {
 	[Key.videoLoadError]: "Не удалось загрузить видео",
 
 	[Key.weather]: "Погода", // ru
-	[Key.hitokoto]: "Цитата",   // ru
+	[Key.hitokoto]: "Цитата", // ru
 };

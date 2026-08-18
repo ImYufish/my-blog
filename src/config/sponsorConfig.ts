@@ -67,7 +67,6 @@ export const sponsorConfig: SponsorConfig = {
 		// 	amount: "¥50",
 		// 	date: "2025-10-01",
 		// },
-
 		// // 示例：匿名打赏者
 		// {
 		// 	name: "匿名用户",

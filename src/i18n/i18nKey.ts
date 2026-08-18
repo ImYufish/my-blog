@@ -450,7 +450,7 @@ enum I18nKey {
 	videoPrev = "videoPrev",
 	videoNext = "videoNext",
 	videoLoadError = "videoLoadError",
-	
+
 	weather = "weather",
 	hitokoto = "hitokoto",
 }

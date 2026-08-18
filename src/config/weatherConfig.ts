@@ -5,16 +5,16 @@
 import type { WeatherConfig } from "../types/weatherConfig";
 
 export const weatherConfig: WeatherConfig = {
-    defaultCity: "北京",
-    defaultLat: 39.9042,
-    defaultLon: 116.4074,
-    autoLocate: true,
-    unit: "celsius",
-    qweatherKey: "***REMOVED***",
-    qweatherHost: "https://mh6k5rby4b.re.qweatherapi.com/v7",
-    qweatherGeoHost: "https://mh6k5rby4b.re.qweatherapi.com/geo/v2",
-    enableUapis: true,
-    enableQWeather: true,
-    enableOpenMeteo: true,
-    enableWttr: true,
+	defaultCity: "北京",
+	defaultLat: 39.9042,
+	defaultLon: 116.4074,
+	autoLocate: true,
+	unit: "celsius",
+	qweatherKey: "***REMOVED***",
+	qweatherHost: "https://mh6k5rby4b.re.qweatherapi.com/v7",
+	qweatherGeoHost: "https://mh6k5rby4b.re.qweatherapi.com/geo/v2",
+	enableUapis: true,
+	enableQWeather: true,
+	enableOpenMeteo: true,
+	enableWttr: true,
 };

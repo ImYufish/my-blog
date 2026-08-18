@@ -12,7 +12,6 @@ import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
-import { hitokotoConfig } from "@/config/hitokotoConfig";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import {
 	backgroundWallpaper,
@@ -21,6 +20,7 @@ import {
 	sidebarLayoutConfig,
 	siteConfig,
 } from "@/config";
+import { hitokotoConfig } from "@/config/hitokotoConfig";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
@@ -137,7 +137,8 @@ const randomSubtitle = getRandomSubtitle();
 const subtitleMode = hitokotoConfig.banner.enable ? "hitokoto" : "preset";
 // hitokoto 模式下即使没配 subtitle 数组，横幅副标题也要渲染（去拉一言）
 const showSubtitle =
-  !!backgroundWallpaper.common?.homeText?.subtitle || subtitleMode === "hitokoto";
+	!!backgroundWallpaper.common?.homeText?.subtitle ||
+	subtitleMode === "hitokoto";
 // 安全引用 homeText，避免 common/homeText 为 undefined 时报类型错误
 const ht = backgroundWallpaper.common?.homeText;
 

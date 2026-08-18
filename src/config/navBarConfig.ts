@@ -104,14 +104,14 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				name: "E-mail",
 				url: "mailto:blog@x1anyu.cn",
 				external: true,
-				icon: "material-symbols:mail-outline"
+				icon: "material-symbols:mail-outline",
 			},
 			{
 				name: "友链检测",
 				url: "https://friends.yufish.cn/",
 				external: true,
-				icon: "material-symbols:link-2"
-			}
+				icon: "material-symbols:link-2",
+			},
 		],
 	});
 

@@ -1,4 +1,3 @@
-import rss from '@astrojs/rss';
 // 友链配置
 export type FriendLink = {
 	title: string; // 友链标题
