@@ -35,7 +35,11 @@ const FIELD_ORDER = ["title", "imgurl", "desc", "siteurl", "linkpage", "rss", "t
 function genEntry(f) {
   const lines = ["\t{"];
   for (const key of FIELD_ORDER) {
-    const v = f[key];
+    let v = f[key];
+    // 兜底：远程某条缺 weight/enabled 时仍产出合法 TS（FriendLink 接口要求这两个字段必填），
+    // 否则 astro build 类型检查会失败、整站部署挂掉。
+    if (key === "weight" && (v === undefined || v === null || typeof v !== "number")) v = 0;
+    if (key === "enabled" && (v === undefined || v === null || typeof v !== "boolean")) v = true;
     if (v === undefined || v === null) continue;
     if (key === "tags") {
       const arr = Array.isArray(v) ? v : [v];
@@ -76,13 +80,20 @@ async function main() {
     return;
   }
 
-  const re = /export const friendsConfig: FriendLink\[\] = \[[\s\S]*?\n\];/;
-  if (!re.test(file)) {
-    console.warn("[sync-friends] 未匹配到 friendsConfig 数组，跳过（文件结构可能变了）");
+  // 用锚点（而非脆弱正则 [\s\S]*?\n\];）精确定位 friendsConfig 数组：
+  // 起点 = "export const friendsConfig: FriendLink[] = ["，终点 = "export function getEnabledFriends"。
+  // 即使数组内出现 "];" 也不会错位。
+  const startMarker = "export const friendsConfig: FriendLink[] = [";
+  const endMarker = "export const getEnabledFriends";
+  const si = file.indexOf(startMarker);
+  const ei = file.indexOf(endMarker);
+  if (si === -1 || ei === -1 || ei < si) {
+    console.warn("[sync-friends] 未匹配到 friendsConfig 数组（文件结构可能变了），跳过");
     return;
   }
-
-  const next = file.replace(re, replacement);
+  const before = file.slice(0, si);
+  const after = file.slice(ei);
+  const next = before + replacement + "\n" + after;
   await writeFile(SRC, next, "utf8");
   console.log(`[sync-friends] 已同步 ${list.length} 条友链到本地兜底文件`);
 }
