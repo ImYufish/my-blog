@@ -360,7 +360,9 @@ const hasMultipleImages =
 	(isFullscreenMode && !isWallpaperSwitchable) ? 'wallpaper-fullscreen' : '',
 ]} style={
 	isWallpaperSwitchable
-		? `top: -${BANNER_HEIGHT_EXTEND}vh; display: none; --overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
+		? (isBannerMode
+			? `top: -${BANNER_HEIGHT_EXTEND}vh; --overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
+			: `display: none; --overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`)
 		: isOverlayMode
 			? `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
 			: isFullscreenMode
@@ -370,7 +372,7 @@ const hasMultipleImages =
     <!-- 背景图片显示 -->
     {hasMultipleImages ? (
     /* 轮播模式：渲染所有图片为 slide-item */
-    <div class:list={["relative h-full w-full bg-black", `effect-${bannerCarouselEffect}`]} id="banner-images-container"
+    <div class:list={["relative h-full w-full bg-(--page-bg)", `effect-${bannerCarouselEffect}`]} id="banner-images-container"
          style={`z-index: 5; --carousel-interval: ${bannerCarouselInterval}ms`}
          data-carousel-enabled={bannerCarouselEnabledDefault}
          data-carousel-switchable={bannerCarouselSwitchable}
