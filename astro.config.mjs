@@ -32,6 +32,8 @@ import {
 	fontsList,
 	mermaidConfig,
 	plantumlConfig,
+	commentConfig,
+	dynamicConfig,
 	siteConfig,
 } from "./src/config";
 import I18nKey from "./src/i18n/i18nKey";
@@ -258,7 +260,16 @@ export default defineConfig({
 				if (pathname === "/vndb/" && !siteConfig.pages.vndb) {
 					return false;
 				}
-				if (pathname === "/mal/" && !siteConfig.pages.mal) {
+				if (pathname === "/myanimelist/" && !siteConfig.pages.mal) {
+					return false;
+				}
+				// 动态页评论嵌入页：评论关闭时重定向到 /404/，不应进 sitemap
+				if (
+					pathname === "/dynamic/comments/" &&
+					(dynamicConfig.showComment === false ||
+						!commentConfig.type ||
+						commentConfig.type === "none")
+				) {
 					return false;
 				}
 				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {
