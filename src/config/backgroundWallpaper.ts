@@ -107,7 +107,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				{
 					name: "GitHub",
 					icon: "fa7-brands:github",
-					url: "https://github.com/CuteLeaf",
+					url: "https://github.com/CuteLeaf/Firefly",
 					showName: true,
 				},
 				{
@@ -155,7 +155,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 注意：导航栏子菜单与浮动面板始终保留毛玻璃，模糊度跟随此项但有最小值
 			blur: 5,
 		},
-		// 水波纹动画效果配置，开启会影响页面性能，请根据自己的喜好开启
+		// 水波纹动画效果配置，开启会影响页面性能，增加内存占用，请根据自己的喜好开启
 		waves: {
 			enable: {
 				// 桌面端是否启用水波纹动画效果
