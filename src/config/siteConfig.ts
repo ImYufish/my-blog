@@ -144,7 +144,8 @@ export const siteConfig: SiteConfig = {
 	categoryStyle: "rectangle",
 
 	// 标签样式，作用于文章列表底部标签、标签页和侧边栏标签
-	// "pill"：胶囊，中性灰底圆角
+	// "pill"：胶囊，主题色底圆角
+	// "pill-gray"：胶囊，中性灰底圆角
 	// "rectangle"：矩形，主题色底小圆角
 	tagStyle: "pill",
 
