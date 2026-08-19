@@ -27,13 +27,13 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import {
+	commentConfig,
+	dynamicConfig,
 	expressiveCodeConfig,
 	fontConfig,
 	fontsList,
 	mermaidConfig,
 	plantumlConfig,
-	commentConfig,
-	dynamicConfig,
 	siteConfig,
 } from "./src/config";
 import I18nKey from "./src/i18n/i18nKey";
