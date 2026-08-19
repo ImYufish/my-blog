@@ -1,0 +1,92 @@
+import { showBanner } from "@/utils/banner-utils";
+import {
+	registerContentOverflowListeners,
+	scheduleContentOverflowEnhancements,
+} from "@/utils/content-overflow-utils";
+import {
+	initializeFloatingPanels,
+	setClickOutsideToClose,
+} from "@/utils/floating-panel-utils";
+import {
+	initFullscreenWallpaper,
+	syncFullscreenStateAfterInit,
+} from "@/utils/fullscreen-wallpaper-utils";
+import {
+	updateMainGridCols,
+	updateSidebarComponentsVisibility,
+} from "@/utils/grid-layout-utils";
+import { initIconLoader } from "@/utils/icon-loader";
+import { initImageLoadFadeIn } from "@/utils/lqip-utils";
+import { initScroll } from "@/utils/scroll-utils";
+import { initThemeListener, initWallpaperMode } from "@/utils/setting-utils";
+import { setupSwupTransitions } from "@/utils/swup-transitions";
+import { initTouchCodeCopyReveal } from "@/utils/touch-copy-utils";
+
+/** 布局初始化编排（从 Layout.astro 迁出） */
+export function initLayout(): void {
+	initializeFloatingPanels();
+
+	setClickOutsideToClose("display-setting", [
+		"display-setting",
+		"display-settings-switch",
+	]);
+	setClickOutsideToClose("nav-menu-panel", [
+		"nav-menu-panel",
+		"nav-menu-switch",
+	]);
+	setClickOutsideToClose("search-panel", [
+		"search-panel",
+		"search-bar",
+		"search-switch",
+	]);
+	setClickOutsideToClose("wallpaper-mode-panel", [
+		"wallpaper-mode-panel",
+		"wallpaper-mode-switch",
+	]);
+	setClickOutsideToClose("theme-mode-panel", [
+		"theme-mode-panel",
+		"scheme-switch",
+	]);
+
+	setupSwupTransitions();
+	initFullscreenWallpaper();
+	registerContentOverflowListeners();
+	initScroll();
+	initTouchCodeCopyReveal();
+
+	// 页面加载完成后初始化banner和内容溢出容器
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", () => {
+			showBanner();
+			scheduleContentOverflowEnhancements();
+		});
+	} else {
+		showBanner();
+		scheduleContentOverflowEnhancements();
+	}
+
+	// Initialize wallpaper mode
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", () => {
+			updateMainGridCols();
+			updateSidebarComponentsVisibility();
+			initWallpaperMode();
+			initThemeListener();
+			initIconLoader();
+			syncFullscreenStateAfterInit();
+		});
+	} else {
+		updateMainGridCols();
+		updateSidebarComponentsVisibility();
+		initWallpaperMode();
+		initThemeListener();
+		initIconLoader();
+		syncFullscreenStateAfterInit();
+	}
+
+	initImageLoadFadeIn();
+	document.addEventListener("astro:page-load", initImageLoadFadeIn);
+	document.addEventListener("swup:contentReplaced", () => {
+		requestAnimationFrame(initImageLoadFadeIn);
+	});
+}
