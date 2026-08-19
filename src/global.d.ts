@@ -1,4 +1,5 @@
 import type { SakuraManagerLike } from "./types/sakura-worker";
+import type { WavesManagerLike } from "./types/waves";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -72,6 +73,10 @@ declare global {
 		sakuraManager?: SakuraManagerLike;
 		/** 樱花特效初始化守卫,确保只初始化一次(Swup 切页重跑脚本时复用) */
 		sakuraInitialized?: boolean;
+		/** 水波纹特效管理器(主线程 Canvas 2D 实现) */
+		wavesManager?: WavesManagerLike;
+		/** 水波纹特效初始化守卫,确保只初始化一次(Swup 切页重跑脚本时复用) */
+		wavesInitialized?: boolean;
 	}
 
 	interface MediaQueryList {

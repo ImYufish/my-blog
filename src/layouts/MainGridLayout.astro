@@ -1057,45 +1057,47 @@ const hasMultipleImages =
         ${!wavesEnabledOnMobile ? 'hidden' : ''} ${!wavesEnabledOnDesktop ? 'md:hidden' : ''} ${wavesEnabledOnDesktop ? 'md:block' : ''}`}
         id="header-waves"
         style="transform: translateZ(0);">
+        <!-- 静态占位波浪:随 HTML 首帧渲染,先于壁纸出现避免闪烁;由 WavesEffect.astro 动画 canvas 无缝接管后隐藏 -->
         <svg
-            class="waves"
+            class="waves-svg"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             viewBox="0 24 150 28"
             preserveAspectRatio="none"
             shape-rendering="geometricPrecision"
+            aria-hidden="true"
         >
             <defs>
                 <path
                     id="gentle-wave"
                     d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v48h-352z"
-                >
-                </path>
+                ></path>
             </defs>
-            <g class="parallax">
+            <g>
+                <!-- x 偏移 = 四层均匀铺开的起始相位(0/0.25/0.5/0.75)在 t=0 的偏移,首帧即交错,与动画首帧逐像素一致 -->
                 <use
                     xlink:href="#gentle-wave"
-                    x="48"
+                    x="-42.000"
                     y="0"
                     class="opacity-25 fill-(--page-bg)"
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
-                    x="48"
+                    x="2.641"
                     y="3"
                     class="opacity-50 fill-(--page-bg)"
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
-                    x="48"
+                    x="48.944"
                     y="5"
                     class="opacity-65 fill-(--page-bg)"
                 ></use>
                 <use
                     xlink:href="#gentle-wave"
-                    x="48"
+                    x="92.468"
                     y="7"
-                    class=" opacity-75 fill-(--page-bg)"
+                    class="opacity-75 fill-(--page-bg)"
                 ></use>
             </g>
         </svg>
