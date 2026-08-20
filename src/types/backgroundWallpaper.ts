@@ -105,5 +105,14 @@ export type BackgroundWallpaperConfig = {
 		navbar?: {
 			dynamicTransparent?: boolean; // 是否开启动态透明：开启后首页顶部导航栏透明，下滑后变不透明
 		};
+		// 首页下滑时壁纸模糊渐变开关（从 0 渐变为 overlay.blur 的最大模糊）
+		blurRamp?: {
+			enable:
+				| boolean
+				| {
+						desktop: boolean; // 桌面端是否启用模糊渐变
+						mobile: boolean; // 移动端是否启用模糊渐变
+				  }; // 是否启用模糊渐变，支持布尔值或分别设置桌面端和移动端，默认 true
+		};
 	};
 };

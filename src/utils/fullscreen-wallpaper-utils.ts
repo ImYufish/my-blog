@@ -1,3 +1,4 @@
+import { backgroundWallpaper } from "@/config";
 import { pathsEqual, url } from "@/utils/url-utils";
 
 // 全屏壁纸模式：首页标题随滚动平滑上移并渐变消失（首屏完整显示，下滑淡出；壁纸保持 fixed）
@@ -76,6 +77,11 @@ export function syncFullscreenBlur(): void {
 		setBlurIfChanged(wrapper, "0px");
 		return;
 	}
+	// 按设备开关决定全屏模式是否启用模糊（关闭则该设备上首页与非首页都保持清晰）
+	if (!isBlurRampEnabled()) {
+		setBlurIfChanged(wrapper, "0px");
+		return;
+	}
 	// 读取当前生效的模糊配置（跟随设置面板滑块 / overlay.blur），已缓存，仅加载/滑块变化时重读
 	const safeMax = cachedMaxBlur ?? readMaxBlur(wrapper);
 	const isHome = pathsEqual(window.location.pathname, url("/"));
@@ -86,6 +92,14 @@ export function syncFullscreenBlur(): void {
 	const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 	const ratio = Math.min(scrollY / BLUR_RAMP_SCROLL, 1);
 	setBlurIfChanged(wrapper, `${quantizeBlur(ratio * safeMax)}px`);
+}
+
+// 全屏壁纸模式的模糊渐变是否启用：按当前视口设备读取 fullscreen.blurRamp 配置（支持布尔或 { desktop, mobile }，未配置默认开启）
+function isBlurRampEnabled(): boolean {
+	const enable = backgroundWallpaper.fullscreen?.blurRamp?.enable;
+	if (typeof enable === "boolean") return enable;
+	if (!enable) return true;
+	return window.innerWidth < 1024 ? enable.mobile : enable.desktop;
 }
 
 function readMaxBlur(wrapper: HTMLElement): number {

@@ -83,6 +83,9 @@ let isSmallScreen = $state(
 let isMobileWidth = $state(
 	typeof window !== "undefined" ? window.innerWidth < 780 : false,
 );
+let isMobileViewport = $state(
+	typeof window !== "undefined" ? window.innerWidth < 1024 : false,
+);
 let isSwitching = $state(false);
 let wavesEnabled = $state(true);
 const defaultWavesEnabled = getDefaultWavesEnabled();
@@ -150,6 +153,13 @@ const hasOverlaySettings =
 	(isOverlayOpacitySwitchable ||
 		isOverlayBlurSwitchable ||
 		isOverlayCardOpacitySwitchable);
+// 全屏壁纸模式的模糊渐变是否启用（按当前设备读取 fullscreen.blurRamp 配置，未配置默认开启）
+const isFullscreenBlurRampEnabled = $derived.by(() => {
+	const enable = backgroundWallpaper.fullscreen?.blurRamp?.enable;
+	if (typeof enable === "boolean") return enable;
+	if (!enable) return true;
+	return isMobileViewport ? enable.mobile : enable.desktop;
+});
 let overlaySettingsIsDefault = $derived(
 	(!isOverlayOpacitySwitchable || overlayOpacity === defaultOverlayOpacity) &&
 		(!isOverlayBlurSwitchable || overlayBlur === defaultOverlayBlur) &&
@@ -259,7 +269,10 @@ let overlaySliderItems = $derived<OverlaySliderItem[]>([
 	},
 	{
 		key: "blur",
-		enabled: isOverlayBlurSwitchable,
+		// 全屏壁纸模式关闭模糊渐变时隐藏模糊滑块（overlay 模式不受影响）
+		enabled:
+			isOverlayBlurSwitchable &&
+			!(wallpaperMode === WALLPAPER_FULLSCREEN && !isFullscreenBlurRampEnabled),
 		label: i18n(I18nKey.overlayBlur),
 		displayValue: `${overlayBlur.toFixed(1)}px`,
 		ariaLabel: i18n(I18nKey.overlayBlur),
@@ -286,6 +299,10 @@ let overlaySliderItems = $derived<OverlaySliderItem[]>([
 		},
 	},
 ]);
+// 当前模式下是否有任何 overlay 滑块实际可见（模糊滑块可能因关闭模糊渐变而隐藏）
+let hasVisibleOverlaySlider = $derived(
+	overlaySliderItems.some((item) => item.enabled),
+);
 
 function resetHue() {
 	hue = getDefaultHue();
@@ -428,6 +445,7 @@ function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 function checkScreenSize() {
 	isSmallScreen = window.innerWidth < 1200;
 	isMobileWidth = window.innerWidth < 780;
+	isMobileViewport = window.innerWidth < 1024;
 	// 低于380px强制网格模式
 	if (window.innerWidth < 380 && currentLayout === "list") {
 		currentLayout = "grid";
@@ -817,7 +835,7 @@ $effect(() => {
 		{/if}
 
 		<!-- Overlay Settings Section（全屏壁纸模式也复用 overlay 的透明/模糊/卡片透明度设置） -->
-		{#if (wallpaperMode === WALLPAPER_OVERLAY || wallpaperMode === WALLPAPER_FULLSCREEN) && hasOverlaySettings}
+		{#if (wallpaperMode === WALLPAPER_OVERLAY || wallpaperMode === WALLPAPER_FULLSCREEN) && hasOverlaySettings && hasVisibleOverlaySlider}
 		<div class="">
 			<div class="section-title">
 				{i18n(I18nKey.overlaySettings)}
