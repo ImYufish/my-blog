@@ -163,11 +163,37 @@ export function updateSidebarComponentsVisibility(): void {
 			: widget.classList.remove("hidden");
 	});
 
-	// 组件可见性变化后，立即重算 sticky 间距，避免 swup 切页后残留旧间距
+	// 组件可见性变化后，重新读取 top 容器可见性并重算 sticky 间距，避免 swup 切页后残留旧间距
+	refreshSidebarStickyState();
+}
+
+// 重新读取侧边栏 top 容器的可见性并应用间距。
+// 含 offsetHeight 布局读取，仅初始化 / 切页时调用；滚动路径使用缓存值，避免每帧强制布局
+export function refreshSidebarStickyState(): void {
+	(["left", "right"] as const).forEach((side) => {
+		const sticky = document.getElementById(`${side}-sidebar-sticky`);
+		if (!sticky) return;
+
+		// 结构为：sidebar -> top 容器（可选） + sticky 容器
+		const topContainer = sticky.previousElementSibling as HTMLElement | null;
+		const hasVisibleTop = !!topContainer && topContainer.offsetHeight > 1;
+		sidebarStickyState[side].hasVisibleTop = hasVisibleTop;
+
+		// swup 从非文章页切换到文章页时，top 容器可能残留 mb-4，需要按可见性动态修正
+		if (topContainer) {
+			if (hasVisibleTop) {
+				topContainer.classList.add("mb-4");
+			} else {
+				topContainer.classList.remove("mb-4");
+			}
+		}
+	});
+
 	updateSidebarStickySpacing();
 }
 
-// 根据当前页面实际可见的顶部组件与滚动位置，动态更新侧边栏 sticky 间距
+// 根据当前滚动位置动态更新侧边栏 sticky 顶部偏移。
+// 滚动路径：仅切换滚动相关的 top-0/top-4，不再读取布局（hasVisibleTop 由 refreshSidebarStickyState 缓存）
 export function updateSidebarStickySpacing(): void {
 	const scrollTop = document.documentElement.scrollTop || window.scrollY || 0;
 	const isScrolled = scrollTop > 2;
@@ -176,26 +202,9 @@ export function updateSidebarStickySpacing(): void {
 		const sticky = document.getElementById(`${side}-sidebar-sticky`);
 		if (!sticky) return;
 
-		// 结构为：sidebar -> top 容器（可选） + sticky 容器
-		const topContainer = sticky.previousElementSibling as HTMLElement | null;
-		const hasVisibleTop = !!topContainer && topContainer.offsetHeight > 1;
-
-		// swup 从非文章页切换到文章页时，top 容器可能残留 mb-4，需要按可见性动态修正
-		if (topContainer) {
-			if (hasVisibleTop !== sidebarStickyState[side].hasVisibleTop) {
-				sidebarStickyState[side].hasVisibleTop = hasVisibleTop;
-			}
-
-			if (hasVisibleTop) {
-				topContainer.classList.add("mb-4");
-			} else {
-				topContainer.classList.remove("mb-4");
-			}
-		}
-
 		// 仅切换顶部偏移；组件间距由容器常驻 gap-4 保持
 		const nextTopClass: "top-0" | "top-4" =
-			hasVisibleTop || isScrolled ? "top-4" : "top-0";
+			sidebarStickyState[side].hasVisibleTop || isScrolled ? "top-4" : "top-0";
 
 		if (sidebarStickyState[side].topClass !== nextTopClass) {
 			sticky.classList.remove(sidebarStickyState[side].topClass);

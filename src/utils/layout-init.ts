@@ -12,6 +12,7 @@ import {
 	syncFullscreenStateAfterInit,
 } from "@/utils/fullscreen-wallpaper-utils";
 import {
+	refreshSidebarStickyState,
 	updateMainGridCols,
 	updateSidebarComponentsVisibility,
 } from "@/utils/grid-layout-utils";
@@ -51,6 +52,8 @@ export function initLayout(): void {
 	setupSwupTransitions();
 	initFullscreenWallpaper();
 	registerContentOverflowListeners();
+	// 滚动路径不再读取布局；先在初始化时填充侧边栏 top 容器可见性缓存
+	refreshSidebarStickyState();
 	initScroll();
 	initTouchCodeCopyReveal();
 
