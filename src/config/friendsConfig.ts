@@ -207,6 +207,28 @@ export const friendsConfig: FriendLink[] = [
 		weight: 5,
 		enabled: true,
 	},
+	{
+		title: "furinafans",
+		imgurl: "https://furinafans.com/_astro/avatar.CmRtaOLc_Z4qUwo.webp",
+		desc: "你记得花，花就开，你记得我，我就在。",
+		siteurl: "https://furinafans.com",
+		linkpage: "https://furinafans.com/friends/",
+		rss: "https://furinafans.com/rss.xml",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
+	{
+		title: "StackMeow",
+		imgurl: "https://www.stackmeow.tech/file/1787019249755_20260818101406385.jpeg",
+		desc: "人生是层层堆叠的经历，而内心永远保有一只自在小猫。",
+		siteurl: "https://www.stackmeow.tech",
+		linkpage: "https://www.stackmeow.tech/friends/",
+		rss: "https://www.stackmeow.tech/rss.xml",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
 ];
 export const getEnabledFriends = (): FriendLink[] => {
 	const friends = friendsConfig.filter((friend) => friend.enabled);
