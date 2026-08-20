@@ -390,17 +390,27 @@ function initialActive(categoryName: string): {
   updateCategoryBar();
   initCategoryBarInteractions();
   initScrollFeatures();
-  document.addEventListener("astro:page-load", () => {
-    updateCategoryBar();
-    initScrollFeatures();
-  });
-  document.addEventListener("swup:contentReplaced", () => {
-    updateCategoryBar();
-    // 某些 swup 生命周期下 URL/DOM 状态同步稍晚，下一帧再校正一次避免状态残留
-    requestAnimationFrame(() => {
+  // 防止 Swup 切页重跑脚本时重复注册监听器/hooks
+  if (!window.__categoryBarInit) {
+    window.__categoryBarInit = true;
+    document.addEventListener("astro:page-load", () => {
       updateCategoryBar();
+      initScrollFeatures();
     });
-  });
+    document.addEventListener("swup:contentReplaced", () => {
+      updateCategoryBar();
+      // 某些 swup 生命周期下 URL/DOM 状态同步稍晚，下一帧再校正一次避免状态残留
+      requestAnimationFrame(() => {
+        updateCategoryBar();
+      });
+    });
+
+    if (window.swup?.hooks) {
+      setupSwupEarlyUpdate();
+    } else {
+      document.addEventListener("swup:enable", setupSwupEarlyUpdate);
+    }
+  }
 
   // 在 Swup 导航时提前更新状态，避免切换期间激活态闪烁
   function setupSwupEarlyUpdate() {
@@ -411,10 +421,5 @@ function initialActive(categoryName: string): {
       const targetUrl = new URL(visit.to.url, window.location.href);
       setActiveCategory(bar, targetUrl);
     });
-  }
-  if (window.swup?.hooks) {
-    setupSwupEarlyUpdate();
-  } else {
-    document.addEventListener("swup:enable", setupSwupEarlyUpdate);
   }
 </script>

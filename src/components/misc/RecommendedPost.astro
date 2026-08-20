@@ -216,5 +216,9 @@ function renderRandomPosts() {
 }
 
 renderRandomPosts();
-document.addEventListener('swup:contentReplaced', renderRandomPosts);
+// 防止 Swup 切页重跑脚本时重复注册监听器（renderRandomPosts 每次切页仍需立即执行以渲染新页面）
+if (!window.__recommendedPostInit) {
+  window.__recommendedPostInit = true;
+  document.addEventListener('swup:contentReplaced', renderRandomPosts);
+}
 </script>
