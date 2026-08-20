@@ -627,6 +627,9 @@ const siteLang = lang.replace("_", "-");
           "wallpaper-transparent",
           wm === "overlay" || wm === "fullscreen",
         );
+        // 壁纸布局已由 data-wallpaper-mode 属性规则在首帧生效，提前标记初始化完成，
+        // 避免 fullscreen 非首页依赖 DOMContentLoaded 才显示主内容（先空白后出现）
+        document.body.classList.add("wallpaper-initialized");
       })();
     </script>
 
