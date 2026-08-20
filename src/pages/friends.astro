@@ -44,6 +44,8 @@ interface CheckFlinkStatus {
 	name: string;
 	link: string;
 	latency: number;
+	latency_cn?: number; // 国内视角延迟（秒），未部署 EO 时为 -1
+	latency_display?: number; // 自动选取的展示延迟：国内/国外源站取更快者，前端展示用
 	fail_count: number;
 	status: string;
 	geo_hint: string | null;
@@ -231,9 +233,18 @@ const description =
           items.map((item) => {
             const status = getSiteStatus(item);
             const cover = status?.siteshot || item.imgurl;
+            // 展示延迟优先用 latency_display（main.py 已按"国内/国外源站取更快者"自动选取），
+            // 回退 latency（兼容未部署 EO 或旧 result.json 无该字段的情况）
+            const dispLatency =
+              status?.latency_display != null && status.latency_display > 0
+                ? status.latency_display
+                : (status?.latency ?? null);
             const latencyMs =
-              status?.latency != null ? Math.round(status.latency * 1000) : null;
-            const color = latencyColor(status?.status, status?.latency ?? null);
+              dispLatency != null && dispLatency > 0 ? Math.round(dispLatency * 1000) : null;
+            const color = latencyColor(
+              status?.status,
+              dispLatency != null && dispLatency > 0 ? dispLatency : null,
+            );
             return (
               <a
                 href={item.siteurl}
@@ -243,7 +254,7 @@ const description =
                 class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative"
               >
                 {/* 顶部封面（纯装饰截图，不放站点名） */}
-                <div class="relative h-32 w-full overflow-hidden">
+                <div class="relative h-24 w-full overflow-hidden">
                   <img
                     src={cover}
                     alt={item.title}
@@ -260,8 +271,8 @@ const description =
                 </div>
 
                 {/* 主体：圆形头像 + 站点名（加粗变黑） */}
-                <div class="p-3 flex items-center gap-3">
-                  <div class="relative w-10 h-10 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
+                <div class="p-2.5 flex items-center gap-2.5">
+                  <div class="relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
                     <img
                       src={item.imgurl}
                       alt={item.title}
@@ -281,7 +292,7 @@ const description =
                 {item.desc && (
                   <div
                     data-desc
-                    class="px-3 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.5rem]"
+                    class="px-2.5 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.25rem]"
                     title={item.desc}
                   >
                     {item.desc}
@@ -290,7 +301,7 @@ const description =
 
                 {/* 标签：固定底部，保证多行描述也对齐 */}
                 {item.tags && item.tags.length > 0 && (
-                  <div class="mt-auto px-3 pb-3 pt-2 flex flex-wrap gap-1">
+                  <div class="mt-auto px-2.5 pb-2.5 pt-1.5 flex flex-wrap gap-1">
                     {item.tags.slice(0, 3).map((tag) => (
                       <span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">
                         {tag}
@@ -413,8 +424,18 @@ const description =
   <style is:global>
     .friends-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+    @media (max-width: 900px) {
+      .friends-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 560px) {
+      .friends-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
   </style>
 
@@ -443,20 +464,21 @@ const description =
       function cardHtml(f, rm) {
         const status = rm.get(normUrl(f.siteurl)) || null;
         const cover = status && status.siteshot ? status.siteshot : f.imgurl;
-        const latencyMs = status && status.latency != null ? Math.round(status.latency * 1000) : null;
-        const color = latencyColor(status && status.status, status ? (status.latency != null ? status.latency : null) : null);
+        const dispLatency = status && status.latency_display != null && status.latency_display > 0 ? status.latency_display : (status && status.latency != null ? status.latency : null);
+        const latencyMs = dispLatency != null && dispLatency > 0 ? Math.round(dispLatency * 1000) : null;
+        const color = latencyColor(status && status.status, dispLatency != null && dispLatency > 0 ? dispLatency : null);
         const tags = (f.tags || []).slice(0, 3).map(function (t) {
           return '<span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">' + esc(t) + "</span>";
         }).join("");
         const desc = f.desc
-          ? '<div data-desc class="px-3 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.5rem]" title="' + esc(f.desc) + '">' + esc(f.desc) + "</div>"
+          ? '<div data-desc class="px-2.5 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.25rem]" title="' + esc(f.desc) + '">' + esc(f.desc) + "</div>"
           : "";
         const tagBox = f.tags && f.tags.length > 0
-          ? '<div class="mt-auto px-3 pb-3 pt-2 flex flex-wrap gap-1">' + tags + "</div>"
+          ? '<div class="mt-auto px-2.5 pb-2.5 pt-1.5 flex flex-wrap gap-1">' + tags + "</div>"
           : "";
         return (
           '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
-            '<div class="relative h-32 w-full overflow-hidden">' +
+            '<div class="relative h-24 w-full overflow-hidden">' +
               '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />' +
               '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
               '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
@@ -464,8 +486,8 @@ const description =
                 '<span style="color:' + color + '">' + (latencyMs != null ? latencyMs + " MS" : "OFFLINE") + "</span>" +
               "</div>" +
             "</div>" +
-            '<div class="p-3 flex items-center gap-3">' +
-              '<div class="relative w-10 h-10 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
+            '<div class="p-2.5 flex items-center gap-2.5">' +
+              '<div class="relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
                 '<img src="' + esc(f.imgurl) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover" loading="lazy" />' +
               "</div>" +
               '<div data-title class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">' + esc(f.title) + "</div>" +
