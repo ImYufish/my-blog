@@ -381,9 +381,24 @@ const siteLang = lang.replace("_", "-");
 
       // 立即执行函数来处理DOM
       (function applyWallpaperMode() {
-        // 使用 requestAnimationFrame 确保在下一帧之前执行
+        // 初始化期间禁用 #main-grid transform 过渡，避免加载时布局/变量变化产生内容下移动画；
+        // load 后移除（仅首次设置，swup 切页重跑脚本时不再重复）
+        if (!window.__fireflyLayoutTransitionGuard) {
+          window.__fireflyLayoutTransitionGuard = true;
+          document.documentElement.setAttribute("data-layout-init", "");
+          const removeLayoutInit = () =>
+            document.documentElement.removeAttribute("data-layout-init");
+          if (document.readyState === "complete") {
+            requestAnimationFrame(removeLayoutInit);
+          } else {
+            window.addEventListener("load", removeLayoutInit, { once: true });
+          }
+        }
+
+        // 使用 requestAnimationFrame 确保在下一帧之前执行（wrapper 等在 slot 之后才解析）
         requestAnimationFrame(function () {
-          // 根据模式隐藏显示对应元素
+          // 根据模式隐藏显示对应元素（body 类；首帧前已由 body 起始处的同步脚本应用，
+          // 此处 rAF 再校正一次以覆盖 swup 切页等场景）
           if (
             wallpaperMode === WALLPAPER_NONE ||
             wallpaperMode === WALLPAPER_OVERLAY ||
@@ -599,6 +614,21 @@ const siteLang = lang.replace("_", "-");
       },
     ]}
   >
+    <!-- 首帧前应用运行时壁纸模式的 body 类：head 中 applyWallpaperMode 已同步设置 data-wallpaper-mode，
+         此处 body 已创建、内容尚未解析（早于 rAF/DOMContentLoaded），避免布局类晚应用导致刷新闪烁 -->
+    <script is:inline>
+      (function () {
+        const wm = document.documentElement.getAttribute("data-wallpaper-mode");
+        if (!wm) return;
+        const banner = wm === "banner";
+        document.body.classList.toggle("enable-banner", banner);
+        document.body.classList.toggle("no-banner-layout", !banner);
+        document.body.classList.toggle(
+          "wallpaper-transparent",
+          wm === "overlay" || wm === "fullscreen",
+        );
+      })();
+    </script>
 
     <div id="progress-bar"></div>
 

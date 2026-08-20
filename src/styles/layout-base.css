@@ -15,6 +15,17 @@
     transform: translateY(var(--banner-height-extend));
   }
 
+  /* 初始化期间禁用 #main-grid transform 过渡（data-layout-init 由 Layout.astro 解析期
+     同步设置、load 后移除），避免加载时布局/变量变化产生内容下移的可见动画 */
+  html[data-layout-init] #main-grid {
+    transition: none !important;
+  }
+
+  /* 初始化期间同样禁用 wallpaper-wrapper 过渡，避免加载时尺寸/透明度变化产生壁纸尺寸闪烁 */
+  html[data-layout-init] #wallpaper-wrapper {
+    transition: none !important;
+  }
+
   .enable-banner #top-row {
     height: calc(var(--banner-height-home) - 4.5rem);
     @apply transition-all duration-300;

@@ -146,6 +146,36 @@ const logoVariants = await Promise.all(
 );
 ---
 <div id="navbar" class="z-50" style={`--navbar-glass-blur: ${navbarBlur}px;`} data-transparent-mode={navbarTransparentMode} data-is-home={isHomePageCheck} data-full-width={navbarWidthFull}>
+    <script is:inline define:vars={{
+      bannerTMode: backgroundWallpaper.banner?.navbar?.transparentMode || "semi",
+      bannerBlur: backgroundWallpaper.banner?.navbar?.blur ?? 20,
+      fsDynamic: backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false,
+    }}>
+      // 首帧前按运行时壁纸模式修正导航栏透明模式：SSR 的 data-transparent-mode 按 config 设置，
+      // 与运行时模式不一致时（如 config fullscreen + 存储 banner）会先按错误模式渲染闪烁，
+      // 这里在解析期同步按 data-wallpaper-mode 修正（早于 rAF/DOMContentLoaded）
+      (function () {
+        const wm = document.documentElement.getAttribute("data-wallpaper-mode");
+        const navbar = document.getElementById("navbar");
+        if (!wm || !navbar) return;
+        const isHome = navbar.getAttribute("data-is-home") === "true";
+        let mode;
+        let blur;
+        if (wm === "fullscreen") {
+          mode = isHome && fsDynamic ? "semifull" : "none";
+          blur = 0;
+        } else if (wm === "banner") {
+          mode = bannerTMode;
+          blur = bannerBlur;
+        } else {
+          // overlay / none
+          mode = "none";
+          blur = 0;
+        }
+        navbar.setAttribute("data-transparent-mode", mode);
+        navbar.style.setProperty("--navbar-glass-blur", `${blur}px`);
+      })();
+    </script>
     <div class:list={[
         className,
         "overflow-visible! h-18 px-4"
