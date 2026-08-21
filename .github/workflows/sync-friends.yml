@@ -9,7 +9,7 @@ on:
     # 每天 1 次（UTC 03:17）。本地 friendsConfig.ts 仅作断网/远程挂掉时的兜底，
     # 访客看到的是运行时拉取的远程数据，故无需高频；每天同步足矣。
     # 如需更快可改回每 6 小时 '0 */6 * * *'。
-    - cron: "17 3 * * *"
+    - cron: "00 18 * * *"
   workflow_dispatch: {} # 允许在 Actions 页面手动触发
 
 permissions:

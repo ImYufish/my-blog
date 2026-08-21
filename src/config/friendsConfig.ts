@@ -36,7 +36,8 @@ export const friendsConfig: FriendLink[] = [
 	},
 	{
 		title: "夏夜流萤",
-		imgurl: "https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
+		imgurl:
+			"https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
 		desc: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
 		siteurl: "https://blog.cuteleaf.cn",
 		tags: ["Blog"],
@@ -89,7 +90,8 @@ export const friendsConfig: FriendLink[] = [
 	},
 	{
 		title: "Silvaire's Blog",
-		imgurl: "https://wsrv.nl/?url=avatars.githubusercontent.com/u/184231508?s=400&u=0a370792ba6bbb95a04d309171b562bcd7283a0f&v=3",
+		imgurl:
+			"https://wsrv.nl/?url=avatars.githubusercontent.com/u/184231508?s=400&u=0a370792ba6bbb95a04d309171b562bcd7283a0f&v=3",
 		desc: "Per Aspera Ad Astra",
 		siteurl: "https://silvaire.top/",
 		linkpage: "https://silvaire.top/friends/",
@@ -220,7 +222,8 @@ export const friendsConfig: FriendLink[] = [
 	},
 	{
 		title: "StackMeow",
-		imgurl: "https://www.stackmeow.tech/file/1787019249755_20260818101406385.jpeg",
+		imgurl:
+			"https://www.stackmeow.tech/file/1787019249755_20260818101406385.jpeg",
 		desc: "人生是层层堆叠的经历，而内心永远保有一只自在小猫。",
 		siteurl: "https://www.stackmeow.tech",
 		linkpage: "https://www.stackmeow.tech/friends/",
