@@ -292,11 +292,13 @@ const {
             typeSpeed: number;
             deleteSpeed: number;
             pause: number;
+            minLength: number;
+            maxLength: number;
             }
         ) {
             const myToken = _bannerTwToken;
             const fetchOne = () =>
-            getRandomHitokoto({ ...hitokotoConfig, enableCategories: opts.eff }).then((item) => {
+            getRandomHitokoto({ ...hitokotoConfig, enableCategories: opts.eff, minLength: opts.minLength, maxLength: opts.maxLength }).then((item) => {
                 const suffix = formatHitokoto(item, {
                 showSource: opts.showSource,
                 showAuthor: opts.showAuthor,
@@ -347,6 +349,9 @@ const {
             if (!el || el.dataset.hitokoto !== "1") return;
             // 横幅展示参数/分类/打字机直接读一言配置中心，不再经 data 属性中转
             const b = hitokotoConfig.banner;
+            // 横幅独立长度范围：banner 块设了就只用它（横幅单独约束），否则沿用全局
+            const bMin = b.minLength > 0 ? b.minLength : hitokotoConfig.minLength;
+            const bMax = b.maxLength > 0 ? b.maxLength : hitokotoConfig.maxLength;
             const showSource = b.showSource;
             const showAuthor = b.showAuthor;
             const showCategory = b.showCategory;
@@ -361,7 +366,7 @@ const {
             clearBannerTw();
             if (!b.typewriter) {
             // 关掉打字机：拉一条直接显示，不打字也不循环
-            getRandomHitokoto({ ...hitokotoConfig, enableCategories: eff })
+            getRandomHitokoto({ ...hitokotoConfig, enableCategories: eff, minLength: bMin, maxLength: bMax })
                 .then((item) => {
                 if (el.dataset.hitokoto !== "1") return;
                 const suffix = formatHitokoto(item, {
@@ -387,6 +392,8 @@ const {
             typeSpeed: b.typewriterSpeed,
             deleteSpeed: b.typewriterDeleteSpeed,
             pause: b.typewriterPause,
+            minLength: bMin,
+            maxLength: bMax,
             });
         }
 

@@ -21,6 +21,9 @@ export type HitokotoConfig = {
 	showAuthor: boolean;
 	showCategory: boolean;
 	samplePerCategory: number;
+	// 全局长度范围（字数，CJK 每字算 1）：0 表示不限；横幅另有独立范围时以横幅为准
+	minLength: number;
+	maxLength: number;
 	// 横幅一言的独立配置块，跟侧边栏 / 文章 / 页脚互不干扰。所有一言开关都收在这一个文件里
 	banner: {
 		enable: boolean; // 横幅要不要走一言；关掉就退回 backgroundWallpaper 那套 preset 英文
@@ -32,5 +35,8 @@ export type HitokotoConfig = {
 		typewriterDeleteSpeed: number; // 打完一句往回删的速度（毫秒）
 		typewriterPause: number; // 一句停多久再删、删完停多久再拉下一条（毫秒）
 		categories: HitokotoCategory[]; // 只从这几种分类抽；空数组就按 enableCategories 全来
+		// 横幅单独的长度范围（字数，CJK 每字算 1）：0 表示沿用全局 minLength/maxLength，设了就只约束横幅一言
+		minLength: number;
+		maxLength: number;
 	};
 };

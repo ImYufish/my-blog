@@ -13,6 +13,23 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
+// 图片同域反代：把 imgbed 图床域名换成博客自己的反代域名（走 EdgeOne 边缘函数 /file/[...]）
+// 反代函数绑在 x1anyu.cn 的 EdgeOne Pages 项目上；换域名只改这一处即可
+const IMG_PROXY_HOST = "x1anyu.cn";
+function proxyImg(raw: string | undefined) {
+	if (!raw) return raw;
+	try {
+		const p = new URL(raw);
+		if (p.hostname === "imgbed.yufish.cn") {
+			p.hostname = IMG_PROXY_HOST;
+			return p.toString();
+		}
+	} catch (e) {
+		/* 非合法 URL 原样返回 */
+	}
+	return raw;
+}
+
 // 检查页面是否启用
 if (!siteConfig.pages.friends) {
 	return Astro.redirect("/404/");
@@ -232,7 +249,8 @@ const description =
         {
           items.map((item) => {
             const status = getSiteStatus(item);
-            const cover = status?.siteshot || item.imgurl;
+            const cover = proxyImg(status?.siteshot) || item.imgurl;
+            const coverFallback = status?.siteshot || item.imgurl;
             // 展示延迟优先用 latency_display（main.py 已按"国内/国外源站取更快者"自动选取），
             // 回退 latency（兼容未部署 EO 或旧 result.json 无该字段的情况）
             const dispLatency =
@@ -260,6 +278,7 @@ const description =
                     alt={item.title}
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
+                    onerror={`this.onerror=null;this.src='${coverFallback}'`}
                   />
                   {/* 封面底部渐变融入卡片背景 */}
                   <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent" />
@@ -467,9 +486,22 @@ const description =
           return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
         });
       }
+      // 同域反代：与 SSR 端保持一致，把 imgbed 图床换成 x1anyu.cn 反代（换域名改这里）
+      function proxyImg(raw) {
+        if (!raw) return raw;
+        try {
+          const p = new URL(raw);
+          if (p.hostname === "imgbed.yufish.cn") {
+            p.hostname = "x1anyu.cn";
+            return p.toString();
+          }
+        } catch (e) {}
+        return raw;
+      }
       function cardHtml(f, rm) {
         const status = rm.get(normUrl(f.siteurl)) || null;
-        const cover = status && status.siteshot ? status.siteshot : f.imgurl;
+        const coverRaw = status && status.siteshot ? status.siteshot : f.imgurl;
+        const cover = proxyImg(coverRaw);
         const dispLatency = status && status.latency_display != null && status.latency_display > 0 ? status.latency_display : (status && status.latency != null ? status.latency : null);
         const latencyMs = dispLatency != null && dispLatency > 0 ? Math.round(dispLatency * 1000) : null;
         const color = latencyColor(status && status.status, dispLatency != null && dispLatency > 0 ? dispLatency : null);
@@ -485,7 +517,7 @@ const description =
         return (
           '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
             '<div class="relative h-24 w-full overflow-hidden">' +
-              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />' +
+              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.onerror=null;this.src=\'' + esc(coverRaw) + '\'" />' +
               '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
               '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
                 '<span class="w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +

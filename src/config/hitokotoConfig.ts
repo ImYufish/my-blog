@@ -71,6 +71,10 @@ export const hitokotoConfig: HitokotoConfig = {
 	showCategory: false,
 	// 本地每类抽 200 条，整包大概数百 KB（gzip 后仍可控）；想更全就调大或者设 0 全量
 	samplePerCategory: 100,
+	// 全局长度范围（字数，CJK 每字算 1）：0 = 不限
+	// 例：minLength: 8, maxLength: 40 → 只抽 8~40 字的句子。范围设太严导致无句可抽时自动回退全部。
+	minLength: 0,
+	maxLength: 0,
 	// 横幅一言：一个总开关 + 独立的展示参数 + 分类白名单 + 打字机
 	banner: {
 		enable: true, // 横幅走一言；改 false 回自定义语句池
@@ -82,5 +86,8 @@ export const hitokotoConfig: HitokotoConfig = {
 		typewriterDeleteSpeed: 45, // 往回删速度（毫秒）
 		typewriterPause: 2200, // 一句停留 / 删完停顿（毫秒）
 		categories: ["a", "b"], // 只放动漫 / 动画；留空 [] 就用全部启用分类
+		// 横幅单独的长度范围：0 = 沿用上面全局的 minLength/maxLength；设了就只约束横幅一言
+		minLength: 0,
+		maxLength: 0,
 	},
 };

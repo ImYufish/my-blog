@@ -15,6 +15,8 @@ export type HitokotoClientOptions = {
 	remoteUrl: string;
 	fallbackToLocal: boolean;
 	enableCategories: Record<string, boolean>;
+	minLength?: number;
+	maxLength?: number;
 };
 
 export type HitokotoFormatOptions = {
@@ -88,7 +90,11 @@ async function getPool(opts: HitokotoClientOptions): Promise<HitokotoItem[]> {
 		"-" +
 		cats.join("") +
 		"-" +
-		(opts.remoteUrl || "");
+		(opts.remoteUrl || "") +
+		"-" +
+		(opts.minLength || 0) +
+		"-" +
+		(opts.maxLength || 0);
 	if (key === _cacheKey && _cachePool) return _cachePool;
 	try {
 		const cached = localStorage.getItem(key);
@@ -125,6 +131,17 @@ async function getPool(opts: HitokotoClientOptions): Promise<HitokotoItem[]> {
 	// 本地模式也按分类开关再过滤一遍（防止打包时带了、后来关了却没重打）
 	if (opts.bundleSource !== "remote") {
 		p = p.filter((x) => !x.type || opts.enableCategories[x.type]);
+	}
+	// 长度范围过滤（本地/远程统一生效）：0 = 不限；范围设太严导致一条都不剩时自动回退全部
+	const minLen = opts.minLength || 0;
+	const maxLen = opts.maxLength || 0;
+	if (minLen > 0 || maxLen > 0) {
+		const filtered = p.filter(
+			(x) =>
+				(minLen <= 0 || x.hitokoto.length >= minLen) &&
+				(maxLen <= 0 || x.hitokoto.length <= maxLen),
+		);
+		if (filtered.length > 0) p = filtered;
 	}
 	_cacheKey = key;
 	_cachePool = p;

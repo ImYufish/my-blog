@@ -75,6 +75,8 @@ const widgetId = "hitokoto-widget";
       remoteUrl: hitokotoConfig.remoteUrl,
       fallbackToLocal: hitokotoConfig.fallbackToLocal,
       enableCategories: hitokotoConfig.enableCategories,
+      minLength: hitokotoConfig.minLength,
+      maxLength: hitokotoConfig.maxLength,
     }).then((item) => {
       contentEl.textContent = item.hitokoto || "";
       const s = formatHitokoto(item, {

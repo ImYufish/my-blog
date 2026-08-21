@@ -16,9 +16,9 @@
     width: 100%;
 }
 
-.banner-subtitle {
-    /* 脱离文档流：叠在 .banner-subtitle-wrap 的一行占位之上，
-       高度变化只向下溢出 */
+/* 旧布局（.banner-subtitle-wrap 容器）的副标题需要脱离文档流，
+   叠在 .banner-subtitle-placeholder 占位之上，高度变化只向下溢出 */
+.banner-subtitle-wrap .banner-subtitle {
     position: absolute;
     top: 0;
     left: 0;
@@ -26,6 +26,19 @@
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
     /* 独立字体设置，通过 fontConfig.bannerSubtitleFont 配置 */
     font-family: var(--font-banner-subtitle, inherit);
+}
+
+/* 普通 .banner-subtitle 回归文档流：不做绝对定位，避免一言模式被顶到标题上方 */
+.banner-subtitle {
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+    font-family: var(--font-banner-subtitle, inherit);
+}
+
+/* 仅作用于一言模式（data-hitokoto）与一言回退槽，不影响上游默认副标题的正常文档流：
+   预留一行高度，空↔满切换时主标题不上下跳动 */
+#banner-subtitle[data-hitokoto="1"],
+#banner-subtitle-fallback {
+    min-height: 1.4em;
 }
 
 /* 透明占位：永远占一行，把标题固定在「原本（一行副标题）的位置」；
