@@ -88,10 +88,11 @@
     @apply -translate-y-full;
   }
 
-  /* 非 sticky 导航栏隐藏/显示：只过渡 transform（滑动），不过渡 opacity，
-     避免淡入期间 backdrop root 导致的毛玻璃失效白闪（sticky 导航栏永不隐藏，不受影响） */
+  /* 非 sticky 导航栏隐藏/显示：只过渡 translate（Tailwind v4 的 translate-y-* 用原生
+     translate 属性而非 transform），实现平滑下滑；不过渡 opacity，避免淡入期间
+     backdrop root 导致的毛玻璃失效白闪（sticky 导航栏永不隐藏，不受影响） */
   body:not(.sticky-navbar) #navbar-wrapper {
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: translate 0.2s ease-out;
   }
 
   body.sticky-navbar #top-row {
@@ -107,11 +108,13 @@
     position: static !important;
     opacity: 1 !important;
     transform: none !important;
+    translate: none !important;
   }
 
   body.sticky-navbar #navbar-wrapper.navbar-hidden {
     opacity: 1 !important;
     transform: none !important;
+    translate: none !important;
   }
 }
 
