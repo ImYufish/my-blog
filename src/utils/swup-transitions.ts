@@ -122,10 +122,30 @@ function registerSwupHooks(): void {
 					// 更新首页状态（body.is-home 驱动 CSS --content-top 等）
 			const bodyElement = document.querySelector("body") as HTMLElement;
 			const isHomePage = pathsEqual(visit.to.url, url("/"));
+			const contentPanel = document.querySelector(
+				".content-panel",
+			) as HTMLElement | null;
+			const oldTop = contentPanel?.getBoundingClientRect().top ?? 0;
 			if (isHomePage) {
 				bodyElement.classList.add("is-home");
 			} else {
 				bodyElement.classList.remove("is-home");
+			}
+			// FLIP：top 已瞬时定位到目标，用 transform 从旧位置平滑过渡（合成动画，避免 top 重排卡顿）
+			if (contentPanel) {
+				const newTop = contentPanel.getBoundingClientRect().top;
+				const delta = oldTop - newTop;
+				if (delta !== 0) {
+					contentPanel.style.transform = "translateY(" + delta + "px)";
+					contentPanel.style.willChange = "transform";
+					requestAnimationFrame(() => {
+						contentPanel.style.transform = "";
+						window.setTimeout(
+							() => contentPanel.style.removeProperty("will-change"),
+							260,
+						);
+					});
+				}
 			}
 
 // Control navbar transparency based on page
