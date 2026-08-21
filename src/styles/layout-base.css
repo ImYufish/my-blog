@@ -81,7 +81,17 @@
   }
 
   .navbar-hidden {
-    @apply opacity-0 -translate-y-16;
+    /* 隐藏只滑动不淡出：opacity<1 会让祖先成为 backdrop root，
+       导航栏毛玻璃（#navbar > div::before 的 backdrop-filter）期间无法采样页面、显示无模糊白底，
+       透明度回到 1 时模糊才突然出现（表现为白闪）。transform 不创建 backdrop root，毛玻璃全程生效。
+       位移 -100% 使导航栏整体移出视口上方，避免残留边缘 */
+    @apply -translate-y-full;
+  }
+
+  /* 非 sticky 导航栏隐藏/显示：只过渡 transform（滑动），不过渡 opacity，
+     避免淡入期间 backdrop root 导致的毛玻璃失效白闪（sticky 导航栏永不隐藏，不受影响） */
+  body:not(.sticky-navbar) #navbar-wrapper {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   body.sticky-navbar #top-row {

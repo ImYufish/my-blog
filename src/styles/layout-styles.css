@@ -666,10 +666,13 @@ html[data-wallpaper-mode="overlay"] #wallpaper-wrapper img {
 html[data-wallpaper-mode="banner"] #wallpaper-wrapper {
     display: block !important;
 }
-/* 桌面端 banner：top 与 .enable-banner 的 translateY(var(--banner-height-extend)) 抵消，wrapper 位于顶部 */
+/* 桌面端 banner：wrapper 统一顶到顶部（top: 0 与 base 规则一致）。
+   --banner-height-extend 变量已废弃不再定义，旧补偿 calc(-1 * var(...)) 计算时非法
+   会让 top 回退为 auto，非 sticky 导航栏（top-row 在文档流中占位）时 banner 会被推到
+   top-row 下方导致横幅整体下移、顶部空白 */
 @media (min-width: 641px) {
     html[data-wallpaper-mode="banner"] #wallpaper-wrapper {
-        top: calc(-1 * var(--banner-height-extend)) !important;
+        top: 0 !important;
     }
 }
 /* fullscreen / overlay：首帧即显示（尺寸/定位由各自规则处理） */
