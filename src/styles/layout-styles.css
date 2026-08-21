@@ -119,11 +119,7 @@ html.is-page-transitioning .banner-home-text-overlay {
     }
 
     /* 主内容区域位置调整 - 覆盖横幅约 10% */
-    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout):not(.mobile-main-no-banner) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-
+    
     /* 横幅文本覆盖层优化 */
     .banner-home-text-overlay {
         align-items: center !important; /* 垂直居中 */
@@ -166,11 +162,7 @@ html.is-page-transitioning .banner-home-text-overlay {
     }
 
     /* 主内容区域位置调整 - 覆盖横幅约 10% */
-    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout):not(.mobile-main-no-banner) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-
+    
     /* 横幅文本覆盖层优化 */
     .banner-home-text-overlay {
         align-items: center !important; /* 垂直居中 */
@@ -213,11 +205,7 @@ html.is-page-transitioning .banner-home-text-overlay {
     }
 
     /* 主内容区域位置调整 - 与桌面端使用相同的 calc 公式 */
-    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout):not(.mobile-main-no-banner) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-
+    
     /* 横幅文本覆盖层优化 */
     .banner-home-text-overlay {
         align-items: center !important; /* 垂直居中 */
@@ -295,16 +283,7 @@ html.is-page-transitioning .banner-home-text-overlay {
     
         
     /* 手机端非首页时主内容区域从顶部开始 - 延迟出现的动画 */
-    .absolute.w-full.z-30 {
-        transition: top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
-        /* 硬件加速优化 */
-        will-change: top;
-        /* 禁用transform以保证back to top 按钮可以显示
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        */
-    }
-    
+        
     
     /* 移动端非首页隐藏横幅时，移除main-grid的transform偏移 */
     }
@@ -448,21 +427,11 @@ html.is-page-transitioning .banner-home-text-overlay {
 
 /* 小屏手机当banner被禁用时的布局样式 */
 @media (max-width: 480px) {
-    .absolute.w-full.z-30.no-banner-layout {
-        top: 5.5rem !important;
-        min-height: calc(100vh - 5.5rem) !important;
-        transition: none !important;
     }
-}
 
 /* 平板设备当banner被禁用时的布局样式 */
 @media (min-width: 768px) and (max-width: 1023px) {
-    .absolute.w-full.z-30.no-banner-layout {
-        top: 5.5rem !important;
-        min-height: calc(100vh - 5.5rem) !important;
-        transition: none !important;
     }
-}
 
 /* 移动端横屏优化 */
 @media (max-width: 1023px) and (orientation: landscape) {
@@ -474,11 +443,7 @@ html.is-page-transitioning .banner-home-text-overlay {
     
     /* 主内容区域位置调整 - 确保在banner下面，但不影响非首页 */
     /* 仅在 banner 模式下应用，其他模式（全屏壁纸/纯色）使用默认的 5.5rem */
-    body.enable-banner .absolute.w-full.z-30:not(.mobile-main-no-banner):not(.no-banner-layout) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-    
+        
     .banner-container {
         height: 60vh;
         min-height: 300px;
@@ -524,11 +489,7 @@ html.is-page-transitioning .banner-home-text-overlay {
         transform: none !important;
     }
 
-    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout):not(.mobile-main-no-banner) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-    
+        
     .banner-home-text-overlay {
         padding: 1rem !important;
         align-items: center !important; /* 垂直居中 */
@@ -556,11 +517,7 @@ html.is-page-transitioning .banner-home-text-overlay {
         transform: none !important;
     }
 
-    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout):not(.mobile-main-no-banner) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-    
+        
     .banner-home-text-overlay {
         padding: 1.5rem !important;
         align-items: center !important; /* 垂直居中 */
@@ -588,11 +545,7 @@ html.is-page-transitioning .banner-home-text-overlay {
         transform: none !important;
     }
 
-    body.enable-banner .absolute.w-full.z-30:not(.no-banner-layout):not(.mobile-main-no-banner) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-
+    
     .banner-home-text-overlay {
         padding: 2rem !important;
         align-items: center !important; /* 垂直居中 */
@@ -620,11 +573,7 @@ html.is-page-transitioning .banner-home-text-overlay {
         transform: none !important;
     }
 
-    body.enable-banner .absolute.w-full.z-30:not(.mobile-main-no-banner):not(.no-banner-layout) {
-        top: calc(var(--banner-height) - 3.5rem) !important;
-        min-height: calc(100vh - (var(--banner-height) - 3.5rem)) !important;
-    }
-    
+        
     .banner-home-text-overlay {
         padding: 1rem 2rem !important;
         align-items: center !important; /* 垂直居中 */
@@ -812,17 +761,6 @@ html[data-wallpaper-mode="fullscreen"] #wallpaper-wrapper img {
     opacity: 1 !important;
 }
 
-/* fullscreen 运行时：内容区首帧定位（SSR 按 config banner/none/overlay 渲染时内容在横幅下方，
-   需首帧纠正为 fullscreen 布局：首页 hero 推到首屏之下，非首页内容在最上面） */
-html[data-wallpaper-mode="fullscreen"] body.is-home .absolute.w-full.z-30.pointer-events-none {
-    position: relative !important;
-    top: 0 !important;
-    margin-top: 100vh !important;
-}
-html[data-wallpaper-mode="fullscreen"] body:not(.is-home) .absolute.w-full.z-30.pointer-events-none {
-    top: 5.5rem !important;
-    margin-top: 0 !important;
-}
 /* fullscreen 非首页：隐藏横幅标题/元信息覆盖层（镜像 wallpaper-fullscreen 类规则） */
 html[data-wallpaper-mode="fullscreen"] body:not(.is-home) #wallpaper-wrapper .banner-home-text-overlay,
 html[data-wallpaper-mode="fullscreen"] body:not(.is-home) #wallpaper-wrapper .banner-page-title-overlay,
