@@ -295,6 +295,20 @@ export function applyWallpaperModeToDocument(
 
 	html.setAttribute("data-wallpaper-mode", mode);
 
+	// 首页标题显示：SSR 按 config 默认模式渲染 hidden 类（默认 overlay/none 时带 hidden），
+	// 模式运行时切换后需同步——fullscreen/banner 显示首页标题，overlay/none 隐藏。
+	// 放在标题动画之前，让下方动画的 !contains("hidden") 判断拿到最新状态。
+	// 首页/非首页显示交给 CSS 的 body.is-home 规则；标题开关由 user-hidden 类另行控制，不受影响。
+	const bannerTextOverlay = document.querySelector(
+		".banner-home-text-overlay",
+	) as HTMLElement | null;
+	if (bannerTextOverlay) {
+		bannerTextOverlay.classList.toggle(
+			"hidden",
+			mode !== WALLPAPER_BANNER && mode !== WALLPAPER_FULLSCREEN,
+		);
+	}
+
 	// 卡片透明类：唯一运行时写入者（解析期由 body 起始脚本写入）
 	const transparent = mode === "overlay" || mode === "fullscreen";
 	document.body.classList.toggle("wallpaper-transparent", transparent);

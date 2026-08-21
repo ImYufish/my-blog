@@ -14,13 +14,11 @@ import type { BackgroundImages } from "@/utils/layout-utils";
 interface Props {
 	state: BannerVisibilityState;
 	backgroundImages: BackgroundImages;
-	isHomePage: boolean;
 	title?: string;
 	bannerPostMeta?: BannerPostMeta;
 }
 
-const { state, backgroundImages, isHomePage, title, bannerPostMeta } =
-	Astro.props;
+const { state, backgroundImages, title, bannerPostMeta } = Astro.props;
 ---
 
 <!-- Wallpaper - 如果允许切换则始终渲染，否则只渲染当前模式 -->
