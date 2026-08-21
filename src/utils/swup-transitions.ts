@@ -138,6 +138,7 @@ function registerSwupHooks(): void {
 				if (delta !== 0) {
 					contentPanel.style.transform = "translateY(" + delta + "px)";
 					contentPanel.style.willChange = "transform";
+					void contentPanel.offsetWidth; // 强制回流，提交 translateY 起始状态，确保 FLIP 过渡生效
 					requestAnimationFrame(() => {
 						contentPanel.style.transform = "";
 						window.setTimeout(
