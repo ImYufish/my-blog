@@ -5,7 +5,6 @@ import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
 import BannerHomeTextOverlay from "@/components/layout/BannerHomeTextOverlay.astro";
 import BannerPostMetaOverlay from "@/components/layout/BannerPostMetaOverlay.astro";
 import { backgroundWallpaper } from "@/config";
-import { BANNER_HEIGHT_EXTEND } from "@/constants/constants";
 import type {
 	BannerPostMeta,
 	BannerVisibilityState,
@@ -26,22 +25,8 @@ const { state, backgroundImages, isHomePage, title, bannerPostMeta } =
 
 <!-- Wallpaper - 如果允许切换则始终渲染，否则只渲染当前模式 -->
 {(state.isWallpaperSwitchable || state.isBannerMode || state.isFullscreenMode || state.isOverlayMode) && (
-<div id="wallpaper-wrapper" class:list={[
-	`absolute z-10 w-full transition duration-700 overflow-hidden ${state.mobileNonHomeBannerClass}`,
-	(state.isOverlayMode && !state.isWallpaperSwitchable) ? 'wallpaper-overlay' : '',
-	(state.isFullscreenMode && !state.isWallpaperSwitchable) ? 'wallpaper-fullscreen' : '',
-]} style={
-	state.isWallpaperSwitchable
-		? (state.isBannerMode
-			? `top: -${BANNER_HEIGHT_EXTEND}vh; --overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
-			: `display: none; --overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`)
-		: state.isOverlayMode
-			? `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
-			: state.isFullscreenMode
-				? `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
-				: `top: -${BANNER_HEIGHT_EXTEND}vh`
-}>
-    <!-- 背景图片显示 -->
+<div id="wallpaper-wrapper" class="absolute z-10 w-full overflow-hidden" style="--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;">
+<!-- 背景图片显示 -->
     {state.hasMultipleImages ? (
     /* 轮播模式：渲染所有图片为 slide-item */
     <div class:list={["relative h-full w-full bg-(--page-bg)", `effect-${state.bannerCarouselEffect}`]} id="banner-images-container"
@@ -72,7 +57,6 @@ const { state, backgroundImages, isHomePage, title, bannerPostMeta } =
             <div class:list={["slide-item hidden lg:block", index === 0 && "active"]} data-index={index}>
                 <template>
                     <ImageWrapper
-                        id="banner"
                         alt="Desktop background image of the blog"
                         class="object-cover h-full"
                         src={src}
@@ -149,7 +133,6 @@ const { state, backgroundImages, isHomePage, title, bannerPostMeta } =
             <div class="banner-image-slot absolute inset-0 hidden lg:block">
                 <template>
                     <ImageWrapper
-                        id="banner"
                         alt="Desktop background image of the blog"
                         class="object-cover h-full"
                         src={backgroundImages.desktop[0]}
