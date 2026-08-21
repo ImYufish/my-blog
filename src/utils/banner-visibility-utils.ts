@@ -1,6 +1,4 @@
 import { backgroundWallpaper, displaySettingsConfig } from "@/config";
-import {
-} from "@/constants/constants";
 import { getImageQuality } from "@/utils/image-utils";
 import { getBackgroundImages } from "@/utils/layout-utils";
 

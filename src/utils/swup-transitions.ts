@@ -122,36 +122,39 @@ function registerSwupHooks(): void {
 			progressBar.classList.add("loading");
 		}
 
-					// 更新首页状态（body.is-home 驱动 CSS --content-top 等）
-			const bodyElement = document.querySelector("body") as HTMLElement;
-			const isHomePage = pathsEqual(visit.to.url, url("/"));
-			const contentPanel = document.querySelector(
-				".content-panel",
-			) as HTMLElement | null;
-			const oldTop = contentPanel?.getBoundingClientRect().top ?? 0;
-			if (isHomePage) {
-				bodyElement.classList.add("is-home");
-			} else {
-				bodyElement.classList.remove("is-home");
+		// 更新首页状态（body.is-home 驱动 CSS --content-top 等）
+		const bodyElement = document.querySelector("body") as HTMLElement;
+		const isHomePage = pathsEqual(visit.to.url, url("/"));
+		const contentPanel = document.querySelector(
+			".content-panel",
+		) as HTMLElement | null;
+		const oldTop = contentPanel?.getBoundingClientRect().top ?? 0;
+		if (isHomePage) {
+			bodyElement.classList.add("is-home");
+		} else {
+			bodyElement.classList.remove("is-home");
+		}
+		// FLIP：top 已瞬时定位到目标，用 transform 从旧位置平滑过渡（合成动画，避免 top 重排卡顿）
+		if (contentPanel) {
+			const newTop = contentPanel.getBoundingClientRect().top;
+			const delta = oldTop - newTop;
+			// 超大位移（>75% 视口，如全屏首页→非首页）不做 FLIP：新页内容重排叠加会抖动，直接到位由 swup 淡入掩盖
+			if (delta !== 0 && Math.abs(delta) <= window.innerHeight * 0.75) {
+				// 标准 FLIP：禁用过渡→设 invert transform→回流提交→启用过渡→移除 transform（触发合成动画）
+				contentPanel.style.willChange = "transform";
+				contentPanel.style.transition = "none";
+				contentPanel.style.transform = `translateY(${delta}px)`;
+				void contentPanel.offsetWidth;
+				contentPanel.style.transition = "";
+				contentPanel.style.transform = "";
+				window.setTimeout(
+					() => contentPanel.style.removeProperty("will-change"),
+					260,
+				);
 			}
-			// FLIP：top 已瞬时定位到目标，用 transform 从旧位置平滑过渡（合成动画，避免 top 重排卡顿）
-			if (contentPanel) {
-				const newTop = contentPanel.getBoundingClientRect().top;
-				const delta = oldTop - newTop;
-				// 超大位移（>75% 视口，如全屏首页→非首页）不做 FLIP：新页内容重排叠加会抖动，直接到位由 swup 淡入掩盖
-				if (delta !== 0 && Math.abs(delta) <= window.innerHeight * 0.75) {
-					// 标准 FLIP：禁用过渡→设 invert transform→回流提交→启用过渡→移除 transform（触发合成动画）
-					contentPanel.style.willChange = "transform";
-					contentPanel.style.transition = "none";
-					contentPanel.style.transform = "translateY(" + delta + "px)";
-					void contentPanel.offsetWidth;
-					contentPanel.style.transition = "";
-					contentPanel.style.transform = "";
-					window.setTimeout(() => contentPanel.style.removeProperty("will-change"), 260);
-				}
-			}
+		}
 
-// Control navbar transparency based on page
+		// Control navbar transparency based on page
 		const navbar = document.getElementById("navbar");
 		if (navbar) {
 			navbar.setAttribute("data-is-home", isHomePage.toString());
@@ -171,15 +174,15 @@ function registerSwupHooks(): void {
 			}
 		}
 
-					// 在移动端禁用文章列表容器的过渡动画，防止与主内容区位置变化冲突
-			if (window.innerWidth < 1024) {
-				const postListContainer = document.getElementById("post-list-container");
-				if (postListContainer) {
-					postListContainer.style.transition = "none";
-				}
+		// 在移动端禁用文章列表容器的过渡动画，防止与主内容区位置变化冲突
+		if (window.innerWidth < 1024) {
+			const postListContainer = document.getElementById("post-list-container");
+			if (postListContainer) {
+				postListContainer.style.transition = "none";
 			}
+		}
 
-// increase the page height during page transition to prevent the scrolling animation from jumping
+		// increase the page height during page transition to prevent the scrolling animation from jumping
 		const heightExtend = document.getElementById("page-height-extend");
 		if (heightExtend) {
 			heightExtend.classList.remove("hidden");

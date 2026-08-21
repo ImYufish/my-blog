@@ -1,8 +1,5 @@
 import { siteConfig } from "@/config";
-import {
-	BANNER_HEIGHT,
-	BANNER_HEIGHT_HOME,
-} from "@/constants/constants";
+import { BANNER_HEIGHT, BANNER_HEIGHT_HOME } from "@/constants/constants";
 import { isBannerMode } from "@/utils/banner-utils";
 import { updateSidebarStickySpacing } from "@/utils/grid-layout-utils";
 
@@ -101,6 +98,4 @@ export function initScroll(): void {
 
 	// 初始化滚动状态（例如从历史位置恢复时）
 	scrollFunction();
-
-
 }

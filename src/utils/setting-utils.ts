@@ -292,8 +292,7 @@ export function syncBannerHomeTextVisibility(): void {
 	const mode = document.documentElement.getAttribute("data-wallpaper-mode");
 	const isHome = checkIsHomePage(window.location.pathname);
 	const show =
-		isHome &&
-		(mode === WALLPAPER_BANNER || mode === WALLPAPER_FULLSCREEN);
+		isHome && (mode === WALLPAPER_BANNER || mode === WALLPAPER_FULLSCREEN);
 	overlay.classList.toggle("hidden", !show);
 }
 
@@ -335,7 +334,7 @@ export function applyWallpaperModeToDocument(
 		if (title && !title.classList.contains("hidden")) {
 			const deltaVh = mode === WALLPAPER_FULLSCREEN ? -17.5 : 17.5;
 			title.style.transition = "none";
-			title.style.transform = "translateY(" + deltaVh + "vh)";
+			title.style.transform = `translateY(${deltaVh}vh)`;
 			void title.offsetWidth;
 			title.style.transition =
 				"transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
