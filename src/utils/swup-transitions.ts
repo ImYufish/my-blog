@@ -14,7 +14,10 @@ import {
 	updateSidebarComponentsVisibility,
 } from "@/utils/grid-layout-utils";
 import { scrollFunction } from "@/utils/scroll-utils";
-import { updateNavbarTransparency } from "@/utils/setting-utils";
+import {
+	syncBannerHomeTextVisibility,
+	updateNavbarTransparency,
+} from "@/utils/setting-utils";
 import { pathsEqual, url } from "@/utils/url-utils";
 
 const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
@@ -213,6 +216,8 @@ function registerSwupHooks(): void {
 		updateFullscreenTitleParallax();
 		syncFullscreenOverlays();
 		syncFullscreenBlur();
+		// 页面切换后同步首页标题显隐（body.is-home 已更新，按新页面重算 hidden 类）
+		syncBannerHomeTextVisibility();
 		// 页面切换后按新页面刷新导航栏透明状态（全屏首页动态透明 / 非首页完全透明）
 		updateNavbarTransparency(
 			document.documentElement.getAttribute(
