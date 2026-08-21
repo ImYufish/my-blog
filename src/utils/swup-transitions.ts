@@ -135,7 +135,8 @@ function registerSwupHooks(): void {
 			if (contentPanel) {
 				const newTop = contentPanel.getBoundingClientRect().top;
 				const delta = oldTop - newTop;
-				if (delta !== 0) {
+				// 超大位移（>75% 视口，如全屏首页→非首页）不做 FLIP：新页内容重排叠加会抖动，直接到位由 swup 淡入掩盖
+				if (delta !== 0 && Math.abs(delta) <= window.innerHeight * 0.75) {
 					// 标准 FLIP：禁用过渡→设 invert transform→回流提交→启用过渡→移除 transform（触发合成动画）
 					contentPanel.style.willChange = "transform";
 					contentPanel.style.transition = "none";
