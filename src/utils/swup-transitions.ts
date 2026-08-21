@@ -136,16 +136,14 @@ function registerSwupHooks(): void {
 				const newTop = contentPanel.getBoundingClientRect().top;
 				const delta = oldTop - newTop;
 				if (delta !== 0) {
-					contentPanel.style.transform = "translateY(" + delta + "px)";
+					// 标准 FLIP：禁用过渡→设 invert transform→回流提交→启用过渡→移除 transform（触发合成动画）
 					contentPanel.style.willChange = "transform";
-					void contentPanel.offsetWidth; // 强制回流，提交 translateY 起始状态，确保 FLIP 过渡生效
-					requestAnimationFrame(() => {
-						contentPanel.style.transform = "";
-						window.setTimeout(
-							() => contentPanel.style.removeProperty("will-change"),
-							260,
-						);
-					});
+					contentPanel.style.transition = "none";
+					contentPanel.style.transform = "translateY(" + delta + "px)";
+					void contentPanel.offsetWidth;
+					contentPanel.style.transition = "";
+					contentPanel.style.transform = "";
+					window.setTimeout(() => contentPanel.style.removeProperty("will-change"), 260);
 				}
 			}
 
