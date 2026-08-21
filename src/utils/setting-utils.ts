@@ -282,11 +282,32 @@ export function applyWallpaperModeToDocument(
 	animate = true,
 ): void {
 	const html = document.documentElement;
+	const prevMode = html.getAttribute("data-wallpaper-mode");
 	html.setAttribute("data-wallpaper-mode", mode);
 
 	// 卡片透明类：唯一运行时写入者（解析期由 body 起始脚本写入）
 	const transparent = mode === "overlay" || mode === "fullscreen";
 	document.body.classList.toggle("wallpaper-transparent", transparent);
+
+	// 标题上下移动动画：banner ↔ fullscreen 切换时 wrapper 高度瞬时变化，
+	// 用 transform 补偿后滑到居中位置（首页标题可见时才动画）
+	if (
+		(mode === WALLPAPER_FULLSCREEN && prevMode === WALLPAPER_BANNER) ||
+		(mode === WALLPAPER_BANNER && prevMode === WALLPAPER_FULLSCREEN)
+	) {
+		const title = document.querySelector(
+			".banner-home-text-overlay",
+		) as HTMLElement | null;
+		if (title && !title.classList.contains("hidden")) {
+			const deltaVh = mode === WALLPAPER_FULLSCREEN ? -17.5 : 17.5;
+			title.style.transition = "none";
+			title.style.transform = "translateY(" + deltaVh + "vh)";
+			void title.offsetWidth;
+			title.style.transition =
+				"transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+			title.style.transform = "translateY(0)";
+		}
+	}
 
 	if (animate) {
 		html.classList.add("is-wallpaper-transitioning");
