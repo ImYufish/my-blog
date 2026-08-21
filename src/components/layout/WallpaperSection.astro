@@ -554,8 +554,10 @@ const { state, backgroundImages, isHomePage, title, bannerPostMeta } =
 
     </div>
 
-    <!-- Fullscreen 模式下显示向下滚动指示器（仅首页；放在 overlay 容器外，避免被标题视差 transform 带离） -->
-    {isHomePage && (state.isFullscreenMode || state.isWallpaperSwitchable) && <ScrollDownIndicator />}
+    <!-- Fullscreen 模式下显示向下滚动指示器（仅首页显示；放在 overlay 容器外，避免被标题视差 transform 带离）。
+         始终渲染：壁纸区在 Swup 容器外、切页不重渲染，若首开非首页则指示器不会出现。
+         是否显示交给 CSS（body.is-home + fullscreen 模式才 display:flex） -->
+    {(state.isFullscreenMode || state.isWallpaperSwitchable) && <ScrollDownIndicator />}
 
     <!-- Water waves effect - 如果允许切换或任一设备启用则渲染 -->
     {state.shouldRenderWaves ? (
