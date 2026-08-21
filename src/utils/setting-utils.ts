@@ -283,6 +283,16 @@ export function applyWallpaperModeToDocument(
 ): void {
 	const html = document.documentElement;
 	const prevMode = html.getAttribute("data-wallpaper-mode");
+
+	// 先启用过渡类再设置模式：确保 --content-top 变化时 top 过渡已激活（否则位置瞬间到位不动画）
+	if (animate) {
+		html.classList.add("is-wallpaper-transitioning");
+		window.setTimeout(
+			() => html.classList.remove("is-wallpaper-transitioning"),
+			520,
+		);
+	}
+
 	html.setAttribute("data-wallpaper-mode", mode);
 
 	// 卡片透明类：唯一运行时写入者（解析期由 body 起始脚本写入）
@@ -307,14 +317,6 @@ export function applyWallpaperModeToDocument(
 				"transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
 			title.style.transform = "translateY(0)";
 		}
-	}
-
-	if (animate) {
-		html.classList.add("is-wallpaper-transitioning");
-		window.setTimeout(
-			() => html.classList.remove("is-wallpaper-transitioning"),
-			520,
-		);
 	}
 
 	updateNavbarTransparency(mode);
