@@ -607,10 +607,14 @@ const postUrlPrefix = url("/posts/");
   // 页面加载时渲染日历
   initCalendar();
 
-  // 页面切换时重新渲染
-  document.addEventListener("swup:contentReplaced", () => {
-    setTimeout(initCalendar, 100);
-  });
+  // 防止 Swup 切页重跑脚本时重复注册监听器（此脚本的 data-swup-ignore-script 在 define:vars 构建时可能丢失）
+  if (!window.__calendarInit) {
+    window.__calendarInit = true;
+    // 页面切换时重新渲染
+    document.addEventListener("swup:contentReplaced", () => {
+      setTimeout(initCalendar, 100);
+    });
+  }
 </script>
 
 <style>

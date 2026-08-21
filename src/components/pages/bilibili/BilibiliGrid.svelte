@@ -1,20 +1,20 @@
 <script lang="ts">
 import ClientPagination from "@components/common/ClientPagination.svelte";
 import { untrack } from "svelte";
+import TabNav from "@/components/common/TabNav.svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import type { StandardizedAnime } from "@/types/anime";
-import TabNav from "../bangumi/TabNav.svelte";
-import AnimeCard from "./AnimeCard.svelte";
-import AnimeDetailModal from "./AnimeDetailModal.svelte";
+import type { StandardizedAnime } from "@/types/bilibili";
+
+import BilibiliCard from "./BilibiliCard.svelte";
+import BilibiliDetailModal from "./BilibiliDetailModal.svelte";
 
 interface Props {
 	items: StandardizedAnime[];
-	bilibiliAverageRating?: string;
 	itemsPerPage?: number;
 }
 
-let { items, bilibiliAverageRating, itemsPerPage = 24 }: Props = $props();
+let { items, itemsPerPage = 24 }: Props = $props();
 
 // 状态
 let searchQuery = $state("");
@@ -138,7 +138,7 @@ function closeDetail() {
 }
 </script>
 
-<div class="anime-grid">
+<div class="media-list">
 	<!-- 工具栏 -->
 	<div class="mb-6 flex flex-col gap-3">
 		<!-- 搜索和排序 -->
@@ -177,9 +177,9 @@ function closeDetail() {
 
 	<!-- 卡片网格 -->
 	{#if pagedItems().length > 0}
-		<div class="anime-card-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+		<div class="media-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 			{#each pagedItems() as anime (anime.id)}
-				<AnimeCard {anime} onclick={openDetail} />
+				<BilibiliCard {anime} onclick={openDetail} />
 			{/each}
 		</div>
 	{:else}
@@ -201,5 +201,5 @@ function closeDetail() {
 </div>
 
 <!-- 详情弹窗 -->
-<AnimeDetailModal anime={selectedAnime} onclose={closeDetail} />
+<BilibiliDetailModal anime={selectedAnime} onclose={closeDetail} />
 

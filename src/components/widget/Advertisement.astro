@@ -178,9 +178,13 @@ const useContentPadding = !adConfig.padding;
   }
 
   initAd();
-  document.addEventListener("swup:contentReplaced", function () {
-    setTimeout(initAd, 100);
-  });
+  // 防止 Swup 切页重跑脚本时重复注册监听器（此脚本的 data-swup-ignore-script 在 define:vars 构建时可能丢失）
+  if (!window.__advertisementInit) {
+    window.__advertisementInit = true;
+    document.addEventListener("swup:contentReplaced", function () {
+      setTimeout(initAd, 100);
+    });
+  }
 </script>
 
 <style>

@@ -270,6 +270,12 @@ const description =
                   </div>
                 </div>
 
+                {/* 外部链接图标 - 卡片右下角（上游增强，避开右上角延迟徽章） */}
+                <Icon is:inline
+                  name="material-symbols:arrow-outward-rounded"
+                  class="absolute bottom-3 right-3 text-(--primary) text-lg opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                />
+
                 {/* 主体：圆形头像 + 站点名（加粗变黑） */}
                 <div class="p-2.5 flex items-center gap-2.5">
                   <div class="relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">

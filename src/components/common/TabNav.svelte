@@ -11,11 +11,14 @@ interface Props {
 	tabs: Tab[];
 	activeTab: string;
 	onTabChange: (tabId: string) => void;
+	/** 是否把选中的 tab 同步到 URL hash（默认开启；嵌套的次级 tab 应关闭） */
+	useHash?: boolean;
 }
 
-const { tabs, activeTab, onTabChange }: Props = $props();
+const { tabs, activeTab, onTabChange, useHash = true }: Props = $props();
 
 function handleHashChange() {
+	if (!useHash) return;
 	const hash = window.location.hash.replace(/^#/, "");
 	if (hash) {
 		try {
@@ -34,9 +37,11 @@ onMount(() => {
 
 function clickTab(tabId: string) {
 	onTabChange(tabId);
-	const nextHash = `#${encodeURIComponent(tabId)}`;
-	if (window.location.hash !== nextHash) {
-		window.history.replaceState(null, "", nextHash);
+	if (useHash) {
+		const nextHash = `#${encodeURIComponent(tabId)}`;
+		if (window.location.hash !== nextHash) {
+			window.history.replaceState(null, "", nextHash);
+		}
 	}
 }
 </script>

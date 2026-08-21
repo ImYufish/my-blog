@@ -1,7 +1,7 @@
 <script lang="ts">
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import type { StandardizedAnime } from "@/types/anime";
+import type { StandardizedAnime } from "@/types/bilibili";
 
 interface Props {
 	anime: StandardizedAnime;
@@ -49,7 +49,7 @@ function getTypeColor(seasonType: number): string {
 </script>
 
 <div
-	class="anime-card group relative overflow-hidden rounded-xl border border-(--line-divider) bg-(--card-bg) cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-(--primary)/30 hover:-translate-y-1"
+	class="media-card group relative overflow-hidden rounded-xl border border-(--line-divider) bg-(--card-bg) cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-(--primary)/30 hover:-translate-y-1"
 	onclick={handleClick}
 	onkeydown={(e) => e.key === "Enter" && handleClick()}
 	role="button"
@@ -93,8 +93,8 @@ function getTypeColor(seasonType: number): string {
 		</div>
 
 		<!-- 来源标签 -->
-		<div class="absolute bottom-2 left-2 rounded-md {anime.source === 'bilibili' ? 'bg-pink-500/80' : 'bg-emerald-500/80'} px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
-			{anime.source === 'bilibili' ? 'Bilibili' : 'TMDB'}
+		<div class="absolute bottom-2 left-2 rounded-md bg-pink-500/80 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
+			Bilibili
 		</div>
 
 		<!-- 悬停遮罩 -->
