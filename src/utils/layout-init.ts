@@ -90,7 +90,11 @@ export function initLayout(): void {
 	}
 
 	initImageLoadFadeIn();
-	document.addEventListener("astro:page-load", initImageLoadFadeIn);
+	// 切页换入后延到下一帧再重扫 LQIP fade-in，避免 astro:page-load 在同帧叠加
+	// 一堆游标/事件重扫阻塞换入首帧（swup:contentReplaced 已 rAF，一并延后）
+	document.addEventListener("astro:page-load", () => {
+		requestAnimationFrame(initImageLoadFadeIn);
+	});
 	document.addEventListener("swup:contentReplaced", () => {
 		requestAnimationFrame(initImageLoadFadeIn);
 	});

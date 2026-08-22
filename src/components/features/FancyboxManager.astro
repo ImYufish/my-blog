@@ -221,8 +221,15 @@
   setup();
 
   // Swup 生命周期整合
-  document.addEventListener("swup:content:replace", setup);
-  document.addEventListener("dynamic-gallery:ready", setup);
+  // 切页换入后延到下一帧再 setup：让首帧先绘制，避免每趟对全图 querySelectorAll +
+  // fetch(blob) 的同步长任务阻塞换入瞬间（尤其文章页图多时）。setup 内部有
+  // data-svg-fixed / Fancybox.unbind 守卫，延一帧不会重绑或丢图。
+  document.addEventListener("swup:content:replace", () => {
+    requestAnimationFrame(setup);
+  });
+  document.addEventListener("dynamic-gallery:ready", () => {
+    requestAnimationFrame(setup);
+  });
   document.addEventListener("swup:visit:start", cleanupFancybox);
 
   // 加密文章解密后重新绑定灯箱
