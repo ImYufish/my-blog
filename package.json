@@ -52,7 +52,7 @@
     "@types/mdast": "^4.0.4",
     "astro": "7.2.3",
     "astro-expressive-code": "^0.44.1",
-    "astro-icon": "^1.1.5",
+    "astro-icon": "^1.2.0",
     "ci-info": "^4.4.0",
     "dayjs": "^1.11.23",
     "ec-lang-logo": "^1.0.5",

@@ -60,7 +60,7 @@ const homeTextLinksEnable = homeText?.linksEnable !== false;
                                     onclick={isMailto ? MAILTO_ONCLICK_SCRIPT : undefined}
                                 >
                                     {/* 内联 fill: currentColor，避免 CSS 加载前 SVG 默认黑色图标闪现 */}
-                                    <Icon is:inline name={link.icon} class="text-[1.25rem]" style="fill: currentColor" />
+                                    <Icon name={link.icon} class="text-[1.25rem]" style="fill: currentColor" />
                                     {link.showName && <span>{link.name}</span>}
                                 </a>
                             );
