@@ -11,8 +11,6 @@ const GITHUB_DIRECTIVE_PATTERN =
 interface GithubCardData {
 	description: string | null;
 	language: string | null;
-	forks: number;
-	stars: number;
 	avatarUrl: string | null;
 	license: string | null;
 }
@@ -73,9 +71,6 @@ async function fetchRepositoryData(repo: string): Promise<GithubCardData> {
 				? data.description.replace(/:[a-zA-Z0-9_]+:/g, "")
 				: null,
 		language: typeof data.language === "string" ? data.language : null,
-		forks: typeof data.forks === "number" ? data.forks : 0,
-		stars:
-			typeof data.stargazers_count === "number" ? data.stargazers_count : 0,
 		avatarUrl:
 			typeof data.owner?.avatar_url === "string" ? data.owner.avatar_url : null,
 		license:

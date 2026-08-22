@@ -5,15 +5,6 @@ import githubCardData from "../constants/github-card-data.json" with {
 };
 import { isValidGithubRepository } from "../utils/github-card-utils.ts";
 
-function formatCount(value) {
-	return Intl.NumberFormat("en-us", {
-		notation: "compact",
-		maximumFractionDigits: 1,
-	})
-		.format(value)
-		.replaceAll("\u202f", "");
-}
-
 /**
  * Creates a GitHub Card component.
  *
@@ -76,16 +67,8 @@ export function GithubCardComponent(properties, children) {
 			: "Repository details unavailable",
 	);
 
-	const nStars = h(
-		`div#${cardUuid}-stars`,
-		{ class: "gc-stars" },
-		hasData ? formatCount(data.stars) : "—",
-	);
-	const nForks = h(
-		`div#${cardUuid}-forks`,
-		{ class: "gc-forks" },
-		hasData ? formatCount(data.forks) : "—",
-	);
+	const nStars = h(`div#${cardUuid}-stars`, { class: "gc-stars" }, "—");
+	const nForks = h(`div#${cardUuid}-forks`, { class: "gc-forks" }, "—");
 	const nLicense = h(
 		`div#${cardUuid}-license`,
 		{ class: "gc-license" },
