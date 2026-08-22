@@ -12,6 +12,7 @@ import {
 	type MalCategory,
 	type MalListKind,
 } from "@/utils/mal-utils";
+import { filterNsfw, isMalNsfw } from "@/utils/nsfw-utils";
 
 // 检查页面是否启用
 if (!siteConfig.pages.mal) {
@@ -36,6 +37,8 @@ const malConfig = {
 		delay: 100, // 请求间隔毫秒数，避免频率限制
 		maxTotal: 1000, // 最大获取总数，防止无限循环（0=无限制）
 	},
+	// NSFW 处理："off" | "blur" | "hide"
+	nsfw: siteConfig.mal?.nsfw ?? "off",
 };
 //////////////////////////////////////////////////
 
@@ -116,6 +119,10 @@ if (isConfigured) {
 // 两个列表都获取失败才视为整体失败
 const fetchFailed = animeFailed && mangaFailed;
 
+// NSFW 拦截：hide 模式下过滤掉 NSFW 条目，保持分类计数一致
+animeItems = filterNsfw(animeItems, malConfig.nsfw, isMalNsfw);
+mangaItems = filterNsfw(mangaItems, malConfig.nsfw, isMalNsfw);
+
 // 构建分类（空列表的分类不显示）
 const categories: MalCategory[] = [];
 if (animeItems.length > 0) {
@@ -194,6 +201,7 @@ const activeCategory = categories[0]?.id || "anime";
             initialActiveCategory={activeCategory}
             animeBaseUrl={malConfig.animeBaseUrl}
             mangaBaseUrl={malConfig.mangaBaseUrl}
+            nsfw={malConfig.nsfw}
           />
         ) : (
           /* 空列表提示 */

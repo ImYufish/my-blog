@@ -7,6 +7,7 @@ import type {
 	WALLPAPER_NONE,
 	WALLPAPER_OVERLAY,
 } from "../constants/constants";
+import type { NsfwMode } from "./nsfw";
 
 export type LIGHT_DARK_MODE =
 	| typeof LIGHT_MODE
@@ -173,6 +174,7 @@ export type SiteConfig = {
 			game?: boolean;
 			real?: boolean;
 		};
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	// VNDB 配置
@@ -183,7 +185,7 @@ export type SiteConfig = {
 		apiUrl?: string; // VNDB API 地址
 		vnBaseUrl?: string; // VNDB 条目详情页地址，末尾需要带 /
 		apiToken?: string; // 私密列表访问令牌，仅 static 模式下使用
-		blurNsfw?: boolean; // 对Nsfw的游戏封面模糊化，默认为true
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	// MyAnimeList 配置
@@ -193,6 +195,7 @@ export type SiteConfig = {
 		apiUrl?: string; // MAL API 地址
 		animeBaseUrl?: string; // 动画条目详情页地址，末尾需要带 /
 		mangaBaseUrl?: string; // 漫画条目详情页地址，末尾需要带 /
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	// Bilibili 配置
