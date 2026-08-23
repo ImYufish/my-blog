@@ -111,7 +111,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			},
 			{
 				name: "友链检测",
-				url: "https://friends.yufish.cn/",
+				url: "https://fc.yufish.cn/",
 				external: true,
 				icon: "material-symbols:link-2",
 			},

@@ -492,8 +492,8 @@ const description =
 		// 客户端实时刷新友链：页面加载即 fetch 远程 friends.json / result.json 重渲染，
     // 新申请的友链无需重新构建博客即可出现。失败则沿用构建时 SSR 数据。
     (function () {
-      const FRIENDS_URL = "https://friends.yufish.cn/friends.json";
-      const RESULT_URL = "https://friends.yufish.cn/result.json";
+      const FRIENDS_URL = "https://fc.yufish.cn/friends.json";
+      const RESULT_URL = "https://fc.yufish.cn/link.json";
 
       function normUrl(u) {
         return (u || "").trim().replace(/^https?:\/\//i, "").replace(/\/$/, "").toLowerCase();
@@ -577,9 +577,16 @@ const description =
           const rm = new Map();
           if (rr && rr.ok) {
             const rd = await rr.json();
-            (rd.link_status || []).forEach(function (s) {
+            // FCL link.json 结构：{ statistical_data, link_data: [...] }，映射为客户端渲染所需字段
+            (rd.link_data || []).forEach(function (s) {
               const k = normUrl(s.link);
-              if (k) rm.set(k, s);
+              if (!k) return;
+              rm.set(k, {
+                siteshot: s.siteshot || "",
+                latency: s.latency != null ? s.latency : -1,
+                latency_display: s.latency_display != null ? s.latency_display : -1,
+                status: s.reachable ? "ok" : "fail",
+              });
             });
           }
           const grid = document.querySelector(".friends-grid");

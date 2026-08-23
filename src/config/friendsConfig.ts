@@ -18,7 +18,7 @@ export const friendsPageConfig: FriendsPageConfig = {
 
 	// 是否开启随机排序配置，如果开启，就会忽略权重，构建时进行一次随机排序
 	randomizeSort: false,
-	// 友链数据源开关：true（默认）= 使用远程 friends.yufish.cn/friends.json（实时、自动）；
+	// 友链数据源开关：true（默认）= 使用远程 fc.yufish.cn/friends.json（实时、自动）；
 	// false = 仅用本地 friendsConfig.ts（不拉远程，适合远程不可达 / 调试 / 冻结友链）
 	useRemote: true,
 };
