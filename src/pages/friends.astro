@@ -56,7 +56,7 @@ const useRemoteFriends = friendsPageConfig.useRemote !== false;
 const items = await loadFriends();
 const allTags = [...new Set(items.flatMap((item) => item.tags || []))].sort();
 
-// 拉取 check-flink 的 result.json，获取封面截图和延迟状态
+// 拉取 Friend-Circle-Lite(fc.yufish.cn) 的 link.json，获取封面截图和延迟状态
 interface CheckFlinkStatus {
 	name: string;
 	link: string;
@@ -74,25 +74,49 @@ interface CheckFlinkStatus {
 
 let checkFlinkStatusMap: Map<string, CheckFlinkStatus> = new Map();
 try {
-	const res = await fetch("https://friends.yufish.cn/result.json", {
+	const res = await fetch("https://fc.yufish.cn/link.json", {
 		signal: AbortSignal.timeout(15000),
 	});
 	if (res.ok) {
 		const data = (await res.json()) as {
-			link_status?: CheckFlinkStatus[];
+			link_data?: Array<{
+				name: string;
+				link: string;
+				latency?: number;
+				latency_cn?: number;
+				latency_display?: number;
+				reachable?: boolean;
+				has_backlink?: boolean | null;
+				link_page?: string;
+				siteshot?: string;
+			}>;
 		};
-		for (const s of data.link_status || []) {
+		for (const s of data.link_data || []) {
 			const key = normalizeMatchUrl(s.link);
-			if (key) checkFlinkStatusMap.set(key, s);
+			if (!key) continue;
+			checkFlinkStatusMap.set(key, {
+				name: s.name,
+				link: s.link,
+				latency: s.latency ?? -1,
+				latency_cn: s.latency_cn ?? -1,
+				latency_display: s.latency_display ?? -1,
+				fail_count: 0,
+				status: s.reachable ? "ok" : "fail",
+				geo_hint: null,
+				geo_streak: 0,
+				has_author_link: s.has_backlink === true,
+				linkpage: s.link_page || "",
+				siteshot: s.siteshot || "",
+			});
 		}
 	} else {
-		console.warn(`[friends] check-flink result.json HTTP ${res.status}`);
+		console.warn(`[friends] FCL fc.yufish.cn/link.json HTTP ${res.status}`);
 	}
 } catch (e) {
-	console.warn("[friends] fetch check-flink result.json failed:", e);
+	console.warn("[friends] fetch FCL link.json failed:", e);
 }
 
-// 远程友链清单（check-flink/static/friends.json），字段与 friendsConfig.ts 保持一致
+// 远程友链清单（Friend-Circle-Lite 仓库 friends.json，双写格式含 title/siteurl/imgurl），字段与 friendsConfig.ts 保持一致
 interface RemoteFriend {
 	title: string;
 	imgurl: string;
@@ -114,7 +138,7 @@ async function loadFriends(): Promise<RemoteFriend[]> {
 		return getEnabledFriends();
 	}
 	try {
-		const res = await fetch("https://friends.yufish.cn/friends.json", {
+		const res = await fetch("https://fc.yufish.cn/friends.json", {
 			signal: AbortSignal.timeout(15000),
 		});
 		if (res.ok) {
