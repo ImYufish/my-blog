@@ -32,12 +32,14 @@ import {
 	expressiveCodeConfig,
 	fontConfig,
 	fontsList,
+	indexNowConfig,
 	mermaidConfig,
 	plantumlConfig,
 	siteConfig,
 } from "./src/config";
 import I18nKey from "./src/i18n/i18nKey";
 import { i18n } from "./src/i18n/translation";
+import { indexNow } from "./src/plugins/indexNow.mjs";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
 import { rehypeDiagramPanZoom } from "./src/plugins/rehype-diagram-panzoom.mjs";
 import rehypeEmailProtection from "./src/plugins/rehype-email-protection.mjs";
@@ -281,6 +283,9 @@ export default defineConfig({
 				return true;
 			},
 		}),
+		// 必须放在 @astrojs/sitemap 之后：本集成在 astro:build:done 里读取 sitemap 文件，
+		// 而 sitemap 集成也是在该 hook 才把文件写出，顺序错了会读不到任何 URL。
+		indexNow(indexNowConfig),
 		mdx(),
 	],
 	markdown: {

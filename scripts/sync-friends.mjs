@@ -14,7 +14,7 @@ import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SRC = join(__dirname, "..", "src", "config", "friendsConfig.ts");
-const REMOTE = "https://friends.yufish.cn/friends.json";
+const REMOTE = "https://fc.yufish.cn/friends.json";
 const TIMEOUT_MS = 12000;
 
 async function fetchRemote() {

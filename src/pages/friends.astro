@@ -170,6 +170,9 @@ async function loadFriends(): Promise<RemoteFriend[]> {
 }
 
 function normalizeMatchUrl(url: string): string {
+	// 远程友链数据有时缺 siteurl/link 字段（如 fc.yufish.cn 的 friends.json 用 link 而非 siteurl），
+	// 空值兜底，避免整页渲染崩溃导致构建中断
+	if (!url) return "";
 	return url
 		.trim()
 		.replace(/^https?:\/\//i, "")
