@@ -3,7 +3,10 @@
 // key: IndexNow API key；同时也是 public/<key>.txt 验证文件的文件名与内容。
 //      去 https://www.bing.com/indexnow/getstarted 用这个 key 注册，或换成你自己的。
 //      也可用环境变量 INDEXNOW_KEY 覆盖（优先级高于这里）。
-// host: 站点 host，留空则从 sitemap URL 自动推导，一般不用动。
+// host: 站点 host，留空则从 sitemap URL 自动推导。
+//      必须和你 Bing Webmaster Tools 里看统计的那个 property 一致；
+//      例如 Bing 后台看的是 blog.x1anyu.cn，但 sitemap 里 URL 是 x1anyu.cn，
+//      就要显式写 host: "blog.x1anyu.cn"，否则后台计数会显示为 0。
 
 import type { IndexNowConfig } from "../types/indexNowConfig";
 
