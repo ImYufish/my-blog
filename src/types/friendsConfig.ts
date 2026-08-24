@@ -18,4 +18,14 @@ export type FriendsPageConfig = {
 	showComment?: boolean; // 是否显示评论区，默认 true
 	randomizeSort?: boolean; // 是否打乱排序，如果为 true，将忽略 weight，随机排序
 	useRemote?: boolean; // 友链数据源开关：是否使用远程 fc.yufish.cn/friends.json，默认 true；设为 false 则仅用本地 friendsConfig.ts
+	remoteBaseUrl?: string; // 远程数据源根地址（Friend-Circle-Lite 部署域名），页面会从其下取 friends.json / link.json
+	imgProxy?: ImgProxyConfig; // 封面图同域反代配置，把图床域名换成博客自己的反代域名
+};
+
+// 图片同域反代：把图床（如 imgbed.yufish.cn）的图片域名换成博客自己的反代域名，
+// 图片改走博客 CDN（EdgeOne 边缘函数 /file/[...]），避免直连图床被墙或慢
+export type ImgProxyConfig = {
+	enabled?: boolean; // 是否启用反代，默认 true；设为 false 则直接使用图床原图
+	fromHost?: string; // 图床域名，如 imgbed.yufish.cn
+	toHost?: string; // 反代域名，如 x1anyu.cn（反代函数需自行部署到该域名）
 };

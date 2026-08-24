@@ -13,15 +13,24 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
-// 图片同域反代：把 imgbed 图床域名换成博客自己的反代域名（走 EdgeOne 边缘函数 /file/[...]）
-// 反代函数绑在 x1anyu.cn 的 EdgeOne Pages 项目上；换域名只改这一处即可
-const IMG_PROXY_HOST = "x1anyu.cn";
+// 图片同域反代 / 远程数据源：集中配置在 src/config/friendsConfig.ts 的
+// friendsPageConfig.remoteBaseUrl 与 imgProxy（换域名只改配置，不动页面）
+const REMOTE_BASE = (
+	friendsPageConfig.remoteBaseUrl || "https://fc.yufish.cn"
+).replace(/\/$/, "");
+const LINK_JSON_URL = `${REMOTE_BASE}/link.json`;
+const FRIENDS_JSON_URL = `${REMOTE_BASE}/friends.json`;
+const IMG_PROXY_ENABLED = friendsPageConfig.imgProxy?.enabled !== false;
+const IMG_PROXY_FROM = friendsPageConfig.imgProxy?.fromHost || "";
+const IMG_PROXY_TO = friendsPageConfig.imgProxy?.toHost || "";
 function proxyImg(raw: string | undefined) {
-	if (!raw) return raw;
+	if (!raw || !IMG_PROXY_ENABLED || !IMG_PROXY_FROM || !IMG_PROXY_TO) {
+		return raw;
+	}
 	try {
 		const p = new URL(raw);
-		if (p.hostname === "imgbed.yufish.cn") {
-			p.hostname = IMG_PROXY_HOST;
+		if (p.hostname === IMG_PROXY_FROM) {
+			p.hostname = IMG_PROXY_TO;
 			return p.toString();
 		}
 	} catch (e) {
@@ -74,7 +83,7 @@ interface CheckFlinkStatus {
 
 let checkFlinkStatusMap: Map<string, CheckFlinkStatus> = new Map();
 try {
-	const res = await fetch("https://fc.yufish.cn/link.json", {
+	const res = await fetch(LINK_JSON_URL, {
 		signal: AbortSignal.timeout(15000),
 	});
 	if (res.ok) {
@@ -110,7 +119,7 @@ try {
 			});
 		}
 	} else {
-		console.warn(`[friends] FCL fc.yufish.cn/link.json HTTP ${res.status}`);
+		console.warn(`[friends] FCL ${LINK_JSON_URL} HTTP ${res.status}`);
 	}
 } catch (e) {
 	console.warn("[friends] fetch FCL link.json failed:", e);
@@ -138,7 +147,7 @@ async function loadFriends(): Promise<RemoteFriend[]> {
 		return getEnabledFriends();
 	}
 	try {
-		const res = await fetch("https://fc.yufish.cn/friends.json", {
+		const res = await fetch(FRIENDS_JSON_URL, {
 			signal: AbortSignal.timeout(15000),
 		});
 		if (res.ok) {
@@ -488,13 +497,23 @@ const description =
     }
   </style>
 
-	<script is:inline define:vars={{ USE_REMOTE: useRemoteFriends }}>
+	<script
+		is:inline
+		define:vars={{
+			USE_REMOTE: useRemoteFriends,
+			FRIENDS_URL: FRIENDS_JSON_URL,
+			RESULT_URL: LINK_JSON_URL,
+			IMG_PROXY: {
+				enabled: IMG_PROXY_ENABLED,
+				fromHost: IMG_PROXY_FROM,
+				toHost: IMG_PROXY_TO,
+			},
+		}}
+	>
 		// 客户端实时刷新友链：页面加载即 fetch 远程 friends.json / result.json 重渲染，
     // 新申请的友链无需重新构建博客即可出现。失败则沿用构建时 SSR 数据。
+    // 数据源与反代域名由 src/config/friendsConfig.ts 提供（经 define:vars 注入）
     (function () {
-      const FRIENDS_URL = "https://fc.yufish.cn/friends.json";
-      const RESULT_URL = "https://fc.yufish.cn/link.json";
-
       function normUrl(u) {
         return (u || "").trim().replace(/^https?:\/\//i, "").replace(/\/$/, "").toLowerCase();
       }
@@ -510,13 +529,13 @@ const description =
           return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
         });
       }
-      // 同域反代：与 SSR 端保持一致，把 imgbed 图床换成 x1anyu.cn 反代（换域名改这里）
+      // 同域反代：与 SSR 端保持一致（fromHost → toHost），IMG_PROXY.enabled=false 时直接用原图
       function proxyImg(raw) {
-        if (!raw) return raw;
+        if (!raw || !IMG_PROXY.enabled || !IMG_PROXY.fromHost || !IMG_PROXY.toHost) return raw;
         try {
-          const p = new URL(raw);
-          if (p.hostname === "imgbed.yufish.cn") {
-            p.hostname = "x1anyu.cn";
+          var p = new URL(raw);
+          if (p.hostname === IMG_PROXY.fromHost) {
+            p.hostname = IMG_PROXY.toHost;
             return p.toString();
           }
         } catch (e) {}

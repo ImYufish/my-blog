@@ -21,6 +21,18 @@ export const friendsPageConfig: FriendsPageConfig = {
 	// 友链数据源开关：true（默认）= 使用远程 fc.yufish.cn/friends.json（实时、自动）；
 	// false = 仅用本地 friendsConfig.ts（不拉远程，适合远程不可达 / 调试 / 冻结友链）
 	useRemote: true,
+
+	// 远程数据源根地址（Friend-Circle-Lite 部署域名），
+	// 页面会从其下取 friends.json（友链清单）与 link.json（截图/延迟状态）
+	remoteBaseUrl: "https://fc.yufish.cn",
+
+	// 封面图同域反代：把图床域名换成博客自己的反代域名，图片走博客 CDN，
+	// 避免访客直连图床被墙或加载慢。换域名只改这里即可。
+	imgProxy: {
+		enabled: true,
+		fromHost: "imgbed.yufish.cn",
+		toHost: "x1anyu.cn",
+	},
 };
 
 // 友链配置
