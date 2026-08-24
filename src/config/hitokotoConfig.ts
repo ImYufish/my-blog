@@ -88,6 +88,6 @@ export const hitokotoConfig: HitokotoConfig = {
 		categories: ["a", "b"], // 只放动漫 / 动画；留空 [] 就用全部启用分类
 		// 横幅单独的长度范围：0 = 沿用上面全局的 minLength/maxLength；设了就只约束横幅一言
 		minLength: 0,
-		maxLength: 0,
+		maxLength: 25,
 	},
 };
