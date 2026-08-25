@@ -10,6 +10,7 @@ import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getRelatedPosts, getSortedPosts } from "@utils/content-utils";
 import {
+	getCategoryUrl,
 	getFileDirFromPath,
 	getPostUrlBySlug,
 	removeFileExtension,
@@ -28,6 +29,17 @@ import { siteConfig } from "@/config/siteConfig";
 import { sponsorConfig } from "@/config/sponsorConfig";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import {
+	getAuthorAvatarUrl,
+	getSiteLogo,
+	toAbsoluteImageInfo,
+} from "@/utils/schema-image";
+import {
+	buildBreadcrumbList,
+	buildPersonEntity,
+	buildPublisherEntity,
+	toAbsoluteUrl,
+} from "@/utils/schema-utils";
 import { url } from "@/utils/url-utils";
 
 export async function getStaticPaths() {
@@ -86,22 +98,92 @@ const posterAvatarSelector = profileConfig.avatar
 
 dayjs.extend(utc);
 
+const coverBasePath = getFileDirFromPath(entry.filePath || "");
+const coverImage =
+	(await toAbsoluteImageInfo(
+		processedImage,
+		coverBasePath,
+		siteConfig.site_url,
+	)) ?? undefined;
+
+// 作者个人页（/about/）绝对 URL，用于 author.url 指向唯一标识作者的页面
+const aboutUrl =
+	toAbsoluteUrl("/about/", siteConfig.site_url) ?? siteConfig.site_url;
+
+// 作者实体：与首页/about 的 Person 共用同一 @id（#person），author 用 @id 关联
+const authorAvatarUrl = await getAuthorAvatarUrl();
+const authorPerson = buildPersonEntity({
+	site: siteConfig.site_url,
+	profileConfig,
+	authorUrl: aboutUrl,
+	avatarUrl: authorAvatarUrl,
+	description: profileConfig.bio,
+});
+
+// publisher 实体（Organization，含真实 logo），article 的 publisher 用其 @id 关联
+const publisher = buildPublisherEntity({
+	site: siteConfig.site_url,
+	siteConfig,
+	logo: await getSiteLogo(),
+});
+
+const breadcrumbItems = [
+	{
+		name: i18n(I18nKey.home),
+		url: toAbsoluteUrl("/", siteConfig.site_url) ?? siteConfig.site_url,
+	},
+];
+if (entry.data.category) {
+	breadcrumbItems.push({
+		name: entry.data.category,
+		url:
+			toAbsoluteUrl(getCategoryUrl(entry.data.category), siteConfig.site_url) ??
+			siteConfig.site_url,
+	});
+}
+breadcrumbItems.push({ name: entry.data.title, url: Astro.url.toString() });
+
+const breadcrumbList = buildBreadcrumbList(breadcrumbItems);
+
 const jsonLd = {
 	"@context": "https://schema.org",
-	"@type": "BlogPosting",
-	headline: entry.data.title,
-	description: entry.data.description || entry.data.title,
-	keywords: entry.data.tags,
-	author: {
-		"@type": "Person",
-		name: profileConfig.name,
-		url: Astro.site,
-	},
-	datePublished: formatDateToYYYYMMDD(entry.data.published),
-	inLanguage: entry.data.lang
-		? entry.data.lang.replace("_", "-")
-		: siteConfig.lang.replace("_", "-"),
-	// TODO include cover image here
+	"@graph": [
+		{
+			"@type": "BlogPosting",
+			headline: entry.data.title,
+			description: entry.data.description || entry.data.title,
+			keywords: entry.data.tags.length ? entry.data.tags.join(", ") : undefined,
+			author: { "@id": authorPerson["@id"] },
+			publisher: { "@id": publisher["@id"] },
+			...(coverImage
+				? {
+						image: {
+							"@type": "ImageObject",
+							url: coverImage.url,
+							contentUrl: coverImage.url,
+							...(coverImage.width ? { width: coverImage.width } : {}),
+							...(coverImage.height ? { height: coverImage.height } : {}),
+						},
+					}
+				: {}), // 优化：有封面才输出，避免 image:null
+			datePublished: entry.data.published.toISOString(),
+			...(entry.data.category ? { articleSection: entry.data.category } : {}),
+			...(remarkPluginFrontmatter.words
+				? { wordCount: remarkPluginFrontmatter.words }
+				: {}),
+			...(entry.data.updated
+				? { dateModified: entry.data.updated.toISOString() }
+				: {}),
+			mainEntityOfPage: { "@type": "WebPage", "@id": Astro.url.toString() },
+			url: Astro.url.toString(),
+			inLanguage: entry.data.lang
+				? entry.data.lang.replace("_", "-")
+				: siteConfig.lang.replace("_", "-"),
+		},
+		authorPerson,
+		publisher,
+		breadcrumbList,
+	],
 };
 
 const relatedPosts = await getRelatedPosts(entry, 5);
@@ -113,6 +195,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
   lang={entry.data.lang}
   setOGTypeArticle={true}
   postSlug={entry.id}
+  postCoverImage={coverImage?.url}
   postCategory={entry.data.category || undefined}
   headings={headings}
   encrypted={!!entry.data.password}

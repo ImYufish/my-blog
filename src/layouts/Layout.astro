@@ -30,6 +30,8 @@ import {
 import { defaultFavicons } from "@/constants/icon";
 import type { Favicon } from "@/types/config";
 import { isHomePage } from "@/utils/layout-utils";
+import { getAuthorAvatarUrl, getSiteLogo } from "@/utils/schema-image";
+import { buildSiteGraph, toAbsoluteUrl } from "@/utils/schema-utils";
 import { url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
@@ -42,6 +44,7 @@ interface Props {
 	lang?: string;
 	setOGTypeArticle?: boolean;
 	postSlug?: string;
+	postCoverImage?: string;
 	hasWallpaper?: boolean;
 }
 
@@ -51,6 +54,7 @@ let {
 	lang,
 	setOGTypeArticle,
 	postSlug,
+	postCoverImage,
 	hasWallpaper = false,
 } = Astro.props;
 
@@ -94,6 +98,8 @@ if (title) {
 let ogImageUrl: string | undefined;
 if (siteConfig.post.generateOgImages && postSlug) {
 	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
+} else if (postCoverImage) {
+	ogImageUrl = postCoverImage; // 已由文章页算成绝对 URL
 }
 
 const favicons: Favicon[] =
@@ -104,6 +110,14 @@ if (!lang) {
 	lang = `${siteConfig.lang}`;
 }
 const siteLang = lang.replace("_", "-");
+
+// 首页站点级结构化数据用的作者头像 URL（Person.image），经 toAbsoluteImageUrl 三分解析
+const avatarUrl = await getAuthorAvatarUrl();
+// 作者个人页（/about/）绝对 URL，作为 Person.url
+const aboutUrl =
+	toAbsoluteUrl("/about/", siteConfig.site_url) ?? siteConfig.site_url;
+// 站点 publisher logo（Organization.logo），用于首页 @graph 的 Organization 节点
+const siteLogo = await getSiteLogo();
 
 // 使用固定的banner偏移量，position配置用于图片定位
 ---
@@ -163,6 +177,7 @@ const siteLang = lang.replace("_", "-");
       content={description || siteConfig.description || pageTitle}
     />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
     {
       setOGTypeArticle ? (
         <meta property="og:type" content="article" />
@@ -178,6 +193,26 @@ const siteLang = lang.replace("_", "-");
       name="twitter:description"
       content={description || siteConfig.description || pageTitle}
     />
+
+    {
+      isHomePageCheck && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(
+            buildSiteGraph({
+              site: siteConfig.site_url,
+              siteConfig,
+              profileConfig,
+              lang: siteLang,
+              authorUrl: aboutUrl,
+              avatarUrl,
+              logo: siteLogo,
+            }),
+          )}
+        />
+      )
+    }
 
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
