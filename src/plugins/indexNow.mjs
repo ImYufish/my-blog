@@ -70,22 +70,39 @@ export function indexNow(config = {}) {
 					return;
 				}
 
-				const keyLocation = `https://${host}/${key}.txt`;
-				const keyFilePath = join(dir.pathname, `${key}.txt`);
-				if (!existsSync(keyFilePath)) {
-					console.warn(
-						`[indexnow] 验证文件未生成：${keyFilePath}，请确认 public/${key}.txt 存在并已部署。`
-					);
-					return;
-				}
+			const keyLocation = `https://${host}/${key}.txt`;
+			const keyFilePath = join(dir.pathname, `${key}.txt`);
+			if (!existsSync(keyFilePath)) {
+				console.warn(
+					`[indexnow] 验证文件未生成：${keyFilePath}，请确认 public/${key}.txt 存在并已部署。`
+				);
+				return;
+			}
 
-				let ok = 0;
-				let fail = 0;
-				const MAX_BATCH = 10000;
-				for (let i = 0; i < urls.length; i += MAX_BATCH) {
-					const batch = urls.slice(i, i + MAX_BATCH);
-					try {
-						const res = await fetch("https://api.indexnow.org/indexnow", {
+			// 提交前自检：hook 自己能否从公网取到 key 文件（内容与 key 一致）
+			let keyCheck = "未自检";
+			try {
+				const probe = await fetch(keyLocation, { method: "GET" });
+				if (!probe.ok) {
+					keyCheck = `HTTP ${probe.status}（Bing 抓取时也可能拿不到）`;
+				} else {
+					const probeBody = (await probe.text()).trim();
+					keyCheck = probeBody === key ? "通过" : `内容不匹配（期望 ${key}，实际 ${probeBody.slice(0, 40)}）`;
+				}
+			} catch (e) {
+				keyCheck = `请求异常：${e.message}`;
+			}
+			console.log(`[indexnow] key 文件自检：${keyCheck}（${keyLocation}）`);
+
+			let ok = 0;
+			let fail = 0;
+			const MAX_BATCH = 10000;
+			// Bing 官方 IndexNow endpoint；如仍报 403，可切回 https://api.indexnow.org/indexnow 再试
+			const ENDPOINT = "https://www.bing.com/indexnow";
+			for (let i = 0; i < urls.length; i += MAX_BATCH) {
+				const batch = urls.slice(i, i + MAX_BATCH);
+				try {
+					const res = await fetch(ENDPOINT, {
 							method: "POST",
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify({ host, key, keyLocation, urlList: batch }),
@@ -126,7 +143,7 @@ export function indexNow(config = {}) {
 				}
 				const newUrls = urls.filter((u) => !baseline.has(u));
 
-				console.log(`[indexnow] 提交完成：成功 ${ok} 条，失败 ${fail} 条（host=${host}，keyLocation=${keyLocation}）`);
+				console.log(`[indexnow] 提交完成：成功 ${ok} 条，失败 ${fail} 条（endpoint=${ENDPOINT}，host=${host}，keyLocation=${keyLocation}）`);
 				if (newUrls.length > 0) {
 					console.log(`[indexnow] 本次新增 ${newUrls.length} 条：`);
 					for (const u of newUrls) console.log(`[indexnow]   + ${u}`);
