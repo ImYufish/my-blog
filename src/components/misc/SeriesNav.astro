@@ -98,24 +98,23 @@ const { seriesName, posts, currentPostId } = Astro.props;
   }
 </style>
 
-<script>
-  function onSeriesNavToggle(e: Event) {
-    const btn = (e.target as Element)?.closest?.(".series-nav-toggle");
+<script is:inline>
+  function onSeriesNavToggle(e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.series-nav-toggle') : null;
     if (!btn) return;
-    const content = btn.closest(".series-nav")?.querySelector(".series-nav-content");
-    if (!(content instanceof HTMLElement)) return;
+    var content = btn.closest('.series-nav') ? btn.closest('.series-nav').querySelector('.series-nav-content') : null;
+    if (!content) return;
 
-    const isOpen = btn.getAttribute("aria-expanded") === "true";
-    const next = !isOpen;
-    btn.setAttribute("aria-expanded", String(next));
-    content.setAttribute("data-open", String(next));
-    content.style.maxHeight = next ? content.scrollHeight + "px" : "0px";
+    var isOpen = btn.getAttribute('aria-expanded') === 'true';
+    var next = !isOpen;
+    btn.setAttribute('aria-expanded', String(next));
+    content.setAttribute('data-open', String(next));
+    content.style.maxHeight = next ? content.scrollHeight + 'px' : '0px';
   }
 
-  // 事件委托，Swup 切页后新内容也能直接工作；用标记避免重复注册
-  const s = window as unknown as { __seriesNavInit?: boolean };
-  if (!s.__seriesNavInit) {
-    s.__seriesNavInit = true;
-    document.addEventListener("click", onSeriesNavToggle);
+  // 事件委托，Swup 切页后新内容也能直接工作；避免重复注册（@swup/scripts-plugin 会重跑内联脚本）
+  if (!window.__seriesNavInit) {
+    window.__seriesNavInit = true;
+    document.addEventListener('click', onSeriesNavToggle);
   }
 </script>

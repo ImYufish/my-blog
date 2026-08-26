@@ -319,6 +319,11 @@ html {
         background-color: var(--card-bg-transparent) !important;
     }
 
+    /* 透明模式：文章页系列导航盒底色由实色换为半透明 */
+    .wallpaper-transparent .series-nav {
+        background-color: var(--card-bg-transparent) !important;
+    }
+
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition-colors duration-150;
     }
