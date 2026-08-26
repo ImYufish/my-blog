@@ -25,6 +25,7 @@ import {
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_HOME,
+	BANNER_HEIGHT_NON_HOME,
 	PAGE_WIDTH,
 } from "@/constants/constants";
 import { defaultFavicons } from "@/constants/icon";
@@ -417,6 +418,7 @@ const siteLogo = await getSiteLogo();
         "page-width": `${siteConfig.pageWidth ?? PAGE_WIDTH}rem`,
         "navbar-panel-blur": `${navbarPanelBlur}px`,
         "banner-height-home": `${BANNER_HEIGHT_HOME}vh`,
+        "banner-height-non-home": `${BANNER_HEIGHT_NON_HOME}vh`,
         "banner-height": `${BANNER_HEIGHT}vh`,
       }}
     ></style>

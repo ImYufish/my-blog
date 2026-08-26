@@ -1,5 +1,8 @@
 import { expressiveCodeConfig, siteConfig } from "@/config";
-import { BANNER_HEIGHT_HOME } from "@/constants/constants";
+import {
+	BANNER_HEIGHT_HOME,
+	BANNER_HEIGHT_NON_HOME,
+} from "@/constants/constants";
 import type { WALLPAPER_MODE } from "@/types/config";
 import { isBannerMode } from "@/utils/banner-utils";
 import { scheduleContentOverflowEnhancements } from "@/utils/content-overflow-utils";
@@ -97,7 +100,12 @@ function registerSwupHooks(): void {
 			if (navbar && stickyNavbar) {
 				navbar.classList.remove("navbar-hidden");
 			} else if (isBannerMode() && navbar) {
-				const threshold = window.innerHeight * (BANNER_HEIGHT_HOME / 100) - 88;
+				const currentIsHome = document.body.classList.contains("is-home");
+				const threshold =
+					window.innerHeight *
+						((currentIsHome ? BANNER_HEIGHT_HOME : BANNER_HEIGHT_NON_HOME) /
+							100) -
+					88;
 				if (document.documentElement.scrollTop >= threshold) {
 					navbar.classList.add("navbar-hidden");
 				}

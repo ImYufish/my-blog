@@ -1,5 +1,9 @@
 import { siteConfig } from "@/config";
-import { BANNER_HEIGHT, BANNER_HEIGHT_HOME } from "@/constants/constants";
+import {
+	BANNER_HEIGHT,
+	BANNER_HEIGHT_HOME,
+	BANNER_HEIGHT_NON_HOME,
+} from "@/constants/constants";
 import { isBannerMode } from "@/utils/banner-utils";
 import { updateSidebarStickySpacing } from "@/utils/grid-layout-utils";
 
@@ -50,7 +54,11 @@ export function scrollFunction(): void {
 		});
 	} else if (isBannerMode() && navbar) {
 		operations.push(() => {
-			const threshold = window.innerHeight * (BANNER_HEIGHT_HOME / 100) - 88;
+			const isHome = document.body.classList.contains("is-home");
+			const threshold =
+				window.innerHeight *
+					((isHome ? BANNER_HEIGHT_HOME : BANNER_HEIGHT_NON_HOME) / 100) -
+				88;
 
 			if (scrollTop >= threshold) {
 				navbar.classList.add("navbar-hidden");
