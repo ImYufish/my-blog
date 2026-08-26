@@ -290,20 +290,6 @@ html.is-page-transitioning .banner-home-text-overlay {
 
 /* 移动端banner性能优化 */
 @media (max-width: 1023px) {
-    .banner-container {
-        /* 启用硬件加速 */
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        will-change: transform, opacity;
-        
-        /* 优化渲染性能 */
-        contain: layout style paint;
-        
-        /* 减少重绘 */
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-    }
-
     .carousel-item {
         /* 硬件加速 */
         transform: translateZ(0);
@@ -325,30 +311,6 @@ html.is-page-transitioning .banner-home-text-overlay {
         
         /* 减少重排 */
         contain: layout style;
-    }
-
-    /* 移动端图片优化 - 只针对装饰性图片 */
-    .banner-container img:not(.interactive):not([onclick]):not([data-clickable]) {
-        /* 图片渲染优化 */
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-        
-        /* 防止图片拖拽 */
-        -webkit-user-drag: none;
-        -khtml-user-drag: none;
-        -moz-user-drag: none;
-        -o-user-drag: none;
-        
-        /* 触摸优化 - 只针对装饰性图片 */
-        pointer-events: none;
-    }
-    
-    /* 交互式图片保持可点击 */
-    .banner-container img.interactive,
-    .banner-container img[onclick],
-    .banner-container img[data-clickable] {
-        pointer-events: auto;
-        cursor: pointer;
     }
 }
 
@@ -441,14 +403,6 @@ html.is-page-transitioning .banner-home-text-overlay {
         transform: none !important; /* 移除桌面端的translateY偏移 */
     }
     
-    /* 主内容区域位置调整 - 确保在banner下面，但不影响非首页 */
-    /* 仅在 banner 模式下应用，其他模式（全屏壁纸/纯色）使用默认的 5.5rem */
-        
-    .banner-container {
-        height: 60vh;
-        min-height: 300px;
-    }
-
     .banner-home-text-overlay {
         padding: 1rem 1.5rem;
         align-items: center !important; /* 垂直居中 */

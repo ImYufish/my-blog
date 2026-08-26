@@ -375,8 +375,9 @@ const relatedPosts = await getRelatedPosts(entry, 5);
               id="post-cover"
               src={processedImage}
               basePath={getFileDirFromPath(entry.filePath || "")}
-              class="mb-8 rounded-xl banner-container onload-animation"
+              class="mb-8 rounded-xl onload-animation"
               preview={false}
+              naturalHeight
               apiUrls={apiUrls}
             />
           </div>
