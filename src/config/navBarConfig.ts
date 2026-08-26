@@ -42,6 +42,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 友链
 			LinkPresets.Friends,
 
+			// 朋友圈
+			LinkPresets.Circle,
+
 			// 留言
 			LinkPresets.Guestbook,
 		],
@@ -164,6 +167,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/friends/",
 		icon: "material-symbols:link-2-rounded",
 		pageKey: "friends",
+	},
+	Circle: {
+		name: "朋友圈",
+		url: "/circle/",
+		icon: "material-symbols:forum-rounded",
+		pageKey: "circle",
 	},
 	Guestbook: {
 		name: "留言",

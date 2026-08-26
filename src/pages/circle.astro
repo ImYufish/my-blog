@@ -1,0 +1,746 @@
+---
+import { Icon } from "astro-icon/components";
+import { friendsPageConfig, siteConfig } from "@/config";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+// 朋友圈页面开关：关闭则返回 404，并自动隐藏导航栏对应菜单项
+if (!siteConfig.pages.circle) {
+	return Astro.redirect("/404/");
+}
+
+// 复用友链配置里的 FCL 实例地址与图片反代：朋友圈与友链同源，均为 Friend-Circle-Lite
+const REMOTE_BASE = (friendsPageConfig.remoteBaseUrl || "https://fc.yufish.cn").replace(/\/$/, "");
+const ALL_JSON_URL = `${REMOTE_BASE}/all.json`;
+const IMG_PROXY_ENABLED = friendsPageConfig.imgProxy?.enabled !== false;
+const IMG_PROXY_FROM = friendsPageConfig.imgProxy?.fromHost || "";
+const IMG_PROXY_TO = friendsPageConfig.imgProxy?.toHost || "";
+const PROJECT_URL = "https://github.com/ImYufish/Friend-Circle-Lite";
+
+const title = "朋友圈";
+const description = "汇聚友链站点的最新文章，在熟悉的小站之间随便转转，看看朋友们最近都写了些什么。";
+---
+
+<MainGridLayout title={title} description={description}>
+	<div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+		<div class="card-base z-10 px-5 sm:px-9 py-6 relative w-full">
+			<!-- 页面标题和描述 -->
+			<div class="mb-5">
+				<div class="flex items-center gap-3 mb-3">
+					<div
+						class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70"
+					>
+						<Icon is:inline name="material-symbols:forum-rounded" class="text-[1.5rem]" />
+					</div>
+					<div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+						{title}
+					</div>
+				</div>
+				{
+					description && (
+						<p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+							{description}
+						</p>
+					)
+				}
+			</div>
+
+			<!-- 统计栏（客户端填充：订阅 / 活跃 / 文章 / 异常） -->
+			<div id="circle-stats" class="circle-stats mb-4"></div>
+
+			<!-- Random Walk：随机一篇，随缘逛逛 -->
+			<div id="circle-random" class="circle-random"></div>
+
+			<!-- 动态卡片网格（客户端拉 all.json 渲染，分批加载） -->
+			<div id="circle-list" class="circle-grid"></div>
+
+			<!-- 加载占位 -->
+			<div
+				id="circle-loading"
+				class="flex flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500"
+			>
+				<Icon is:inline name="material-symbols:progress-activity" class="text-4xl mb-3 animate-spin" />
+				<div class="text-sm">正在加载友圈动态…</div>
+			</div>
+
+			<!-- 错误占位 -->
+			<div
+				id="circle-error"
+				class="hidden flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500"
+			>
+				<Icon is:inline name="material-symbols:cloud-off-outline" class="text-4xl mb-3" />
+				<div class="text-sm">友圈动态加载失败，请稍后重试</div>
+			</div>
+
+			<!-- 加载更多 -->
+			<div id="circle-more" class="hidden flex justify-center mt-6">
+				<button
+					id="circle-more-btn"
+					type="button"
+					class="inline-flex items-center gap-2 rounded-full border border-(--line-divider) bg-(--card-bg) px-5 py-2 text-sm text-neutral-700 dark:text-neutral-300 transition-colors hover:border-(--primary) hover:text-(--primary) disabled:opacity-50 disabled:cursor-not-allowed"
+				>
+					<Icon is:inline name="material-symbols:expand-more-rounded" class="text-[1.1rem]" />
+					<span id="circle-more-text">加载更多</span>
+				</button>
+			</div>
+
+			<!-- 页脚：Powered by -->
+			<div id="circle-meta" class="circle-meta"></div>
+		</div>
+	</div>
+
+	<style is:global>
+		/* ===== 朋友圈（参考 Friend-Circle-Lite 卡片式设计，适配 Firefly 主题） ===== */
+		.circle-stats {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0.65rem;
+		}
+		@media (min-width: 640px) {
+			.circle-stats {
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+			}
+		}
+		.circle-stat {
+			text-align: center;
+			border: 1px solid color-mix(in srgb, var(--line-divider) 55%, transparent);
+			background: var(--card-bg-transparent);
+			border-radius: 0.9rem;
+			padding: 0.7rem 1rem;
+		}
+		.circle-stat strong {
+			display: block;
+			color: var(--primary);
+			font-size: 1.35rem;
+			line-height: 1;
+		}
+		.circle-stat span {
+			display: block;
+			margin-top: 0.3rem;
+			font-size: 0.8rem;
+			color: color-mix(in srgb, var(--text-color) 55%, transparent);
+		}
+
+		/* Random Walk */
+		.circle-random {
+			margin-top: 1rem;
+			padding: 1rem;
+			border-radius: 0.9rem;
+			border: 1px solid color-mix(in srgb, var(--line-divider) 55%, transparent);
+			background: var(--card-bg-transparent);
+		}
+		.circle-random-head {
+			display: flex;
+			align-items: flex-end;
+			justify-content: space-between;
+			gap: 1rem;
+		}
+		.circle-kicker {
+			color: color-mix(in srgb, var(--primary) 78%, transparent);
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			font-size: 0.8rem;
+			font-weight: 700;
+		}
+		.circle-random-title {
+			display: block;
+			margin-top: 0.3rem;
+			font-size: 1.1rem;
+			font-weight: 800;
+			line-height: 1.45;
+			color: var(--text-color);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			transition: color 0.18s;
+			text-align: left;
+		}
+		.circle-random-title:hover {
+			color: var(--primary);
+		}
+		.circle-random-info {
+			margin-top: 0.4rem;
+			font-size: 0.9rem;
+			color: color-mix(in srgb, var(--text-color) 56%, transparent);
+		}
+		.circle-random-actions {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			gap: 0.5rem;
+			margin-top: 0.75rem;
+		}
+		.circle-random-actions button {
+			border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+			background: color-mix(in srgb, var(--primary) 8%, transparent);
+			color: var(--primary);
+			border-radius: 999px;
+			padding: 0.45rem 0.9rem;
+			font-size: 0.9rem;
+			font-weight: 700;
+			transition: border-color 0.18s, background-color 0.18s, transform 0.18s;
+			cursor: pointer;
+		}
+		.circle-random-actions button:hover {
+			border-color: color-mix(in srgb, var(--primary) 38%, transparent);
+			background: color-mix(in srgb, var(--primary) 13%, transparent);
+			transform: translateY(-1px);
+		}
+
+		/* 卡片网格 */
+		.circle-grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 0.85rem;
+			margin-top: 1.1rem;
+		}
+		@media (min-width: 640px) {
+			.circle-grid {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+		}
+		@media (min-width: 1024px) {
+			.circle-grid {
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+			}
+		}
+
+		.circle-card {
+			position: relative;
+			min-height: 7.3rem;
+			padding: 0.9rem;
+			border-radius: 1rem;
+			border: 1px solid color-mix(in srgb, var(--line-divider) 55%, transparent);
+			background: var(--card-bg-transparent);
+			overflow: hidden;
+			animation: circle-card-in 0.35s both;
+			transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+		}
+		.circle-card:hover {
+			border-color: color-mix(in srgb, var(--primary) 32%, transparent);
+			transform: translateY(-2px);
+			box-shadow: 0 14px 34px -22px color-mix(in srgb, var(--primary) 60%, transparent);
+		}
+		/* 跟随鼠标的聚光高亮 */
+		.circle-card::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+			opacity: 0;
+			background: radial-gradient(
+				300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+				color-mix(in srgb, var(--primary) 10%, transparent),
+				transparent 65%
+			);
+			pointer-events: none;
+			transition: opacity 0.22s;
+		}
+		.circle-card:hover::before {
+			opacity: 1;
+		}
+		@keyframes circle-card-in {
+			from {
+				opacity: 0;
+				transform: translateY(8px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		.circle-card-title {
+			position: relative;
+			z-index: 2;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			font-size: 0.95rem;
+			font-weight: 750;
+			line-height: 1.5;
+			color: var(--text-color);
+			transition: color 0.18s;
+		}
+		.circle-card-title:hover {
+			color: var(--primary);
+		}
+		.circle-author {
+			position: absolute;
+			z-index: 2;
+			bottom: 0.75rem;
+			left: 0.85rem;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+			max-width: calc(100% - 7rem);
+			padding: 0.25rem 0.65rem 0.25rem 0.3rem;
+			border-radius: 999px;
+			border: 1px solid color-mix(in srgb, var(--line-divider) 55%, transparent);
+			background: var(--card-bg-transparent);
+			color: color-mix(in srgb, var(--text-color) 68%, transparent);
+			font-size: 0.85rem;
+			cursor: pointer;
+			transition: border-color 0.18s, color 0.18s;
+		}
+		.circle-author:hover {
+			border-color: color-mix(in srgb, var(--primary) 32%, transparent);
+			color: var(--primary);
+		}
+		.circle-author img {
+			width: 1.25rem;
+			height: 1.25rem;
+			border-radius: 999px;
+			object-fit: cover;
+			flex-shrink: 0;
+		}
+		.circle-author span {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.circle-date {
+			position: absolute;
+			z-index: 2;
+			bottom: 0.92rem;
+			right: 0.85rem;
+			font-size: 0.8rem;
+			color: color-mix(in srgb, var(--text-color) 48%, transparent);
+			font-family: var(--font-cascadia-code), "Cascadia Code", monospace;
+		}
+		/* 右下角头像水印 */
+		.circle-card-bg {
+			position: absolute;
+			z-index: 0;
+			bottom: -1.5rem;
+			right: -1rem;
+			width: 6.5rem;
+			height: 6.5rem;
+			border-radius: 999px;
+			object-fit: cover;
+			opacity: 0.22;
+			filter: saturate(0.9);
+			transition: opacity 0.25s, transform 0.35s;
+			pointer-events: none;
+		}
+		.circle-card:hover .circle-card-bg {
+			opacity: 0.28;
+			transform: scale(1.08) translate(-0.25rem, -0.25rem);
+		}
+
+		/* 作者弹窗：点开看 TA 的更多文章 */
+		.circle-modal {
+			position: fixed;
+			inset: 0;
+			z-index: 999;
+			display: grid;
+			place-items: center;
+			padding: 1rem;
+			background: color-mix(in srgb, var(--card-bg) 52%, transparent);
+			backdrop-filter: blur(18px) saturate(130%);
+			opacity: 0;
+			transition: opacity 0.2s;
+		}
+		.circle-modal.circle-modal-open {
+			opacity: 1;
+		}
+		.circle-modal-card {
+			position: relative;
+			overflow: hidden;
+			width: min(90vw, 24rem);
+			padding: 1.1rem;
+			border-radius: 1.2rem;
+			border: 1px solid color-mix(in srgb, var(--line-divider) 60%, transparent);
+			background: color-mix(in srgb, var(--card-bg) 90%, transparent);
+			box-shadow: 0 20px 70px -36px color-mix(in srgb, var(--primary) 55%, transparent);
+			transform: translateY(0.75rem) scale(0.98);
+			transition: transform 0.2s;
+		}
+		.circle-modal.circle-modal-open .circle-modal-card {
+			transform: translateY(0) scale(1);
+		}
+		.circle-modal-bg {
+			position: absolute;
+			z-index: 0;
+			bottom: -2.2rem;
+			right: -2.6rem;
+			width: 12rem;
+			height: 12rem;
+			border-radius: 999px 999px 0;
+			object-fit: cover;
+			opacity: 0.16;
+			filter: blur(6px) saturate(1.05);
+			pointer-events: none;
+		}
+		.circle-modal-avatar,
+		.circle-modal-card > a,
+		.circle-modal-posts {
+			position: relative;
+			z-index: 1;
+		}
+		.circle-modal-avatar {
+			display: block;
+			width: 5.4rem;
+			height: 5.4rem;
+			margin: 0 auto;
+			border-radius: 999px;
+			object-fit: cover;
+			border: 2px solid color-mix(in srgb, var(--line-divider) 70%, transparent);
+			transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+		}
+		.circle-modal-card:hover .circle-modal-avatar {
+			border-color: color-mix(in srgb, var(--primary) 42%, transparent);
+			box-shadow: 0 10px 28px -20px color-mix(in srgb, var(--primary) 80%, transparent);
+			transform: translateY(-1px);
+		}
+		.circle-modal-card > a {
+			display: block;
+			margin-top: 0.65rem;
+			text-align: center;
+			font-weight: 800;
+			color: var(--text-color);
+		}
+		.circle-modal-posts {
+			display: grid;
+			gap: 0.55rem;
+			margin-top: 1rem;
+		}
+		.circle-modal-post {
+			position: relative;
+			overflow: hidden;
+			display: block;
+			padding: 0.75rem 0.75rem 1.85rem;
+			border-radius: 0.85rem;
+			border: 1px solid color-mix(in srgb, var(--line-divider) 50%, transparent);
+			background: color-mix(in srgb, var(--card-bg) 80%, transparent);
+			text-decoration: none;
+			transition: border-color 0.18s, background-color 0.18s, transform 0.18s;
+		}
+		.circle-modal-post:hover {
+			border-color: color-mix(in srgb, var(--primary) 34%, transparent);
+			background: color-mix(in srgb, var(--primary) 5%, transparent);
+			transform: translateY(-2px);
+		}
+		.circle-modal-post span {
+			position: relative;
+			z-index: 1;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			min-height: 2.7rem;
+			font-size: 0.9rem;
+			font-weight: 650;
+			line-height: 1.5;
+			color: var(--text-color);
+		}
+		.circle-modal-post time {
+			position: absolute;
+			z-index: 1;
+			bottom: 0.55rem;
+			right: 0.75rem;
+			font-size: 0.8rem;
+			color: color-mix(in srgb, var(--text-color) 48%, transparent);
+		}
+
+		.circle-meta {
+			max-width: 100%;
+			margin: 1.2rem 0 0 auto;
+			text-align: right;
+			font-size: 0.8rem;
+			line-height: 1.7;
+			color: color-mix(in srgb, var(--text-color) 38%, transparent);
+			font-family: var(--font-cascadia-code), "Cascadia Code", monospace;
+		}
+		.circle-meta a {
+			color: inherit;
+			text-decoration: underline;
+			text-decoration-color: color-mix(in srgb, var(--text-color) 22%, transparent);
+			text-underline-offset: 0.18em;
+			transition: color 0.18s, text-decoration-color 0.18s;
+		}
+		.circle-meta a:hover {
+			color: var(--primary);
+			text-decoration-color: var(--primary);
+		}
+	</style>
+
+	<script
+		is:inline
+		define:vars={{
+			ALL_JSON_URL,
+			PROJECT_URL,
+			IMG_PROXY: {
+				enabled: IMG_PROXY_ENABLED,
+				fromHost: IMG_PROXY_FROM,
+				toHost: IMG_PROXY_TO,
+			},
+		}}
+	>
+		// 客户端实时拉取 Friend-Circle-Lite 的 all.json，渲染朋友圈动态。
+		// 设计参考 blog.liushen.fun/fcircle：统计栏 + Random Walk + 卡片网格 + 作者弹窗 + 分批加载。
+		// 数据源与图片反代域名由 src/config/friendsConfig.ts 提供（经 define:vars 注入）。
+		(function () {
+			var PAGE_SIZE = 12;
+			var allArticles = [];
+			var rendered = 0;
+
+			function esc(s) {
+				return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+					return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+				});
+			}
+			// 图片同域反代（与友链页一致）：fromHost → toHost
+			function proxyImg(raw) {
+				if (!raw || !IMG_PROXY.enabled || !IMG_PROXY.fromHost || !IMG_PROXY.toHost) return raw;
+				try {
+					var p = new URL(raw);
+					if (p.hostname === IMG_PROXY.fromHost) {
+						p.hostname = IMG_PROXY.toHost;
+						return p.toString();
+					}
+				} catch (e) {}
+				return raw;
+			}
+			function dateOnly(s) {
+				return String(s || "").slice(0, 10);
+			}
+			function openLink(url) {
+				window.open(url, "_blank", "noopener,noreferrer");
+			}
+			function pickRandom() {
+				if (!allArticles.length) return null;
+				return allArticles[Math.floor(Math.random() * allArticles.length)];
+			}
+
+			// ---- 统计栏 ----
+			function renderStats(sd) {
+				if (!sd) return;
+				var wrap = document.getElementById("circle-stats");
+				if (!wrap) return;
+				var items = [
+					[sd.friends_num, "订阅"],
+					[sd.active_num, "活跃"],
+					[sd.article_num, "文章"],
+					[sd.error_num, "异常"],
+				];
+				wrap.innerHTML = items
+					.map(function (it) {
+						return (
+							'<div class="circle-stat"><strong>' +
+							esc(it[0]) +
+							"</strong><span>" +
+							esc(it[1]) +
+							"</span></div>"
+						);
+					})
+					.join("");
+			}
+
+			// ---- Random Walk ----
+			function renderRandom(root, data) {
+				if (!root) return;
+				var a = pickRandom();
+				if (!a) return;
+				var avatar = proxyImg(a.avatar || "");
+				root.innerHTML =
+					'<div class="circle-random-head">' +
+						'<div style="min-width:0">' +
+							'<div class="circle-kicker">Random Walk</div>' +
+							'<a class="circle-random-title" href="' +
+							esc(a.link || "#") +
+							'" target="_blank" rel="noopener noreferrer nofollow" title="' +
+							esc(a.title) +
+							'">' +
+							esc(a.title) +
+							"</a>" +
+							'<div class="circle-random-info">' +
+							esc(a.author) +
+							" · " +
+							esc(dateOnly(a.created)) +
+							"</div>" +
+						"</div>" +
+						'<div class="circle-random-actions">' +
+							'<button type="button" id="circle-rand-refresh">换一篇</button>' +
+							'<button type="button" id="circle-rand-read">阅读文章</button>' +
+						"</div>" +
+					"</div>";
+				var refresh = document.getElementById("circle-rand-refresh");
+				var read = document.getElementById("circle-rand-read");
+				if (refresh)
+					refresh.addEventListener("click", function () {
+						renderRandom(root, data);
+					});
+				if (read)
+					read.addEventListener("click", function () {
+						openLink(a.link);
+					});
+			}
+
+			// ---- 单张卡片 ----
+			function cardHtml(a, idx) {
+				var avatar = proxyImg(a.avatar || "");
+				var link = a.link || "#";
+				return (
+					'<article class="circle-card" data-index="' + idx + '" style="animation-delay:' + Math.min(idx, 8) * 0.03 + 's">' +
+						'<a class="circle-card-title" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer nofollow" title="' + esc(a.title) + '">' + esc(a.title) + "</a>" +
+						'<button type="button" class="circle-author" data-author="' + esc(a.author) + '">' +
+							'<img src="' + esc(avatar) + '" alt="' + esc(a.author) + '" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'\'" />' +
+							"<span>" + esc(a.author) + "</span>" +
+						"</button>" +
+						'<time class="circle-date">' + esc(dateOnly(a.created)) + "</time>" +
+						'<img class="circle-card-bg" src="' + esc(avatar) + '" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.remove()" />' +
+					"</article>"
+				);
+			}
+
+			// ---- 作者弹窗 ----
+			function openAuthorModal(author) {
+				var old = document.getElementById("circle-modal");
+				if (old) old.remove();
+				var posts = allArticles
+					.filter(function (p) {
+						return p.author === author;
+					})
+					.slice(0, 4);
+				if (!posts.length) return;
+				var avatar = proxyImg(posts[0].avatar || "");
+				var siteOrigin = "";
+				try {
+					siteOrigin = new URL(posts[0].link).origin;
+				} catch (e) {}
+
+				var modal = document.createElement("div");
+				modal.id = "circle-modal";
+				modal.className = "circle-modal";
+				var card = document.createElement("div");
+				card.className = "circle-modal-card";
+				card.innerHTML =
+					'<img class="circle-modal-bg" src="' + esc(avatar) + '" alt="" onerror="this.onerror=null;this.remove()" />' +
+					'<img class="circle-modal-avatar" src="' + esc(avatar) + '" alt="" onerror="this.onerror=null;this.remove()" />' +
+					(siteOrigin
+						? '<a href="' + esc(siteOrigin) + '" target="_blank" rel="noopener noreferrer nofollow">' + esc(author) + "</a>"
+						: "<a>" + esc(author) + "</a>") +
+					'<div class="circle-modal-posts">' +
+					posts
+						.map(function (p) {
+							return (
+								'<a class="circle-modal-post" href="' + esc(p.link) + '" target="_blank" rel="noopener noreferrer nofollow">' +
+								"<span>" + esc(p.title) + "</span>" +
+								"<time>" + esc(dateOnly(p.created)) + "</time>" +
+								"</a>"
+							);
+						})
+						.join("") +
+					"</div>";
+				modal.appendChild(card);
+				modal.addEventListener("click", function (e) {
+					if (e.target === modal) modal.classList.remove("circle-modal-open");
+				});
+				modal.addEventListener("transitionend", function (e) {
+					if (e.target === modal && !modal.classList.contains("circle-modal-open")) modal.remove();
+				});
+				document.body.appendChild(modal);
+				requestAnimationFrame(function () {
+					modal.classList.add("circle-modal-open");
+				});
+			}
+
+			// ---- 分批渲染 ----
+			var list = document.getElementById("circle-list");
+			var loading = document.getElementById("circle-loading");
+			var errorEl = document.getElementById("circle-error");
+			var moreWrap = document.getElementById("circle-more");
+			var moreBtn = document.getElementById("circle-more-btn");
+			var moreText = document.getElementById("circle-more-text");
+			var meta = document.getElementById("circle-meta");
+
+			function renderBatch() {
+				if (!list) return;
+				var next = allArticles.slice(rendered, rendered + PAGE_SIZE);
+				var frag = document.createDocumentFragment();
+				var tmp = document.createElement("div");
+				tmp.innerHTML = next.map(cardHtml).join("");
+				while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+				list.appendChild(frag);
+				rendered += next.length;
+				if (rendered >= allArticles.length) {
+					moreWrap.classList.add("hidden");
+				} else {
+					moreWrap.classList.remove("hidden");
+					if (moreText) moreText.textContent = "加载更多";
+				}
+			}
+
+			function loadCircle() {
+				if (loading) loading.classList.remove("hidden");
+				errorEl.classList.add("hidden");
+				moreWrap.classList.add("hidden");
+				fetch(ALL_JSON_URL, { cache: "no-store" })
+					.then(function (res) {
+						if (!res.ok) throw new Error("HTTP " + res.status);
+						return res.json();
+					})
+					.then(function (data) {
+						allArticles = data.article_data || [];
+						rendered = 0;
+						renderStats(data.statistical_data);
+						renderRandom(document.getElementById("circle-random"), data);
+						if (list) list.innerHTML = "";
+						if (loading) loading.classList.add("hidden");
+						if (allArticles.length === 0) {
+							if (list) list.innerHTML = '<div class="text-center text-neutral-400 text-sm py-8">暂无动态</div>';
+							moreWrap.classList.add("hidden");
+						} else {
+							renderBatch();
+						}
+						var sd = data.statistical_data || {};
+						if (meta) {
+							meta.innerHTML =
+								"Powered by " +
+								'<a href="' + esc(PROJECT_URL) + '" target="_blank" rel="noopener noreferrer">FriendCircleLite</a><br/>' +
+								"共 " + (sd.article_num != null ? sd.article_num : allArticles.length) + " 篇文章 · " + esc(sd.last_updated_time || "");
+						}
+					})
+					.catch(function (e) {
+						console.warn("[circle] 加载 all.json 失败:", e);
+						if (loading) loading.classList.add("hidden");
+						errorEl.classList.remove("hidden");
+						errorEl.classList.add("flex");
+						moreWrap.classList.add("hidden");
+					});
+			}
+
+			// 事件委托：作者弹窗 + 聚光高亮
+			if (list) {
+				list.addEventListener("click", function (e) {
+					var btn = e.target.closest(".circle-author");
+					if (btn) {
+						e.preventDefault();
+						openAuthorModal(btn.getAttribute("data-author"));
+					}
+				});
+				list.addEventListener("mousemove", function (e) {
+					var card = e.target.closest(".circle-card");
+					if (!card) return;
+					var r = card.getBoundingClientRect();
+					card.style.setProperty("--mouse-x", e.clientX - r.left + "px");
+					card.style.setProperty("--mouse-y", e.clientY - r.top + "px");
+				});
+			}
+			if (moreBtn) {
+				moreBtn.addEventListener("click", function () {
+					moreBtn.disabled = true;
+					if (moreText) moreText.textContent = "加载中…";
+					setTimeout(function () {
+						renderBatch();
+						moreBtn.disabled = false;
+					}, 30);
+				});
+			}
+
+			loadCircle();
+		})();
+	</script>
+</MainGridLayout>

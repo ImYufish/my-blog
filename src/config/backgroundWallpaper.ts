@@ -4,7 +4,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 全屏透明，"none" 纯色背景无壁纸
 	mode: "fullscreen",
 	// 是否启用背景视频播放，配置后将在导航栏显示视频播放按钮
-	playerEnable: true,
+	playerEnable: false,
 	/**
 	 * 背景图片配置
 	 * 图片路径支持三种格式：
@@ -197,7 +197,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 全屏壁纸模式的导航栏配置
 		navbar: {
 			// 是否开启动态透明：开启后首页顶部导航栏透明，下滑后变不透明（仅首页生效）
-			dynamicTransparent: false,
+			dynamicTransparent: true,
 		},
 		// 首页下滑时壁纸模糊渐变开关（从 0 渐变为 overlay.blur 的最大模糊）
 		// 关闭后该设备上全屏壁纸保持清晰（首页与非首页都不模糊），设置面板的模糊度滑块也会隐藏
