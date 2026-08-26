@@ -22,6 +22,7 @@ enum I18nKey {
 	categories = "categories",
 	allCategories = "allCategories",
 	allTags = "allTags",
+	allSeries = "allSeries",
 	recentPosts = "recentPosts",
 	postList = "postList",
 	tableOfContents = "tableOfContents",
@@ -336,6 +337,13 @@ enum I18nKey {
 	randomRecommend = "randomRecommend",
 	noRelatedPosts = "noRelatedPosts",
 	noRandomPosts = "noRandomPosts",
+
+	// 文章系列
+	series = "series",
+	seriesPartOf = "seriesPartOf",
+	seriesPart = "seriesPart",
+	seriesThisArticle = "seriesThisArticle",
+	noSeries = "noSeries",
 
 	// 加密
 	postEncrypted = "postEncrypted",

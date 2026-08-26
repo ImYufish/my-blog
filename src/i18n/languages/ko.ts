@@ -26,6 +26,7 @@ export const ko: Translation = {
 	[Key.categories]: "카테고리",
 	[Key.allCategories]: "모든 카테고리",
 	[Key.allTags]: "모든 태그",
+	[Key.allSeries]: "모든 시리즈",
 	[Key.recentPosts]: "최근 게시글",
 	[Key.postList]: "게시글 목록",
 	[Key.tableOfContents]: "목차",
@@ -347,6 +348,13 @@ export const ko: Translation = {
 	[Key.randomRecommend]: "무작위",
 	[Key.noRelatedPosts]: "관련 게시글이 없습니다",
 	[Key.noRandomPosts]: "무작위 게시글이 없습니다",
+
+	// 글 시리즈
+	[Key.series]: "시리즈",
+	[Key.seriesPartOf]: "시리즈의 일부",
+	[Key.seriesPart]: "파트 {n}",
+	[Key.seriesThisArticle]: "이 글",
+	[Key.noSeries]: "시리즈가 없습니다",
 
 	// Encrypted
 	[Key.postEncrypted]: "이 게시글은 암호화되어 있습니다",

@@ -26,6 +26,7 @@ export const en: Translation = {
 	[Key.categories]: "Categories",
 	[Key.allCategories]: "All Categories",
 	[Key.allTags]: "All Tags",
+	[Key.allSeries]: "All Series",
 	[Key.recentPosts]: "Recent Posts",
 	[Key.postList]: "Post List",
 	[Key.tableOfContents]: "Table of Contents",
@@ -349,6 +350,13 @@ export const en: Translation = {
 	[Key.randomRecommend]: "Random",
 	[Key.noRelatedPosts]: "No related posts",
 	[Key.noRandomPosts]: "No random posts",
+
+	// Article Series
+	[Key.series]: "Series",
+	[Key.seriesPartOf]: "Part of series",
+	[Key.seriesPart]: "Part {n}",
+	[Key.seriesThisArticle]: "This article",
+	[Key.noSeries]: "No series yet",
 
 	// Encrypted
 	[Key.postEncrypted]: "This post is encrypted",

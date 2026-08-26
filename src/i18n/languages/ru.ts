@@ -26,6 +26,7 @@ export const ru: Translation = {
 	[Key.categories]: "Категории",
 	[Key.allCategories]: "Все категории",
 	[Key.allTags]: "Все теги",
+	[Key.allSeries]: "Все серии",
 	[Key.recentPosts]: "Последние посты",
 	[Key.postList]: "Список постов",
 	[Key.tableOfContents]: "Содержание",
@@ -350,6 +351,13 @@ export const ru: Translation = {
 	[Key.randomRecommend]: "Случайный",
 	[Key.noRelatedPosts]: "Нет похожих статей",
 	[Key.noRandomPosts]: "Нет случайных статей",
+
+	// Серия статей
+	[Key.series]: "Серии",
+	[Key.seriesPartOf]: "Часть серии",
+	[Key.seriesPart]: "Часть {n}",
+	[Key.seriesThisArticle]: "Эта статья",
+	[Key.noSeries]: "Пока нет серий",
 
 	// Зашифровано
 	[Key.postEncrypted]: "Эта статья зашифрована",

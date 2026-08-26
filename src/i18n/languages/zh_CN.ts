@@ -26,6 +26,7 @@ export const zh_CN: Translation = {
 	[Key.categories]: "分类",
 	[Key.allCategories]: "全部分类",
 	[Key.allTags]: "全部标签",
+	[Key.allSeries]: "全部系列",
 	[Key.recentPosts]: "最新文章",
 	[Key.postList]: "文章列表",
 	[Key.tableOfContents]: "文章目录",
@@ -340,6 +341,13 @@ export const zh_CN: Translation = {
 	[Key.randomRecommend]: "随机推荐",
 	[Key.noRelatedPosts]: "暂无相关文章",
 	[Key.noRandomPosts]: "暂无随机文章",
+
+	// 文章系列
+	[Key.series]: "系列",
+	[Key.seriesPartOf]: "所属系列",
+	[Key.seriesPart]: "第 {n} 篇",
+	[Key.seriesThisArticle]: "本文",
+	[Key.noSeries]: "暂无系列",
 
 	// 加密
 	[Key.postEncrypted]: "本文已加密",
