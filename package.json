@@ -1,7 +1,7 @@
 {
   "name": "firefly",
   "type": "module",
-  "version": "6.16.4",
+  "version": "6.16.5",
   "engines": {
     "node": ">=22.23.0"
   },
