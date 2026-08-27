@@ -320,7 +320,7 @@ html {
     }
 
     /* 透明模式：文章页系列导航盒底色由实色换为半透明 */
-    .wallpaper-transparent .series-nav {
+    .wallpaper-transparent .series-nav-toggle {
         background-color: var(--card-bg-transparent) !important;
     }
 

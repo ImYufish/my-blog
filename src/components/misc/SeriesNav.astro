@@ -16,11 +16,11 @@ const { seriesName, posts, currentPostId } = Astro.props;
 
 {
   posts.length > 0 && (
-    <div class="series-nav my-3 rounded-xl bg-(--btn-plain-bg-hover) px-3 py-1.5" data-pagefind-ignore>
+    <div class="series-nav my-3 rounded-xl border border-(--primary)/25 overflow-hidden" data-pagefind-ignore>
       <button
         type="button"
         aria-expanded="false"
-        class="series-nav-toggle group flex w-full items-center gap-2 py-1.5 cursor-pointer select-none text-left"
+        class="series-nav-toggle flex w-full items-center gap-2 px-3 py-1.5 rounded-lg bg-(--btn-plain-bg-hover) group cursor-pointer select-none text-left"
       >
         <Icon name="material-symbols:format-list-bulleted" aria-hidden="true" class="shrink-0 text-lg text-(--primary)" />
         <span class="font-bold text-base text-black/80 dark:text-white/80 transition group-hover:text-(--primary)">
@@ -42,7 +42,7 @@ const { seriesName, posts, currentPostId } = Astro.props;
             const part = i18n(I18nKey.seriesPart).replace("{n}", String(idx + 1));
             const isCurrent = !!currentPostId && post.id === currentPostId;
             const rowClass = [
-              "group flex items-center gap-3 px-2.5 py-1.5 rounded-lg transition-all",
+              "group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all",
               !isCurrent && "hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.98]",
               idx < posts.length - 1 && "border-b border-dashed border-(--line-divider)",
             ];
@@ -90,6 +90,11 @@ const { seriesName, posts, currentPostId } = Astro.props;
   .series-nav-toggle[aria-expanded="true"] .details-arrow {
     transform: rotate(180deg);
   }
+  /* 展开后头部与列表相连，底部两角设为直角；收起动画走完才恢复圆角 */
+  .series-nav.is-expanded .series-nav-toggle {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
   .series-nav-content {
     opacity: 0;
   }
@@ -102,7 +107,8 @@ const { seriesName, posts, currentPostId } = Astro.props;
   function onSeriesNavToggle(e) {
     var btn = e.target && e.target.closest ? e.target.closest('.series-nav-toggle') : null;
     if (!btn) return;
-    var content = btn.closest('.series-nav') ? btn.closest('.series-nav').querySelector('.series-nav-content') : null;
+    var box = btn.closest('.series-nav');
+    var content = box ? box.querySelector('.series-nav-content') : null;
     if (!content) return;
 
     var isOpen = btn.getAttribute('aria-expanded') === 'true';
@@ -110,6 +116,17 @@ const { seriesName, posts, currentPostId } = Astro.props;
     btn.setAttribute('aria-expanded', String(next));
     content.setAttribute('data-open', String(next));
     content.style.maxHeight = next ? content.scrollHeight + 'px' : '0px';
+
+    if (next) {
+      box.classList.add('is-expanded');
+    } else {
+      // 收起动画走完后再恢复圆角（与 max-height 过渡时长一致）
+      setTimeout(function () {
+        if (box && btn.getAttribute('aria-expanded') !== 'true') {
+          box.classList.remove('is-expanded');
+        }
+      }, 300);
+    }
   }
 
   // 事件委托，Swup 切页后新内容也能直接工作；避免重复注册（@swup/scripts-plugin 会重跑内联脚本）

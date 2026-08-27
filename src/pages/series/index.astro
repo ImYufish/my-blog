@@ -24,7 +24,7 @@ const totalPosts = seriesList.reduce((sum, series) => sum + series.count, 0);
     <!-- 系列列表：手风琴卡片（默认收起） -->
     {
         seriesList.length > 0 ? (
-            <div class="space-y-4 mb-4">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] items-start gap-4 mb-4">
                 {
                     seriesList.map((series) => (
                         <div class="series-acc card-base overflow-hidden">
