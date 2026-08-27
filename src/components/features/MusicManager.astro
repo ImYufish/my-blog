@@ -187,10 +187,19 @@ const managerConfigStr = JSON.stringify({
         if (isLrcUrl) {
             emit('fm:lyrics', { lyrics: [], status: 'loading' });
             fetch(track.lrc)
-                .then(function (r) { return r.text(); })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
                 .then(function (text) {
-                    state.lyrics = parseLRC(text);
-                    emit('fm:lyrics', { lyrics: state.lyrics, status: 'loaded' });
+                    var parsed = parseLRC(text);
+                    state.lyrics = parsed;
+                    // 服务端可能返回 {"error":...} 或非 LRC 文本，视为无歌词
+                    if (parsed.length === 0) {
+                        emit('fm:lyrics', { lyrics: [], status: 'none' });
+                    } else {
+                        emit('fm:lyrics', { lyrics: parsed, status: 'loaded' });
+                    }
                 })
                 .catch(function () {
                     state.lyrics = [];
@@ -460,6 +469,7 @@ const managerConfigStr = JSON.stringify({
     // ── Public API ───────────────────────────────────────────
     window.__fireflyMusic = {
         init: init,
+        getAudio: function () { return audio; },
         getState: function () {
             var track = state.playlist[state.currentIndex] || null;
             return {
