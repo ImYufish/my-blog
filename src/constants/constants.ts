@@ -20,8 +20,12 @@ export const BANNER_HEIGHT_HOME: number = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
 export const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = 3.5;
 
 // Non-home banner height (unit: vh) — banner mode, desktop only.
-// = BANNER_HEIGHT_HOME(65) - 15vh lift = 50. Set to 45 for a 20vh lift, or 35 to reproduce the original fuwari 30vh lift.
-export const BANNER_HEIGHT_NON_HOME = 50;
+// Lift = BANNER_HEIGHT_HOME(65) - BANNER_HEIGHT_NON_HOME: 45=20vh, 50=15vh, 35=fuwari 30vh.
+export const BANNER_HEIGHT_NON_HOME = 45;
+// Pixel floor for the non-home banner (unit: px) — cushions short (laptop) screens,
+// so the vh value resolving to too few absolute pixels doesn't cramp the title/description.
+// Combined as `max(...vh, ...px)` in Layout.astro.
+export const BANNER_HEIGHT_NON_HOME_MIN = 380;
 
 // Page width: rem
 export const PAGE_WIDTH = 100;
