@@ -61,6 +61,7 @@
     "github-slugger": "^2.0.0",
     "glob": "^13.0.6",
     "gray-matter": "^4.0.3",
+    "hast-util-from-html": "^2.0.3",
     "hastscript": "^9.0.1",
     "katex": "^0.18.3",
     "l2d-widget": "^0.1.1",
