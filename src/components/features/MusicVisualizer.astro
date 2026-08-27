@@ -1,0 +1,1513 @@
+---
+import "@/styles/pages/music-visualizer.css";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+interface Props {
+	class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={["music-visualizer", className]} id="music-visualizer">
+	<div class="mv-three-container" id="mv-three-container"></div>
+
+	<!-- 歌词 -->
+	<div class="music-visualizer__lyrics" id="mv-lyrics">
+		<div class="music-visualizer__lyrics-stage">
+			<div class="music-visualizer__lyrics-timeline"></div>
+			<div
+				class="music-visualizer__lyrics-inner"
+				id="mv-lyrics-inner"
+				style="transform: translateY(0px)"
+			>
+			</div>
+			<div
+				class="music-visualizer__lyrics-empty"
+				id="mv-lyrics-empty"
+				aria-live="polite"
+				style="display:none;"
+			>
+				<span
+					class="music-visualizer__lyric-marker music-visualizer__lyric-marker--empty"
+				></span>
+				<span id="mv-lyrics-empty-text">{i18n(I18nKey.musicLoadingLyrics)}</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 控制条 -->
+	<div class="music-visualizer__controls" id="mv-controls">
+		<div class="music-visualizer__track-summary">
+			<div class="music-visualizer__current-cover" id="mv-cover">
+				<img id="mv-cover-img" src="" alt="" style="display:none;" />
+				<span class="music-visualizer__icon" id="mv-cover-ph">
+					<svg viewBox="0 0 24 24" width="22" height="22"
+						><path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"></path></svg
+				></span>
+			</div>
+			<div class="music-visualizer__track-info">
+				<div class="music-visualizer__track-name" id="mv-track-name">{i18n(I18nKey.musicNoPlaying)}</div>
+				<div class="music-visualizer__track-artist" id="mv-track-artist"></div>
+			</div>
+		</div>
+
+		<div class="music-visualizer__progress-wrapper">
+			<span class="music-visualizer__time" id="mv-time-cur">0:00</span>
+			<div
+				class="music-visualizer__progress-bar"
+				id="mv-progress"
+				role="slider"
+				aria-label={i18n(I18nKey.musicProgress)}
+				aria-valuenow="0"
+				aria-valuemin="0"
+				aria-valuemax="100"
+				tabindex="0"
+			>
+				<div
+					class="music-visualizer__progress-fill"
+					id="mv-progress-fill"
+					style="width:0%"
+				>
+				</div>
+			</div>
+			<span class="music-visualizer__time" id="mv-time-dur">0:00</span>
+		</div>
+
+		<div class="music-visualizer__controls-buttons">
+		<button
+			class="music-visualizer__btn music-visualizer__btn--playlist music-visualizer__btn--active"
+			id="mv-btn-playlist"
+			title={i18n(I18nKey.musicPlaylist)}
+			aria-label={i18n(I18nKey.musicPlaylist)}
+			aria-expanded="true"
+		>
+				<svg viewBox="0 0 24 24"
+					><path
+						d="M3 10h12V8H3v2zm0 4h12v-2H3v2zm0 4h8v-2H3v2zm13-1.5l4 2.5-4 2.5v-5z"
+					></path></svg
+				>
+			</button>
+			<button
+				class="music-visualizer__btn music-visualizer__btn--mode mode-0"
+			id="mv-btn-mode"
+			title={i18n(I18nKey.musicPlayMode)}
+			>
+				<span class="music-visualizer__icon mv-icon-mode-0"
+					><svg viewBox="0 0 24 24"
+						><path d="M7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"></path></svg
+					></span
+				>
+				<span class="music-visualizer__icon mv-icon-mode-1"
+					><svg viewBox="0 0 24 24"
+						><path d="M7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2zM17 4l4 4-4 4V4z"
+						></path></svg
+					></span
+				>
+				<span class="music-visualizer__icon mv-icon-mode-2"
+					><svg viewBox="0 0 24 24"
+						><path d="M4 6h2v12H4zM10 9l8 3-8 3V9z"></path></svg
+					></span
+				>
+			</button>
+			<button
+				class="music-visualizer__btn music-visualizer__btn--prev"
+			id="mv-btn-prev"
+			title={i18n(I18nKey.musicPrev)}
+			>
+				<svg viewBox="0 0 24 24"
+					><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"></path></svg
+				>
+			</button>
+			<button
+				class="music-visualizer__btn music-visualizer__btn--play"
+			id="mv-btn-play"
+			title={i18n(I18nKey.musicPlay)}
+			>
+				<span class="music-visualizer__icon mv-icon-play"
+					><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></span
+				>
+				<span class="music-visualizer__icon mv-icon-pause"
+					><svg viewBox="0 0 24 24"
+						><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg
+					></span
+				>
+			</button>
+			<button
+				class="music-visualizer__btn music-visualizer__btn--next"
+			id="mv-btn-next"
+			title={i18n(I18nKey.musicNext)}
+			>
+				<svg viewBox="0 0 24 24"
+					><path d="M16 6h2v12h-2V6zm-2.5 6L5 6v12l8.5-6z"></path></svg
+				>
+			</button>
+			<button
+				class="music-visualizer__btn music-visualizer__btn--back"
+			id="mv-btn-back"
+			title={i18n(I18nKey.backToHome)}
+			aria-label={i18n(I18nKey.backToHome)}
+			>
+				<svg viewBox="0 0 24 24"
+					><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg
+				>
+			</button>
+			<div class="music-visualizer__volume-group">
+				<button
+					class="music-visualizer__btn music-visualizer__btn--mute"
+				id="mv-btn-mute"
+				title={i18n(I18nKey.musicVolume)}
+				>
+					<span class="music-visualizer__icon mv-icon-vol"
+						><svg viewBox="0 0 24 24"
+							><path
+								d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0014 8.5v7a4.5 4.5 0 002.5-3.5zM14 3.2v2.1a7 7 0 010 13.4v2.1A9 9 0 0014 3.2z"
+							></path></svg
+						></span
+					>
+					<span class="music-visualizer__icon mv-icon-mute"
+						><svg viewBox="0 0 24 24"
+							><path
+								d="M3 10v4h4l5 5V5L7 10H3zm13.6 2l2.7-2.7-1.4-1.4L15.2 10.6 12.5 7.9 11 9.3 13.7 12 11 14.7l1.4 1.4 2.7-2.7 2.8 2.8 1.4-1.4z"
+							></path></svg
+						></span
+					>
+				</button>
+				<div
+					class="music-visualizer__volume-bar"
+				id="mv-volume"
+				role="slider"
+				aria-label={i18n(I18nKey.musicVolume)}
+					aria-valuenow="70"
+					aria-valuemin="0"
+					aria-valuemax="100"
+					tabindex="0"
+				>
+					<div
+						class="music-visualizer__volume-fill"
+						id="mv-volume-fill"
+						style="width:70%"
+					>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 歌单面板 -->
+	<aside
+		class="music-visualizer__playlist-panel music-visualizer__playlist-panel--open"
+		id="mv-playlist"
+		aria-label={i18n(I18nKey.musicPlaylistSwitch)}
+		aria-hidden="false"
+	>
+		<div class="music-visualizer__playlist-stage">
+			<div class="music-visualizer__playlist-timeline"></div>
+			<div class="music-visualizer__playlist-header">
+				<div>
+					<div class="music-visualizer__playlist-kicker">PLAYLIST</div>
+					<div class="music-visualizer__playlist-title">{i18n(I18nKey.musicPlaylistSwitch)}</div>
+				</div>
+				<div class="music-visualizer__playlist-count" id="mv-playlist-count">0</div>
+			</div>
+			<div
+				class="music-visualizer__playlist-list"
+				id="mv-playlist-list"
+			role="listbox"
+			aria-label={i18n(I18nKey.musicPlaylist)}
+			>
+			</div>
+		</div>
+	</aside>
+</div>
+
+<script>
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { i18n } from "@/i18n/translation";
+import I18nKey from "@/i18n/i18nKey";
+
+/* ───────────────────────── 可视化器配置（与 musicConfig.visualizer 对齐） ───────────────────────── */
+const VIS = {
+	background: { dark: "#0a0a15", light: "#2D2D2D" },
+	camera: { position: { x: 0, y: 32, z: 52 } },
+	autoRotate: true,
+	autoRotateSpeed: 0.3,
+	height: {
+		idle: 0.6,
+		subBass: 4.0,
+		bass: 3.0,
+		lowMid: 2.0,
+		mid: 2.5,
+		highMid: 2.0,
+		energy: 4.0,
+		ripple: 3.0,
+		rippleAccent: 1.0,
+	},
+	theme: {
+		base1: "#050810",
+		base2: "#0a0f1a",
+		coolCore: "#2255ff",
+		coolEdge: "#8844ff",
+		warmCore: "#ff4422",
+		warmEdge: "#ffaa00",
+		rippleColor: "#44ddff",
+		fogColor: "#050810",
+		glowIntensity: 1.2,
+	},
+};
+
+/* ───────────────────────── AudioAnalyzer（移植自参考仓库，去除 TS 类型） ───────────────────────── */
+class AudioAnalyzer {
+	constructor() {
+		this.audioCtx = null;
+		this.analyser = null;
+		this.source = null;
+		this.gainNode = null;
+		this.audioElement = null;
+		this.dataArray = new Uint8Array(512);
+		this.prevData = new Array(512).fill(0);
+		this.prevBrightness = 0;
+		this.connected = false;
+		this.events = {};
+		this.smoothedData = {
+			bass: 0,
+			mid: 0,
+			treble: 0,
+			energy: 0,
+			subBass: 0,
+			lowMid: 0,
+			highMid: 0,
+			presence: 0,
+			brilliance: 0,
+			air: 0,
+			warmth: 0,
+			brightness: 0,
+			sharpness: 0,
+			smoothness: 0,
+			density: 0,
+			spectralCentroid: 0,
+		};
+		this.beatCooldown = 0;
+		this.beatHistory = new Array(40).fill(0);
+		this.beatHistoryIndex = 0;
+		this.meteorCooldown = 0;
+	}
+	setEvents(events) {
+		this.events = events;
+	}
+	connect(audioEl) {
+		if (this.connected && this.audioElement === audioEl) return;
+		this.audioElement = audioEl;
+		if (this.audioCtx) {
+			if (this.audioCtx.state === "suspended") this.audioCtx.resume();
+			return;
+		}
+		const AC = window.AudioContext || window.webkitAudioContext;
+		if (!AC) return;
+		this.audioCtx = new AC();
+		this.analyser = this.audioCtx.createAnalyser();
+		this.analyser.fftSize = 1024;
+		this.analyser.smoothingTimeConstant = 0.8;
+		this.gainNode = this.audioCtx.createGain();
+		this.gainNode.gain.value = 1;
+		try {
+			this.source = this.audioCtx.createMediaElementSource(audioEl);
+			this.source.connect(this.gainNode);
+			this.gainNode.connect(this.audioCtx.destination);
+			this.gainNode.connect(this.analyser);
+			this.connected = true;
+		} catch (e) {
+			console.warn("[MusicVisualizer] AudioAnalyzer connect failed:", e);
+		}
+		if (this.analyser) {
+			this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+		}
+	}
+	disconnect() {
+		if (this.source) {
+			try {
+				this.source.disconnect();
+			} catch (e) {}
+			this.source = null;
+		}
+		if (this.gainNode) {
+			try {
+				this.gainNode.disconnect();
+			} catch (e) {}
+			this.gainNode = null;
+		}
+		if (this.analyser) {
+			try {
+				this.analyser.disconnect();
+			} catch (e) {}
+			this.analyser = null;
+		}
+		if (this.audioCtx) {
+			this.audioCtx.close();
+			this.audioCtx = null;
+		}
+		this.connected = false;
+	}
+	isConnected() {
+		return this.connected;
+	}
+	resume() {
+		if (this.audioCtx && this.audioCtx.state === "suspended") this.audioCtx.resume();
+	}
+	update(_delta) {
+		if (!this.analyser) return Object.assign({}, this.smoothedData);
+		const isPlaying = this.audioElement
+			? !this.audioElement.paused && !this.audioElement.ended
+			: false;
+		let energySum = 0;
+		let centroidNum = 0;
+		let centroidDen = 0;
+		let subBassSum = 0;
+		let bassSum = 0;
+		let lowMidSum = 0;
+		let midSum = 0;
+		let highMidSum = 0;
+		let presenceSum = 0;
+		let brillianceSum = 0;
+		let airSum = 0;
+		let jumpVolatilitySum = 0;
+		let fluxPulse = 0;
+		let fluxMeteor = 0;
+		const binCount = this.dataArray.length;
+		if (isPlaying) {
+			this.analyser.getByteFrequencyData(this.dataArray);
+			for (let i = 0; i < binCount; i++) {
+				const val = this.dataArray[i] / 255;
+				energySum += val;
+				centroidNum += i * val;
+				centroidDen += val;
+				const prevVal = this.prevData[i] || 0;
+				jumpVolatilitySum += Math.abs(val - prevVal);
+				if (i >= 0 && i <= 16) {
+					const diff = val - prevVal;
+					if (diff > 0) fluxPulse += diff;
+				}
+				if (i >= 159 && i <= 174) {
+					const diff = val - prevVal;
+					if (diff > 0) fluxMeteor += diff;
+				}
+				this.prevData[i] = val;
+				if (i <= 1) subBassSum += val;
+				else if (i <= 3) bassSum += val;
+				else if (i <= 7) lowMidSum += val;
+				else if (i <= 18) midSum += val;
+				else if (i <= 46) highMidSum += val;
+				else if (i <= 93) presenceSum += val;
+				else if (i <= 186) brillianceSum += val;
+				else if (i <= 372) airSum += val;
+			}
+			this.detectBeats(fluxPulse, fluxMeteor);
+		} else {
+			for (let i = 0; i < binCount; i++) {
+				this.dataArray[i] = Math.floor(this.dataArray[i] * 0.94);
+				this.prevData[i] = 0;
+			}
+		}
+		if (this.beatCooldown > 0) this.beatCooldown--;
+		if (this.meteorCooldown > 0) this.meteorCooldown--;
+		const energy = energySum / binCount;
+		const subBass = subBassSum / 2;
+		const bass = bassSum / 2;
+		const lowMid = lowMidSum / 4;
+		const mid = midSum / 11;
+		const highMid = highMidSum / 28;
+		const presence = presenceSum / 47;
+		const brilliance = brillianceSum / 93;
+		const air = airSum / 186;
+		const oldBass = (subBassSum + bassSum + lowMidSum) / 8;
+		const oldMid = (midSum + highMidSum) / 39;
+		const oldTreble = (presenceSum + brillianceSum + airSum) / 326;
+		const warmth = energySum > 0 ? (subBassSum + bassSum + lowMidSum + midSum) / energySum : 0;
+		const brightness = energySum > 0 ? (presenceSum + brillianceSum + airSum) / energySum : 0;
+		const sharpness = Math.max(0, brightness - this.prevBrightness) * 10;
+		this.prevBrightness = brightness;
+		const smoothnessVal = Math.max(0, 1 - (jumpVolatilitySum / binCount) * 2);
+		const activeThreshold = energy * 1.5;
+		let activeBands = 0;
+		if (subBass > activeThreshold) activeBands++;
+		if (bass > activeThreshold) activeBands++;
+		if (lowMid > activeThreshold) activeBands++;
+		if (mid > activeThreshold) activeBands++;
+		if (highMid > activeThreshold) activeBands++;
+		if (presence > activeThreshold) activeBands++;
+		if (brilliance > activeThreshold) activeBands++;
+		if (air > activeThreshold) activeBands++;
+		const density = activeBands / 8;
+		const spectralCentroid = centroidDen > 0 ? centroidNum / centroidDen : 0;
+		const dt = isPlaying ? 0.15 : 0.05;
+		this.smoothedData.bass += (oldBass - this.smoothedData.bass) * dt;
+		this.smoothedData.mid += (oldMid - this.smoothedData.mid) * dt;
+		this.smoothedData.treble += (oldTreble - this.smoothedData.treble) * dt;
+		this.smoothedData.energy += (energy - this.smoothedData.energy) * dt;
+		this.smoothedData.subBass += (subBass - this.smoothedData.subBass) * dt;
+		this.smoothedData.lowMid += (lowMid - this.smoothedData.lowMid) * dt;
+		this.smoothedData.highMid += (highMid - this.smoothedData.highMid) * dt;
+		this.smoothedData.presence += (presence - this.smoothedData.presence) * dt;
+		this.smoothedData.brilliance += (brilliance - this.smoothedData.brilliance) * dt;
+		this.smoothedData.air += (air - this.smoothedData.air) * dt;
+		this.smoothedData.warmth += (warmth - this.smoothedData.warmth) * dt;
+		this.smoothedData.brightness += (brightness - this.smoothedData.brightness) * dt;
+		this.smoothedData.sharpness += (sharpness - this.smoothedData.sharpness) * dt;
+		this.smoothedData.smoothness += (smoothnessVal - this.smoothedData.smoothness) * dt;
+		this.smoothedData.density += (density - this.smoothedData.density) * dt;
+		this.smoothedData.spectralCentroid += (spectralCentroid - this.smoothedData.spectralCentroid) * dt;
+		return Object.assign({}, this.smoothedData);
+	}
+	detectBeats(fluxPulse, fluxMeteor) {
+		this.beatHistory[this.beatHistoryIndex] = fluxPulse;
+		this.beatHistoryIndex = (this.beatHistoryIndex + 1) % this.beatHistory.length;
+		let avgFlux = 0;
+		for (let i = 0; i < this.beatHistory.length; i++) avgFlux += this.beatHistory[i];
+		avgFlux /= this.beatHistory.length;
+		let fluxVariance = 0;
+		for (let i = 0; i < this.beatHistory.length; i++) {
+			fluxVariance += (this.beatHistory[i] - avgFlux) ** 2;
+		}
+		fluxVariance /= this.beatHistory.length;
+		const fluxStdDev = Math.sqrt(fluxVariance);
+		const threshold = Math.max(0.05, avgFlux + fluxStdDev * 1.5);
+		if (this.beatCooldown <= 0 && fluxPulse > threshold && fluxPulse > 0.02) {
+			const strength = Math.min(fluxPulse * 3, 4);
+			const angle = Math.random() * Math.PI * 2;
+			const dist = Math.random() * 20;
+			const rx = Math.cos(angle) * dist;
+			const rz = Math.sin(angle) * dist;
+			this.events.onRipple && this.events.onRipple(rx, rz, strength, false);
+			this.events.onBeat && this.events.onBeat(strength);
+			this.beatCooldown = 20;
+		}
+		if (this.meteorCooldown <= 0 && fluxMeteor > 0.08) {
+			const strength = Math.min(fluxMeteor * 2, 1);
+			this.events.onMeteor && this.events.onMeteor(strength);
+			this.meteorCooldown = 40 + Math.random() * 60;
+		}
+	}
+	static getRipplesArray() {
+		return new Array(10).fill(null).map(() => ({
+			pos: new THREE.Vector2(),
+			time: -100,
+			strength: 0,
+			isActive: 0,
+			rippleType: 0,
+		}));
+	}
+}
+
+/* ───────────────────────── Three.js 场景（移植自 ThreeScene.svelte） ───────────────────────── */
+let scene, camera, renderer, controls, terrainMesh, meteorMesh, particleMesh, terrainMaterial;
+let animationId, clock, onResize, sceneReady = false;
+let backgroundTargetColor = new THREE.Color(VIS.background.dark);
+const container = () => document.getElementById("mv-three-container");
+
+const GRID_SIZE = 128;
+const SPACING = 1.05;
+const INSTANCE_COUNT = GRID_SIZE * GRID_SIZE;
+const MAX_METEORS = 12;
+const MAX_PARTICLES = 100;
+
+const ripples = AudioAnalyzer.getRipplesArray();
+let rippleIndex = 0;
+const meteors = new Array(MAX_METEORS).fill(null).map(() => ({ active: false, x: 0, y: -1000, z: 0, speed: 0, strength: 0 }));
+let meteorIndex = 0;
+const particles = new Array(MAX_PARTICLES).fill(null).map(() => ({ active: false, x: 0, y: -1000, z: 0, vx: 0, vy: 0, vz: 0, life: 0, maxLife: 1, scale: 1 }));
+let particleIndex = 0;
+
+const dummyMatrix = new THREE.Matrix4();
+const dummyPosition = new THREE.Vector3();
+const dummyQuaternion = new THREE.Quaternion();
+const dummyScale = new THREE.Vector3();
+
+function getThemeColors() {
+	return {
+		base1: new THREE.Color(VIS.theme.base1),
+		base2: new THREE.Color(VIS.theme.base2),
+		coolCore: new THREE.Color(VIS.theme.coolCore),
+		coolEdge: new THREE.Color(VIS.theme.coolEdge),
+		warmCore: new THREE.Color(VIS.theme.warmCore),
+		warmEdge: new THREE.Color(VIS.theme.warmEdge),
+		rippleColor: new THREE.Color(VIS.theme.rippleColor),
+		glowIntensity: VIS.theme.glowIntensity ?? 1.2,
+	};
+}
+const themeColors = getThemeColors();
+const heightConfig = VIS.height;
+
+function addRipple(x, z, strength, isWhite) {
+	const idx = rippleIndex;
+	ripples[idx] = {
+		pos: new THREE.Vector2(x, z),
+		time: clock.getElapsedTime(),
+		strength,
+		isActive: 1,
+		rippleType: isWhite ? 1 : 0,
+	};
+	rippleIndex = (idx + 1) % ripples.length;
+}
+function spawnParticle(x, y, z, speedMultiplier) {
+	const idx = particleIndex;
+	const p = particles[idx];
+	p.active = true;
+	p.x = x + (Math.random() - 0.5) * 1.5;
+	p.y = y + (Math.random() - 0.5) * 1.5;
+	p.z = z + (Math.random() - 0.5) * 1.5;
+	p.vx = (Math.random() - 0.5) * 2;
+	p.vy = Math.random() * 2 + speedMultiplier * 10;
+	p.vz = (Math.random() - 0.5) * 2;
+	p.life = 0;
+	p.maxLife = 0.5 + Math.random() * 0.5;
+	p.scale = Math.random() * 0.6 + 0.2;
+	particleIndex = (idx + 1) % MAX_PARTICLES;
+}
+function addMeteor(strength) {
+	const now = clock.getElapsedTime();
+	const idx = meteorIndex;
+	const angle = Math.random() * Math.PI * 2;
+	const dist = Math.random() * 25;
+	const m = meteors[idx];
+	m.active = true;
+	m.x = Math.cos(angle) * dist;
+	m.z = Math.sin(angle) * dist;
+	m.y = 30 + Math.random() * 10;
+	m.speed = 1 + Math.random() * 0.5 + strength * 1.5;
+	m.strength = strength;
+	meteorIndex = (idx + 1) % MAX_METEORS;
+}
+
+const vertexShader = `
+    uniform float uTime;
+    uniform float uSubBass;
+    uniform float uBass;
+    uniform float uLowMid;
+    uniform float uMid;
+    uniform float uHighMid;
+    uniform float uSmoothness;
+    uniform float uDensity;
+    uniform float uEnergy;
+    uniform float uHeightIdle;
+    uniform float uHeightSubBass;
+    uniform float uHeightBass;
+    uniform float uHeightLowMid;
+    uniform float uHeightMid;
+    uniform float uHeightHighMid;
+    uniform float uHeightEnergy;
+    uniform float uHeightRipple;
+    uniform float uHeightRippleAccent;
+
+    struct Ripple {
+      vec2 pos;
+      float time;
+      float strength;
+      float isActive;
+      float rippleType;
+    };
+    uniform Ripple uRipples[10];
+
+    varying vec2 vUv;
+    varying float vElevation;
+    varying float vDistance;
+    varying vec2 vRippleAnim;
+    varying vec3 vNormal;
+    varying float vRelativeY;
+    varying vec2 vInstancePos;
+
+    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+    float snoise(vec2 v) {
+      const vec4 C = vec4(0.211324865405187,  0.366025403784439, -0.577350269189626, 0.024390243902439);
+      vec2 i  = floor(v + dot(v, C.yy) );
+      vec2 x0 = v -   i + dot(i, C.xx);
+      vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+      vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
+      i = mod289(i);
+      vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+      vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+      m = m*m ; m = m*m ;
+      vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5);
+      vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+      vec3 g; g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+      return 130.0 * dot(m, g);
+    }
+
+    float random(vec2 st) {
+      return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+    }
+
+    void main() {
+      vUv = uv;
+      vNormal = normal;
+
+      vec4 ip = instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+      vec2 pos2D = ip.xz;
+      vInstancePos = pos2D;
+
+      float centerDist = length(pos2D);
+      vDistance = centerDist;
+
+      float rnd = random(pos2D);
+
+      vec2 movingPos = pos2D * 0.05 + vec2(uTime * 0.1, uTime * 0.05);
+      float baseNoise = (snoise(movingPos) + 1.0) * 0.5;
+      float wave = sin(pos2D.x * 0.15 + pos2D.y * 0.1 - uTime * 0.6) * 0.5 + 0.5;
+
+      float globalFalloff = smoothstep(50.0, 25.0, centerDist);
+      float idleElevation = mix(baseNoise, wave, uSmoothness * 0.5 + 0.2) * uHeightIdle * globalFalloff;
+
+      float subRegion = smoothstep(20.0, 0.0, centerDist);
+      float subLift = uSubBass * subRegion * uHeightSubBass;
+
+      float bassNoise = snoise(pos2D * 0.1 - vec2(0.0, uTime * 0.2));
+      float bassRegion = smoothstep(30.0, 5.0, centerDist + bassNoise * 5.0);
+      float bassLift = uBass * bassRegion * (smoothstep(0.0, 1.0, rnd + uDensity * 0.5)) * uHeightBass;
+
+      float lowMidNoise = snoise(pos2D * 0.05 + vec2(uTime * 0.1, 0.0));
+      float lowMidLift = uLowMid * (lowMidNoise * 0.5 + 0.5) * uHeightLowMid;
+
+      float riverFlow = sin(pos2D.x * 0.2 + pos2D.y * 0.2 + snoise(pos2D * 0.1) * 2.0 - uTime * 2.0);
+      float midLift = uMid * max(0.0, riverFlow) * uHeightMid;
+
+      float highMidRegion = smoothstep(10.0, 35.0, centerDist);
+      float highMidLift = 0.0;
+      if (fract(rnd * 13.3) > 0.8) {
+        highMidLift = uHighMid * highMidRegion * fract(rnd * 7.7) * uHeightHighMid;
+      }
+
+      float audioElevation = subLift + bassLift + lowMidLift + midLift + highMidLift;
+
+      if (rnd > 0.99) {
+        audioElevation += uEnergy * uHeightEnergy;
+      }
+
+      audioElevation *= globalFalloff;
+
+      float elevation = idleElevation + audioElevation;
+
+      float rippleElevation = 0.0;
+      float rippleIntensityNormal = 0.0;
+      float rippleIntensityWhite = 0.0;
+      float speed = 15.0;
+      float width = 3.0;
+
+      for(int i = 0; i < 10; i++) {
+        if(uRipples[i].isActive > 0.0) {
+          float dist = length(pos2D - uRipples[i].pos);
+          float timeSince = uTime - uRipples[i].time;
+
+          float curSpeed = speed;
+          float curWidth = width;
+          float curFadeDist = 15.0;
+          float elevationScale = uHeightRipple;
+
+          if (uRipples[i].rippleType > 0.5) {
+            curSpeed = 20.0;
+            curWidth = 1.0;
+            curFadeDist = 8.0;
+            elevationScale = uHeightRippleAccent;
+          }
+
+          float waveRadius = timeSince * curSpeed;
+          float d = dist - waveRadius;
+          float rippleWave = exp(-d*d / curWidth);
+          float fade = exp(-waveRadius / curFadeDist);
+          float rPulse = rippleWave * fade * uRipples[i].strength;
+
+          rippleElevation += rPulse * elevationScale;
+          if (uRipples[i].rippleType > 0.5) {
+            rippleIntensityWhite += rPulse;
+          } else {
+            rippleIntensityNormal += rPulse;
+          }
+        }
+      }
+
+      elevation += rippleElevation;
+      vRippleAnim = vec2(clamp(rippleIntensityNormal, 0.0, 1.0), clamp(rippleIntensityWhite, 0.0, 1.0));
+      vElevation = elevation;
+
+      float yPos = position.y + 0.5;
+      vRelativeY = yPos;
+
+      float totalHeight = 1.0 + elevation;
+      vec3 pos = position;
+      pos.y = -0.5 + yPos * totalHeight;
+
+      vec4 worldPosition = instanceMatrix * vec4(pos, 1.0);
+      gl_Position = projectionMatrix * viewMatrix * worldPosition;
+    }
+  `;
+
+const fragmentShader = `
+    uniform float uTime;
+    uniform float uPresence;
+    uniform float uBrilliance;
+    uniform float uAir;
+    uniform float uWarmth;
+    uniform float uBrightness;
+    uniform float uSharpness;
+    uniform vec3 uBaseColor1;
+    uniform vec3 uBaseColor2;
+    uniform vec3 uCoolCore;
+    uniform vec3 uCoolEdge;
+    uniform vec3 uWarmCore;
+    uniform vec3 uWarmEdge;
+    uniform vec3 uRippleColor;
+    uniform float uGlowIntensity;
+
+    varying vec2 vUv;
+    varying float vElevation;
+    varying float vDistance;
+    varying vec2 vRippleAnim;
+    varying vec3 vNormal;
+    varying float vRelativeY;
+    varying vec2 vInstancePos;
+
+    float random(vec2 st) {
+      return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+    }
+
+    void main() {
+      bool isTop = vNormal.y > 0.5;
+      float distFromTop = 1.0 - vRelativeY;
+
+      float rnd = random(vInstancePos);
+      float centerDist = length(vInstancePos);
+
+      float normElevation = clamp(vElevation / 6.0, 0.0, 1.0);
+
+      vec3 cBase1 = uBaseColor1;
+      vec3 cBase2 = uBaseColor2;
+
+      vec3 coolCore = uCoolCore;
+      vec3 coolEdge = uCoolEdge;
+      vec3 warmCore = uWarmCore;
+      vec3 warmEdge = uWarmEdge;
+
+      float warmBlend = smoothstep(0.0, 1.0, uWarmth * 1.5 + (0.5 - centerDist/70.0));
+
+      vec3 zoneCore = mix(coolCore, warmCore, warmBlend);
+      vec3 zoneEdge = mix(coolEdge, warmEdge, warmBlend);
+
+      vec3 targetGlow = mix(zoneCore, zoneEdge, fract(rnd * 11.0));
+
+      float distFade = 1.0 - smoothstep(30.0, 65.0, centerDist);
+
+      targetGlow = mix(targetGlow, vec3(0.4, 0.8, 1.0), uBrightness * 0.5);
+
+      vec3 currentGlow = mix(cBase2, targetGlow, normElevation) * uGlowIntensity * distFade;
+
+      currentGlow = mix(currentGlow, uRippleColor, vRippleAnim.x);
+      currentGlow = mix(currentGlow, vec3(1.0, 1.0, 1.0), vRippleAnim.y);
+
+      vec3 bodyColor = mix(cBase1, cBase2, vRelativeY * distFade);
+      vec3 finalColor;
+
+      if (isTop) {
+        float topIntensity = smoothstep(0.0, 0.4, normElevation);
+
+        float twinkleDistFalloff = smoothstep(50.0, 25.0, centerDist);
+        float twinkleMultiplier = mix(twinkleDistFalloff, 1.0, smoothstep(0.01, 0.1, normElevation));
+
+        bool isSparkleTarget = fract(rnd * 31.0) > 0.95;
+        if (isSparkleTarget && normElevation < 0.1) {
+          topIntensity += uAir * 1.5 * twinkleMultiplier;
+        }
+
+        finalColor = mix(cBase2, currentGlow, topIntensity);
+
+        float edgeX = smoothstep(0.05, 0.01, vUv.x) + smoothstep(0.95, 0.99, vUv.x);
+        float edgeY = smoothstep(0.05, 0.01, vUv.y) + smoothstep(0.95, 0.99, vUv.y);
+        float edge = min(edgeX + edgeY, 1.0);
+        finalColor += currentGlow * edge * 0.6 * (topIntensity + 0.3);
+
+        float flashChance = smoothstep(0.3, 1.0, uPresence);
+        if (fract(rnd * 53.0) > 0.98 - flashChance * 0.1) {
+          float flashSync = sin(uTime * 40.0 + rnd * 100.0) * 0.5 + 0.5;
+          finalColor += mix(vec3(1.0), vec3(0.5, 1.0, 1.0), rnd) * flashSync * uPresence * (1.0 + uSharpness * 2.0) * twinkleMultiplier;
+        }
+
+        if (edge > 0.5 && fract(rnd * 89.0 + uTime * 2.0) > 0.98) {
+          finalColor += vec3(1.0) * uBrilliance * 2.0 * twinkleMultiplier;
+        }
+
+      } else {
+        float verticalFalloff = mix(1.0, 3.0, uSharpness);
+        float sideGlow = smoothstep(0.5 / verticalFalloff, 0.0, distFromTop) * normElevation;
+
+        if (normElevation < 0.02) sideGlow = 0.0;
+
+        finalColor = mix(bodyColor, currentGlow, sideGlow * 1.2);
+
+        float rimGlow = smoothstep(0.03, 0.0, distFromTop) * normElevation;
+        finalColor += currentGlow * rimGlow;
+      }
+
+      finalColor += uRippleColor * vRippleAnim.x * 0.5;
+      finalColor += vec3(1.0, 1.0, 1.0) * vRippleAnim.y * 1.0;
+
+      float aerialFog = smoothstep(25.0, 55.0, vDistance);
+      vec3 atmosphericColor = mix(cBase1, cBase2, 0.4);
+      finalColor = mix(finalColor, atmosphericColor, aerialFog * 0.4);
+
+      float alphaFade = 1.0 - smoothstep(45.0, 65.0, vDistance);
+
+      gl_FragColor = vec4(finalColor, alphaFade);
+    }
+  `;
+
+function createTerrainMaterial() {
+	return new THREE.ShaderMaterial({
+		vertexShader,
+		fragmentShader,
+		uniforms: {
+			uTime: { value: 0 },
+			uSubBass: { value: 0 },
+			uBass: { value: 0 },
+			uLowMid: { value: 0 },
+			uMid: { value: 0 },
+			uHighMid: { value: 0 },
+			uPresence: { value: 0 },
+			uBrilliance: { value: 0 },
+			uAir: { value: 0 },
+			uWarmth: { value: 0 },
+			uBrightness: { value: 0 },
+			uSharpness: { value: 0 },
+			uSmoothness: { value: 0 },
+			uDensity: { value: 0 },
+			uEnergy: { value: 0 },
+			uRipples: { value: ripples },
+			uHeightIdle: { value: heightConfig.idle ?? 0.6 },
+			uHeightSubBass: { value: heightConfig.subBass ?? 4.0 },
+			uHeightBass: { value: heightConfig.bass ?? 3.0 },
+			uHeightLowMid: { value: heightConfig.lowMid ?? 2.0 },
+			uHeightMid: { value: heightConfig.mid ?? 2.5 },
+			uHeightHighMid: { value: heightConfig.highMid ?? 2.0 },
+			uHeightEnergy: { value: heightConfig.energy ?? 4.0 },
+			uHeightRipple: { value: heightConfig.ripple ?? 3.0 },
+			uHeightRippleAccent: { value: heightConfig.rippleAccent ?? 1.0 },
+			uBaseColor1: { value: themeColors.base1.clone() },
+			uBaseColor2: { value: themeColors.base2.clone() },
+			uCoolCore: { value: themeColors.coolCore.clone() },
+			uCoolEdge: { value: themeColors.coolEdge.clone() },
+			uWarmCore: { value: themeColors.warmCore.clone() },
+			uWarmEdge: { value: themeColors.warmEdge.clone() },
+			uRippleColor: { value: themeColors.rippleColor.clone() },
+			uGlowIntensity: { value: themeColors.glowIntensity },
+		},
+		transparent: true,
+		side: THREE.DoubleSide,
+	});
+}
+
+let audioAnalyzer = null;
+
+function initScene() {
+	const el = container();
+	if (!el) return;
+	const width = el.clientWidth || window.innerWidth;
+	const height = el.clientHeight || window.innerHeight;
+
+	scene = new THREE.Scene();
+	scene.background = backgroundTargetColor;
+	scene.fog = new THREE.Fog(backgroundTargetColor, 25, 80);
+
+	camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 200);
+	const cp = VIS.camera.position;
+	camera.position.set(cp.x ?? 0, cp.y ?? 32, cp.z ?? 52);
+
+	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+	renderer.setSize(width, height);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+	renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	renderer.toneMappingExposure = 1.2;
+	el.appendChild(renderer.domElement);
+
+	controls = new OrbitControls(camera, renderer.domElement);
+	controls.enableDamping = true;
+	controls.dampingFactor = 0.05;
+	controls.autoRotate = VIS.autoRotate ?? true;
+	controls.autoRotateSpeed = VIS.autoRotateSpeed ?? 0.3;
+	controls.enablePan = false;
+	controls.minDistance = 10;
+	controls.maxDistance = 80;
+	controls.maxPolarAngle = Math.PI / 2 - 0.1;
+
+	const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+	scene.add(ambientLight);
+	const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+	dirLight.position.set(10, 20, 10);
+	scene.add(dirLight);
+
+	terrainMaterial = createTerrainMaterial();
+
+	const boxGeo = new THREE.BoxGeometry(0.9, 1, 0.9);
+	terrainMesh = new THREE.InstancedMesh(boxGeo, terrainMaterial, INSTANCE_COUNT);
+	terrainMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
+	const offset = (GRID_SIZE * SPACING) / 2;
+	let i = 0;
+	for (let x = 0; x < GRID_SIZE; x++) {
+		for (let z = 0; z < GRID_SIZE; z++) {
+			const px = x * SPACING - offset;
+			const pz = z * SPACING - offset;
+			dummyMatrix.makeTranslation(px, 0.5, pz);
+			terrainMesh.setMatrixAt(i, dummyMatrix);
+			i++;
+		}
+	}
+	terrainMesh.instanceMatrix.needsUpdate = true;
+	scene.add(terrainMesh);
+
+	const meteorGeo = new THREE.BoxGeometry(0.4, 1.2, 0.4);
+	const meteorMat = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+	meteorMesh = new THREE.InstancedMesh(meteorGeo, meteorMat, MAX_METEORS);
+	meteorMesh.frustumCulled = false;
+	scene.add(meteorMesh);
+
+	const particleGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+	const particleMat = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false, transparent: true, opacity: 0.7 });
+	particleMesh = new THREE.InstancedMesh(particleGeo, particleMat, MAX_PARTICLES);
+	particleMesh.frustumCulled = false;
+	scene.add(particleMesh);
+
+	clock = new THREE.Clock();
+
+	if (audioAnalyzer) {
+		audioAnalyzer.setEvents({
+			onRipple: addRipple,
+			onMeteor: addMeteor,
+		});
+	}
+
+	// 点击地形产生涟漪
+	const raycaster = new THREE.Raycaster();
+	const mouse = new THREE.Vector2();
+	let pressTime = 0;
+	function onPointerDown(e) {
+		if (e.button !== 0) return;
+		pressTime = performance.now();
+	}
+	function onPointerUp(e) {
+		if (e.button !== 0) return;
+		const rect = renderer.domElement.getBoundingClientRect();
+		mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+		mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+		raycaster.setFromCamera(mouse, camera);
+		const intersects = raycaster.intersectObject(terrainMesh);
+		if (intersects.length > 0) {
+			const point = intersects[0].point;
+			const duration = performance.now() - pressTime;
+			const strength = Math.min(0.3 + (duration / 1000) * 2.5, 2.5);
+			addRipple(point.x, point.z, strength, false);
+		}
+	}
+	renderer.domElement.addEventListener("pointerdown", onPointerDown);
+	renderer.domElement.addEventListener("pointerup", onPointerUp);
+
+	onResize = () => {
+		if (!container() || !camera || !renderer) return;
+		const w = container().clientWidth || window.innerWidth;
+		const h = container().clientHeight || window.innerHeight;
+		camera.aspect = w / h;
+		camera.updateProjectionMatrix();
+		renderer.setSize(w, h);
+	};
+	window.addEventListener("resize", onResize);
+	sceneReady = true;
+}
+
+function animate() {
+	animationId = requestAnimationFrame(animate);
+	const delta = clock.getDelta();
+	const elapsed = clock.getElapsedTime();
+
+	let audioData = audioAnalyzer ? audioAnalyzer.update(delta) : null;
+
+	terrainMaterial.uniforms.uTime.value = elapsed;
+	if (audioData) {
+		terrainMaterial.uniforms.uSubBass.value = audioData.subBass;
+		terrainMaterial.uniforms.uBass.value = audioData.bass;
+		terrainMaterial.uniforms.uLowMid.value = audioData.lowMid;
+		terrainMaterial.uniforms.uMid.value = audioData.mid;
+		terrainMaterial.uniforms.uHighMid.value = audioData.highMid;
+		terrainMaterial.uniforms.uPresence.value = audioData.presence;
+		terrainMaterial.uniforms.uBrilliance.value = audioData.brilliance;
+		terrainMaterial.uniforms.uAir.value = audioData.air;
+		terrainMaterial.uniforms.uWarmth.value = audioData.warmth;
+		terrainMaterial.uniforms.uBrightness.value = audioData.brightness;
+		terrainMaterial.uniforms.uSharpness.value = audioData.sharpness;
+		terrainMaterial.uniforms.uSmoothness.value = audioData.smoothness;
+		terrainMaterial.uniforms.uDensity.value = audioData.density;
+		terrainMaterial.uniforms.uEnergy.value = audioData.energy;
+		terrainMaterial.uniforms.uRipples.value = ripples;
+
+		terrainMaterial.uniforms.uBaseColor1.value.lerp(themeColors.base1, 3 * delta);
+		terrainMaterial.uniforms.uBaseColor2.value.lerp(themeColors.base2, 3 * delta);
+		terrainMaterial.uniforms.uCoolCore.value.lerp(themeColors.coolCore, 3 * delta);
+		terrainMaterial.uniforms.uCoolEdge.value.lerp(themeColors.coolEdge, 3 * delta);
+		terrainMaterial.uniforms.uWarmCore.value.lerp(themeColors.warmCore, 3 * delta);
+		terrainMaterial.uniforms.uWarmEdge.value.lerp(themeColors.warmEdge, 3 * delta);
+		terrainMaterial.uniforms.uRippleColor.value.lerp(themeColors.rippleColor, 3 * delta);
+		terrainMaterial.uniforms.uGlowIntensity.value = THREE.MathUtils.lerp(
+			terrainMaterial.uniforms.uGlowIntensity.value,
+			themeColors.glowIntensity,
+			3 * delta,
+		);
+
+		if (scene.fog instanceof THREE.Fog) {
+			scene.fog.color.lerp(backgroundTargetColor, 3 * delta);
+			scene.background = scene.fog.color;
+		}
+
+		const meteorMat = meteorMesh.material;
+		const meteorColor = new THREE.Color().copy(themeColors.warmCore).lerp(new THREE.Color(0xffffff), 0.7);
+		meteorMat.color.lerp(meteorColor, 3 * delta);
+
+		for (let i = 0; i < MAX_METEORS; i++) {
+			const m = meteors[i];
+			if (!m.active) {
+				dummyPosition.set(0, -1000, 0);
+				dummyScale.set(0, 0, 0);
+				dummyMatrix.compose(dummyPosition, dummyQuaternion, dummyScale);
+				meteorMesh.setMatrixAt(i, dummyMatrix);
+			} else {
+				m.y -= m.speed * 50 * delta;
+				if (m.y <= 0) {
+					m.active = false;
+					addRipple(m.x, m.z, Math.min(m.strength * 1, 1), true);
+					for (let p = 0; p < 8; p++) spawnParticle(m.x, 0.5, m.z, m.speed * 1.2);
+				}
+				dummyPosition.set(m.x, Math.max(0, m.y), m.z);
+				dummyScale.set(1.5, 1.5, 1.5);
+				dummyMatrix.compose(dummyPosition, dummyQuaternion, dummyScale);
+				meteorMesh.setMatrixAt(i, dummyMatrix);
+				if (m.y > 0 && Math.random() > 0.4) {
+					spawnParticle(m.x, m.y, m.z, m.speed * 0.15);
+				}
+			}
+		}
+		meteorMesh.instanceMatrix.needsUpdate = true;
+
+		const particleMat = particleMesh.material;
+		particleMat.color.copy(meteorMat.color);
+
+		for (let i = 0; i < MAX_PARTICLES; i++) {
+			const p = particles[i];
+			if (!p.active) {
+				dummyPosition.set(0, -1000, 0);
+				dummyScale.set(0, 0, 0);
+				dummyMatrix.compose(dummyPosition, dummyQuaternion, dummyScale);
+				particleMesh.setMatrixAt(i, dummyMatrix);
+			} else {
+				p.life += delta;
+				if (p.life >= p.maxLife) {
+					p.active = false;
+					dummyScale.set(0, 0, 0);
+				} else {
+					p.x += p.vx * delta * 8;
+					p.y += p.vy * delta * 8;
+					p.z += p.vz * delta * 8;
+					const s = p.scale * (1 - p.life / p.maxLife);
+					dummyPosition.set(p.x, p.y, p.z);
+					dummyScale.set(s, s, s);
+				}
+				dummyMatrix.compose(dummyPosition, dummyQuaternion, dummyScale);
+				particleMesh.setMatrixAt(i, dummyMatrix);
+			}
+		}
+		particleMesh.instanceMatrix.needsUpdate = true;
+	}
+
+	controls.update();
+	renderer.render(scene, camera);
+}
+
+function cleanupScene() {
+	if (animationId) cancelAnimationFrame(animationId);
+	animationId = null;
+	if (onResize) window.removeEventListener("resize", onResize);
+	onResize = null;
+	if (renderer) {
+		renderer.dispose();
+		const el = container();
+		if (el && renderer.domElement && renderer.domElement.parentNode === el) {
+			el.removeChild(renderer.domElement);
+		}
+	}
+	if (terrainMesh) {
+		terrainMesh.geometry.dispose();
+		terrainMaterial.dispose();
+	}
+	if (meteorMesh) {
+		meteorMesh.geometry.dispose();
+		meteorMesh.material.dispose();
+	}
+	if (particleMesh) {
+		particleMesh.geometry.dispose();
+		particleMesh.material.dispose();
+	}
+	if (controls) controls.dispose();
+	scene = camera = renderer = controls = terrainMesh = meteorMesh = particleMesh = terrainMaterial = null;
+	sceneReady = false;
+}
+
+/* ───────────────────────── UI 同步（歌词 / 控制条 / 歌单，替代 Svelte 响应式） ───────────────────────── */
+let mgr = null;
+const $ = (id) => document.getElementById(id);
+
+function syncLyricsOffset() {
+	const containerEl = $("mv-lyrics");
+	const trackEl = $("mv-lyrics-inner");
+	if (!containerEl || !trackEl) return;
+	const activeEl = trackEl.querySelector('[data-lyric-index="' + currentLyricIndex + '"]');
+	if (!activeEl) return;
+	const lyricCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
+	const targetCenter = containerEl.clientHeight * (currentLyricIndex >= 0 ? 0.5 : 0.58);
+	const offsetY = targetCenter - lyricCenter;
+	trackEl.style.transform = "translateY(" + offsetY + "px)";
+}
+
+let currentLyrics = [];
+let currentLyricIndex = -1;
+let lyricsStatus = "loading";
+const statusLabels = {
+	loading: i18n(I18nKey.musicLoadingLyrics),
+	none: i18n(I18nKey.musicNoLyrics),
+	failed: i18n(I18nKey.musicFailedLyrics),
+};
+
+function renderLyrics() {
+	const inner = $("mv-lyrics-inner");
+	const empty = $("mv-lyrics-empty");
+	const emptyText = $("mv-lyrics-empty-text");
+	if (!inner) return;
+	if (currentLyrics.length === 0) {
+		inner.innerHTML = "";
+		if (empty) {
+			empty.style.display = "flex";
+			emptyText.textContent = statusLabels[lyricsStatus] || statusLabels.loading;
+		}
+		return;
+	}
+	if (empty) empty.style.display = "none";
+	inner.innerHTML = currentLyrics
+		.map((line, i) => {
+			const cls =
+				i === currentLyricIndex
+					? " music-visualizer__lyric-line--active"
+					: i < currentLyricIndex
+						? " music-visualizer__lyric-line--past"
+						: "";
+			return (
+				'<div class="music-visualizer__lyric-line' +
+				cls +
+				'" data-lyric-index="' +
+				i +
+				'"><span class="music-visualizer__lyric-marker"></span><span class="music-visualizer__lyric-text">' +
+				(line.text || "") +
+				"</span></div>"
+			);
+		})
+		.join("");
+	syncLyricsOffset();
+}
+
+function onLyrics(e) {
+	currentLyrics = (e.detail && e.detail.lyrics) || [];
+	lyricsStatus = (e.detail && e.detail.status) || (currentLyrics.length > 0 ? "loaded" : "none");
+	currentLyricIndex = -1;
+	renderLyrics();
+}
+function onLrcIndex(e) {
+	currentLyricIndex = e.detail.index;
+	renderLyrics();
+}
+
+function renderPlaylist(state) {
+	const list = $("mv-playlist-list");
+	const count = $("mv-playlist-count");
+	if (!list) return;
+	const playlist = state.playlist || [];
+	if (count) count.textContent = String(playlist.length);
+	if (playlist.length === 0) {
+		list.innerHTML = '<div class="music-visualizer__playlist-empty">' + i18n(I18nKey.musicPlaylistLoading) + "</div>";
+		return;
+	}
+	list.innerHTML = playlist
+		.map((track, i) => {
+			const active = i === state.currentIndex ? " music-visualizer__playlist-item--active" : "";
+			const cover =
+				track.pic || track.cover
+					? '<img src="' + (track.pic || track.cover) + '" alt="" loading="lazy" />'
+					: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"></path></svg>';
+			const eq = i === state.currentIndex ? '<div class="music-visualizer__playlist-eq" aria-hidden="true"><span></span><span></span><span></span></div>' : "";
+			return (
+				'<button type="button" class="music-visualizer__playlist-item' +
+				active +
+				'" data-index="' +
+				i +
+				'" role="option" aria-selected="' +
+				(i === state.currentIndex) +
+				'" title="' +
+				(track.name + " - " + track.artist) +
+				'"><div class="music-visualizer__playlist-cover">' +
+				cover +
+				'</div><div class="music-visualizer__playlist-meta"><div class="music-visualizer__playlist-name">' +
+				(track.name || i18n(I18nKey.musicUnknown)) +
+				'</div><div class="music-visualizer__playlist-artist">' +
+				(track.artist || "") +
+				"</div></div>" +
+				eq +
+				"</button>"
+			);
+		})
+		.join("");
+	list.querySelectorAll(".music-visualizer__playlist-item").forEach((btn) => {
+		btn.addEventListener("click", () => {
+			const idx = parseInt(btn.getAttribute("data-index"), 10);
+			if (mgr) mgr.playTrackByIndex(idx);
+		});
+	});
+	const activeItem = list.querySelector(".music-visualizer__playlist-item--active");
+	if (activeItem) activeItem.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+
+function syncState() {
+	if (!mgr) return;
+	const state = mgr.getState();
+	const track = state.track || null;
+	const nameEl = $("mv-track-name");
+	const artistEl = $("mv-track-artist");
+	const coverImg = $("mv-cover-img");
+	const coverPh = $("mv-cover-ph");
+	if (nameEl) nameEl.textContent = track ? track.name || i18n(I18nKey.musicNoPlaying) : i18n(I18nKey.musicNoPlaying);
+	if (artistEl) artistEl.textContent = track ? track.artist || "" : "";
+	if (coverImg && coverPh) {
+		if (track && (track.pic || track.cover)) {
+			coverImg.src = track.pic || track.cover;
+			coverImg.style.display = "block";
+			coverPh.style.display = "none";
+		} else {
+			coverImg.style.display = "none";
+			coverPh.style.display = "inline-flex";
+		}
+	}
+	const playBtn = $("mv-btn-play");
+	if (playBtn) playBtn.classList.toggle("is-playing", !!state.isPlaying);
+	const modeBtn = $("mv-btn-mode");
+	if (modeBtn) modeBtn.className = "music-visualizer__btn music-visualizer__btn--mode mode-" + (state.playMode || 0);
+	const muteBtn = $("mv-btn-mute");
+	if (muteBtn) muteBtn.classList.toggle("is-muted", !!state.isMuted || state.volume === 0);
+	const cur = $("mv-time-cur");
+	const dur = $("mv-time-dur");
+	if (cur) cur.textContent = state.currentTimeStr || "0:00";
+	if (dur) dur.textContent = state.durationStr || "0:00";
+	const pfill = $("mv-progress-fill");
+	if (pfill) pfill.style.width = (state.progress || 0) + "%";
+	const vfill = $("mv-volume-fill");
+	if (vfill) vfill.style.width = (state.isMuted ? 0 : state.volume * 100) + "%";
+	renderPlaylist(state);
+}
+
+function bindControls() {
+	$("mv-btn-play").addEventListener("click", () => mgr && mgr.togglePlay());
+	$("mv-btn-prev").addEventListener("click", () => mgr && mgr.playPrev());
+	$("mv-btn-next").addEventListener("click", () => mgr && mgr.playNext());
+	$("mv-btn-mode").addEventListener("click", () => mgr && mgr.cyclePlayMode());
+	$("mv-btn-mute").addEventListener("click", () => mgr && mgr.toggleMute());
+	$("mv-btn-back").addEventListener("click", () => (window.location.href = "/"));
+	$("mv-btn-playlist").addEventListener("click", () => {
+		const panel = $("mv-playlist");
+		const btn = $("mv-btn-playlist");
+		if (!panel || !btn) return;
+		const open = panel.classList.toggle("music-visualizer__playlist-panel--open");
+		btn.classList.toggle("music-visualizer__btn--active", open);
+		btn.setAttribute("aria-expanded", String(open));
+		panel.setAttribute("aria-hidden", String(!open));
+	});
+	const progress = $("mv-progress");
+	if (progress) {
+		progress.addEventListener("click", (e) => {
+			const rect = progress.getBoundingClientRect();
+			const x = e.clientX - rect.left;
+			const pct = Math.max(0, Math.min(1, x / rect.width));
+			if (mgr) mgr.seek(pct);
+		});
+	}
+	const volume = $("mv-volume");
+	if (volume) {
+		volume.addEventListener("click", (e) => {
+			const rect = volume.getBoundingClientRect();
+			const x = e.clientX - rect.left;
+			const val = Math.max(0, Math.min(1, x / rect.width));
+			if (mgr) mgr.setVolume(val);
+		});
+	}
+}
+
+function onTrack(e) {
+	if (!mgr) return;
+	const state = mgr.getState();
+	currentLyricIndex = -1;
+	syncState();
+}
+function onPlayState(e) {
+	const playBtn = $("mv-btn-play");
+	if (playBtn) playBtn.classList.toggle("is-playing", !!(e.detail && e.detail.isPlaying));
+}
+function onTime(e) {
+	const cur = $("mv-time-cur");
+	const dur = $("mv-time-dur");
+	const pfill = $("mv-progress-fill");
+	if (cur) cur.textContent = (e.detail && e.detail.currentTimeStr) || "0:00";
+	if (dur) dur.textContent = (e.detail && e.detail.durationStr) || "0:00";
+	if (pfill) pfill.style.width = (e.detail && e.detail.progress || 0) + "%";
+}
+function onVolume(e) {
+	const muteBtn = $("mv-btn-mute");
+	if (muteBtn) muteBtn.classList.toggle("is-muted", !!(e.detail && (e.detail.isMuted || e.detail.volume === 0)));
+	const vfill = $("mv-volume-fill");
+	if (vfill) vfill.style.width = ((e.detail && (e.detail.isMuted ? 0 : e.detail.volume)) || 0) * 100 + "%";
+}
+function onMode(e) {
+	const modeBtn = $("mv-btn-mode");
+	if (modeBtn) modeBtn.className = "music-visualizer__btn music-visualizer__btn--mode mode-" + ((e.detail && e.detail.playMode) || 0);
+}
+function onInit() {
+	syncState();
+}
+
+/* ───────────────────────── 初始化 / 销毁 ───────────────────────── */
+let vizStarted = false;
+let themeObserver = null;
+const fmHandlers = {};
+
+function getBackgroundColor() {
+	return document.documentElement.classList.contains("dark") ||
+		document.documentElement.getAttribute("data-theme") === "dark"
+		? VIS.background.dark
+		: VIS.background.light;
+}
+
+function connectAudio() {
+	const audio = mgr && mgr.getAudio ? mgr.getAudio() : null;
+	if (!audio) {
+		setTimeout(connectAudio, 200);
+		return;
+	}
+	if (!audio.crossOrigin) audio.crossOrigin = "anonymous";
+	try {
+		if (!audioAnalyzer) audioAnalyzer = new AudioAnalyzer();
+		audioAnalyzer.connect(audio);
+	} catch (e) {
+		console.warn("[MusicVisualizer] connect failed:", e);
+	}
+	if (audioAnalyzer && audioAnalyzer.audioCtx && audioAnalyzer.audioCtx.state === "suspended") {
+		audioAnalyzer.resume();
+	}
+}
+
+function initViz() {
+	if (vizStarted) return;
+	const el = $("mv-three-container");
+	if (!el) return;
+	vizStarted = true;
+
+	mgr = window.__fireflyMusic;
+	if (!mgr) {
+		const timer = setInterval(() => {
+			mgr = window.__fireflyMusic;
+			if (mgr || vizStarted === false) {
+				clearInterval(timer);
+				if (mgr) afterMgrReady();
+			}
+		}, 100);
+		return;
+	}
+	afterMgrReady();
+}
+
+function afterMgrReady() {
+	if (!mgr) return;
+	if (!mgr.getState().initialized) mgr.init();
+	connectAudio();
+
+	const handleFirstClick = () => {
+		if (audioAnalyzer) audioAnalyzer.resume();
+		document.removeEventListener("click", handleFirstClick);
+	};
+	document.addEventListener("click", handleFirstClick);
+
+	// 主题背景同步
+	backgroundTargetColor.set(getBackgroundColor());
+	themeObserver = new MutationObserver(() => {
+		backgroundTargetColor.set(getBackgroundColor());
+	});
+	themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+
+	// 场景
+	initScene();
+	animate();
+
+	// 事件
+	bindControls();
+	syncState();
+	window.addEventListener("fm:lyrics", onLyrics);
+	window.addEventListener("fm:lrc-index", onLrcIndex);
+	window.addEventListener("fm:track", onTrack);
+	window.addEventListener("fm:play-state", onPlayState);
+	window.addEventListener("fm:time", onTime);
+	window.addEventListener("fm:volume", onVolume);
+	window.addEventListener("fm:mode", onMode);
+	window.addEventListener("fm:init", onInit);
+
+	fmHandlers.onLyrics = onLyrics;
+	fmHandlers.onLrcIndex = onLrcIndex;
+	fmHandlers.onTrack = onTrack;
+	fmHandlers.onPlayState = onPlayState;
+	fmHandlers.onTime = onTime;
+	fmHandlers.onVolume = onVolume;
+	fmHandlers.onMode = onMode;
+	fmHandlers.onInit = onInit;
+}
+
+function destroyViz() {
+	if (!vizStarted) return;
+	vizStarted = false;
+	if (themeObserver) {
+		themeObserver.disconnect();
+		themeObserver = null;
+	}
+	window.removeEventListener("fm:lyrics", onLyrics);
+	window.removeEventListener("fm:lrc-index", onLrcIndex);
+	window.removeEventListener("fm:track", onTrack);
+	window.removeEventListener("fm:play-state", onPlayState);
+	window.removeEventListener("fm:time", onTime);
+	window.removeEventListener("fm:volume", onVolume);
+	window.removeEventListener("fm:mode", onMode);
+	window.removeEventListener("fm:init", onInit);
+	if (audioAnalyzer) {
+		audioAnalyzer.disconnect();
+		audioAnalyzer = null;
+	}
+	cleanupScene();
+	mgr = null;
+}
+
+document.addEventListener("astro:page-load", () => {
+	if (document.querySelector(".music-visualizer-page")) {
+		initViz();
+	} else {
+		destroyViz();
+	}
+});
+
+// 兜底：若脚本在 astro:page-load 之前就已就绪（整页加载时常见），直接尝试初始化
+if (document.querySelector(".music-visualizer-page")) {
+	setTimeout(initViz, 0);
+}
+</script>

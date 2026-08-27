@@ -68,6 +68,9 @@ export const zh_CN: Translation = {
 	[Key.musicCover]: "封面",
 	[Key.musicNoCover]: "暂无封面",
 	[Key.musicAudioPlayer]: "音频播放器",
+	[Key.musicPlaylistSwitch]: "歌单切换",
+	[Key.musicPlaylistLoading]: "歌单加载中",
+	[Key.musicUnknown]: "未知",
 
 	// 公告栏
 	[Key.announcement]: "公告",

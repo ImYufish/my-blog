@@ -42,11 +42,14 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 友链
 			LinkPresets.Friends,
 
-			// 朋友圈
-			LinkPresets.Circle,
+		// 朋友圈
+		LinkPresets.Circle,
 
-			// 留言
-			LinkPresets.Guestbook,
+		// 音乐
+		LinkPresets.Music,
+
+		// 留言
+		LinkPresets.Guestbook,
 		],
 	});
 
@@ -173,6 +176,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/circle/",
 		icon: "material-symbols:forum-rounded",
 		pageKey: "circle",
+	},
+	Music: {
+		name: "音乐",
+		url: "/music/",
+		icon: "material-symbols:music-note-rounded",
+		pageKey: "music",
 	},
 	Guestbook: {
 		name: "留言",
