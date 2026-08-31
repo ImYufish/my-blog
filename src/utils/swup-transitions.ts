@@ -163,6 +163,16 @@ function registerSwupHooks(): void {
 		// Start progress bar（WAAPI 合成线程动画，不强制回流）
 		startProgressBar();
 
+		// 先回顶，让后续 FLIP 在 scroll=0 的坐标系内计算：
+		// 若在切页后才回顶，FLIP 的 invert 是按切页前滚动位置校准的，scroll 一复位就会导致
+		// 内容区从视口上方之外（滚动较深时 top<0）开始、再落回，表现为“冲过头再回落”。
+		// 必须用 instant：html 上有 scroll-behavior:smooth（main.css），behavior:"auto" 会被当作平滑滚动，
+		// 在 FLIP 期间与内容位移叠加、同样造成“顶到最顶部再回落”。
+		// 移动端（<768）不使用即时回顶，避免闪烁（由 swup 默认滚动接管）
+		if (window.innerWidth >= 768) {
+			window.scrollTo({ top: 0, behavior: "instant" });
+		}
+
 		// 更新首页状态（body.is-home 驱动 CSS --content-top 等）
 		const bodyElement = document.querySelector("body") as HTMLElement;
 		const isHomePage = pathsEqual(visit.to.url, url("/"));
@@ -177,8 +187,16 @@ function registerSwupHooks(): void {
 			bodyElement.classList.toggle("is-home", isHomePage);
 			const newTop = contentPanel.getBoundingClientRect().top; // 类切换后读
 			const delta = oldTop - newTop;
-			// 超大位移（>75% 视口，如全屏首页→非首页）不做 FLIP：新页内容重排叠加会抖动，直接到位由 swup 淡入掩盖
-			if (delta !== 0 && Math.abs(delta) <= window.innerHeight * 0.75) {
+			// 全屏首页↔非首页 delta ≈ 92vh，总是超过 0.75 视口，此前被跳过导致内容区瞬间跳变；
+			// 现在放行，改用与移动端横幅模式完全一致的标准 FLIP（强制回流提交 invert + CSS 过渡），
+			// 让内容区整屏丝滑上移/下移（非全屏仍受 0.75 视口阈值保护）
+			const isFullscreen =
+				document.documentElement.getAttribute("data-wallpaper-mode") ===
+				"fullscreen";
+			if (
+				delta !== 0 &&
+				(isFullscreen || Math.abs(delta) <= window.innerHeight * 0.75)
+			) {
 				// 标准 FLIP：禁用过渡→设 invert transform→回流提交→启用过渡→移除 transform（触发合成动画）
 				contentPanel.style.willChange = "transform";
 				contentPanel.style.transition = "none";
@@ -233,15 +251,6 @@ function registerSwupHooks(): void {
 			toc.classList.add("toc-not-ready");
 		}
 
-		// 确保页面滚动到顶部，切页期间使用即时回顶，移动端不使用，避免出现闪烁
-		// （非首页全屏模式与 overlay 一致、内容在最上面，回顶即内容顶部）
-		const shouldUseSmoothScroll = window.innerWidth >= 768;
-		if (shouldUseSmoothScroll) {
-			window.scrollTo({
-				top: 0,
-				behavior: "auto",
-			});
-		}
 	});
 	window.swup.hooks.on("page:view", () => {
 		// 更新网格列数和侧边栏组件可见性
