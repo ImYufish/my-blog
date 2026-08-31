@@ -72,9 +72,8 @@ const configHue = siteConfig.themeColor.hue;
 // 获取导航栏透明模式配置（banner 模式专属）
 const navbarTransparentMode =
 	backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
-// 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
-const shouldShowTopHighlight =
-	navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
+// 判断是否应该显示顶部高光效果（只在 semifull 动态透明模式下显示）
+const shouldShowTopHighlight = navbarTransparentMode === "semifull";
 
 // 子菜单 / 浮动面板的毛玻璃模糊度：跟随 navbar.blur，但不受壁纸模式影响，
 // 且带一个最小值 —— 导航栏可以用 blur: 0 关掉毛玻璃，面板则始终保留毛玻璃。

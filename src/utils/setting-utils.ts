@@ -365,23 +365,18 @@ export function updateNavbarTransparency(mode: WALLPAPER_MODE): void {
 		transparentMode = "none";
 		blurAmount = 0;
 	} else if (mode === WALLPAPER_FULLSCREEN) {
-		// 全屏壁纸模式：脱离 banner 导航栏配置，导航栏默认完全透明
-		// （透明度由卡片透明度 cardOpacity 经 wallpaper-transparent 控制）；
-		// 若开启 fullscreen.navbar.dynamicTransparent，首页顶部透明、下滑后变不透明（semifull）
+		// 全屏壁纸：首页 + semifull 动态透明，其余半透明玻璃
 		const isHomePage = checkIsHomePage(window.location.pathname);
-		const dynamicTransparent =
-			backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false;
-		if (isHomePage && dynamicTransparent) {
-			transparentMode = "semifull";
-			blurAmount = 0;
-		} else {
-			transparentMode = "none";
-			blurAmount = 0;
-		}
+		const fsMode =
+			backgroundWallpaper.fullscreen?.navbar?.transparentMode || "semifull";
+		const glassBlur = backgroundWallpaper.fullscreen?.navbar?.blur ?? 20;
+		transparentMode = fsMode === "semifull" && isHomePage ? "semifull" : "semi";
+		blurAmount = glassBlur;
 	} else {
-		// Banner模式：使用配置的透明模式和模糊效果
-		transparentMode =
-			backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
+		// Banner模式：semifull 仅首页动态，非首页与 fullscreen 一致为半透明
+		const isHomePage = checkIsHomePage(window.location.pathname);
+		const tMode = backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
+		transparentMode = tMode === "semifull" && !isHomePage ? "semi" : tMode;
 		blurAmount = backgroundWallpaper.banner?.navbar?.blur ?? 20;
 	}
 

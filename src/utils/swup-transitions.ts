@@ -250,7 +250,6 @@ function registerSwupHooks(): void {
 		if (toc) {
 			toc.classList.add("toc-not-ready");
 		}
-
 	});
 	window.swup.hooks.on("page:view", () => {
 		// 更新网格列数和侧边栏组件可见性

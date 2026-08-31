@@ -9,7 +9,7 @@
  *    - "none": 纯色背景无壁纸
  * 
  * 2. 导航栏配置 (banner.navbar):
- *    - transparentMode: "semi" | "full" | "semifull" (仅在 Banner 模式下生效)
+ *    - transparentMode: "semi" | "semifull" | "none" (仅在 Banner 模式下生效)
  *    - blur: 毛玻璃模糊度，0 即关闭 (仅在 Banner 模式下生效)
  *
  * 注意：Overlay 模式下的导航栏始终跟随卡片样式 (var(--card-bg-transparent) + blur)，
@@ -46,22 +46,19 @@
     border: 1px solid transparent;
     border-radius: 0 0 0.75rem 0.75rem;
     --navbar-surface-blur: 0px;
-    /* 给下面的 ::before 当定位包含块与层叠上下文 */
+    /* 给下面的 ::before 当定位包含块 */
     position: relative;
-    z-index: 0;
-    /* 提升为独立合成层：避免祖先（#navbar-wrapper）做 transform/opacity 过渡时
-       ::before 的 backdrop-filter 被浏览器跳过、动画期间显示无模糊的原始白底，
-       结束后才突然启用（表现为白闪）；will-change 不影响布局/fixed 定位 */
-    will-change: transform;
+    /* 勿加 will-change/z-index，避免 ::before 采样失效 */
     @apply navbar-surface-transition;
 }
 
-/*
+/* ============================================
  * 导航栏自身的毛玻璃层。
  * z-index: -1 让它落在导航栏底色之上、内容之下；底色是匀色，
  * blur(底色 over 壁纸) == 底色 over blur(壁纸)，观感与把滤镜写在父元素上一致。
  * inset: 0 只盖到 padding box，是为了不遮住 .enable-card-border 下的可见边框。
- */
+ * 注意：滤镜必须挂在本 ::before 上（移到本体会让内部面板毛玻璃失效）。
+ * ============================================ */
 #navbar>div::before {
     content: "";
     position: absolute;
@@ -69,17 +66,18 @@
     z-index: -1;
     border-radius: inherit;
     pointer-events: none;
+    /* 只用 blur，避免顶部透明时饱和色带 */
     backdrop-filter: blur(var(--navbar-surface-blur, 0px));
 }
 
-
 /* 通用滚动阴影：用于提升导航栏与页面内容的分层感 */
+/* 目前已移除 */
 #navbar.navbar-sticky-shadow>div {
-    box-shadow: var(--shadow-navbar) !important;
+    box-shadow: none !important;
 }
 
 :root.dark #navbar.navbar-sticky-shadow>div {
-    box-shadow: var(--shadow-navbar-dark) !important;
+    box-shadow: none !important;
 }
 
 /* semifull 模式的透明阶段不单独显示 sticky shadow，避免 8px 和 50px 两段跳变 */
@@ -97,18 +95,9 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
     /* "semi" */
     html[data-has-wallpaper] #navbar[data-transparent-mode="semi"]>div {
         --navbar-surface-blur: var(--navbar-glass-blur, 20px) !important;
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-    }
-
-    /* "full" */
-    html[data-has-wallpaper] #navbar[data-transparent-mode="full"]>div {
-        --navbar-surface-blur: 0px !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 
     /* "semifull" (static) */
@@ -123,9 +112,9 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
     /* "semifull" (scrolled) */
     html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"].scrolled>div {
         --navbar-surface-blur: var(--navbar-glass-blur, 20px) !important;
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 }
 
@@ -138,18 +127,9 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
     /* "semi" */
     html[data-has-wallpaper] #navbar[data-transparent-mode="semi"][data-is-home="true"]>div {
         --navbar-surface-blur: var(--navbar-glass-blur, 20px) !important;
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-    }
-
-    /* "full" */
-    html[data-has-wallpaper] #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
-        --navbar-surface-blur: 0px !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 
     /* "semifull" (static) */
@@ -164,9 +144,9 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
     /* "semifull" (scrolled) */
     html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div {
         --navbar-surface-blur: var(--navbar-glass-blur, 20px) !important;
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
         border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 }
 
@@ -177,15 +157,8 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
 
     /* "semi" */
     :root.dark[data-has-wallpaper] #navbar[data-transparent-mode="semi"]>div {
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    /* "full" */
-    :root.dark[data-has-wallpaper] #navbar[data-transparent-mode="full"]>div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 
     /* "semifull" (static) */
@@ -197,8 +170,8 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
 
     /* "semifull" (scrolled) */
     :root.dark[data-has-wallpaper] #navbar[data-transparent-mode="semifull"].scrolled>div {
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 }
 
@@ -209,15 +182,8 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
 
     /* "semi" */
     :root.dark[data-has-wallpaper] #navbar[data-transparent-mode="semi"][data-is-home="true"]>div {
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    /* "full" */
-    :root.dark[data-has-wallpaper] #navbar[data-transparent-mode="full"][data-is-home="true"]>div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 
     /* "semifull" (static) */
@@ -229,8 +195,8 @@ html[data-has-wallpaper] #navbar[data-transparent-mode="semifull"]:not(.scrolled
 
     /* "semifull" (scrolled) */
     :root.dark[data-has-wallpaper] #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled>div {
-        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-55) * 100%), transparent) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
+        background: color-mix(in oklch, var(--card-bg) calc(var(--opacity-45) * 100%), transparent) !important;
+        box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
     }
 }
 
@@ -281,10 +247,10 @@ html:not([data-wallpaper-mode="none"])[data-has-wallpaper]
 html:not([data-wallpaper-mode="none"])
     body.wallpaper-transparent
     :is(.dropdown-content, .float-panel) {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(var(--navbar-panel-blur, 20px)) !important;
-    box-shadow: var(--shadow-md) !important;
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(var(--navbar-panel-blur, 20px)) saturate(1.5) !important;
+    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
 /* 暗色主题 */
@@ -293,9 +259,9 @@ html:not([data-wallpaper-mode="none"])
 :root.dark:not([data-wallpaper-mode="none"])
     body.wallpaper-transparent
     :is(.dropdown-content, .float-panel) {
-    background: rgba(23, 23, 23, 0.8) !important;
-    backdrop-filter: blur(var(--navbar-panel-blur, 20px)) !important;
-    box-shadow: var(--shadow-md) !important;
+    background: rgba(23, 23, 23, 0.6) !important;
+    backdrop-filter: blur(var(--navbar-panel-blur, 20px)) saturate(1.5) !important;
+    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -345,4 +311,12 @@ body.wallpaper-transparent #navbar-wrapper #navbar[data-full-width="true"] > div
     .navbar-icon {
         display: none !important;
     }
+}
+
+/* semi 滚动后加回投影 */
+html[data-has-wallpaper] #navbar[data-transparent-mode="semi"].navbar-sticky-shadow>div {
+    box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
+}
+:root.dark[data-has-wallpaper] #navbar[data-transparent-mode="semi"].navbar-sticky-shadow>div {
+    box-shadow: inset 0 1px 0 var(--navbar-glass-highlight), 0 1px 0 var(--navbar-glass-hairline) !important;
 }

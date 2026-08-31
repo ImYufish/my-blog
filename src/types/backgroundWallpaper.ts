@@ -69,7 +69,7 @@ export type BackgroundWallpaperConfig = {
 			mode: "description" | "meta";
 		};
 		navbar?: {
-			transparentMode?: "semi" | "full" | "semifull"; // 导航栏透明模式
+			transparentMode?: "semi" | "semifull" | "none"; // 导航栏透明模式："semi" 半透明，"semifull" 动态透明，"none" 纯色不透明
 			blur?: number; // 毛玻璃模糊度，0 即关闭导航栏毛玻璃
 		};
 		waves?: {
@@ -101,9 +101,10 @@ export type BackgroundWallpaperConfig = {
 	// 全屏壁纸模式特有配置
 	fullscreen?: {
 		position?: string; // 壁纸位置，支持CSS object-position的所有值
-		// 全屏壁纸模式的导航栏配置（动态透明仅首页生效）
+		// 全屏壁纸模式的导航栏配置（仅有半透明/动态透明两种）
 		navbar?: {
-			dynamicTransparent?: boolean; // 是否开启动态透明：开启后首页顶部导航栏透明，下滑后变不透明
+			transparentMode?: "semi" | "semifull"; // 导航栏透明模式："semi" 半透明，"semifull" 动态透明（仅首页顶部透明）
+			blur?: number; // 导航栏毛玻璃模糊度，0 即关闭（玻璃态生效）
 		};
 		// 首页下滑时壁纸模糊渐变开关（从 0 渐变为 overlay.blur 的最大模糊）
 		blurRamp?: {

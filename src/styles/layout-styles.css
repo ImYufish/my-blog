@@ -871,6 +871,17 @@ html:not([data-wallpaper-mode="overlay"]):not([data-wallpaper-mode="none"]):not(
     scroll-margin-top: 5.5rem;
 }
 
+/* 壁纸晕影，仅 banner + fullscreen：边缘压暗、中心保持鲜明（纯静态） */
+html[data-wallpaper-mode="banner"] #wallpaper-wrapper::after,
+html[data-wallpaper-mode="fullscreen"] #wallpaper-wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.28) 100%);
+}
+
 /* Fullscreen 模式下主内容在壁纸下方，用 relative 定位紧跟壁纸 */
 
 /* 初始加载时隐藏主内容，防止壁纸初始化前内容闪烁 */

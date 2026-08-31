@@ -93,7 +93,11 @@
   --page-bg: oklch(0.16 0.014 var(--hue))
   --card-bg: oklch(0.23 0.015 var(--hue))
   --card-bg-transparent: unquote("rgb(23 23 23 / var(--card-transparent-opacity, 0.6))")
-  
+
+  /* 导航栏玻璃高光与发丝线（暗色） */
+  --navbar-glass-highlight: rgba(255, 255, 255, 0.06)
+  --navbar-glass-hairline: rgba(255, 255, 255, 0.10)
+
   --btn-content: oklch(0.75 0.1 var(--hue))
   --btn-regular-bg: oklch(0.33 0.035 var(--hue))
   --btn-regular-bg-hover: oklch(0.38 0.04 var(--hue))
@@ -227,6 +231,10 @@
   --shadow-button: 0 4px 12px rgba(0, 0, 0, 0.15)
   --shadow-button-dark: 0 4px 12px rgba(255, 255, 255, 0.1)
 
+  /* 导航栏玻璃高光与发丝线（明色） */
+  --navbar-glass-highlight: rgba(255, 255, 255, 0.18)
+  --navbar-glass-hairline: rgba(0, 0, 0, 0.06)
+
 /* ===== 边框半径变量 ===== */
 :root
   --radius-sm: 0.25rem     /* 4px */
@@ -246,6 +254,7 @@
   --opacity-25: 0.25
   --opacity-30: 0.3
   --opacity-40: 0.4
+  --opacity-45: 0.45
   --opacity-50: 0.5
   --opacity-55: 0.55
   --opacity-60: 0.6
