@@ -725,11 +725,17 @@ html[data-wallpaper-mode="fullscreen"] body:not(.is-home) #wallpaper-wrapper .ba
     display: none !important;
 }
 
-/* Fullscreen 模式下非 sticky 导航栏：隐藏 top-row 占位，避免顶部空白 */
-html[data-wallpaper-mode="fullscreen"] body:not(.sticky-navbar) #top-row {
+/* Fullscreen 非首页 + 非固定导航栏：无 hero，隐藏 top-row 占位，避免顶部空白 */
+html[data-wallpaper-mode="fullscreen"] body:not(.is-home):not(.sticky-navbar):not(.dynamic-navbar) #top-row {
     height: 0 !important;
     overflow: visible !important;
     transition: none !important;
+}
+
+/* 让 sticky 导航栏跨壁纸滑动、滚到内容区才释放；去掉 transition:none 使 .navbar-hidden 下滑可动画 */
+html[data-wallpaper-mode="fullscreen"] body.is-home:not(.sticky-navbar):not(.dynamic-navbar) #top-row {
+    height: calc(100lvh);
+    overflow: visible !important;
 }
 
 /* Fullscreen 模式下图片全屏覆盖；模糊度由 JS 通过 --fullscreen-blur 变量实时驱动：
@@ -793,7 +799,7 @@ body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicato
 
 #wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicator {
     display: flex;
-    position: absolute;
+    position: fixed;
     bottom: 5rem;
     left: 50%;
     transform: translateX(-50%);
@@ -830,7 +836,7 @@ body:not(.is-home) #wallpaper-wrapper.wallpaper-fullscreen .scroll-down-indicato
 /* Fullscreen 滚动向下指示器（属性驱动，wrapper 不再有 wallpaper-fullscreen 类） */
 html[data-wallpaper-mode="fullscreen"] body.is-home #wallpaper-wrapper .scroll-down-indicator {
     display: flex;
-    position: absolute;
+    position: fixed;
     bottom: 5rem;
     left: 50%;
     transform: translateX(-50%);
@@ -865,10 +871,18 @@ html[data-wallpaper-mode="fullscreen"] #wallpaper-wrapper .scroll-down-indicator
     50% { transform: translateY(8px); }
 }
 
-/* 点击滚动指示器跳转到文章列表时，避免被固定导航栏遮挡 */
+/* 点击滚动指示器跳转到文章列表时，避免被固定导航栏遮挡 / 贴着浏览器顶边 */
 /* 排除overlay和none模式和banner模式，避免scroll-margin-top影响视觉间距 */
 html:not([data-wallpaper-mode="overlay"]):not([data-wallpaper-mode="none"]):not([data-wallpaper-mode="banner"]) body.sticky-navbar #main-grid {
     scroll-margin-top: 5.5rem;
+}
+/* dynamic（固定在顶部，可能未隐藏）下滚动到内容区时给 main-grid 留出 5.5rem，避免被导航栏遮挡 */
+html:not([data-wallpaper-mode="overlay"]):not([data-wallpaper-mode="none"]):not([data-wallpaper-mode="banner"]) body.dynamic-navbar #main-grid {
+    scroll-margin-top: 5.5rem;
+}
+/* static（无固定导航栏）只需 1rem 间距 */
+html:not([data-wallpaper-mode="overlay"]):not([data-wallpaper-mode="none"]):not([data-wallpaper-mode="banner"]) body:not(.sticky-navbar):not(.dynamic-navbar) #main-grid {
+    scroll-margin-top: 1rem;
 }
 
 /* 壁纸晕影，仅 banner + fullscreen：边缘压暗、中心保持鲜明（纯静态） */

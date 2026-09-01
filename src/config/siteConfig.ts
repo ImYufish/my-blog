@@ -122,8 +122,11 @@ export const siteConfig: SiteConfig = {
 		menuAlign: "center",
 		// 导航栏图标和标题是否跟随主题色
 		followTheme: false,
-		// 导航栏是否固定在顶部并始终可见
-		stickyNavbar: true,
+		// 导航栏模式navbarMode：
+		// "static"：不固定，随页面滚动消失
+		// "fixed"：固定在顶部常显
+		// "dynamic"：固定在顶部，下滑隐藏、轻微上滑显示
+		navbarMode: "dynamic",
 	},
 
 	// 站点开始日期，用于统计运行天数

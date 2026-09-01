@@ -19,6 +19,7 @@ import {
 	displaySettingsConfig,
 	expressiveCodeConfig,
 	musicPlayerConfig,
+	navbarMode,
 	profileConfig,
 	siteConfig,
 } from "@/config";
@@ -441,7 +442,8 @@ const siteLogo = await getSiteLogo();
     class:list={[
       {
         "is-home": isHomePageCheck,
-        "sticky-navbar": siteConfig.navbar.stickyNavbar ?? false,
+        "sticky-navbar": navbarMode === "fixed",
+        "dynamic-navbar": navbarMode === "dynamic",
       },
     ]}
   >

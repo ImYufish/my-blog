@@ -1,10 +1,5 @@
-import { expressiveCodeConfig, siteConfig } from "@/config";
-import {
-	BANNER_HEIGHT_HOME,
-	BANNER_HEIGHT_NON_HOME,
-} from "@/constants/constants";
+import { expressiveCodeConfig, navbarMode, siteConfig } from "@/config";
 import type { WALLPAPER_MODE } from "@/types/config";
-import { isBannerMode } from "@/utils/banner-utils";
 import { scheduleContentOverflowEnhancements } from "@/utils/content-overflow-utils";
 import { initializeFloatingPanels } from "@/utils/floating-panel-utils";
 import {
@@ -22,8 +17,6 @@ import {
 	updateNavbarTransparency,
 } from "@/utils/setting-utils";
 import { pathsEqual, url } from "@/utils/url-utils";
-
-const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
 
 /**
  * 进度条：WAAPI 驱动 transform/opacity（合成线程动画）。
@@ -97,18 +90,14 @@ function registerSwupHooks(): void {
 			}
 
 			const navbar = document.getElementById("navbar-wrapper");
-			if (navbar && stickyNavbar) {
+			if (navbar && navbarMode === "dynamic") {
+				// 切页时先显示导航栏，避免新页从隐藏态开始；滚动逻辑会随滚动位置重新判断
 				navbar.classList.remove("navbar-hidden");
-			} else if (isBannerMode() && navbar) {
-				const currentIsHome = document.body.classList.contains("is-home");
-				const threshold =
-					window.innerHeight *
-						((currentIsHome ? BANNER_HEIGHT_HOME : BANNER_HEIGHT_NON_HOME) /
-							100) -
-					88;
-				if (document.documentElement.scrollTop >= threshold) {
-					navbar.classList.add("navbar-hidden");
-				}
+				document.body.classList.remove("dynamic-navbar-hidden");
+			} else if (navbar) {
+				// fixed / static：切页时先显示导航栏，避免残留上一页（如滚到底部时隐藏）的 navbar-hidden，
+				// 否则从其它页面切回首页时导航栏会保持隐藏、不再跨壁纸显示
+				navbar.classList.remove("navbar-hidden");
 			}
 		},
 	);

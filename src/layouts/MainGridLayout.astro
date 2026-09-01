@@ -11,7 +11,12 @@ import FloatingControls from "@/components/controls/FloatingControls.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import SidebarColumn from "@/components/layout/SidebarColumn.astro";
 import WallpaperSection from "@/components/layout/WallpaperSection.astro";
-import { live2dWidgetConfig, sidebarLayoutConfig, siteConfig } from "@/config";
+import {
+	live2dWidgetConfig,
+	navbarMode,
+	sidebarLayoutConfig,
+	siteConfig,
+} from "@/config";
 import { getBannerVisibilityState } from "@/utils/banner-visibility-utils";
 import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
 import { resolveNavMenuLinks } from "@/utils/nav-menu-utils";
@@ -59,7 +64,6 @@ const isHomePageCheck = isHomePage(Astro.url.pathname);
 const isPostPage = !!postSlug;
 const shouldRenderCategoryBar = !!siteConfig.categoryBar;
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
-const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
 
 const banner = getBannerVisibilityState({
 	isHomePage: isHomePageCheck,
@@ -87,7 +91,7 @@ const {
 <Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug} postCoverImage={postCoverImage} hasWallpaper={hasWallpaper}>
 
 <slot slot="head" name="head" />
-<HeaderTopRow stickyNavbar={stickyNavbar} navbarWidthFull={navbarWidthFull} />
+<HeaderTopRow navbarMode={navbarMode} navbarWidthFull={navbarWidthFull} />
 
 <WallpaperSection state={banner} backgroundImages={backgroundImages} title={title} bannerPostMeta={bannerPostMeta} />
 
