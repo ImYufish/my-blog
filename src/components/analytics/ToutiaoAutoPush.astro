@@ -1,0 +1,25 @@
+---
+interface Props {
+	// 头条/字节站长平台 push.js 的查询参数 token（即 https://.../ttzz/push.js?<token> 的那段）
+	token: string;
+}
+const { token } = Astro.props;
+const pushUrl = `https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?${token}`;
+---
+
+{/* 头条/字节自动收录：在每页加载时注入官方 push.js，把当前 URL 推给搜索引擎。
+    挂在 astro:page-load 上，首次加载与每次 Swup 软导航都会提交当前页 URL（SPA 不丢页）。 */}
+<script is:inline define:vars={{ pushUrl }} data-swup-ignore-script>
+	(function () {
+		function push() {
+			var old = document.getElementById("ttzz");
+			if (old) old.remove();
+			var s = document.createElement("script");
+			s.src = pushUrl;
+			s.id = "ttzz";
+			s.async = true;
+			(document.head || document.body).appendChild(s);
+		}
+		document.addEventListener("astro:page-load", push);
+	})();
+</script>

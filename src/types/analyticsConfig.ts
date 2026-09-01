@@ -23,4 +23,5 @@ export type AnalyticsConfig = {
 		hashMode?: boolean; // 单页面应用统计（Vue/React 等），默认 false
 		screenRecord?: boolean; // 开启网站录屏功能，默认 true
 	};
+	toutiaoPushToken?: string; // 头条/字节站长平台自动收录 token（push.js 查询参数）；留空则不注入 ttzz 脚本
 };

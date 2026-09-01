@@ -1,5 +1,5 @@
 export type IndexNowConfig = {
-	// 是否启用 搜索引擎即时收录（Bing IndexNow + 百度 + 头条 的总开关）
+	// 是否启用 搜索引擎即时收录（Bing IndexNow + 百度 的总开关）
 	enabled: boolean;
 	// Bing IndexNow API key，同时是 public/<key>.txt 验证文件的文件名与内容。
 	// 去 https://www.bing.com/indexnow/getstarted 用这个 key 注册，或换成你自己的。
@@ -14,14 +14,6 @@ export type IndexNowConfig = {
 		// 百度站长平台验证的域名（不带协议），如 "x1anyu.cn"，必须与百度登记的站点一致
 		site: string;
 		// 百度「API推送」的 16 位 token（去 百度搜索资源平台 → 数据提交 → API推送 复制）
-		token: string;
-	};
-	// 头条 / 字节 主动推送：官方无稳定公开 push API，推荐在站长平台提交 sitemap；
-	// endpoint 留空则仅打印「去站长平台提交 sitemap」的提示，填了就推送到该 endpoint（best-effort）
-	toutiao: {
-		enabled: boolean;
-		// 可选：自定义实时推送 endpoint；留空则不推送
-		endpoint: string;
 		token: string;
 	};
 };

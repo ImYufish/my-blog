@@ -37,7 +37,6 @@ export type {
 	WidgetComponentType,
 	WidgetSpecificConfig,
 } from "../types/config";
-export type { LLMWikiConfig } from "../types/llmWikiConfig"; // LLM Wiki 配置类型
 export type {
 	BuiltinFontProvider,
 	CustomFontProvider,
@@ -63,7 +62,6 @@ export { galleryConfig } from "./galleryConfig"; // 相册配置
 export { hitokotoConfig } from "./hitokotoConfig"; // 一言组件配置
 export { indexNowConfig } from "./indexNowConfig"; // IndexNow 自动收录配置
 export { licenseConfig } from "./licenseConfig"; // 许可证配置
-export { llmWikiConfig } from "./llmWikiConfig"; // LLM Wiki（构建期生成 llms.txt + wiki）配置
 // 组件配置
 export { mermaidConfig } from "./mermaidConfig"; // Mermaid 图表配置
 export { musicPlayerConfig } from "./musicConfig"; // 音乐播放器配置

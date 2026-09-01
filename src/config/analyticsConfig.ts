@@ -46,4 +46,7 @@ export const analyticsConfig: AnalyticsConfig = {
 		// 是否开启网站录屏功能
 		screenRecord: true,
 	},
+	// 头条/字节自动收录（ttzz push.js）。token 取自站长平台「自动收录」那段脚本的查询参数。
+	// 留空 "" 则不注入脚本。需配合 public/ByteDanceVerify.html 完成站点所有权验证。
+	toutiaoPushToken: "***REMOVED***",
 };

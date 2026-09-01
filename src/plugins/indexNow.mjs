@@ -52,12 +52,9 @@ export function indexNow(config = {}) {
 				// ---- Bing IndexNow ----
 				await bingIndexNow(urls, { key, hostOverride, dir, verbose });
 
-				// ---- 百度主动推送 ----
-				await baiduPush(urls, config.baidu);
-
-				// ---- 头条 / 字节（可选） ----
-				await toutiaoPush(urls, config.toutiao);
-			},
+			// ---- 百度主动推送 ----
+			await baiduPush(urls, config.baidu);
+		},
 		},
 	};
 }
@@ -229,43 +226,6 @@ async function baiduPush(urls, cfg) {
 		}
 	} catch (e) {
 		console.warn("[baidu] 请求异常：", e.message);
-	}
-}
-
-/**
- * 头条 / 字节 推送（best-effort）
- * 说明：头条/豆包搜索官方无稳定公开的 URL 主动推送 REST API（其站长平台用 sitemap / 手动提交 / JS 自动收录）。
- * 因此默认 endpoint 留空时只打印「去站长平台提交 sitemap」的提示；
- * 若你后续拿到某个实时推送 endpoint（如 CDN/第三方站长平台提供），填到 config.toutiao.endpoint 即可自动推送。
- */
-async function toutiaoPush(urls, cfg) {
-	if (!cfg || cfg.enabled === false) {
-		console.log("[toutiao] 未启用，跳过");
-		return;
-	}
-	const endpoint = cfg.endpoint || "";
-	if (!endpoint) {
-		console.log(
-			"[toutiao] 未配置 endpoint：头条/字节无公开 push API，请前往 zhanzhang.toutiao.com 验证站点后提交 sitemap（已放置 public/ByteDanceVerify.html 占位，替换为你站点验证文件即可完成所有权验证）。",
-		);
-		return;
-	}
-	const token = cfg.token || "";
-	const sep = endpoint.includes("?") ? "&" : "?";
-	const url = token ? `${endpoint}${sep}token=${encodeURIComponent(token)}` : endpoint;
-	const body = urls.join("\n");
-	try {
-		const res = await fetch(url, {
-			method: "POST",
-			headers: { "Content-Type": "text/plain" },
-			body,
-		});
-		const text = await res.text();
-		console.log(
-			`[toutiao] 提交完成：HTTP ${res.status}（endpoint=${endpoint}）${text ? ` 响应：${text.slice(0, 200)}` : ""}`,
-		);
-	} catch (e) {
-		console.warn("[toutiao] 请求异常：", e.message);
 	}
 }
 
