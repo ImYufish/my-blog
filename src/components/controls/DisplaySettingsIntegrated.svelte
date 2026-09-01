@@ -636,18 +636,17 @@ $effect(() => {
 <div id="display-setting" class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-3 pt-0 pb-3 max-h-[80vh] overflow-y-auto" data-floating-panel data-floating-panel-trigger="display-settings-switch" inert aria-hidden="true">
 	<!-- Tab Bar -->
 	{#if showTabBar}
-	<div class="flex border-b border-black/5 dark:border-white/10 -mx-1 mb-2">
+	<div class="flex gap-1 border-b border-black/5 dark:border-white/10 pt-3 pb-1 mb-3">
 		{#each visibleTabs as tab (tab.key)}
 			<button
-				class="focus-ring-inset flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium transition-colors relative min-w-0 rounded-md
-					{activeTab === tab.key ? 'text-(--primary)' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}"
+				class="focus-ring-inset flex-1 flex flex-col items-center justify-center gap-1.5 py-2 px-2 text-xs font-medium transition-colors rounded-lg min-w-0
+					{activeTab === tab.key
+						? 'bg-(--btn-plain-bg-hover) text-(--primary)'
+						: 'text-gray-500 dark:text-gray-400 hover:bg-(--btn-plain-bg-hover) hover:text-gray-700 dark:hover:text-gray-300'}"
 				onclick={() => activeTab = tab.key}
 			>
-				<Icon icon={tab.icon} class="text-[0.875rem] shrink-0"></Icon>
+				<Icon icon={tab.icon} class="text-[1.5rem] shrink-0"></Icon>
 				<span class="truncate">{tab.label}</span>
-				{#if activeTab === tab.key}
-					<div class="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-(--primary)"></div>
-				{/if}
 			</button>
 		{/each}
 	</div>
