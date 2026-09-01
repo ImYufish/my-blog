@@ -10,7 +10,6 @@ import MusicPlayer from "@/components/features/MusicPlayer.astro";
 import {
 	backgroundWallpaper,
 	displaySettingsConfig,
-	navBarConfig,
 	siteConfig,
 } from "@/config";
 import { musicPlayerConfig } from "@/config/musicConfig";
@@ -19,10 +18,9 @@ import { i18n } from "@/i18n/translation";
 import type { NavBarLink } from "@/types/config";
 import { getFallbackFormat, getImageFormats } from "@/utils/image-utils";
 import { isHomePage } from "@/utils/layout-utils";
-import { resolveNavbarLinks } from "@/utils/navbar-i18n";
+import { resolveNavMenuLinks } from "@/utils/nav-menu-utils";
 import { url } from "@/utils/url-utils";
 import DropdownMenu from "./DropdownMenu.astro";
-import NavMenuPanel from "./NavMenuPanel.astro";
 
 const className = Astro.props.class;
 
@@ -67,31 +65,8 @@ const allowLayoutSwitch = displaySettingsConfig.layoutSwitchable;
 const hasDisplaySettings =
 	showThemeColor || isWallpaperSwitchable || allowLayoutSwitch;
 
-// 根据 siteConfig.pages 过滤导航栏链接
-const pages = siteConfig.pages;
-
-function isPageEnabled(link: NavBarLink): boolean {
-	if (!link.pageKey) return true;
-	return pages[link.pageKey as keyof typeof pages] !== false;
-}
-
-function filterLinks(link: NavBarLink): NavBarLink | null {
-	if (!link.children) {
-		return isPageEnabled(link) ? link : null;
-	}
-
-	const filteredChildren = link.children.filter(isPageEnabled);
-
-	if (filteredChildren.length === 0) return null;
-	if (filteredChildren.length === 1) return filteredChildren[0];
-	return { ...link, children: filteredChildren };
-}
-
-let links: NavBarLink[] = resolveNavbarLinks(
-	navBarConfig.links
-		.map(filterLinks)
-		.filter((link): link is NavBarLink => link !== null),
-);
+// 解析导航栏链接（按 siteConfig.pages 过滤 + i18n 名称），桌面下拉与移动抽屉共用
+const links: NavBarLink[] = resolveNavMenuLinks();
 
 // 处理导航栏 Logo 图片，image / url 类型支持亮暗色分别设置
 const logoConfig = siteConfig.navbar.logo;
@@ -263,7 +238,6 @@ const logoVariants = await Promise.all(
                 <MusicPlayer />
             </div>
         )}
-        <NavMenuPanel links={links}></NavMenuPanel>
         {isDisplaySettingsEnabled && <DisplaySettings client:load></DisplaySettings>}
     </div>
 </div>
@@ -355,8 +329,10 @@ function loadButtonScript() {
     }
 
     document.addEventListener("click", function(event) {
-        const panels = ["display-setting", "nav-menu-panel", "music-nav-panel", "theme-mode-panel"];
-        const buttons = ["display-settings-switch", "nav-menu-switch", "music-player-switch", "scheme-switch"];
+        // nav-menu-panel 不再走点击外部关闭：面板现在覆盖全屏（inset-0），任意点击都在面板内，
+        // 该监听永不触发；关闭由抽屉自己的遮罩点击/Document 委托负责。
+        const panels = ["display-setting", "music-nav-panel", "theme-mode-panel"];
+        const buttons = ["display-settings-switch", "music-player-switch", "scheme-switch"];
 
         panels.forEach((id, index) => {
             const panel = document.getElementById(id);

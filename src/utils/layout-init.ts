@@ -35,10 +35,8 @@ export function initLayout(): void {
 		"display-setting",
 		"display-settings-switch",
 	]);
-	setClickOutsideToClose("nav-menu-panel", [
-		"nav-menu-panel",
-		"nav-menu-switch",
-	]);
+	// nav-menu-panel 现为全屏抽屉（inset-0），点击外部永不触发且由遮罩点击关闭，
+	// 不再注册 click-outside（见 NavMenuPanel.astro 的 document 委托）。
 	setClickOutsideToClose("search-panel", [
 		"search-panel",
 		"search-bar",
