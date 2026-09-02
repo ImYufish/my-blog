@@ -365,6 +365,9 @@ export const en: Translation = {
 	[Key.wallpaperMode]: "Wallpaper Mode",
 	[Key.wallpaperBannerMode]: "Banner Wallpaper",
 	[Key.wallpaperFullscreenMode]: "Fullscreen Wallpaper",
+	[Key.fullscreenLayout]: "Fullscreen Layout",
+	[Key.fullscreenClassicLayout]: "Classic",
+	[Key.fullscreenHeroLayout]: "Hero",
 	[Key.wallpaperOverlayMode]: "Overlay Wallpaper",
 	[Key.wallpaperNoneMode]: "None Wallpaper",
 

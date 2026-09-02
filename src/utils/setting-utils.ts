@@ -8,7 +8,11 @@ import {
 	WALLPAPER_NONE,
 	WALLPAPER_OVERLAY,
 } from "@constants/constants";
-import type { LIGHT_DARK_MODE, WALLPAPER_MODE } from "@/types/config";
+import type {
+	FullscreenWallpaperLayout,
+	LIGHT_DARK_MODE,
+	WALLPAPER_MODE,
+} from "@/types/config";
 import {
 	backgroundWallpaper,
 	displaySettingsConfig,
@@ -296,12 +300,89 @@ export function syncBannerHomeTextVisibility(): void {
 	overlay.classList.toggle("hidden", !show);
 }
 
+export function getDefaultFullscreenLayout(): FullscreenWallpaperLayout {
+	return backgroundWallpaper.fullscreen?.layout ?? "classic";
+}
+
+export function getStoredFullscreenLayout(): FullscreenWallpaperLayout {
+	const defaultLayout = getDefaultFullscreenLayout();
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
+		return defaultLayout;
+	}
+	const stored = localStorage.getItem("fullscreenLayout");
+	return stored === "hero" || stored === "classic" ? stored : defaultLayout;
+}
+
+export function applyFullscreenLayoutToDocument(
+	layout: FullscreenWallpaperLayout,
+	animate = true,
+): void {
+	if (typeof document === "undefined") return;
+
+	const safeLayout: FullscreenWallpaperLayout =
+		layout === "hero" ? "hero" : "classic";
+	const html = document.documentElement;
+	if (animate) {
+		html.classList.add("is-fullscreen-layout-transitioning");
+		window.setTimeout(() => {
+			html.classList.remove("is-fullscreen-layout-transitioning");
+		}, 520);
+	}
+	html.setAttribute("data-fullscreen-layout", safeLayout);
+
+	const mode = html.getAttribute("data-wallpaper-mode");
+	const transparent =
+		mode === WALLPAPER_OVERLAY ||
+		(mode === WALLPAPER_FULLSCREEN && safeLayout === "hero");
+	document.body?.classList.toggle("wallpaper-transparent", transparent);
+	window.dispatchEvent(
+		new CustomEvent("fullscreenLayoutChange", {
+			detail: { layout: safeLayout },
+		}),
+	);
+}
+
+export function setFullscreenLayout(layout: FullscreenWallpaperLayout): void {
+	const safeLayout: FullscreenWallpaperLayout =
+		layout === "hero" ? "hero" : "classic";
+	if (
+		typeof localStorage !== "undefined" &&
+		typeof localStorage.setItem === "function"
+	) {
+		localStorage.setItem("fullscreenLayout", safeLayout);
+	}
+	applyFullscreenLayoutToDocument(safeLayout);
+}
+
 export function applyWallpaperModeToDocument(
 	mode: WALLPAPER_MODE,
 	animate = true,
 ): void {
 	const html = document.documentElement;
 	const prevMode = html.getAttribute("data-wallpaper-mode");
+	const isHeroFullscreen =
+		html.getAttribute("data-fullscreen-layout") === "hero";
+	const isClassicFullscreenTransition =
+		html.getAttribute("data-fullscreen-layout") === "classic" &&
+		(prevMode === WALLPAPER_FULLSCREEN || mode === WALLPAPER_FULLSCREEN);
+	const contentPanel = isClassicFullscreenTransition
+		? (document.querySelector(".content-panel") as HTMLElement | null)
+		: null;
+	const contentPanelStartTop = contentPanel?.getBoundingClientRect().top;
+
+	// hero 全屏 banner↔fullscreen 切换：捕获 wallpaper 进模式前的视觉位置，用于 transform FLIP，
+	// 掩藏页面滚动时 position:absolute↔fixed 的 containing block 切换造成的锚点跳变
+	const isHeroBannerToggle =
+		isHeroFullscreen &&
+		((prevMode === WALLPAPER_BANNER && mode === WALLPAPER_FULLSCREEN) ||
+			(prevMode === WALLPAPER_FULLSCREEN && mode === WALLPAPER_BANNER));
+	const wallpaperWrapper = isHeroBannerToggle
+		? (document.getElementById("wallpaper-wrapper") as HTMLElement | null)
+		: null;
+	const wrapperStartTop = wallpaperWrapper?.getBoundingClientRect().top;
 
 	// 先启用过渡类再设置模式：确保 --content-top 变化时 top 过渡已激活（否则位置瞬间到位不动画）
 	if (animate) {
@@ -314,19 +395,57 @@ export function applyWallpaperModeToDocument(
 
 	html.setAttribute("data-wallpaper-mode", mode);
 
+	if (animate && wallpaperWrapper && wrapperStartTop !== undefined) {
+		const wrapperEndTop = wallpaperWrapper.getBoundingClientRect().top;
+		const wrapperDelta = wrapperStartTop - wrapperEndTop;
+		if (wrapperDelta !== 0) {
+			// FLIP：先把 wrapper 用 -delta 挪回原位提交，再归零让 transform 过渡把它滑到新位
+			wallpaperWrapper.style.setProperty(
+				"--hero-wallpaper-offset",
+				`${wrapperDelta}px`,
+			);
+			void wallpaperWrapper.offsetWidth; // 强制回流提交 invert，transform 过渡才生效
+			wallpaperWrapper.style.setProperty("--hero-wallpaper-offset", "0px");
+			window.setTimeout(() => {
+				wallpaperWrapper.style.removeProperty("--hero-wallpaper-offset");
+			}, 560);
+		}
+	}
+
+	if (animate && contentPanel && contentPanelStartTop !== undefined) {
+		html.classList.add("is-classic-content-positioning");
+		const contentPanelEndTop = contentPanel.getBoundingClientRect().top;
+		contentPanel.style.setProperty(
+			"--classic-content-offset",
+			`${contentPanelStartTop - contentPanelEndTop}px`,
+		);
+		html.classList.add("is-classic-content-transitioning");
+		window.setTimeout(() => {
+			html.classList.remove(
+				"is-classic-content-positioning",
+				"is-classic-content-transitioning",
+			);
+			contentPanel.style.removeProperty("--classic-content-offset");
+		}, 520);
+	}
+
 	// 首页标题显示：按当前模式 + 是否首页同步 hidden 类（SSR 按 config 默认模式渲染 hidden，
 	// 模式运行时切换后需同步）。放在标题动画之前，让下方动画的 !contains("hidden") 判断拿到最新状态。
 	syncBannerHomeTextVisibility();
 
 	// 卡片透明类：唯一运行时写入者（解析期由 body 起始脚本写入）
-	const transparent = mode === "overlay" || mode === "fullscreen";
+	const transparent =
+		mode === WALLPAPER_OVERLAY ||
+		(mode === WALLPAPER_FULLSCREEN &&
+			html.getAttribute("data-fullscreen-layout") === "hero");
 	document.body.classList.toggle("wallpaper-transparent", transparent);
 
 	// 标题上下移动动画：banner ↔ fullscreen 切换时 wrapper 高度瞬时变化，
 	// 用 transform 补偿后滑到居中位置（首页标题可见时才动画）
 	if (
-		(mode === WALLPAPER_FULLSCREEN && prevMode === WALLPAPER_BANNER) ||
-		(mode === WALLPAPER_BANNER && prevMode === WALLPAPER_FULLSCREEN)
+		isHeroFullscreen &&
+		((mode === WALLPAPER_FULLSCREEN && prevMode === WALLPAPER_BANNER) ||
+			(mode === WALLPAPER_BANNER && prevMode === WALLPAPER_FULLSCREEN))
 	) {
 		const title = document.querySelector(
 			".banner-home-text-overlay",
@@ -597,7 +716,7 @@ export function applyStoredOverlaySettingsToDocument(): void {
 
 // Waves animation functions
 export function getDefaultWavesEnabled(): boolean {
-	const wavesConfig = backgroundWallpaper.banner?.waves?.enable;
+	const wavesConfig = backgroundWallpaper.common?.waves?.enable;
 	if (typeof wavesConfig === "object") {
 		// 如果是分设备配置，检查当前设备
 		const isMobile =
@@ -655,7 +774,7 @@ export function applyWavesEnabledToDocument(enabled: boolean): void {
 
 // Gradient transition functions
 export function getDefaultGradientEnabled(): boolean {
-	const gradientConfig = backgroundWallpaper.banner?.gradient?.enable;
+	const gradientConfig = backgroundWallpaper.common?.gradient?.enable;
 	if (typeof gradientConfig === "object") {
 		const isMobile =
 			typeof window !== "undefined" ? window.innerWidth < 768 : false;

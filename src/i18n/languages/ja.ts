@@ -363,6 +363,9 @@ export const ja: Translation = {
 	[Key.wallpaperMode]: "壁紙モード",
 	[Key.wallpaperBannerMode]: "バナー壁紙",
 	[Key.wallpaperFullscreenMode]: "フルスクリーン壁紙",
+	[Key.fullscreenLayout]: "フルスクリーンレイアウト",
+	[Key.fullscreenClassicLayout]: "クラシック",
+	[Key.fullscreenHeroLayout]: "ヒーロー",
 	[Key.wallpaperOverlayMode]: "透明",
 	[Key.wallpaperNoneMode]: "単色背景",
 

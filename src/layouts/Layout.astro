@@ -76,6 +76,9 @@ const navbarTransparentMode =
 // 判断是否应该显示顶部高光效果（只在 semifull 动态透明模式下显示）
 const shouldShowTopHighlight = navbarTransparentMode === "semifull";
 
+// 全屏壁纸布局：classic 为文档流旧版，hero 为固定首屏新版
+const fullscreenLayout = backgroundWallpaper.fullscreen?.layout ?? "classic";
+
 // 子菜单 / 浮动面板的毛玻璃模糊度：跟随 navbar.blur，但不受壁纸模式影响，
 // 且带一个最小值 —— 导航栏可以用 blur: 0 关掉毛玻璃，面板则始终保留毛玻璃。
 // 之所以不复用 #navbar 上的 --navbar-glass-blur：
@@ -125,7 +128,7 @@ const siteLogo = await getSiteLogo();
 ---
 
 <!doctype html>
-<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode} data-has-wallpaper={hasWallpaper ? "" : undefined} data-tag-style={siteConfig.tagStyle ?? "pill"} data-category-style={siteConfig.categoryStyle ?? "rectangle"}>
+<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode} data-fullscreen-layout={fullscreenLayout} data-has-wallpaper={hasWallpaper ? "" : undefined} data-tag-style={siteConfig.tagStyle ?? "pill"} data-category-style={siteConfig.categoryStyle ?? "rectangle"}>
   <head>
     <meta charset="UTF-8" />
     <style is:inline>
@@ -309,6 +312,7 @@ const siteLogo = await getSiteLogo();
         lightTheme: expressiveCodeConfig.lightTheme,
         baseUrl: import.meta.env.BASE_URL,
         cardTransparentOpacity: backgroundWallpaper.overlay?.cardOpacity ?? 0.6,
+        fullscreenLayout,
       }}
     >
       // 主题初始化 - 与setting-utils.ts保持一致
@@ -361,6 +365,17 @@ const siteLogo = await getSiteLogo();
         ? Math.min(1, Math.max(0, parsedCardOpacity))
         : cardTransparentOpacity;
       document.documentElement.style.setProperty("--card-transparent-opacity", String(resolvedCardOpacity));
+
+      // 初始化全屏布局：优先使用设置面板保存的运行时选择
+      const storedFullscreenLayout = localStorage.getItem("fullscreenLayout");
+      const resolvedFullscreenLayout =
+        storedFullscreenLayout === "hero" || storedFullscreenLayout === "classic"
+          ? storedFullscreenLayout
+          : fullscreenLayout;
+      document.documentElement.setAttribute(
+        "data-fullscreen-layout",
+        resolvedFullscreenLayout,
+      );
 
       // 内容定位已由 --content-top 纯 CSS 决定（layout-base.css），无需 --banner-height-extend 变量/计算
 
@@ -454,7 +469,9 @@ const siteLogo = await getSiteLogo();
         if (!wm) return;
         document.body.classList.toggle(
           "wallpaper-transparent",
-          wm === "overlay" || wm === "fullscreen",
+          wm === "overlay" ||
+            (wm === "fullscreen" &&
+              document.documentElement.getAttribute("data-fullscreen-layout") === "hero"),
         );
       })();
     </script>
