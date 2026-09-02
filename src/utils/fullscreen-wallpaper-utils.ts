@@ -9,6 +9,12 @@ let parallaxTicking = false;
 let cachedMaxBlur: number | null = null; // 缓存的 --overlay-blur 解析值（仅在加载/滑块变化时刷新）
 let lastWrittenBlur = ""; // 上次实际写入的 --fullscreen-blur，值未变则跳过写入
 
+function isHeroFullscreenLayout(): boolean {
+	return (
+		document.documentElement.getAttribute("data-fullscreen-layout") === "hero"
+	);
+}
+
 export function updateFullscreenTitleParallax(): void {
 	const html = document.documentElement;
 	const overlay = document.getElementById("banner-overlay-container");
@@ -16,6 +22,7 @@ export function updateFullscreenTitleParallax(): void {
 	// 非全屏或页面过渡中：复位（让 transition-swup-fade 的 CSS 生效）
 	if (
 		html.getAttribute("data-wallpaper-mode") !== "fullscreen" ||
+		!isHeroFullscreenLayout() ||
 		html.classList.contains("is-animating") ||
 		html.classList.contains("is-changing")
 	) {
@@ -58,7 +65,7 @@ export function syncFullscreenOverlays(): void {
 	);
 	overlays.forEach((el) => {
 		const element = el as HTMLElement;
-		if (mode === "fullscreen" && !isHome) {
+		if (mode === "fullscreen" && isHeroFullscreenLayout() && !isHome) {
 			element.style.setProperty("display", "none", "important");
 		} else {
 			element.style.removeProperty("display");
@@ -74,6 +81,10 @@ export function syncFullscreenBlur(): void {
 	const wrapper = document.getElementById("wallpaper-wrapper");
 	if (!wrapper) return;
 	if (html.getAttribute("data-wallpaper-mode") !== "fullscreen") {
+		setBlurIfChanged(wrapper, "0px");
+		return;
+	}
+	if (!isHeroFullscreenLayout()) {
 		setBlurIfChanged(wrapper, "0px");
 		return;
 	}
@@ -129,6 +140,11 @@ export function initFullscreenWallpaper(): void {
 	window.addEventListener("wallpaperModeChange", () => {
 		requestAnimationFrame(updateFullscreenTitleParallax);
 		syncFullscreenBlur();
+	});
+	window.addEventListener("fullscreenLayoutChange", () => {
+		requestAnimationFrame(updateFullscreenTitleParallax);
+		syncFullscreenBlur();
+		syncFullscreenOverlays();
 	});
 	window.addEventListener("wallpaperModeChange", syncFullscreenOverlays);
 	updateFullscreenTitleParallax(); // 初始加载（浏览器可能恢复滚动位置）

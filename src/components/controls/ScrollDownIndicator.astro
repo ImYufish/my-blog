@@ -42,8 +42,9 @@ import { Icon } from "astro-icon/components";
     }
 
     // Edge Android 的底部导航栏是常驻浏览器 chrome，且不反映到 vh/dvh/lvh：
-    // 全屏壁纸 wrapper（100lvh）会延伸到工具栏后面，指示器 bottom 相对壁纸底（在工具栏后面）而显得太靠下。
+    // 全屏壁纸 wrapper（100lvh，或 classic 的 100vh）会延伸到工具栏后面，指示器 bottom 相对壁纸底（在工具栏后面）而显得太靠下。
     // 其他浏览器无此问题，保持 CSS 的 bottom 不动，仅 Edge Android 用 JS 把被遮挡的高度补回来。
+    // 必须用 setProperty(..., 'important')：classic 规则的 bottom:5rem 带 !important，普通内联 bottom 覆盖不了它。
     function updatePosition() {
       var indicator = document.getElementById("scroll-down-indicator");
       if (!indicator) return;
@@ -52,7 +53,11 @@ import { Icon } from "astro-icon/components";
         return;
       }
       var overlap = getToolbarOverlap() || 48; // visualViewport 无法反映底部栏时的兜底高度
-      indicator.style.bottom = TARGET_CLEARANCE + overlap + "px";
+      indicator.style.setProperty(
+        "bottom",
+        TARGET_CLEARANCE + overlap + "px",
+        "important",
+      );
     }
 
     window.addEventListener("scroll", updateVisibility, { passive: true });

@@ -906,3 +906,126 @@ html[data-wallpaper-mode="fullscreen"] #wallpaper-wrapper::after {
 /* Fullscreen 模式下主内容使用 relative 定位，需要匹配 pointer-events-none 类 */
 @media (max-width: 1023px) {
     }
+
+/* classic 全屏布局：覆盖新版 fixed Hero 规则，恢复文档流全屏壁纸 */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] #wallpaper-wrapper {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home #wallpaper-wrapper {
+    height: 100vh !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.is-home) #wallpaper-wrapper {
+    height: var(--banner-height-non-home) !important;
+    min-height: var(--banner-height-non-home) !important;
+    max-height: var(--banner-height-non-home) !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.is-home) .content-panel {
+    position: absolute !important;
+    top: calc(var(--banner-height-non-home) - 3.5rem) !important;
+    margin-top: 0 !important;
+    min-height: calc(100vh - (var(--banner-height-non-home) - 3.5rem)) !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] #wallpaper-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    filter: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home .content-panel {
+    position: relative !important;
+    top: 0 !important;
+    z-index: 30;
+    margin-top: 0 !important;
+    min-height: 100vh !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.sticky-navbar):not(.dynamic-navbar) #top-row {
+    height: 0 !important;
+    overflow: visible !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.is-home) #wallpaper-wrapper .banner-page-title-overlay,
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.is-home) #wallpaper-wrapper .banner-post-meta-overlay {
+    display: flex !important;
+}
+
+/* classic 首页：隐藏残留/持久化的非首页覆盖层（wrapper 在 Swup 容器外、切页不重渲染，
+   从非首页切回首页时上一页的标题覆盖层会残留，其自带 lg:flex 在桌面端会让标题残影居中闪现） */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home #wallpaper-wrapper .banner-page-title-overlay,
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home #wallpaper-wrapper .banner-post-meta-overlay {
+    display: none !important;
+}
+
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] #wallpaper-wrapper .scroll-down-indicator {
+    display: flex !important;
+    position: absolute !important;
+    bottom: 5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+@media (max-width: 1023px) {
+    html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] #wallpaper-wrapper .scroll-down-indicator {
+        bottom: 10rem !important;
+    }
+}
+
+/* classic 非首页移动端：与其他模式一致——隐藏壁纸，内容从导航栏下方开始 */
+@media (max-width: 1023px) {
+    html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.is-home) #wallpaper-wrapper {
+        display: none !important;
+    }
+    html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.is-home) .content-panel {
+        top: 5.5rem !important;
+        min-height: calc(100vh - 5.5rem) !important;
+    }
+}
+
+/* classic transition overrides must come after the stable classic rules. */
+html.is-wallpaper-transitioning[data-fullscreen-layout="classic"] #wallpaper-wrapper {
+    transition: opacity 400ms ease, height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94), min-height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* hero 全屏：模式切换（banner↔fullscreen）时与 classic 一致，让壁纸高度平滑缩放；
+   覆盖上方 #wallpaper-wrapper 稳定态的 transition:opacity !important（它不含 height，导致 hero 高度瞬变）。
+   transform 留 450ms 并由 --hero-wallpaper-offset 驱动：滚动时补偿 position:absolute→fixed 的锚点跳变，
+   把跳变掩藏在高度缩放动画内（offset 为 0 时等价于 translateY(0)，无副作用） */
+html.is-wallpaper-transitioning[data-fullscreen-layout="hero"] #wallpaper-wrapper {
+    transition: opacity 400ms ease, height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    transform: translateY(var(--hero-wallpaper-offset, 0px)) !important;
+}
+
+html.is-classic-content-positioning[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home .content-panel {
+    position: absolute !important;
+    top: 100vh !important;
+    margin-top: 0 !important;
+}
+
+@keyframes classic-content-slide {
+    from {
+        transform: translateY(var(--classic-content-offset, 0px));
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+html.is-classic-content-transitioning[data-fullscreen-layout="classic"] .content-panel {
+    animation: classic-content-slide 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    transition: none !important;
+}
