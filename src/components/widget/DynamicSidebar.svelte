@@ -104,7 +104,7 @@ function formatDate(timestamp: number): string {
 	{:else}
 		{#each entries as entry (entry.id)}
 			{@const text = getPlainText(entry.html)}
-			{@const image = entry.images?.[0]}
+			{@const hasImage = (entry.images?.length ?? 0) > 0}
 			<a
 				href={url(`/dynamic/#dynamic-${entry.id}`)}
 				class="group flex min-w-0 min-h-16 items-center gap-3 rounded-lg p-2
@@ -121,10 +121,19 @@ function formatDate(timestamp: number): string {
 						<time datetime={new Date(entry.published).toISOString()}>
 							{formatDate(entry.published)}
 						</time>
-						{#if entry.pinned}
-							<span class="ml-auto inline-flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded bg-(--primary)/10 text-(--primary) font-medium">
-								<svg class="size-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2z"/></svg>
-								{i18n(I18nKey.pinned)}
+						{#if hasImage || entry.pinned}
+							<span class="ml-auto inline-flex items-center gap-1.5">
+								{#if hasImage}
+									<svg class="size-3.5 shrink-0 text-neutral-500 dark:text-neutral-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3L14.5 12l4.5 6H5z"/>
+									</svg>
+								{/if}
+								{#if entry.pinned}
+									<span class="inline-flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded bg-(--primary)/10 text-(--primary) font-medium">
+										<svg class="size-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2z"/></svg>
+										{i18n(I18nKey.pinned)}
+									</span>
+								{/if}
 							</span>
 						{/if}
 					</div>
@@ -132,15 +141,6 @@ function formatDate(timestamp: number): string {
 						{text}
 					</p>
 				</div>
-				{#if image}
-					<img
-						src={image.src}
-						alt={image.alt}
-						class="size-14 shrink-0 rounded-lg bg-(--btn-plain-bg-hover) object-cover"
-						loading="lazy"
-						decoding="async"
-					/>
-				{/if}
 			</a>
 		{/each}
 	{/if}

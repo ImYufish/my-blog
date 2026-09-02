@@ -22,6 +22,8 @@ interface Props {
 	formats?: ImageFormat[];
 	loading?: "lazy" | "eager";
 	apiUrls?: string[];
+	// 高度跟随图片本身宽高比（不裁上下，只裁两边），用于文章详情页封面
+	naturalHeight?: boolean;
 }
 
 const {
@@ -35,6 +37,7 @@ const {
 	formats = getImageFormats(),
 	loading = "lazy",
 	apiUrls = [],
+	naturalHeight = false,
 } = Astro.props;
 
 const configQuality = getImageQuality();
@@ -83,6 +86,7 @@ const remoteReferrerPolicy =
 	class:list={[className, "cover-image-container overflow-hidden relative"]}
 	data-loading={showLoading ? "true" : "false"}
 	data-api-urls={apiUrls.length > 0 ? JSON.stringify(apiUrls) : undefined}
+	data-natural-height={naturalHeight ? "true" : undefined}
 >
 	<!-- LQIP 渐变占位 -->
 	<div class="lqip-placeholder absolute inset-0 pointer-events-none" style={lqipProps.style} aria-hidden="true"></div>
@@ -189,11 +193,20 @@ const remoteReferrerPolicy =
 		}
 	}
 
-	/* 图片样式 */
+	/* 图片样式（height 用 !important 覆盖 Astro Picture/Image 注入的 height:auto，
+	   使本地图也能像远程图一样以 object-fit: cover 填满容器，与主页卡片封面行为一致） */
 	.cover-image-container img {
 		width: 100%;
-		height: 100%;
+		height: 100% !important;
 		object-fit: cover;
+	}
+
+	/* 自然高度模式（详情页封面）：高度跟随图片原始宽高比，不裁上下、只裁两边 */
+	.cover-image-container[data-natural-height] {
+		min-height: 0;
+	}
+	.cover-image-container[data-natural-height] img {
+		height: auto !important;
 	}
 </style>
 

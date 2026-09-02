@@ -8,8 +8,13 @@ import License from "@components/misc/License.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getRelatedPosts, getSortedPosts } from "@utils/content-utils";
 import {
+	getRelatedPosts,
+	getSeriesPosts,
+	getSortedPosts,
+} from "@utils/content-utils";
+import {
+	getCategoryUrl,
 	getFileDirFromPath,
 	getPostUrlBySlug,
 	removeFileExtension,
@@ -20,6 +25,7 @@ import utc from "dayjs/plugin/utc";
 import CoverImage from "@/components/common/CoverImage.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import RecommendedPost from "@/components/misc/RecommendedPost.astro";
+import SeriesNav from "@/components/misc/SeriesNav.astro";
 import SharePoster from "@/components/misc/SharePoster.svelte";
 import { coverImageConfig } from "@/config/coverImageConfig";
 import { licenseConfig } from "@/config/licenseConfig";
@@ -28,6 +34,17 @@ import { siteConfig } from "@/config/siteConfig";
 import { sponsorConfig } from "@/config/sponsorConfig";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import {
+	getAuthorAvatarUrl,
+	getSiteLogo,
+	toAbsoluteImageInfo,
+} from "@/utils/schema-image";
+import {
+	buildBreadcrumbList,
+	buildPersonEntity,
+	buildPublisherEntity,
+	toAbsoluteUrl,
+} from "@/utils/schema-utils";
 import { url } from "@/utils/url-utils";
 
 export async function getStaticPaths() {
@@ -86,25 +103,96 @@ const posterAvatarSelector = profileConfig.avatar
 
 dayjs.extend(utc);
 
+const coverBasePath = getFileDirFromPath(entry.filePath || "");
+const coverImage =
+	(await toAbsoluteImageInfo(
+		processedImage,
+		coverBasePath,
+		siteConfig.site_url,
+	)) ?? undefined;
+
+// 作者个人页（/about/）绝对 URL，用于 author.url 指向唯一标识作者的页面
+const aboutUrl =
+	toAbsoluteUrl("/about/", siteConfig.site_url) ?? siteConfig.site_url;
+
+// 作者实体：与首页/about 的 Person 共用同一 @id（#person），author 用 @id 关联
+const authorAvatarUrl = await getAuthorAvatarUrl();
+const authorPerson = buildPersonEntity({
+	site: siteConfig.site_url,
+	profileConfig,
+	authorUrl: aboutUrl,
+	avatarUrl: authorAvatarUrl,
+	description: profileConfig.bio,
+});
+
+// publisher 实体（Organization，含真实 logo），article 的 publisher 用其 @id 关联
+const publisher = buildPublisherEntity({
+	site: siteConfig.site_url,
+	siteConfig,
+	logo: await getSiteLogo(),
+});
+
+const breadcrumbItems = [
+	{
+		name: i18n(I18nKey.home),
+		url: toAbsoluteUrl("/", siteConfig.site_url) ?? siteConfig.site_url,
+	},
+];
+if (entry.data.category) {
+	breadcrumbItems.push({
+		name: entry.data.category,
+		url:
+			toAbsoluteUrl(getCategoryUrl(entry.data.category), siteConfig.site_url) ??
+			siteConfig.site_url,
+	});
+}
+breadcrumbItems.push({ name: entry.data.title, url: Astro.url.toString() });
+
+const breadcrumbList = buildBreadcrumbList(breadcrumbItems);
+
 const jsonLd = {
 	"@context": "https://schema.org",
-	"@type": "BlogPosting",
-	headline: entry.data.title,
-	description: entry.data.description || entry.data.title,
-	keywords: entry.data.tags,
-	author: {
-		"@type": "Person",
-		name: profileConfig.name,
-		url: Astro.site,
-	},
-	datePublished: formatDateToYYYYMMDD(entry.data.published),
-	inLanguage: entry.data.lang
-		? entry.data.lang.replace("_", "-")
-		: siteConfig.lang.replace("_", "-"),
-	// TODO include cover image here
+	"@graph": [
+		{
+			"@type": "BlogPosting",
+			headline: entry.data.title,
+			description: entry.data.description || entry.data.title,
+			keywords: entry.data.tags.length ? entry.data.tags.join(", ") : undefined,
+			author: { "@id": authorPerson["@id"] },
+			publisher: { "@id": publisher["@id"] },
+			...(coverImage
+				? {
+						image: {
+							"@type": "ImageObject",
+							url: coverImage.url,
+							contentUrl: coverImage.url,
+							...(coverImage.width ? { width: coverImage.width } : {}),
+							...(coverImage.height ? { height: coverImage.height } : {}),
+						},
+					}
+				: {}), // 优化：有封面才输出，避免 image:null
+			datePublished: entry.data.published.toISOString(),
+			...(entry.data.category ? { articleSection: entry.data.category } : {}),
+			...(remarkPluginFrontmatter.words
+				? { wordCount: remarkPluginFrontmatter.words }
+				: {}),
+			...(entry.data.updated
+				? { dateModified: entry.data.updated.toISOString() }
+				: {}),
+			mainEntityOfPage: { "@type": "WebPage", "@id": Astro.url.toString() },
+			url: Astro.url.toString(),
+			inLanguage: entry.data.lang
+				? entry.data.lang.replace("_", "-")
+				: siteConfig.lang.replace("_", "-"),
+		},
+		authorPerson,
+		publisher,
+		breadcrumbList,
+	],
 };
 
 const relatedPosts = await getRelatedPosts(entry, 5);
+const seriesData = await getSeriesPosts(entry);
 ---
 
 <MainGridLayout
@@ -113,6 +201,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
   lang={entry.data.lang}
   setOGTypeArticle={true}
   postSlug={entry.id}
+  postCoverImage={coverImage?.url}
   postCategory={entry.data.category || undefined}
   headings={headings}
   encrypted={!!entry.data.password}
@@ -150,14 +239,14 @@ const relatedPosts = await getRelatedPosts(entry, 5);
             />
             <div class="absolute inset-x-4 top-3 z-10 flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-xs font-medium text-white drop-shadow-[0_1px_2px_rgb(0_0_0/0.9)]">
               <div class="flex items-center gap-1 whitespace-nowrap">
-                <Icon is:inline name="material-symbols:notes-rounded" class="text-base" />
+                <Icon name="material-symbols:notes-rounded" class="text-base" />
                 <span>
                   {remarkPluginFrontmatter.words}
                   {" " + i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
                 </span>
               </div>
               <div class="flex items-center gap-1 whitespace-nowrap">
-                <Icon is:inline name="material-symbols:schedule-outline-rounded" class="text-base" />
+                <Icon name="material-symbols:schedule-outline-rounded" class="text-base" />
                 <span>
                   {remarkPluginFrontmatter.minutes}
                   {" " + i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}
@@ -165,7 +254,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
               </div>
               {entry.data.password && (
                 <div class="flex items-center gap-1 whitespace-nowrap">
-                  <Icon is:inline name="material-symbols:lock-outline" class="text-base" />
+                  <Icon name="material-symbols:lock-outline" class="text-base" />
                   <span>{i18n(I18nKey.postEncrypted)}</span>
                 </div>
               )}
@@ -203,7 +292,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
               <div
                 class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2"
               >
-                <Icon is:inline name="material-symbols:notes-rounded" />
+                <Icon name="material-symbols:notes-rounded" />
               </div>
               <div class="text-sm">
                 {remarkPluginFrontmatter.words}
@@ -214,7 +303,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
               <div
                 class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2"
               >
-                <Icon is:inline name="material-symbols:schedule-outline-rounded" />
+                <Icon name="material-symbols:schedule-outline-rounded" />
               </div>
               <div class="text-sm">
                 {remarkPluginFrontmatter.minutes}
@@ -233,7 +322,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                 <div
                   class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2"
                 >
-                  <Icon is:inline name="material-symbols:lock-outline" />
+                  <Icon name="material-symbols:lock-outline" />
                 </div>
                 <div class="text-sm">
                   {i18n(I18nKey.postEncrypted)}
@@ -286,14 +375,25 @@ const relatedPosts = await getRelatedPosts(entry, 5);
       }
 
       {
+        seriesData && (
+          <SeriesNav
+            seriesName={seriesData.seriesName}
+            posts={seriesData.posts}
+            currentPostId={entry.id}
+          />
+        )
+      }
+
+      {
         showPostCover && !usePostCoverOverlay && processedImage && (
           <div class="mt-4">
             <CoverImage
               id="post-cover"
               src={processedImage}
               basePath={getFileDirFromPath(entry.filePath || "")}
-              class="mb-8 rounded-xl banner-container onload-animation"
+              class="mb-8 rounded-xl onload-animation"
               preview={false}
+              naturalHeight
               apiUrls={apiUrls}
             />
           </div>
@@ -314,7 +414,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-3 flex-1">
                       <div class="h-12 w-12 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70 shrink-0">
-                        <Icon is:inline
+                        <Icon
                           name={sponsorConfig.showButtonInPost &&
                           siteConfig.pages.sponsor
                             ? "material-symbols:favorite"
@@ -364,7 +464,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                             class="inline-flex items-center gap-2 px-6 py-3 bg-(--primary) text-white dark:text-black/70 rounded-lg font-medium hover:bg-(--primary)/80 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
                           >
                             <span>{i18n(I18nKey.sponsor)}</span>
-                            <Icon is:inline name="fa7-solid:arrow-right" class="text-sm" />
+                            <Icon name="fa7-solid:arrow-right" class="text-sm" />
                           </a>
                         )
                       }
@@ -404,7 +504,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-3 flex-1">
                       <div class="h-12 w-12 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70 shrink-0">
-                        <Icon is:inline
+                        <Icon
                           name={sponsorConfig.showButtonInPost &&
                           siteConfig.pages.sponsor
                             ? "material-symbols:favorite"
@@ -454,7 +554,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                             class="inline-flex items-center gap-2 px-6 py-3 bg-(--primary) text-white dark:text-black/70 rounded-lg font-medium hover:bg-(--primary)/80 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
                           >
                             <span>{i18n(I18nKey.sponsor)}</span>
-                            <Icon is:inline name="fa7-solid:arrow-right" class="text-sm" />
+                            <Icon name="fa7-solid:arrow-right" class="text-sm" />
                           </a>
                         )
                       }
@@ -501,7 +601,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         >
           <div class="flex items-center gap-2">
             <div class="transition h-9 w-9 rounded-lg overflow-hidden relative flex items-center justify-center mr-0">
-              <Icon is:inline
+              <Icon
                 name="material-symbols:history-rounded"
                 class="text-4xl text-(--primary) transition-transform group-hover:translate-x-0.5 bg-(--enter-btn-bg) p-2 rounded-md"
               />
@@ -561,7 +661,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
       class="w-full font-bold overflow-hidden active:scale-95"
     >
       <div class="btn-card rounded-2xl w-full h-15 max-w-full px-4 flex items-center justify-start! gap-4">
-        <Icon is:inline
+        <Icon
           name="material-symbols:chevron-left-rounded"
           class="text-[2rem] text-(--primary)"
         />
@@ -579,7 +679,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         <div class="overflow-hidden transition text-ellipsis whitespace-nowrap max-w-[calc(100%-3rem)] text-black/75 dark:text-white/75">
           {entry.data.prevTitle || i18n(I18nKey.home)}
         </div>
-        <Icon is:inline
+        <Icon
           name="material-symbols:chevron-right-rounded"
           class="text-[2rem] text-(--primary)"
         />

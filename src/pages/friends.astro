@@ -221,7 +221,7 @@ const description =
           <div
             class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70"
           >
-            <Icon is:inline name="material-symbols:group" class="text-[1.5rem]" />
+            <Icon name="material-symbols:group" class="text-[1.5rem]" />
           </div>
           <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
             {title}
@@ -241,7 +241,7 @@ const description =
         items.length > 0 && (
           <friend-filter class="mb-6">
             <div class="relative mb-3">
-              <Icon is:inline
+              <Icon
                 name="material-symbols:search"
                 class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500 text-lg pointer-events-none"
               />
@@ -277,7 +277,7 @@ const description =
         {
           items.length === 0 && (
             <div class="col-span-full flex flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
-              <Icon is:inline name="material-symbols:group-off-outline" class="text-4xl mb-3" />
+              <Icon name="material-symbols:group-off-outline" class="text-4xl mb-3" />
               <div class="text-sm">{i18n(I18nKey.friendsEmpty)}</div>
             </div>
           )
@@ -378,7 +378,7 @@ const description =
 
       {/* 搜索无结果提示 */}
       <div class="friends-empty hidden flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
-        <Icon is:inline name="material-symbols:search-off-rounded" class="text-4xl mb-3" />
+        <Icon name="material-symbols:search-off-rounded" class="text-4xl mb-3" />
         <div class="text-sm">{i18n(I18nKey.searchNoResults)}</div>
       </div>
     </div>

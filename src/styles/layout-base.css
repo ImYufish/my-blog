@@ -48,6 +48,23 @@
     display: none !important;
   }
 
+  /* banner 桌面端非首页：整块横幅用 transform 上移 20vh（合成层动画，平滑、不触发壁纸每帧重排）。
+     与内容区 FLIP（同为 transform）同步；不用 height 过渡，避免大图重布局掉帧 */
+  @media (min-width: 1024px) {
+    html[data-wallpaper-mode="banner"] body:not(.is-home) #wallpaper-wrapper {
+      transform: translateY(calc(var(--banner-height-non-home) - var(--banner-height-home)));
+    }
+    html[data-wallpaper-mode="banner"] body:not(.is-home) .content-panel {
+      --content-top: calc(var(--banner-height-non-home) - 3.5rem);
+    }
+    /* 非首页标题反向平移：抵消 wrapper 一半的 -20vh，使标题落在缩短后 45vh 横幅的正中 */
+    html[data-wallpaper-mode="banner"] body:not(.is-home) #banner-overlay-container .banner-home-text-overlay,
+    html[data-wallpaper-mode="banner"] body:not(.is-home) #banner-overlay-container .banner-page-title-overlay,
+    html[data-wallpaper-mode="banner"] body:not(.is-home) #banner-overlay-container .banner-post-meta-overlay {
+      transform: translateY(calc((var(--banner-height-home) - var(--banner-height-non-home)) / 2));
+    }
+  }
+
   /* banner 模式 top-row 占位高度 */
   html[data-wallpaper-mode="banner"] #top-row {
     height: calc(var(--banner-height-home) - 4.5rem);
@@ -58,6 +75,14 @@
      - 切页：transform 合成动画（由 visit:start 的 FLIP 计算位移差驱动，避免 top 每帧重排卡顿）
      - 切模式：top 过渡（无 DOM 替换，已验证丝滑） */
   html.is-page-transitioning .content-panel {
+    transition: transform 220ms linear;
+  }
+  html.is-page-transitioning #wallpaper-wrapper {
+    transition: transform 220ms linear;
+  }
+  html.is-page-transitioning #banner-overlay-container .banner-home-text-overlay,
+  html.is-page-transitioning #banner-overlay-container .banner-page-title-overlay,
+  html.is-page-transitioning #banner-overlay-container .banner-post-meta-overlay {
     transition: transform 220ms linear;
   }
   html.is-wallpaper-transitioning .content-panel {
@@ -91,7 +116,7 @@
   /* 非 sticky 导航栏隐藏/显示：只过渡 translate（Tailwind v4 的 translate-y-* 用原生
      translate 属性而非 transform），实现平滑下滑；不过渡 opacity，避免淡入期间
      backdrop root 导致的毛玻璃失效白闪（sticky 导航栏永不隐藏，不受影响） */
-  body:not(.sticky-navbar) #navbar-wrapper {
+  body:not(.sticky-navbar):not(.dynamic-navbar) #navbar-wrapper {
     transition: translate 0.2s ease-out;
   }
 
@@ -115,6 +140,36 @@
     opacity: 1 !important;
     transform: none !important;
     translate: none !important;
+  }
+
+  /* 动态导航栏：固定在顶部，但可随滚动按 translate 显隐。注意不要写 translate:none，否则无法隐藏 */
+  body.dynamic-navbar #top-row {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 80 !important;
+    height: 4.5rem !important;
+  }
+  body.dynamic-navbar #navbar-wrapper {
+    position: static !important;
+    transition: translate 0.2s ease-out;
+  }
+  /* sticky 侧边栏与导航栏显隐同步：显示 5.5rem，隐藏 1rem */
+  body.dynamic-navbar #sidebar-sticky,
+  body.dynamic-navbar #left-sidebar-sticky,
+  body.dynamic-navbar #right-sidebar-sticky {
+    top: 5.5rem !important;
+  }
+  body.dynamic-navbar.dynamic-navbar-hidden #sidebar-sticky,
+  body.dynamic-navbar.dynamic-navbar-hidden #left-sidebar-sticky,
+  body.dynamic-navbar.dynamic-navbar-hidden #right-sidebar-sticky {
+    top: 1rem !important;
+  }
+  body.dynamic-navbar #sidebar-sticky,
+  body.dynamic-navbar #left-sidebar-sticky,
+  body.dynamic-navbar #right-sidebar-sticky {
+    transition: top 0.2s ease-out;
   }
 }
 

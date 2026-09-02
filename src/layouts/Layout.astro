@@ -7,6 +7,7 @@ import ToutiaoAutoPush from "@components/analytics/ToutiaoAutoPush.astro";
 import CodeGroupManager from "@components/features/CodeGroupManager.astro";
 import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontSetup from "@components/features/FontSetup.astro";
+import GithubCardManager from "@components/features/GithubCardManager.astro";
 import MusicManager from "@components/features/MusicManager.astro";
 import MusicPlayerView from "@components/features/MusicPlayerView.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
@@ -19,17 +20,22 @@ import {
 	displaySettingsConfig,
 	expressiveCodeConfig,
 	musicPlayerConfig,
+	navbarMode,
 	profileConfig,
 	siteConfig,
 } from "@/config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_HOME,
+	BANNER_HEIGHT_NON_HOME,
+	BANNER_HEIGHT_NON_HOME_MIN,
 	PAGE_WIDTH,
 } from "@/constants/constants";
 import { defaultFavicons } from "@/constants/icon";
 import type { Favicon } from "@/types/config";
 import { isHomePage } from "@/utils/layout-utils";
+import { getAuthorAvatarUrl, getSiteLogo } from "@/utils/schema-image";
+import { buildSiteGraph, toAbsoluteUrl } from "@/utils/schema-utils";
 import { url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
@@ -42,6 +48,7 @@ interface Props {
 	lang?: string;
 	setOGTypeArticle?: boolean;
 	postSlug?: string;
+	postCoverImage?: string;
 	hasWallpaper?: boolean;
 }
 
@@ -51,6 +58,7 @@ let {
 	lang,
 	setOGTypeArticle,
 	postSlug,
+	postCoverImage,
 	hasWallpaper = false,
 } = Astro.props;
 
@@ -66,9 +74,8 @@ const configHue = siteConfig.themeColor.hue;
 // 获取导航栏透明模式配置（banner 模式专属）
 const navbarTransparentMode =
 	backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
-// 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
-const shouldShowTopHighlight =
-	navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
+// 判断是否应该显示顶部高光效果（只在 semifull 动态透明模式下显示）
+const shouldShowTopHighlight = navbarTransparentMode === "semifull";
 
 // 子菜单 / 浮动面板的毛玻璃模糊度：跟随 navbar.blur，但不受壁纸模式影响，
 // 且带一个最小值 —— 导航栏可以用 blur: 0 关掉毛玻璃，面板则始终保留毛玻璃。
@@ -94,6 +101,8 @@ if (title) {
 let ogImageUrl: string | undefined;
 if (siteConfig.post.generateOgImages && postSlug) {
 	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
+} else if (postCoverImage) {
+	ogImageUrl = postCoverImage; // 已由文章页算成绝对 URL
 }
 
 const favicons: Favicon[] =
@@ -104,6 +113,14 @@ if (!lang) {
 	lang = `${siteConfig.lang}`;
 }
 const siteLang = lang.replace("_", "-");
+
+// 首页站点级结构化数据用的作者头像 URL（Person.image），经 toAbsoluteImageUrl 三分解析
+const avatarUrl = await getAuthorAvatarUrl();
+// 作者个人页（/about/）绝对 URL，作为 Person.url
+const aboutUrl =
+	toAbsoluteUrl("/about/", siteConfig.site_url) ?? siteConfig.site_url;
+// 站点 publisher logo（Organization.logo），用于首页 @graph 的 Organization 节点
+const siteLogo = await getSiteLogo();
 
 // 使用固定的banner偏移量，position配置用于图片定位
 ---
@@ -166,6 +183,7 @@ const siteLang = lang.replace("_", "-");
       content={description || siteConfig.description || pageTitle}
     />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
     {
       setOGTypeArticle ? (
         <meta property="og:type" content="article" />
@@ -181,6 +199,26 @@ const siteLang = lang.replace("_", "-");
       name="twitter:description"
       content={description || siteConfig.description || pageTitle}
     />
+
+    {
+      isHomePageCheck && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(
+            buildSiteGraph({
+              site: siteConfig.site_url,
+              siteConfig,
+              profileConfig,
+              lang: siteLang,
+              authorUrl: aboutUrl,
+              avatarUrl,
+              logo: siteLogo,
+            }),
+          )}
+        />
+      )
+    }
 
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
@@ -385,6 +423,7 @@ const siteLang = lang.replace("_", "-");
         "page-width": `${siteConfig.pageWidth ?? PAGE_WIDTH}rem`,
         "navbar-panel-blur": `${navbarPanelBlur}px`,
         "banner-height-home": `${BANNER_HEIGHT_HOME}vh`,
+        "banner-height-non-home": `max(${BANNER_HEIGHT_NON_HOME}vh, ${BANNER_HEIGHT_NON_HOME_MIN}px)`,
         "banner-height": `${BANNER_HEIGHT}vh`,
       }}
     ></style>
@@ -407,7 +446,8 @@ const siteLang = lang.replace("_", "-");
     class:list={[
       {
         "is-home": isHomePageCheck,
-        "sticky-navbar": siteConfig.navbar.stickyNavbar ?? false,
+        "sticky-navbar": navbarMode === "fixed",
+        "dynamic-navbar": navbarMode === "dynamic",
       },
     ]}
   >
@@ -467,6 +507,9 @@ const siteLang = lang.replace("_", "-");
 
     <!-- Tab 代码块交互 -->
     <CodeGroupManager />
+
+    <!-- GitHub 卡片客户端实时补全（forks/stars） -->
+    <GithubCardManager />
   </body>
 </html>
 

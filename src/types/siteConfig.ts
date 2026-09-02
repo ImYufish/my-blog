@@ -7,6 +7,7 @@ import type {
 	WALLPAPER_NONE,
 	WALLPAPER_OVERLAY,
 } from "../constants/constants";
+import type { NsfwMode } from "./nsfw";
 
 export type LIGHT_DARK_MODE =
 	| typeof LIGHT_MODE
@@ -24,6 +25,8 @@ export type Favicon = {
 	theme?: "light" | "dark";
 	sizes?: string;
 };
+
+export type NavbarMode = "static" | "fixed" | "dynamic";
 
 export type SiteConfig = {
 	title: string;
@@ -74,7 +77,10 @@ export type SiteConfig = {
 		widthFull?: boolean; // 导航栏是否占满屏幕宽度
 		menuAlign?: "left" | "center"; // 导航菜单对齐方式（仅桌面端菜单）
 		followTheme?: boolean; // 导航栏图标和标题是否跟随主题色
-		stickyNavbar?: boolean; // 导航栏是否固定在顶部始终可见
+		// 导航栏模式：static（不固定，随页面滚动消失）/ fixed（固定在顶部常显）/ dynamic（固定在顶部，下滑隐藏、轻微上滑显示）
+		navbarMode?: NavbarMode;
+		/** @deprecated 由 navbarMode 取代；true→fixed，false→static */
+		stickyNavbar?: boolean;
 	};
 
 	// 页面开关配置
@@ -174,6 +180,7 @@ export type SiteConfig = {
 			game?: boolean;
 			real?: boolean;
 		};
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	// VNDB 配置
@@ -184,7 +191,7 @@ export type SiteConfig = {
 		apiUrl?: string; // VNDB API 地址
 		vnBaseUrl?: string; // VNDB 条目详情页地址，末尾需要带 /
 		apiToken?: string; // 私密列表访问令牌，仅 static 模式下使用
-		blurNsfw?: boolean; // 对Nsfw的游戏封面模糊化，默认为true
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	// MyAnimeList 配置
@@ -194,6 +201,7 @@ export type SiteConfig = {
 		apiUrl?: string; // MAL API 地址
 		animeBaseUrl?: string; // 动画条目详情页地址，末尾需要带 /
 		mangaBaseUrl?: string; // 漫画条目详情页地址，末尾需要带 /
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	// 追番配置（Bilibili + TMDB）

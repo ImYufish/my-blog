@@ -35,10 +35,8 @@ export function initLayout(): void {
 		"display-setting",
 		"display-settings-switch",
 	]);
-	setClickOutsideToClose("nav-menu-panel", [
-		"nav-menu-panel",
-		"nav-menu-switch",
-	]);
+	// nav-menu-panel 现为全屏抽屉（inset-0），点击外部永不触发且由遮罩点击关闭，
+	// 不再注册 click-outside（见 NavMenuPanel.astro 的 document 委托）。
 	setClickOutsideToClose("search-panel", [
 		"search-panel",
 		"search-bar",
@@ -90,7 +88,11 @@ export function initLayout(): void {
 	}
 
 	initImageLoadFadeIn();
-	document.addEventListener("astro:page-load", initImageLoadFadeIn);
+	// 切页换入后延到下一帧再重扫 LQIP fade-in，避免 astro:page-load 在同帧叠加
+	// 一堆游标/事件重扫阻塞换入首帧（swup:contentReplaced 已 rAF，一并延后）
+	document.addEventListener("astro:page-load", () => {
+		requestAnimationFrame(initImageLoadFadeIn);
+	});
 	document.addEventListener("swup:contentReplaced", () => {
 		requestAnimationFrame(initImageLoadFadeIn);
 	});

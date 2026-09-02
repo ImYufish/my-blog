@@ -10,7 +10,6 @@ import MusicPlayer from "@/components/features/MusicPlayer.astro";
 import {
 	backgroundWallpaper,
 	displaySettingsConfig,
-	navBarConfig,
 	siteConfig,
 } from "@/config";
 import { musicPlayerConfig } from "@/config/musicConfig";
@@ -19,27 +18,29 @@ import { i18n } from "@/i18n/translation";
 import type { NavBarLink } from "@/types/config";
 import { getFallbackFormat, getImageFormats } from "@/utils/image-utils";
 import { isHomePage } from "@/utils/layout-utils";
-import { resolveNavbarLinks } from "@/utils/navbar-i18n";
+import { resolveNavMenuLinks } from "@/utils/nav-menu-utils";
 import { url } from "@/utils/url-utils";
 import DropdownMenu from "./DropdownMenu.astro";
-import NavMenuPanel from "./NavMenuPanel.astro";
 
 const className = Astro.props.class;
 
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 
-// 获取导航栏透明模式配置：
-// banner 模式用 banner.navbar 配置；fullscreen 模式用 fullscreen.navbar，
-// 首页开启动态透明时用 semifull（顶部透明、下滑不透明），否则完全透明
+// 导航栏透明模式：banner 用 banner.navbar，fullscreen 用 fullscreen.navbar（semifull 仅首页动态）
 const navbarTransparentMode =
 	backgroundWallpaper.mode === "banner"
-		? backgroundWallpaper.banner?.navbar?.transparentMode || "semi"
+		? (() => {
+				const t = backgroundWallpaper.banner?.navbar?.transparentMode || "semi";
+				return t === "semifull" && !isHomePageCheck ? "semi" : t;
+			})()
 		: backgroundWallpaper.mode === "fullscreen"
-			? isHomePageCheck &&
-				(backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false)
-				? "semifull"
-				: "none"
+			? (() => {
+					const fs =
+						backgroundWallpaper.fullscreen?.navbar?.transparentMode ||
+						"semifull";
+					return fs === "semifull" && isHomePageCheck ? "semifull" : "semi";
+				})()
 			: "semi";
 
 // 获取导航栏模糊度（0 即关闭导航栏毛玻璃）
@@ -64,31 +65,8 @@ const allowLayoutSwitch = displaySettingsConfig.layoutSwitchable;
 const hasDisplaySettings =
 	showThemeColor || isWallpaperSwitchable || allowLayoutSwitch;
 
-// 根据 siteConfig.pages 过滤导航栏链接
-const pages = siteConfig.pages;
-
-function isPageEnabled(link: NavBarLink): boolean {
-	if (!link.pageKey) return true;
-	return pages[link.pageKey as keyof typeof pages] !== false;
-}
-
-function filterLinks(link: NavBarLink): NavBarLink | null {
-	if (!link.children) {
-		return isPageEnabled(link) ? link : null;
-	}
-
-	const filteredChildren = link.children.filter(isPageEnabled);
-
-	if (filteredChildren.length === 0) return null;
-	if (filteredChildren.length === 1) return filteredChildren[0];
-	return { ...link, children: filteredChildren };
-}
-
-let links: NavBarLink[] = resolveNavbarLinks(
-	navBarConfig.links
-		.map(filterLinks)
-		.filter((link): link is NavBarLink => link !== null),
-);
+// 解析导航栏链接（按 siteConfig.pages 过滤 + i18n 名称），桌面下拉与移动抽屉共用
+const links: NavBarLink[] = resolveNavMenuLinks();
 
 // 处理导航栏 Logo 图片，image / url 类型支持亮暗色分别设置
 const logoConfig = siteConfig.navbar.logo;
@@ -149,7 +127,8 @@ const logoVariants = await Promise.all(
     <script is:inline define:vars={{
       bannerTMode: backgroundWallpaper.banner?.navbar?.transparentMode || "semi",
       bannerBlur: backgroundWallpaper.banner?.navbar?.blur ?? 20,
-      fsDynamic: backgroundWallpaper.fullscreen?.navbar?.dynamicTransparent ?? false,
+      fsTMode: backgroundWallpaper.fullscreen?.navbar?.transparentMode || "semifull",
+      fsBlur: backgroundWallpaper.fullscreen?.navbar?.blur ?? 20,
     }}>
       // 首帧前按运行时壁纸模式修正导航栏透明模式：SSR 的 data-transparent-mode 按 config 设置，
       // 与运行时模式不一致时（如 config fullscreen + 存储 banner）会先按错误模式渲染闪烁，
@@ -162,11 +141,11 @@ const logoVariants = await Promise.all(
         let mode;
         let blur;
         if (wm === "fullscreen") {
-          mode = isHome && fsDynamic ? "semifull" : "none";
-          blur = 0;
+          mode = fsTMode === "semifull" && isHome ? "semifull" : "semi";
+          blur = fsBlur;
         } else if (wm === "banner") {
-          mode = bannerTMode;
-          blur = bannerBlur;
+          mode = bannerTMode === "semifull" && !isHome ? "semi" : bannerTMode;
+          blur = mode === "none" ? 0 : bannerBlur;
         } else {
           // overlay / none
           mode = "none";
@@ -187,7 +166,7 @@ const logoVariants = await Promise.all(
                     siteConfig.navbar.followTheme ? "text-(--primary)" : "dark:text-white text-black"
                 ]} style="font-family: var(--font-navbar-title, inherit)">
                                     {logoConfig?.type === "icon" ? (
-                                        <Icon is:inline name={logoConfig.value || "material-symbols:home-pin-outline"} class="navbar-logo text-[1.75rem] mb-1 mr-2" />
+                                        <Icon name={logoConfig.value || "material-symbols:home-pin-outline"} class="navbar-logo text-[1.75rem] mb-1 mr-2" />
                                     ) : logoIsImage && logoVariants.length > 0 ? (
                                         logoVariants.map((variant) => variant.image ? (
                                             <Picture
@@ -205,7 +184,7 @@ const logoVariants = await Promise.all(
                                             <img src={variant.src} alt={logoAlt} class={variant.class} data-logo-theme={variant.theme} fetchpriority="high" />
                                         ))
                                     ) : (
-                                        <Icon is:inline name="material-symbols:home-pin-outline" class="navbar-logo text-[1.75rem] mb-1 mr-2" />
+                                        <Icon name="material-symbols:home-pin-outline" class="navbar-logo text-[1.75rem] mb-1 mr-2" />
                                     )}
                     {navbarTitle}
                 </div>
@@ -227,7 +206,7 @@ const logoVariants = await Promise.all(
                 />
                 {musicPlayerConfig.showInNavbar && (
                     <button aria-label={i18n(I18nKey.music)} aria-controls="music-nav-panel" aria-expanded="false" class="btn-plain scale-animation rounded-lg h-9 w-9 md:h-11 md:w-11 active:scale-90" id="music-player-switch">
-                        <Icon is:inline name="material-symbols:music-note-rounded" class="text-[1.25rem]"></Icon>
+                        <Icon name="material-symbols:music-note-rounded" class="text-[1.25rem]"></Icon>
                     </button>
                 )}
                 {backgroundWallpaper.playerEnable && backgroundWallpaper.mode !== "none" && (
@@ -238,19 +217,19 @@ const logoVariants = await Promise.all(
                         data-i18n-play={i18n(I18nKey.videoPlay)}
                         data-i18n-pause={i18n(I18nKey.videoPause)}
                     >
-                        <span class="bg-player-icon-play"><Icon is:inline name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" /></span>
-                        <span class="bg-player-icon-pause hidden"><Icon is:inline name="material-symbols:pause-rounded" class="text-[1.5rem]" /></span>
+                        <span class="bg-player-icon-play"><Icon name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" /></span>
+                        <span class="bg-player-icon-pause hidden"><Icon name="material-symbols:pause-rounded" class="text-[1.5rem]" /></span>
                     </button>
                 )}
                 {hasDisplaySettings && (
                         <button aria-label="Display Settings" aria-controls="display-setting" aria-expanded="false" class="btn-plain scale-animation rounded-lg h-9 w-9 md:h-11 md:w-11 active:scale-90" id="display-settings-switch">
-                            <Icon is:inline name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
+                            <Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
                         </button>
                 )}
                 {/* @ts-ignore */}
                 <LightDarkSwitch client:load></LightDarkSwitch>
                 <button aria-label="Menu" aria-controls="nav-menu-panel" aria-expanded="false" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-9 h-9 md:w-11 md:h-11 active:scale-90 lg:hidden!" id="nav-menu-switch">
-                    <Icon is:inline name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
+                    <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
                 </button>
             </div>
         </div>
@@ -259,7 +238,6 @@ const logoVariants = await Promise.all(
                 <MusicPlayer />
             </div>
         )}
-        <NavMenuPanel links={links}></NavMenuPanel>
         {isDisplaySettingsEnabled && <DisplaySettings client:load></DisplaySettings>}
     </div>
 </div>
@@ -351,8 +329,10 @@ function loadButtonScript() {
     }
 
     document.addEventListener("click", function(event) {
-        const panels = ["display-setting", "nav-menu-panel", "music-nav-panel", "theme-mode-panel"];
-        const buttons = ["display-settings-switch", "nav-menu-switch", "music-player-switch", "scheme-switch"];
+        // nav-menu-panel 不再走点击外部关闭：面板现在覆盖全屏（inset-0），任意点击都在面板内，
+        // 该监听永不触发；关闭由抽屉自己的遮罩点击/Document 委托负责。
+        const panels = ["display-setting", "music-nav-panel", "theme-mode-panel"];
+        const buttons = ["display-settings-switch", "music-player-switch", "scheme-switch"];
 
         panels.forEach((id, index) => {
             const panel = document.getElementById(id);

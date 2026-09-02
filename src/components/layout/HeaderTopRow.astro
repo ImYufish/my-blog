@@ -1,12 +1,14 @@
 ---
 import Navbar from "@components/layout/Navbar.astro";
+import type { NavbarMode } from "@/types/siteConfig";
 
 interface Props {
-	stickyNavbar: boolean;
+	navbarMode: NavbarMode;
 	navbarWidthFull: boolean;
 }
 
-const { stickyNavbar, navbarWidthFull } = Astro.props;
+const { navbarMode, navbarWidthFull } = Astro.props;
+const isFixedNavbar = navbarMode !== "static";
 ---
 
 <!-- 导航栏外壳（从 MainGridLayout.astro 迁出） -->
@@ -14,7 +16,7 @@ const { stickyNavbar, navbarWidthFull } = Astro.props;
     id="top-row"
     class="z-50 pointer-events-none relative transition-all duration-700 mx-auto"
     class:list={[
-        stickyNavbar ? "h-18 fixed top-0 left-0 right-0 z-80" : "",
+        isFixedNavbar ? "h-18 fixed top-0 left-0 right-0 z-80" : "",
         navbarWidthFull ? "" : "w-full xl:w-[92vw] max-w-(--page-width) px-0 md:px-4",
     ]}
 >
@@ -22,7 +24,7 @@ const { stickyNavbar, navbarWidthFull } = Astro.props;
         id="navbar-wrapper"
         class:list={[
             "pointer-events-auto transition-all",
-            stickyNavbar ? "" : "sticky top-0",
+            navbarMode === "static" ? "sticky top-0" : "",
         ]}
     >
         <Navbar></Navbar>
