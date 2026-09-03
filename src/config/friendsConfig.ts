@@ -246,6 +246,16 @@ export const friendsConfig: FriendLink[] = [
 		weight: 5,
 		enabled: true,
 	},
+	{
+		title: "Lin Blog",
+		imgurl: "https://linlog.top/api/uploads/2026/09/1788411216332767920-dca59196a965c5e8.jpg",
+		desc: "记录技术、互联网与日常观察",
+		siteurl: "https://linlog.top",
+		linkpage: "https://linlog.top/friends",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
 ];
 export const getEnabledFriends = (): FriendLink[] => {
 	const friends = friendsConfig.filter((friend) => friend.enabled);
