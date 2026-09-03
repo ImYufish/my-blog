@@ -513,4 +513,6 @@ export const ko: Translation = {
 	[Key.immersiveReading]: "몰입형 읽기",
 	[Key.enterImmersiveReading]: "몰입형 읽기 시작",
 	[Key.exitImmersiveReading]: "몰입형 읽기 종료",
+	[Key.tocExpand]: "목차 펼치기",
+	[Key.tocCollapse]: "목차 접기",
 };

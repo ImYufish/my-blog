@@ -498,6 +498,8 @@ enum I18nKey {
 	immersiveReading = "immersiveReading",
 	enterImmersiveReading = "enterImmersiveReading",
 	exitImmersiveReading = "exitImmersiveReading",
+	tocExpand = "tocExpand",
+	tocCollapse = "tocCollapse",
 }
 
 export default I18nKey;

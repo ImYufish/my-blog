@@ -516,4 +516,6 @@ export const en: Translation = {
 	[Key.immersiveReading]: "Immersive Reading",
 	[Key.enterImmersiveReading]: "Enter Immersive Reading",
 	[Key.exitImmersiveReading]: "Exit Immersive Reading",
+	[Key.tocExpand]: "Expand directory",
+	[Key.tocCollapse]: "Collapse directory",
 };

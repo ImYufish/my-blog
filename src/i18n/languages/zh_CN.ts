@@ -504,4 +504,6 @@ export const zh_CN: Translation = {
 	[Key.immersiveReading]: "沉浸阅读",
 	[Key.enterImmersiveReading]: "进入沉浸阅读",
 	[Key.exitImmersiveReading]: "退出沉浸阅读",
+	[Key.tocExpand]: "展开目录",
+	[Key.tocCollapse]: "折叠目录",
 };

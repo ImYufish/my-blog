@@ -1,4 +1,6 @@
 import { siteConfig } from "@/config";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
 import type { ImmersiveReadingConfig } from "@/types/immersiveReadingConfig";
 import { refreshSidebarStickyState } from "@/utils/grid-layout-utils";
 import { isPostPage, TOCManager } from "@/utils/toc-utils";
@@ -56,6 +58,8 @@ function setupImmersiveTOC(): void {
 		IR.tocBtn?.classList.remove("hide");
 		// 默认展开目录（桌面/移动一致）；关闭后由 CSS 释放文章让位空间
 		IR.toc?.classList.add("open");
+		IR.tocBtn?.classList.add("toggled"); // 目录打开时按钮切到「关闭」图标
+		IR.tocBtn?.setAttribute("title", i18n(I18nKey.tocCollapse));
 		document.body.classList.add("immersive-toc-open");
 		try {
 			if (IR.manager) IR.manager.cleanup();
@@ -74,6 +78,8 @@ function setupImmersiveTOC(): void {
 	} else {
 		IR.tocBtn?.classList.add("hide");
 		IR.toc?.classList.remove("open");
+		IR.tocBtn?.classList.remove("toggled");
+		IR.tocBtn?.setAttribute("title", i18n(I18nKey.tocExpand));
 		document.body.classList.remove("immersive-toc-open");
 	}
 }
@@ -96,6 +102,7 @@ function enterImmersiveReading(): void {
 	// 进/出按钮：去掉 .hide，切换为退出图标
 	IR.btn?.classList.remove("hide");
 	IR.btn?.classList.add("toggled");
+	IR.btn?.setAttribute("title", i18n(I18nKey.exitImmersiveReading));
 
 	// 目录栏 & 移动端目录开关
 	setupImmersiveTOC();
@@ -124,7 +131,10 @@ function exitImmersiveReading(): void {
 	IR.manager = null;
 
 	IR.btn?.classList.remove("toggled");
+	IR.btn?.setAttribute("title", i18n(I18nKey.enterImmersiveReading));
 	IR.tocBtn?.classList.add("hide");
+	IR.tocBtn?.classList.remove("toggled");
+	IR.tocBtn?.setAttribute("title", i18n(I18nKey.tocExpand));
 	IR.toc?.classList.remove("open");
 
 	// 重新计算按钮可见性：文章页 + 桌面端应恢复「进入」按钮
@@ -151,6 +161,11 @@ function toggleImmersiveTOC(): void {
 	toc.classList.toggle("open", !isOpen);
 	document.body.classList.toggle("immersive-toc-open", !isOpen);
 	IR.tocBtn?.classList.toggle("toggled", !isOpen);
+	// 悬停提示跟随目录开关状态
+	IR.tocBtn?.setAttribute(
+		"title",
+		!isOpen ? i18n(I18nKey.tocCollapse) : i18n(I18nKey.tocExpand),
+	);
 }
 
 // 目录项点击标记为内部导航，避免误触其它「外部链接自动关闭」逻辑
