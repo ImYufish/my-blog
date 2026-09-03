@@ -59,7 +59,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：一言组件（本地语句包，不依赖外部 API）
+			// 组件类型：一言组件
 			type: "hitokoto",
 			// 是否启用该组件
 			enable: true,

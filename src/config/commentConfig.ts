@@ -38,7 +38,7 @@ export const commentConfig: CommentConfig = {
 		//   'disable'  —— 禁止所有登录和 OAuth，仅允许匿名评论（填写昵称/邮箱），适用于极简留言。
 		login: "enable",
 		// 是否启用文章访问量统计功能
-		visitorCount: true,
+		visitorCount: false,
 	},
 
 	// artalk评论系统配置

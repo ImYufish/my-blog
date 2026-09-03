@@ -124,6 +124,12 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				external: true,
 				icon: "material-symbols:link-2",
 			},
+			{
+				name: "站点监测",
+				url: "https://uptime.x1anyu.cn/",
+				external: true,
+				icon: "material-symbols:analytics-outline",
+			},
 		],
 	});
 
