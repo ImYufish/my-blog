@@ -187,16 +187,15 @@ function registerSwupHooks(): void {
 				(isFullscreen || Math.abs(delta) <= window.innerHeight * 0.75)
 			) {
 				// 标准 FLIP：禁用过渡→设 invert transform→回流提交→启用过渡→移除 transform（触发合成动画）
-				contentPanel.style.willChange = "transform";
+				// 不再设置 will-change:transform——它把整个 .content-panel（含全页文字）预先且持续地提升为
+				// 独立合成层，软导航结束后的旧光栅贴图因该提示而保留，导致残留发糊（#615）。
+				// transform 过渡本身会在动画期间由浏览器自动提升到合成层（compositor 驱动，丝滑不减），
+				// 动画结束后自动降级并按普通路径重光栅，文字恢复清晰。
 				contentPanel.style.transition = "none";
 				contentPanel.style.transform = `translateY(${delta}px)`;
 				void contentPanel.offsetWidth;
 				contentPanel.style.transition = "";
 				contentPanel.style.transform = "";
-				window.setTimeout(
-					() => contentPanel.style.removeProperty("will-change"),
-					260,
-				);
 			}
 		}
 
