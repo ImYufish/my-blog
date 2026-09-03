@@ -170,6 +170,7 @@ body.immersive-reading #post-container {
 .immersive-toc .toc-scroll-container {
 	flex: 1;
 	min-height: 0;
+	padding-inline: 0.5rem; /* 左右留白，避免标题/高亮条贴到面板边缘 */
 }
 
 /* 目录面板：沉浸态且打开（.open）时显示，桌面/移动一致；关闭后释放文章让位空间 */
