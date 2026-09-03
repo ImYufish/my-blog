@@ -509,4 +509,9 @@ export const ja: Translation = {
 	[Key.videoPrev]: "前の動画",
 	[Key.videoNext]: "次の動画",
 	[Key.videoLoadError]: "動画の読み込みに失敗しました",
+
+	// 没入型リーディング
+	[Key.immersiveReading]: "没入型リーディング",
+	[Key.enterImmersiveReading]: "没入型リーディングに入る",
+	[Key.exitImmersiveReading]: "没入型リーディングを終了する",
 };

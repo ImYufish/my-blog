@@ -501,4 +501,9 @@ export const zh_TW: Translation = {
 	[Key.videoPrev]: "上一個影片",
 	[Key.videoNext]: "下一個影片",
 	[Key.videoLoadError]: "影片載入失敗",
+
+	// 沉浸閱讀
+	[Key.immersiveReading]: "沉浸閱讀",
+	[Key.enterImmersiveReading]: "進入沉浸閱讀",
+	[Key.exitImmersiveReading]: "退出沉浸閱讀",
 };

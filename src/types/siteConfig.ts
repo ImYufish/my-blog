@@ -7,6 +7,7 @@ import type {
 	WALLPAPER_NONE,
 	WALLPAPER_OVERLAY,
 } from "../constants/constants";
+import type { ImmersiveReadingConfig } from "./immersiveReadingConfig";
 import type { NsfwMode } from "./nsfw";
 
 export type LIGHT_DARK_MODE =
@@ -162,6 +163,8 @@ export type SiteConfig = {
 		sharePoster?: boolean;
 		// OpenGraph图片功能
 		generateOgImages: boolean;
+		// 沉浸阅读配置
+		immersiveReading?: ImmersiveReadingConfig;
 	};
 
 	// bangumi配置

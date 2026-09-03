@@ -512,4 +512,9 @@ export const ru: Translation = {
 	[Key.videoPrev]: "Предыдущее видео",
 	[Key.videoNext]: "Следующее видео",
 	[Key.videoLoadError]: "Не удалось загрузить видео",
+
+	// Чтение без отвлечений
+	[Key.immersiveReading]: "Чтение без отвлечений",
+	[Key.enterImmersiveReading]: "Войти в режим чтения",
+	[Key.exitImmersiveReading]: "Выйти из режима чтения",
 };
