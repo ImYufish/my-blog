@@ -1,5 +1,6 @@
 import { siteConfig } from "@/config";
 import type { ImmersiveReadingConfig } from "@/types/immersiveReadingConfig";
+import { refreshSidebarStickyState } from "@/utils/grid-layout-utils";
 import { isPostPage, TOCManager } from "@/utils/toc-utils";
 
 if (typeof window.ImmersiveReading === "undefined") {
@@ -115,6 +116,9 @@ function exitImmersiveReading(): void {
 	document.body.classList.remove("immersive-toc-right");
 	document.body.classList.remove("immersive-toc-open");
 	clearContentTop();
+
+	// 侧边栏恢复显示后重新测量 top 容器可见性，恢复 mb-4（sticky 与 top 组件之间间距）
+	requestAnimationFrame(refreshSidebarStickyState);
 
 	IR.manager?.cleanup();
 	IR.manager = null;

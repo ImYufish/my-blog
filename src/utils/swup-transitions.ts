@@ -245,6 +245,10 @@ function registerSwupHooks(): void {
 		updateMainGridCols();
 		updateSidebarComponentsVisibility();
 
+		// 过渡结束后再量一次，避免顶部组件未就绪时读到 offsetHeight=0 而误删 mb-4
+		// (sticky 与 top 组件之间间距只在 refreshSidebarStickyState 里恢复，延迟补偿一次更稳)
+		window.setTimeout(() => updateSidebarComponentsVisibility(), 300);
+
 		// hide the temp high element when the transition is done
 		const heightExtend = document.getElementById("page-height-extend");
 		if (heightExtend) {
