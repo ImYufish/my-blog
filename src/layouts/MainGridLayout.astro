@@ -32,6 +32,9 @@ interface Props {
 	setOGTypeArticle?: boolean;
 	postSlug?: string;
 	postCoverImage?: string;
+	ogImageWidth?: number;
+	ogImageHeight?: number;
+	ogImageAlt?: string;
 	postCategory?: string;
 	headings?: MarkdownHeading[];
 	encrypted?: boolean;
@@ -43,6 +46,7 @@ interface Props {
 		words?: number;
 		minutes?: number;
 	};
+	heading?: string;
 }
 
 const backgroundImages = getBackgroundImages();
@@ -54,10 +58,14 @@ const {
 	setOGTypeArticle,
 	postSlug,
 	postCoverImage,
+	ogImageWidth,
+	ogImageHeight,
+	ogImageAlt,
 	postCategory,
 	headings = [],
 	encrypted = false,
 	bannerPostMeta,
+	heading,
 } = Astro.props;
 
 const isHomePageCheck = isHomePage(Astro.url.pathname);
@@ -88,7 +96,7 @@ const {
 } = sidebar;
 ---
 
-<Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug} postCoverImage={postCoverImage} hasWallpaper={hasWallpaper}>
+<Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug} postCoverImage={postCoverImage} ogImageWidth={ogImageWidth} ogImageHeight={ogImageHeight} ogImageAlt={ogImageAlt} hasWallpaper={hasWallpaper}>
 
 <slot slot="head" name="head" />
 <HeaderTopRow navbarMode={navbarMode} navbarWidthFull={navbarWidthFull} />
@@ -133,7 +141,7 @@ const {
                     data-current-post-category={postCategory || ""}
                 >
                 {/* 为每个页面提供一个隐藏的h1标题，用于SEO和可访问性 */}
-                <h1 class="sr-only">{title}</h1>
+                <h1 class="sr-only">{heading || title}</h1>
                 <div id="content-wrapper" class="onload-animation transition-leaving">
                     <slot></slot>
                 </div>

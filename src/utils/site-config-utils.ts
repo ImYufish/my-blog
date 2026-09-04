@@ -46,3 +46,22 @@ export function resolveSiteLang(
 ): SiteConfig["lang"] {
 	return normalizeSiteLang(readSiteLangEnv()) ?? defaultLang;
 }
+
+// 由语言代码生成 OpenGraph og:locale（language_TERRITORY 格式）。
+// 站点语言已是下划线形式（zh_CN/zh_TW/en/ja/ko/ru），仅需为无地区的语言补全区号。
+export function getOgLocale(lang: string): string {
+	switch (lang.toLowerCase().replace("-", "_")) {
+		case "zh_cn":
+			return "zh_CN";
+		case "zh_tw":
+			return "zh_TW";
+		case "ja":
+			return "ja_JP";
+		case "ko":
+			return "ko_KR";
+		case "ru":
+			return "ru_RU";
+		default:
+			return "en_US";
+	}
+}

@@ -35,7 +35,8 @@ import type { Favicon } from "@/types/config";
 import { isHomePage } from "@/utils/layout-utils";
 import { getAuthorAvatarUrl, getSiteLogo } from "@/utils/schema-image";
 import { buildSiteGraph, toAbsoluteUrl } from "@/utils/schema-utils";
-import { url } from "@/utils/url-utils";
+import { getOgLocale } from "@/utils/site-config-utils";
+import { getCanonicalUrl, url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
 import "@/styles/immersive-reading.css";
@@ -49,6 +50,9 @@ interface Props {
 	setOGTypeArticle?: boolean;
 	postSlug?: string;
 	postCoverImage?: string;
+	ogImageWidth?: number;
+	ogImageHeight?: number;
+	ogImageAlt?: string;
 	hasWallpaper?: boolean;
 }
 
@@ -59,6 +63,9 @@ let {
 	setOGTypeArticle,
 	postSlug,
 	postCoverImage,
+	ogImageWidth: propsOgImageWidth,
+	ogImageHeight: propsOgImageHeight,
+	ogImageAlt: propsOgImageAlt,
 	hasWallpaper = false,
 } = Astro.props;
 
@@ -101,15 +108,11 @@ if (title) {
 		: siteConfig.title;
 }
 
-let ogImageUrl: string | undefined;
-if (siteConfig.post.generateOgImages && postSlug) {
-	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
-} else if (postCoverImage) {
-	ogImageUrl = postCoverImage; // 已由文章页算成绝对 URL
-}
-
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+// apple-touch-icon：优先取 favicon 中的 png，否则取第一个
+const appleTouchIcon =
+	favicons.find((f) => f.src.toLowerCase().endsWith(".png")) ?? favicons[0];
 
 // const siteLang = siteConfig.lang.replace('_', '-')
 if (!lang) {
@@ -124,6 +127,29 @@ const aboutUrl =
 	toAbsoluteUrl("/about/", siteConfig.site_url) ?? siteConfig.site_url;
 // 站点 publisher logo（Organization.logo），用于首页 @graph 的 Organization 节点
 const siteLogo = await getSiteLogo();
+
+// canonical：对 /archive/ 与 /search/ 剥离查询串，避免筛选视图自我 canonical 到 ?tag= 等
+const canonicalUrl = getCanonicalUrl(Astro.url);
+
+// OG 图片：文章走生成图/封面，非文章页回退到站点 logo
+let ogImageUrl: string | undefined;
+let ogImageWidth: number | undefined;
+let ogImageHeight: number | undefined;
+const isGeneratedOg = siteConfig.post.generateOgImages && postSlug;
+if (isGeneratedOg) {
+	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
+	ogImageWidth = 1200;
+	ogImageHeight = 630;
+} else if (postCoverImage) {
+	ogImageUrl = postCoverImage; // 已由文章页算成绝对 URL
+	ogImageWidth = propsOgImageWidth;
+	ogImageHeight = propsOgImageHeight;
+} else if (siteLogo?.url) {
+	ogImageUrl = siteLogo.url;
+	ogImageWidth = siteLogo.width;
+	ogImageHeight = siteLogo.height;
+}
+const ogImageAlt = propsOgImageAlt ?? pageTitle;
 
 // 使用固定的banner偏移量，position配置用于图片定位
 ---
@@ -174,16 +200,21 @@ const siteLogo = await getSiteLogo();
     }
     <meta name="author" content={profileConfig.name} />
 
-    <link rel="canonical" href={Astro.url} />
+    <link rel="canonical" href={canonicalUrl} />
     <meta property="og:site_name" content={siteConfig.title} />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:locale" content={getOgLocale(lang)} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={pageTitle} />
     <meta
       property="og:description"
       content={description || siteConfig.description || pageTitle}
     />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {ogImageUrl && ogImageWidth && <meta property="og:image:width" content={String(ogImageWidth)} />}
+    {ogImageUrl && ogImageHeight && <meta property="og:image:height" content={String(ogImageHeight)} />}
+    {ogImageUrl && <meta property="og:image:alt" content={ogImageAlt} />}
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+    {ogImageUrl && <meta name="twitter:image:alt" content={ogImageAlt} />}
     {
       setOGTypeArticle ? (
         <meta property="og:type" content="article" />
@@ -193,7 +224,7 @@ const siteLogo = await getSiteLogo();
     }
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
+    <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:title" content={pageTitle} />
     <meta
       name="twitter:description"
@@ -220,8 +251,9 @@ const siteLogo = await getSiteLogo();
       )
     }
 
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={`hsl(${siteConfig.themeColor.hue} 90% 60%)`} />
     {
       favicons.map((favicon) => (
         <link
@@ -232,6 +264,14 @@ const siteLogo = await getSiteLogo();
         />
       ))
     }
+    {appleTouchIcon && (
+      <link
+        rel="apple-touch-icon"
+        href={appleTouchIcon.src.startsWith("/") ? url(appleTouchIcon.src) : appleTouchIcon.src}
+        type="image/png"
+        sizes={appleTouchIcon.sizes}
+      />
+    )}
 
     <!-- 为特定域名的图片添加 referrerpolicy 以解决 403 问题 -->
     <!-- 注：静态图片（ImageWrapper 组件、Markdown 正文图）已在构建期加好 referrerpolicy；
