@@ -150,7 +150,7 @@ const navTitle = siteConfig.navbar.title || siteConfig.title;
         top: 0;
         right: 0;
         bottom: 0;
-        width: min(85vw, 380px);
+        width: min(70vw, 340px);
         display: flex;
         flex-direction: column;
         background: var(--card-bg);
@@ -164,6 +164,24 @@ const navTitle = siteConfig.navbar.title || siteConfig.title;
         --drawer-on-surface: rgba(255, 255, 255, 0.87);
         --drawer-on-surface-variant: rgba(255, 255, 255, 0.62);
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* 跟随导航栏毛玻璃（与 navbar.css 的下拉/面板同款）。
+       仅有可模糊对象时启用（Banner 有壁纸 / 全屏透明模式），
+       data-wallpaper-mode="none" 时无壁纸可模糊，落回上面的不透明卡片。 */
+    html:not([data-wallpaper-mode="none"])[data-has-wallpaper] .mobile-menu-drawer,
+    html:not([data-wallpaper-mode="none"]) body.wallpaper-transparent .mobile-menu-drawer {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(var(--navbar-panel-blur, 20px)) saturate(1.5) !important;
+        box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+        border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    }
+    :root.dark:not([data-wallpaper-mode="none"])[data-has-wallpaper] .mobile-menu-drawer,
+    :root.dark:not([data-wallpaper-mode="none"]) body.wallpaper-transparent .mobile-menu-drawer {
+        background: rgba(23, 23, 23, 0.6) !important;
+        backdrop-filter: blur(var(--navbar-panel-blur, 20px)) saturate(1.5) !important;
+        box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
     #nav-menu-panel:not(.float-panel-closed) .mobile-menu-drawer {
         transform: translateX(0);

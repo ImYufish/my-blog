@@ -244,7 +244,7 @@ export const siteConfig: SiteConfig = {
 		randomPosts: true,
 		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
 		generateOgImages: true,
-		// 沉浸阅读配置
+		// 沉浸阅读配置：电脑端文章详情页右下角按钮，进入后只留文章卡片+左侧目录
 		immersiveReading: {
 			// 总开关：false 则不显示按钮
 			enable: true,
