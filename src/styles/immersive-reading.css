@@ -98,22 +98,19 @@ body.immersive-reading #post-container {
 	}
 }
 
-/* 目录栏本体 */
+/* 目录栏本体：全高不透明侧栏抽屉 */
 .immersive-toc {
 	position: fixed;
-	top: 1rem;
-	bottom: 1rem;
+	top: 0;
+	bottom: 0; /* 占满整高 */
 	z-index: 40; /* > .content-panel z-30；< 浮动控件 z-1000 */
 	width: var(--immersive-toc-width, 20rem);
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
-	background: var(--card-bg-transparent);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
-	border-radius: 1rem;
-	border: 1px solid rgba(0, 0, 0, 0.08);
+	background: var(--card-bg); /* 不透明 */
+	border-radius: 0; /* 抽屉无圆角 */
 	opacity: 0;
 	pointer-events: none;
 	visibility: hidden;
@@ -124,12 +121,14 @@ body.immersive-reading #post-container {
 }
 
 .immersive-toc[data-position="left"] {
-	left: 1rem;
-	transform: translateX(-120%);
+	left: 0;
+	border-right: 1px solid var(--line-divider); /* 与文章区一条分隔线 */
+	transform: translateX(-100%);
 }
 .immersive-toc[data-position="right"] {
-	right: 1rem;
-	transform: translateX(120%);
+	right: 0;
+	border-left: 1px solid var(--line-divider);
+	transform: translateX(100%);
 }
 
 .immersive-toc-header {
@@ -170,7 +169,7 @@ body.immersive-reading #post-container {
 .immersive-toc .toc-scroll-container {
 	flex: 1;
 	min-height: 0;
-	padding-inline: 0.5rem; /* 左右留白，避免标题/高亮条贴到面板边缘 */
+	padding-inline: 1rem; /* 左右留白，避免标题/高亮条贴到抽屉边缘 */
 }
 
 /* 目录面板：沉浸态且打开（.open）时显示，桌面/移动一致；关闭后释放文章让位空间 */
@@ -185,4 +184,10 @@ body.immersive-reading .immersive-toc.open {
 #immersive-reading-btn.hide,
 #immersive-toc-toggle-btn.hide {
 	display: none !important;
+}
+
+/* 沉浸态下把右下角控制按钮提到目录抽屉之上，避免右侧抽屉遮挡 */
+body.immersive-reading .floating-controls-container .floating-btn {
+	position: relative;
+	z-index: 50;
 }
