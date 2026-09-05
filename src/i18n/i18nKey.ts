@@ -499,6 +499,12 @@ enum I18nKey {
 
 	weather = "weather",
 	hitokoto = "hitokoto",
+	// 沉浸阅读 (immersive reading)
+	immersiveReading = "immersiveReading",
+	enterImmersiveReading = "enterImmersiveReading",
+	exitImmersiveReading = "exitImmersiveReading",
+	tocExpand = "tocExpand",
+	tocCollapse = "tocCollapse",
 }
 
 export default I18nKey;

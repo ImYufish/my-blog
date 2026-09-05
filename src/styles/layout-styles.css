@@ -273,20 +273,8 @@ html.is-page-transitioning .banner-home-text-overlay {
     #wallpaper-wrapper {
         transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease-out;
         transform-origin: top center;
-        /* 硬件加速优化 */
-        will-change: transform, opacity;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
     }
-    
-        
-    /* 手机端非首页时主内容区域从顶部开始 - 延迟出现的动画 */
-        
-    
-    /* 移动端非首页隐藏横幅时，移除main-grid的transform偏移 */
-    }
+}
 
 /* 移动端banner性能优化 */
 @media (max-width: 1023px) {
@@ -942,16 +930,12 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] #wallpa
     object-fit: cover !important;
     object-position: center !important;
     filter: none !important;
-    transform: none !important;
+    transform: scale(1.05) !important;
     opacity: 1 !important;
 }
 
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home .content-panel {
-    position: relative !important;
-    top: 0 !important;
-    z-index: 30;
-    margin-top: 0 !important;
-    min-height: 100vh !important;
+    min-height: 100vh;
 }
 
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not(.sticky-navbar):not(.dynamic-navbar) #top-row {
@@ -996,36 +980,3 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] #wallpa
     }
 }
 
-/* classic transition overrides must come after the stable classic rules. */
-html.is-wallpaper-transitioning[data-fullscreen-layout="classic"] #wallpaper-wrapper {
-    transition: opacity 400ms ease, height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94), min-height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-}
-
-/* hero 全屏：模式切换（banner↔fullscreen）时与 classic 一致，让壁纸高度平滑缩放；
-   覆盖上方 #wallpaper-wrapper 稳定态的 transition:opacity !important（它不含 height，导致 hero 高度瞬变）。
-   transform 留 450ms 并由 --hero-wallpaper-offset 驱动：滚动时补偿 position:absolute→fixed 的锚点跳变，
-   把跳变掩藏在高度缩放动画内（offset 为 0 时等价于 translateY(0)，无副作用） */
-html.is-wallpaper-transitioning[data-fullscreen-layout="hero"] #wallpaper-wrapper {
-    transition: opacity 400ms ease, height 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-    transform: translateY(var(--hero-wallpaper-offset, 0px)) !important;
-}
-
-html.is-classic-content-positioning[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body.is-home .content-panel {
-    position: absolute !important;
-    top: 100vh !important;
-    margin-top: 0 !important;
-}
-
-@keyframes classic-content-slide {
-    from {
-        transform: translateY(var(--classic-content-offset, 0px));
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-
-html.is-classic-content-transitioning[data-fullscreen-layout="classic"] .content-panel {
-    animation: classic-content-slide 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-    transition: none !important;
-}

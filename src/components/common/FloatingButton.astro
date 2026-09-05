@@ -11,6 +11,8 @@ interface Props {
 	icon: string;
 	/** 可选的第二图标：提供后，按钮加上 .toggled 类时显示此图标、隐藏默认图标 */
 	toggleIcon?: string;
+	/** 悬停提示文字（原生 tooltip）；缺省时退回 ariaLabel */
+	title?: string;
 	ariaLabel?: string;
 	onclick?: string;
 	class?: string;
@@ -20,6 +22,7 @@ const {
 	id,
 	icon,
 	toggleIcon,
+	title,
 	ariaLabel,
 	onclick,
 	class: className = "",
@@ -28,6 +31,7 @@ const {
 
 <div
   id={id}
+  title={title ?? ariaLabel}
   class:list={["floating-btn", className, "card-base flex items-center rounded-2xl overflow-hidden transition"]}
   onclick={onclick}
 >

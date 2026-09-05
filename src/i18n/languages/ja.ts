@@ -515,4 +515,10 @@ export const ja: Translation = {
 
 	[Key.weather]: "天気", // ja
 	[Key.hitokoto]: "一言",
+	// 没入型リーディング
+	[Key.immersiveReading]: "没入型リーディング",
+	[Key.enterImmersiveReading]: "没入型リーディングに入る",
+	[Key.exitImmersiveReading]: "没入型リーディングを終了する",
+	[Key.tocExpand]: "目錄を開く",
+	[Key.tocCollapse]: "目錄をたたむ",
 };

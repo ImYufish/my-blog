@@ -518,4 +518,10 @@ export const ru: Translation = {
 
 	[Key.weather]: "Погода", // ru
 	[Key.hitokoto]: "Цитата", // ru
+	// Чтение без отвлечений
+	[Key.immersiveReading]: "Чтение без отвлечений",
+	[Key.enterImmersiveReading]: "Войти в режим чтения",
+	[Key.exitImmersiveReading]: "Выйти из режима чтения",
+	[Key.tocExpand]: "Развернуть оглавление",
+	[Key.tocCollapse]: "Свернуть оглавление",
 };

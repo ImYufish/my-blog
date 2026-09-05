@@ -27,6 +27,19 @@ declare global {
 		};
 		toggleFloatingTOC: () => void;
 		tocInternalNavigation: boolean;
+		ImmersiveReading: {
+			btn: HTMLElement | null;
+			tocBtn: HTMLElement | null;
+			toc: HTMLElement | null;
+			manager: ITOCManager | null;
+			prevScroll: number;
+			isImmersive: boolean;
+		};
+		toggleImmersiveReading: () => void;
+		enterImmersiveReading: () => void;
+		exitImmersiveReading: () => void;
+		toggleImmersiveTOC: () => void;
+		__immersiveReadingInit?: boolean;
 		// swup is defined in global.d.ts
 		// biome-ignore lint/suspicious/noExplicitAny: External library without types
 		spine: any;

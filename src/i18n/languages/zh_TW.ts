@@ -507,4 +507,10 @@ export const zh_TW: Translation = {
 
 	[Key.weather]: "天氣", // zh_TW
 	[Key.hitokoto]: "一言",
+	// 沉浸閱讀
+	[Key.immersiveReading]: "沉浸閱讀",
+	[Key.enterImmersiveReading]: "進入沉浸閱讀",
+	[Key.exitImmersiveReading]: "退出沉浸閱讀",
+	[Key.tocExpand]: "展開目錄",
+	[Key.tocCollapse]: "摺疊目錄",
 };
