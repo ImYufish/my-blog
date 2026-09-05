@@ -65,6 +65,7 @@ const jumpHrefFirst = url("/");
     <div class="mobile-pagination flex items-center gap-3">
       <a
         href={page.url.prev || "#"}
+        rel={page.url.prev ? "prev" : undefined}
         aria-label={i18n(I18nKey.paginationPrev)}
         aria-disabled={!page.url.prev ? "true" : "false"}
         tabindex={!page.url.prev ? "-1" : "0"}
@@ -99,6 +100,7 @@ const jumpHrefFirst = url("/");
 
       <a
         href={page.url.next || "#"}
+        rel={page.url.next ? "next" : undefined}
         aria-label={i18n(I18nKey.paginationNext)}
         aria-disabled={!page.url.next ? "true" : "false"}
         tabindex={!page.url.next ? "-1" : "0"}
@@ -123,6 +125,7 @@ const jumpHrefFirst = url("/");
     <div class="desktop-pagination flex items-center gap-3">
       <a
         href={page.url.prev || "#"}
+        rel={page.url.prev ? "prev" : undefined}
         aria-label={i18n(I18nKey.paginationPrev)}
         aria-disabled={!page.url.prev ? "true" : "false"}
         tabindex={!page.url.prev ? "-1" : "0"}
@@ -177,6 +180,7 @@ const jumpHrefFirst = url("/");
       }
       <a
         href={page.url.next || "#"}
+        rel={page.url.next ? "next" : undefined}
         aria-label={i18n(I18nKey.paginationNext)}
         aria-disabled={!page.url.next ? "true" : "false"}
         tabindex={!page.url.next ? "-1" : "0"}

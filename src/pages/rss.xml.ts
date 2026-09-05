@@ -14,6 +14,8 @@ import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
 import pkg from "../../package.json";
 
+export const prerender = true;
+
 function stripInvalidXmlChars(str: string): string {
 	return str.replace(
 		// biome-ignore lint/suspicious/noControlCharactersInRegex: https://www.w3.org/TR/xml/#charsets
