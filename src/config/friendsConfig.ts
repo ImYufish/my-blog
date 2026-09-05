@@ -174,7 +174,7 @@ export const friendsConfig: FriendLink[] = [
 		imgurl: "https://blog.olinl.com/assets/images/avatar.webp",
 		desc: "分享、实践、学习",
 		siteurl: "https://blog.olinl.com",
-		linkpage: "https://blog.olinl.com/friends/",
+		linkpage: "https://blog.olinl.com/link",
 		rss: "https://blog.olinl.com/rss.xml",
 		tags: ["Blog"],
 		weight: 5,
