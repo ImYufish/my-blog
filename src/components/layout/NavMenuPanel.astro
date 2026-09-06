@@ -325,6 +325,16 @@ const navTitle = siteConfig.navbar.title || siteConfig.title;
         }
     });
 
+    // 点击抽屉内的导航链接后关闭抽屉：内部链接走 Swup 切页、外部链接另开新标签页，
+    // 两种情况都该收起来。面板在 swup 容器外、跨页持久存在（MainGridLayout 里是 body 直系子元素），
+    // 不主动关的话切页后抽屉会一直开着。仅匹配 <a>，手风琴触发器是 <button>，触发展开时不关。
+    document.addEventListener("click", (e) => {
+        const t = e.target;
+        if (t instanceof Element && t.closest(".mobile-menu-drawer a[href]")) {
+            document.getElementById("nav-menu-panel")?.classList.add("float-panel-closed");
+        }
+    });
+
     function markActiveNav() {
         const path = location.pathname;
         document.querySelectorAll(".mobile-menu-item[data-nav-href]").forEach((item) => {
