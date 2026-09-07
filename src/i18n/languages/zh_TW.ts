@@ -88,6 +88,18 @@ export const zh_TW: Translation = {
 	[Key.booknavDescription]: "收藏一些好用的網站，按分類整理",
 	[Key.searchBooknav]: "搜尋書籤...",
 	[Key.booknavEmpty]: "暫無書籤",
+
+	// 專案展示頁
+	[Key.projects]: "專案",
+	[Key.projectsDescription]: "這裡展示我開發過的專案",
+	[Key.projectDetails]: "查看詳情",
+	[Key.projectBack]: "返回專案列表",
+	[Key.projectEmpty]: "暫無專案",
+	[Key.projectSearch]: "搜尋專案",
+	[Key.projectStatusPlanning]: "規劃中",
+	[Key.projectStatusDeveloping]: "開發中",
+	[Key.projectStatusPublished]: "已發佈",
+	[Key.projectStatusArchived]: "已封存",
 	[Key.guestbook]: "留言",
 	[Key.guestbookDescription]: "歡迎在這裡留下你的足跡，分享你的想法和建議",
 	[Key.untitled]: "無標題",

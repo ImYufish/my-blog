@@ -90,6 +90,18 @@ export const ru: Translation = {
 		"Подборка полезных сайтов, сгруппированных по категориям.",
 	[Key.searchBooknav]: "Поиск закладок...",
 	[Key.booknavEmpty]: "Закладок пока нет.",
+
+	// Витрина проектов
+	[Key.projects]: "Проекты",
+	[Key.projectsDescription]: "Мои разработанные проекты",
+	[Key.projectDetails]: "Подробнее",
+	[Key.projectBack]: "К списку проектов",
+	[Key.projectEmpty]: "Проектов пока нет",
+	[Key.projectSearch]: "Поиск проектов",
+	[Key.projectStatusPlanning]: "В планах",
+	[Key.projectStatusDeveloping]: "В разработке",
+	[Key.projectStatusPublished]: "Опубликовано",
+	[Key.projectStatusArchived]: "В архиве",
 	[Key.guestbook]: "Гостевая книга",
 	[Key.guestbookDescription]:
 		"Добро пожаловать, оставьте свой след здесь, поделитесь своими мыслями и предложениями",

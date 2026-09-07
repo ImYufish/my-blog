@@ -122,6 +122,18 @@ enum I18nKey {
 	searchBooknav = "searchBooknav",
 	booknavEmpty = "booknavEmpty",
 
+	// 项目展示页
+	projects = "projects",
+	projectsDescription = "projectsDescription",
+	projectDetails = "projectDetails",
+	projectBack = "projectBack",
+	projectEmpty = "projectEmpty",
+	projectSearch = "projectSearch",
+	projectStatusPlanning = "projectStatusPlanning",
+	projectStatusDeveloping = "projectStatusDeveloping",
+	projectStatusPublished = "projectStatusPublished",
+	projectStatusArchived = "projectStatusArchived",
+
 	// 番组计划筛选和状态文本
 	bangumiTitle = "bangumiTitle",
 	bangumiSubtitle = "bangumiSubtitle",

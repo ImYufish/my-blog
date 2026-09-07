@@ -16,6 +16,7 @@ import type {
 	MobileBottomComponentConfig,
 	WidgetComponentConfig,
 } from "@/types/config";
+import { isArticleDetailPage } from "@/utils/url-utils";
 
 interface Props {
 	class?: string;
@@ -102,8 +103,8 @@ const getAnimationDelay = (index: number): string => {
 	return `${index * ANIMATION_DELAY_UNIT}ms`;
 };
 
-// 判断当前页面是否为文章页面（服务端渲染时确定）
-const isPostPage = Astro.url.pathname.includes("/posts/");
+// 判断当前页面是否为文章/项目详情页（服务端渲染时确定）
+const isPostPage = isArticleDetailPage(Astro.url.pathname);
 
 // 判断组件在当前页面首屏是否可见（用于计算布局间距，避免隐藏组件占位）
 const isComponentInitiallyVisible = (

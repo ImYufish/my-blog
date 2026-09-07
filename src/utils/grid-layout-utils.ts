@@ -2,6 +2,8 @@
  * 主网格列布局与侧边栏可见性 / 吸顶间距管理（从 Layout.astro 迁出）。
  */
 
+import { isArticleDetailPage } from "@/utils/url-utils";
+
 const sidebarStickyState: Record<
 	"left" | "right",
 	{ topClass: "top-0" | "top-4"; hasVisibleTop: boolean }
@@ -10,10 +12,9 @@ const sidebarStickyState: Record<
 	right: { topClass: "top-0", hasVisibleTop: false },
 };
 
-// 检查当前页面是否为文章详情页
+// 检查当前页面是否为文章/项目详情页
 const isCurrentPagePost = (): boolean =>
-	window.location.pathname.includes("/posts/") ||
-	window.location.pathname.includes("/post/");
+	isArticleDetailPage(window.location.pathname);
 
 // Grid 列类常量
 const GRID_COL_CLASSES = [

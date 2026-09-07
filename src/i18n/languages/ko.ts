@@ -89,6 +89,18 @@ export const ko: Translation = {
 	[Key.booknavDescription]: "유용한 사이트를 카테고리별로 모았습니다.",
 	[Key.searchBooknav]: "북마크 검색...",
 	[Key.booknavEmpty]: "북마크가 없습니다.",
+
+	// 프로젝트 쇼케이스
+	[Key.projects]: "프로젝트",
+	[Key.projectsDescription]: "제가 개발한 프로젝트입니다",
+	[Key.projectDetails]: "자세히 보기",
+	[Key.projectBack]: "프로젝트 목록으로 돌아가기",
+	[Key.projectEmpty]: "아직 프로젝트가 없습니다",
+	[Key.projectSearch]: "프로젝트 검색",
+	[Key.projectStatusPlanning]: "계획 중",
+	[Key.projectStatusDeveloping]: "개발 중",
+	[Key.projectStatusPublished]: "출시됨",
+	[Key.projectStatusArchived]: "보관됨",
 	[Key.guestbook]: "방명록",
 	[Key.guestbookDescription]:
 		"이곳에 흔적을 남기고 생각과 제안을 공유해 주세요",

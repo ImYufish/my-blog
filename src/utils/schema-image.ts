@@ -14,7 +14,7 @@ const projectImages = import.meta.glob<ImageMetadata>(
 );
 
 // 查找 src 内相对路径对应的 ImageMetadata；找不到返回 null。
-async function loadLocalImage(
+export async function loadLocalImage(
 	src: string,
 	basePath: string,
 ): Promise<ImageMetadata | null> {
@@ -64,7 +64,7 @@ export async function toAbsoluteImageInfo(
  * - public(/...)、远程、data: 直接按原样解析（与主题渲染一致，无需优化）；
  * - src 内相对路径：用源图 img.src 的真实 URL。
  */
-export async function toAbsoluteImageUrl(
+async function toAbsoluteImageUrl(
 	src: string | undefined | null,
 	basePath: string,
 	base: URL | string,
