@@ -196,6 +196,7 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/music/",
 		icon: "material-symbols:music-note-rounded",
 		pageKey: "music",
+		fullPage: true, // 整页加载，绕开 Swup 软导航对 #swup-container 的 fixed 破坏
 	},
 	Guestbook: {
 		name: "留言",

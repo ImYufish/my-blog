@@ -44,6 +44,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 						target={child.external ? "_blank" : undefined}
 						isLast={index === (processedLink.children?.length || 0) - 1}
 						class="dropdown-item focus-ring-inset h-10"
+						fullPage={child.fullPage}
 					>
 						{child.icon && <Icon name={child.icon} class="text-[1.25rem] mr-3 navbar-icon" />}
 						<span>{child.name}</span>
@@ -60,6 +61,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 			href={processedLink.external ? processedLink.url : url(processedLink.url)} 
 			target={processedLink.external ? "_blank" : null}
 			class="btn-plain scale-animation rounded-lg h-10 font-bold px-4 active:scale-95"
+			data-no-swup={processedLink.fullPage ? true : undefined}
 		>
 			<div class="flex items-center gap-1.5">
 				{processedLink.icon && <Icon name={processedLink.icon} class="text-[1.1rem] mr-1.5 navbar-icon" />}

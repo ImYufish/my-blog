@@ -10,6 +10,7 @@ interface Props {
 	isLast?: boolean;
 	class?: string;
 	onclick?: string;
+	fullPage?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
 	isLast = false,
 	class: className,
 	onclick,
+	fullPage = false,
 } = Astro.props;
 
 const baseClasses =
@@ -36,6 +38,7 @@ const Tag = href ? "a" : "button";
 	target={target}
 	class={allClasses}
 	onclick={onclick}
+	data-no-swup={fullPage ? true : undefined}
 >
 	<slot />
 </Tag>
