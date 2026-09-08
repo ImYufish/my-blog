@@ -329,6 +329,14 @@ export const zh_TW: Translation = {
 	[Key.rssCopied]: "RSS 鏈接已複製到剪貼板！",
 	[Key.rssCopyFailed]: "複製失敗，請手動複製鏈接",
 
+	// Atom 頁面
+	[Key.atom]: "Atom 訂閱",
+	[Key.atomDescription]: "訂閱獲取最新更新",
+	[Key.atomSubtitle]: "透過 Atom 訂閱，第一時間獲取最新文章和動態",
+	[Key.atomLink]: "Atom 連結",
+	[Key.atomCopyToReader]: "複製連結到你的 Atom 閱讀器",
+	[Key.atomCopied]: "Atom 連結已複製到剪貼簿！",
+
 	//最後編輯時間卡片
 	[Key.lastModifiedPrefix]: "最後更新於 ",
 	[Key.lastModifiedOutdated]: "部分內容可能已過時",

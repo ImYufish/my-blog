@@ -334,6 +334,15 @@ export const ko: Translation = {
 	[Key.rssCopied]: "RSS 링크가 클립보드에 복사되었습니다!",
 	[Key.rssCopyFailed]: "복사에 실패했습니다. 링크를 직접 복사해 주세요",
 
+	// Atom Page
+	[Key.atom]: "Atom 피드",
+	[Key.atomDescription]: "최신 업데이트 구독",
+	[Key.atomSubtitle]:
+		"Atom으로 구독하면 최신 글과 업데이트를 바로 받을 수 있습니다",
+	[Key.atomLink]: "Atom 링크",
+	[Key.atomCopyToReader]: "Atom 리더에 링크 복사",
+	[Key.atomCopied]: "Atom 링크가 클립보드에 복사되었습니다!",
+
 	// Last Modified Time Card
 	[Key.lastModifiedPrefix]: "마지막 업데이트: ",
 	[Key.lastModifiedOutdated]: "일부 내용이 오래되었을 수 있습니다",

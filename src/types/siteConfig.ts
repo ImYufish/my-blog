@@ -245,4 +245,14 @@ export type SiteConfig = {
 		 */
 		noReferrerDomains?: string[];
 	};
+
+	// 订阅 (RSS / Atom) 配置
+	feed?: {
+		/**
+		 * 订阅条目内容模式：
+		 * - "full": 包含文章正文全文（默认）
+		 * - "summary": 仅包含文章摘要/描述，不含正文
+		 */
+		contentMode?: "full" | "summary";
+	};
 };

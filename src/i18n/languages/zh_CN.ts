@@ -327,6 +327,14 @@ export const zh_CN: Translation = {
 	[Key.rssCopied]: "RSS 链接已复制到剪贴板！",
 	[Key.rssCopyFailed]: "复制失败，请手动复制链接",
 
+	// Atom 页面
+	[Key.atom]: "Atom 订阅",
+	[Key.atomDescription]: "订阅获取最新更新",
+	[Key.atomSubtitle]: "通过 Atom 订阅，第一时间获取最新文章和动态",
+	[Key.atomLink]: "Atom 链接",
+	[Key.atomCopyToReader]: "复制链接到你的 Atom 阅读器",
+	[Key.atomCopied]: "Atom 链接已复制到剪贴板！",
+
 	//最后编辑时间卡片
 	[Key.lastModifiedPrefix]: "最后更新于 ",
 	[Key.lastModifiedOutdated]: "部分内容可能已过时",

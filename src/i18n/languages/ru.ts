@@ -337,6 +337,15 @@ export const ru: Translation = {
 	[Key.rssCopyFailed]:
 		"Ошибка копирования, пожалуйста, скопируйте ссылку вручную",
 
+	// Atom Page
+	[Key.atom]: "Atom-лента",
+	[Key.atomDescription]: "Подпишитесь на последние обновления",
+	[Key.atomSubtitle]:
+		"Подпишитесь через Atom, чтобы сразу получать последние статьи и обновления",
+	[Key.atomLink]: "Atom-ссылка",
+	[Key.atomCopyToReader]: "Скопируйте ссылку в свой Atom-ридер",
+	[Key.atomCopied]: "Atom-ссылка скопирована в буфер обмена!",
+
 	// Последнее изменение
 	[Key.lastModifiedPrefix]: "Последнее обновление: ",
 	[Key.lastModifiedOutdated]: "Некоторый контент может быть устаревшим",

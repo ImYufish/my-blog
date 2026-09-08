@@ -336,6 +336,15 @@ export const en: Translation = {
 	[Key.rssCopied]: "RSS link copied to clipboard!",
 	[Key.rssCopyFailed]: "Copy failed, please copy the link manually",
 
+	// Atom Page
+	[Key.atom]: "Atom Feed",
+	[Key.atomDescription]: "Subscribe to get latest updates",
+	[Key.atomSubtitle]:
+		"Subscribe via Atom to get the latest articles and updates immediately",
+	[Key.atomLink]: "Atom Link",
+	[Key.atomCopyToReader]: "Copy link to your Atom reader",
+	[Key.atomCopied]: "Atom link copied to clipboard!",
+
 	// Last Modified Time Card
 	[Key.lastModifiedPrefix]: "Last updated on ",
 	[Key.lastModifiedOutdated]: "Some content may be outdated",

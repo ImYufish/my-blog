@@ -334,6 +334,14 @@ export const ja: Translation = {
 	[Key.rssCopied]: "RSSリンクがクリップボードにコピーされました！",
 	[Key.rssCopyFailed]: "コピーに失敗しました。手動でリンクをコピーしてください",
 
+	// Atom ページ
+	[Key.atom]: "Atom フィード",
+	[Key.atomDescription]: "最新の更新を購読",
+	[Key.atomSubtitle]: "Atom で購読すると、最新の記事と更新をすぐに受け取れます",
+	[Key.atomLink]: "Atom リンク",
+	[Key.atomCopyToReader]: "Atom リーダーにリンクをコピー",
+	[Key.atomCopied]: "Atom リンクをクリップボードにコピーしました！",
+
 	// 最終更新時間カード
 	[Key.lastModifiedPrefix]: "最終更新日：",
 	[Key.lastModifiedOutdated]: "一部の内容が古くなっている可能性があります",
