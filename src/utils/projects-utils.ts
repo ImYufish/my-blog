@@ -76,29 +76,34 @@ export function resolveLinkIcon(icon: string, label: string): ResolvedLinkIcon {
 // 未知字符串回退为中性灰、原样显示，保证自由字符串兼容
 const PROJECT_STATUS_META: Record<
 	string,
-	{ key: I18nKey; icon: string; className: string }
+	{ key: I18nKey; icon: string; className: string; coverClassName: string }
 > = {
 	planning: {
 		key: I18nKey.projectStatusPlanning,
 		icon: "material-symbols:schedule",
 		className:
 			"bg-neutral-200/80 text-neutral-600 dark:bg-neutral-700/60 dark:text-neutral-300",
+		// 封面覆盖用：近实色 + 白字
+		coverClassName: "bg-neutral-500/85 text-white dark:bg-neutral-600/85",
 	},
 	developing: {
 		key: I18nKey.projectStatusDeveloping,
 		icon: "material-symbols:code",
 		className: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+		coverClassName: "bg-amber-500/90 text-white dark:bg-amber-600/90",
 	},
 	published: {
 		key: I18nKey.projectStatusPublished,
 		icon: "material-symbols:rocket-launch",
 		className: "bg-green-500/15 text-green-600 dark:text-green-400",
+		coverClassName: "bg-green-600/90 text-white dark:bg-green-700/90",
 	},
 	archived: {
 		key: I18nKey.projectStatusArchived,
 		icon: "material-symbols:archive",
 		className:
 			"bg-neutral-200/80 text-neutral-600 dark:bg-neutral-700/60 dark:text-neutral-300",
+		coverClassName: "bg-neutral-500/85 text-white dark:bg-neutral-600/85",
 	},
 };
 
@@ -107,6 +112,8 @@ export const PROJECT_STATUS_KEYS: string[] = Object.keys(PROJECT_STATUS_META);
 
 const NEUTRAL_STATUS_CLASS =
 	"bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300";
+const NEUTRAL_COVER_CLASS =
+	"bg-neutral-500/85 text-white dark:bg-neutral-600/85";
 
 /**
  * 解析项目状态：标准 key 返回本地化文案 + 配色 + 图标；未知字符串原样显示（中性灰）。
@@ -115,6 +122,7 @@ export function getProjectStatusMeta(status: string): {
 	label: string;
 	icon: string;
 	className: string;
+	coverClassName: string;
 	known: boolean;
 } {
 	if (!status)
@@ -122,6 +130,7 @@ export function getProjectStatusMeta(status: string): {
 			label: "",
 			icon: "",
 			className: NEUTRAL_STATUS_CLASS,
+			coverClassName: NEUTRAL_COVER_CLASS,
 			known: false,
 		};
 	const meta = PROJECT_STATUS_META[status];
@@ -130,12 +139,14 @@ export function getProjectStatusMeta(status: string): {
 			label: status,
 			icon: "",
 			className: NEUTRAL_STATUS_CLASS,
+			coverClassName: NEUTRAL_COVER_CLASS,
 			known: false,
 		};
 	return {
 		label: i18n(meta.key),
 		icon: meta.icon,
 		className: meta.className,
+		coverClassName: meta.coverClassName,
 		known: true,
 	};
 }

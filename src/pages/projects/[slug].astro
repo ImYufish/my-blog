@@ -82,12 +82,6 @@ const visibleTags = tags || [];
       <div class="mb-6">
         <!-- 状态（名称前）+ 名称 -->
         <div class="flex items-center gap-3 flex-wrap">
-          {statusMeta && (
-            <span class={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-lg ${statusMeta.className}`}>
-              {statusMeta.icon && <Icon name={statusMeta.icon} class="text-xl" />}
-              {statusMeta.label}
-            </span>
-          )}
           <div
             data-pagefind-weight="10"
             data-pagefind-meta="title"
@@ -95,6 +89,41 @@ const visibleTags = tags || [];
           >
             {title}
           </div>
+          {statusMeta && (
+            <span class={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-lg ${statusMeta.className}`}>
+              {statusMeta.icon && <Icon name={statusMeta.icon} class="text-xl" />}
+              {statusMeta.label}
+            </span>
+          )}
+        </div>
+
+        <!-- 日期 + 标签-->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3">
+          <div class="flex items-center">
+            <div class="meta-icon">
+              <Icon name="material-symbols:calendar-today-outline-rounded" class="text-xl" />
+            </div>
+            <time datetime={published.toISOString()} class="text-50 text-sm font-medium">
+              {formatDateToYYYYMMDD(published)}
+            </time>
+          </div>
+          {visibleTags.length > 0 && (
+            <div class="flex items-center">
+              <div class="meta-icon">
+                <Icon name="material-symbols:tag-rounded" class="text-xl" />
+              </div>
+              <span class="flex flex-wrap items-center">
+                {visibleTags.map((tag, i) => (
+                  <span class="flex items-center">
+                    {i !== 0 && (
+                      <span class="mx-1.5 text-sm font-medium text-(--meta-divider)">/</span>
+                    )}
+                    <span class="text-50 text-sm font-medium whitespace-nowrap">{tag}</span>
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
         </div>
 
         {description && (
@@ -103,47 +132,30 @@ const visibleTags = tags || [];
           </p>
         )}
 
-        <!-- 日期 + 标签 -->
-        <div class="flex flex-wrap items-center gap-2 mt-3 text-sm text-neutral-500 dark:text-neutral-400">
-          <span class="inline-flex items-center gap-1 whitespace-nowrap">
-            <Icon name="material-symbols:calendar-today-outline-rounded" class="text-xl" />
-            <time datetime={published.toISOString()}>{formatDateToYYYYMMDD(published)}</time>
-          </span>
-          {visibleTags.length > 0 && (
-            <span class="inline-flex items-center gap-1">
-              <Icon name="material-symbols:tag-rounded" class="text-xl" />
-              <span class="flex flex-wrap items-center">
-                {visibleTags.map((tag, i) => (
-                  <span class="flex items-center">
-                    {i !== 0 && (
-                      <span class="mx-1.5 text-base font-medium text-(--meta-divider)">/</span>
-                    )}
-                    <span class="text-50 text-sm font-medium whitespace-nowrap">{tag}</span>
-                  </span>
-                ))}
-              </span>
-            </span>
-          )}
-        </div>
-
-        <!-- 外链按钮 -->
+        <!-- 外链按钮-->
         {link.length > 0 && (
-          <div class="flex flex-wrap items-center gap-2 mt-4">
-            {link.map((r) => {
+          <div class="flex flex-wrap items-center gap-2.5 mt-4">
+            {link.map((r, i) => {
               const resolvedIcon = resolveLinkIcon(r.icon, r.label);
+              const isFirst = i === 0;
               return (
                 <a
                   href={r.value}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-(--primary)/10 text-(--primary) hover:bg-(--primary)/20 transition-colors"
+                  class:list={[
+                    "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors",
+                    isFirst
+                      ? "bg-(--primary) text-white dark:text-black/70 hover:bg-(--primary)/80"
+                      : "border border-(--primary)/40 text-(--primary) hover:bg-(--primary)/10",
+                  ]}
                 >
                   {resolvedIcon.kind === "icon" && <Icon name={resolvedIcon.value} class="text-base" />}
                   {resolvedIcon.kind === "image" && (
                     <img
                       src={resolvedIcon.value}
                       alt=""
-                      class="w-3.5 h-3.5 object-contain"
+                      class="w-4 h-4 object-contain"
                       loading="lazy"
                       decoding="async"
                     />
@@ -165,7 +177,7 @@ const visibleTags = tags || [];
               data-fancybox="project-cover"
               data-src={coverLightboxSrc}
               data-type="image"
-              class="group relative block w-full cursor-pointer overflow-hidden rounded-xl"
+              class="relative block w-full cursor-pointer overflow-hidden rounded-xl"
             >
               <CoverImage
                 src={entry.data.image}
@@ -175,11 +187,6 @@ const visibleTags = tags || [];
                 preview={false}
                 naturalHeight
               />
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <div class="bg-black/50 text-white rounded-full p-2.5">
-                  <Icon name="material-symbols:zoom-in-rounded" class="text-2xl" />
-                </div>
-              </div>
             </div>
           </div>
         )}
