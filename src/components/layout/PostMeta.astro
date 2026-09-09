@@ -143,10 +143,10 @@ const visibleTags =
           { flex: !hideTagsForMobile, "hidden md:flex": hideTagsForMobile },
         ]}
       >
-        <div class="meta-icon">
-          <Icon name="material-symbols:tag-rounded" class="text-xl" />
-        </div>
-        <div class="flex flex-row flex-nowrap items-center">
+        <div class="flex flex-row flex-wrap items-center">
+          <div class="meta-icon">
+            <Icon name="material-symbols:tag-rounded" class="text-xl" />
+          </div>
           {visibleTags &&
             visibleTags.length > 0 &&
             visibleTags.map((tag, i) => (
@@ -292,6 +292,15 @@ const visibleTags =
 </div>
 
 <style>
+  .post-meta-tags {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .post-meta-tags .meta-icon {
+    flex-shrink: 0;
+  }
+
   .post-meta-cover .text-50,
   .post-meta-cover .meta-divider {
     color: rgb(255 255 255 / 0.9) !important;
@@ -318,10 +327,6 @@ const visibleTags =
     min-width: 0;
   }
 
-  .post-meta-cover .post-meta-tags .flex-nowrap {
-    flex-wrap: wrap !important;
-  }
-
   .post-meta-cover a:hover {
     color: white !important;
   }
@@ -335,8 +340,10 @@ const visibleTags =
   }
 
   @media (max-width: 767px) {
-    .post-meta-cover .post-meta-tags {
+    .post-meta-tags {
       width: 100%;
+      /* 标签换行时图标与首行标签对齐，避免垂直居中漂浮导致变形 */
+      align-items: flex-start;
     }
   }
 </style>

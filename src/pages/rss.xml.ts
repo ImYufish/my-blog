@@ -1,61 +1,24 @@
-import { loadRenderers } from "astro:container";
-import { render } from "astro:content";
-import { getContainerRenderer as getMDXRenderer } from "@astrojs/mdx/container-renderer";
 import rss, { type RSSFeedItem } from "@astrojs/rss";
-import { getContainerRenderer as getSvelteRenderer } from "@astrojs/svelte/container-renderer";
-import I18nKey from "@i18n/i18nKey";
-import { i18n } from "@i18n/translation";
 import { getSortedPosts } from "@utils/content-utils";
 import { formatDateI18nWithTime } from "@utils/date-utils";
-import { url } from "@utils/url-utils";
+import { renderFeedEntries } from "@utils/feed-utils";
 import type { APIContext } from "astro";
-import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
 import pkg from "../../package.json";
 
 export const prerender = true;
 
-function stripInvalidXmlChars(str: string): string {
-	return str.replace(
-		// biome-ignore lint/suspicious/noControlCharactersInRegex: https://www.w3.org/TR/xml/#charsets
-		/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g,
-		"",
-	);
-}
-
 export async function GET(context: APIContext): Promise<Response> {
+	const includeContent = (siteConfig.feed?.contentMode ?? "full") === "full";
 	const blog = await getSortedPosts();
-	const renderers = await loadRenderers([
-		getMDXRenderer(),
-		getSvelteRenderer(),
-	]);
-	const container = await AstroContainer.create({ renderers });
-	const feedItems: RSSFeedItem[] = [];
-	for (const post of blog) {
-		if (post.data.password) {
-			feedItems.push({
-				title: post.data.title,
-				pubDate: post.data.published,
-				description: post.data.description || "",
-				link: url(`/posts/${post.id}/`),
-				content: i18n(I18nKey.passwordProtectedRss),
-			});
-			continue;
-		}
-		const { Content } = await render(post);
-		const rawContent = await container.renderToString(Content);
-		const cleanedContent = stripInvalidXmlChars(rawContent);
-		feedItems.push({
-			title: post.data.title,
-			pubDate: post.data.published,
-			description: post.data.description || "",
-			link: url(`/posts/${post.id}/`),
-			content: sanitizeHtml(cleanedContent, {
-				allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-			}),
-		});
-	}
+	const entries = await renderFeedEntries(blog, { includeContent });
+	const feedItems: RSSFeedItem[] = entries.map((entry) => ({
+		title: entry.title,
+		pubDate: entry.published,
+		description: entry.description,
+		link: entry.link,
+		...(includeContent ? { content: entry.content } : {}),
+	}));
 	return rss({
 		title: siteConfig.title,
 		description: siteConfig.subtitle || "No description",

@@ -92,6 +92,18 @@ export const ja: Translation = {
 	[Key.booknavDescription]: "便利なサイトをカテゴリ別に集めました",
 	[Key.searchBooknav]: "ブックマークを検索...",
 	[Key.booknavEmpty]: "ブックマークがありません",
+
+	// プロジェクト展示ページ
+	[Key.projects]: "プロジェクト",
+	[Key.projectsDescription]: "私が開発したプロジェクトです",
+	[Key.projectDetails]: "詳細を見る",
+	[Key.projectBack]: "プロジェクト一覧へ戻る",
+	[Key.projectEmpty]: "プロジェクトはまだありません",
+	[Key.projectSearch]: "プロジェクトを検索",
+	[Key.projectStatusPlanning]: "計画中",
+	[Key.projectStatusDeveloping]: "開発中",
+	[Key.projectStatusPublished]: "公開済み",
+	[Key.projectStatusArchived]: "アーカイブ",
 	[Key.guestbook]: "ゲストブック",
 	[Key.guestbookDescription]:
 		"ここに足跡を残して、あなたの考えや提案を共有してください",
@@ -324,6 +336,14 @@ export const ja: Translation = {
 		"Feedly、Inoreaderまたは他のRSSリーダーを使用してこのサイトを購読することを推奨します。",
 	[Key.rssCopied]: "RSSリンクがクリップボードにコピーされました！",
 	[Key.rssCopyFailed]: "コピーに失敗しました。手動でリンクをコピーしてください",
+
+	// Atom ページ
+	[Key.atom]: "Atom フィード",
+	[Key.atomDescription]: "最新の更新を購読",
+	[Key.atomSubtitle]: "Atom で購読すると、最新の記事と更新をすぐに受け取れます",
+	[Key.atomLink]: "Atom リンク",
+	[Key.atomCopyToReader]: "Atom リーダーにリンクをコピー",
+	[Key.atomCopied]: "Atom リンクをクリップボードにコピーしました！",
 
 	// 最終更新時間カード
 	[Key.lastModifiedPrefix]: "最終更新日：",

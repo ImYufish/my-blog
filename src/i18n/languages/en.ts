@@ -93,6 +93,18 @@ export const en: Translation = {
 		"A curated collection of useful sites, organized by category.",
 	[Key.searchBooknav]: "Search bookmarks...",
 	[Key.booknavEmpty]: "No bookmarks yet.",
+
+	// Project showcase
+	[Key.projects]: "Projects",
+	[Key.projectsDescription]: "Here are the projects I've built",
+	[Key.projectDetails]: "View details",
+	[Key.projectBack]: "Back to projects",
+	[Key.projectEmpty]: "No projects yet",
+	[Key.projectSearch]: "Search projects",
+	[Key.projectStatusPlanning]: "Planning",
+	[Key.projectStatusDeveloping]: "In Development",
+	[Key.projectStatusPublished]: "Published",
+	[Key.projectStatusArchived]: "Archived",
 	[Key.guestbook]: "Guestbook",
 	[Key.guestbookDescription]:
 		"Welcome to leave your mark here, share your thoughts and suggestions",
@@ -326,6 +338,15 @@ export const en: Translation = {
 		"It is recommended to use Feedly, Inoreader or other RSS readers to subscribe to this site.",
 	[Key.rssCopied]: "RSS link copied to clipboard!",
 	[Key.rssCopyFailed]: "Copy failed, please copy the link manually",
+
+	// Atom Page
+	[Key.atom]: "Atom Feed",
+	[Key.atomDescription]: "Subscribe to get latest updates",
+	[Key.atomSubtitle]:
+		"Subscribe via Atom to get the latest articles and updates immediately",
+	[Key.atomLink]: "Atom Link",
+	[Key.atomCopyToReader]: "Copy link to your Atom reader",
+	[Key.atomCopied]: "Atom link copied to clipboard!",
 
 	// Last Modified Time Card
 	[Key.lastModifiedPrefix]: "Last updated on ",
