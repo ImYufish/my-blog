@@ -1551,8 +1551,25 @@ function toPath(u) {
 	}
 }
 
+/* 导航栏里几个浮层面板（搜索 / 主题 / 音乐 / 显示设置）的文字颜色走的是 Tailwind 的
+   `text-neutral-800 dark:text-neutral-100` 这类 `dark:` 变体
+   （@custom-variant dark (&:where(.dark, .dark *))），不是主题变量。
+   音乐页常见情形是"亮色主题 + 深色 3D 场景"，面板底色被 music-visualizer.css 刷成深色，
+   文字却还停在亮色主题的深色值 → 看着发灰、几乎读不出来。
+   这里给面板挂上 `dark` 类，让面板内部的 dark: 变体整体生效。
+   （本来就处于暗色主题时 html 已是 .dark，再挂一次无副作用。） */
+const NAV_DARK_PANELS = ["search-panel", "theme-mode-panel", "music-nav-panel", "display-setting"];
+function syncNavPanelDark() {
+	const on = document.body.classList.contains("music-active");
+	NAV_DARK_PANELS.forEach((id) => {
+		const el = document.getElementById(id);
+		if (el) el.classList.toggle("dark", on);
+	});
+}
+
 function showViz() {
 	document.body.classList.add("music-active");
+	syncNavPanelDark();
 	if (!vizStarted) {
 		// 异步：内部先懒加载 three 再建场景；失败只告警，不会卡死路由
 		initViz().catch((e) => console.warn("[MusicVisualizer] 初始化失败：", e));
@@ -1571,6 +1588,7 @@ function hideViz() {
 		stopVizLoop();
 	}
 	document.body.classList.remove("music-active");
+	syncNavPanelDark();
 }
 
 function syncMusicOverlay() {
@@ -1598,4 +1616,14 @@ if (!bindSwupRouteHooks()) {
 document.addEventListener("astro:page-load", syncMusicOverlay);
 // 兜底：脚本若在 astro:page-load 之前就已就绪（整页直接打开 /music/ 时），立即同步一次
 syncMusicOverlay();
+
+// #display-setting 这类面板可能晚于本脚本挂载（Svelte 客户端渲染），
+// 用户点开面板时补同步一次；rAF 是为了让面板先完成挂载/显隐再改类。
+document.addEventListener(
+	"click",
+	() => {
+		if (document.body.classList.contains("music-active")) requestAnimationFrame(syncNavPanelDark);
+	},
+	true,
+);
 </script>

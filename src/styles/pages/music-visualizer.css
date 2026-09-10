@@ -54,7 +54,6 @@ body.music-active .floating-dock,
 body.music-active #floating-lyrics-container,
 body.music-active #progress-bar,
 body.music-active .footer,
-body.music-active #sun-moon-theme-btn,
 body.music-active #wallpaper-wrapper,
 body.music-active #banner-overlay-container,
 body.music-active #banner-dim-container,
@@ -1353,24 +1352,76 @@ body.music-active #navbar .btn-plain:active::before {
 	background-color: rgba(255, 255, 255, 0.26) !important;
 }
 
-/* ── 音乐页导航下拉面板：深色毛玻璃 + 浅色文字 ──
-   同样要压过 navbar.css 的浅色面板规则
-   （html:not([data-wallpaper-mode=none])[data-has-wallpaper] :is(.dropdown-content,.float-panel)）。
-   只动 .dropdown-content（导航下拉），不碰 .float-panel（搜索/翻译/目录/显示设置面板）。 */
-html[data-has-wallpaper] body.music-active .dropdown-content,
-:root.dark[data-has-wallpaper] body.music-active .dropdown-content,
-body.music-active .dropdown-content {
-	background: rgba(12, 14, 22, 0.72) !important;
+/* ── 音乐页导航浮层面板：深色毛玻璃 ──
+   要压过 navbar.css 的浅色面板规则
+   （html:not([data-wallpaper-mode=none])[data-has-wallpaper] :is(.dropdown-content,.float-panel)，特异性 (0,3,1)），
+   这里借 #navbar 这个 ID 把特异性抬到 ID 级才压得住。
+   覆盖导航下拉（.dropdown-content）与浮层面板（.float-panel：搜索 #search-panel、
+   主题 #theme-mode-panel、音乐 #music-nav-panel、显示设置 #display-setting）。
+   只限导航栏内部的浮层面板 —— 移动端抽屉 #nav-menu-panel 不在 #navbar 里，不受影响。
+   面板内文字转浅色不在这里做：那些文字走的是 Tailwind 的
+   `text-neutral-800 dark:text-neutral-100` 这类 `dark:` 变体
+   （@custom-variant dark (&:where(.dark, .dark *))），得靠给面板挂 `dark` 类，
+   见 MusicVisualizer 脚本里的 syncNavPanelDark()。 */
+body.music-active #navbar .dropdown-content,
+body.music-active #navbar .float-panel {
+	background: rgba(12, 14, 22, 0.78) !important;
 	backdrop-filter: blur(var(--navbar-panel-blur, 20px)) saturate(1.5) !important;
 	border: 1px solid rgba(255, 255, 255, 0.12) !important;
 	box-shadow:
 		0 10px 30px rgba(0, 0, 0, 0.45),
 		inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+	/* 面板内滚动条也跟着走暗色：这些变量定义在 :root.dark 作用域，
+	   把 `dark` 类挂在面板自身不会生效，得就地重定义。 */
+	--scrollbar-bg: rgba(255, 255, 255, 0.3);
+	--scrollbar-bg-hover: rgba(255, 255, 255, 0.45);
+	--scrollbar-bg-active: rgba(255, 255, 255, 0.6);
+	/* 面板里"当前选中项"的底色用的是 --btn-plain-bg-hover（亮色主题下 oklch(0.95 …) 近白），
+	   在深色面板上会把已经转成浅色的文字吃掉（主题面板里"跟随系统"那条就是白底白字）。
+	   同样就地换掉。 */
+	--btn-plain-bg-hover: rgba(255, 255, 255, 0.16);
+	--btn-plain-bg-active: rgba(255, 255, 255, 0.24);
+	--btn-regular-bg: rgba(255, 255, 255, 0.12);
+	--btn-regular-bg-hover: rgba(255, 255, 255, 0.18);
+	--btn-regular-bg-active: rgba(255, 255, 255, 0.24);
+	/* 面板内大量文字用的是 text-(--btn-content)，亮色主题下它是深色；
+	   音乐页面板被强制改成深色毛玻璃，所以把内容色也翻成浅色。 */
+	--btn-content: rgba(255, 255, 255, 0.9);
 }
 
-/* 音乐页面隐藏主题切换按钮 */
-body.music-active #sun-moon-theme-btn {
-	display: none !important;
+/* 显示设置面板的 .section-title 在 display-settings.css 里默认是深色，
+   即使挂上 dark 类，也可能因为其他规则/加载顺序导致读不清。
+   在音乐页直接强制浅色，标题左侧的色条保持 --primary 不变。 */
+body.music-active #display-setting .section-title {
+	color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* ── 音乐页桌面搜索框 ──
+   #search-bar 沿用的是亮色主题配色（底色 bg-black/4、图标 text-black/30、输入 text-black/50），
+   在深色 3D 场景上等于隐形 —— 但输入框本身还在原位置、还能聚焦、面板也还能弹出来，
+   于是就成了"搜索框完全看不到、却点得到"。这里换成深色场景配色。
+   （#search-bar-inside 是移动端面板里的那一条，一并处理。） */
+body.music-active #search-bar,
+body.music-active #search-bar-inside {
+	background: rgba(255, 255, 255, 0.1) !important;
+}
+body.music-active #search-bar:hover,
+body.music-active #search-bar:focus-within,
+body.music-active #search-bar-inside:hover,
+body.music-active #search-bar-inside:focus-within {
+	background: rgba(255, 255, 255, 0.18) !important;
+}
+body.music-active #search-bar svg,
+body.music-active #search-bar-inside svg {
+	color: rgba(255, 255, 255, 0.6) !important;
+}
+body.music-active #search-bar input,
+body.music-active #search-bar-inside input {
+	color: rgba(255, 255, 255, 0.88) !important;
+}
+body.music-active #search-bar input::placeholder,
+body.music-active #search-bar-inside input::placeholder {
+	color: rgba(255, 255, 255, 0.5) !important;
 }
 
 /* ── 动态图标（play/pause、mode、volume）用内联 SVG，补尺寸与切换规则 ── */
