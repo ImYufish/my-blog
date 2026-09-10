@@ -199,7 +199,8 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/music/",
 		icon: "material-symbols:music-note-rounded",
 		pageKey: "music",
-		fullPage: true, // 整页加载，绕开 Swup 软导航对 #swup-container 的 fixed 破坏
+		// 不再整页加载：音乐可视化器已常驻 Layout（#music-overlay），
+		// 软导航只切 body.music-active 显隐覆盖层，播放器与 three 场景都不销毁。
 	},
 	Guestbook: {
 		name: "留言",

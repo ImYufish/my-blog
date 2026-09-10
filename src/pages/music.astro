@@ -1,19 +1,16 @@
 ---
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import Layout from "@/layouts/Layout.astro";
-import MusicVisualizer from "@components/features/MusicVisualizer.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 const title = i18n(I18nKey.music);
-const description =
-	"";
+const description = "";
 ---
 
-<Layout title={`${title} - 3D可视化`} description={description}>
-	<main class="music-visualizer-swup">
-		<h1 class="sr-only">{title}</h1>
-		<div class="music-visualizer-page">
-			<MusicVisualizer />
-		</div>
-	</main>
-</Layout>
+{/* 音乐页必须走 MainGridLayout：Swup 的 6 个容器（#swup-container / #banner-* / #left-sidebar-dynamic …）
+    只在它里渲染。用 Layout 直出时目标页找不到容器，软导航会半途失败、卡在过渡态——这正是
+    "进音乐页界面乱 / 播放断"的根因（此前靠 fullPage 整页加载掩盖了）。
+    真正的可视化器常驻 Layout 的 #music-overlay，本页只提供容器 + 空占位，进页仅切 body.music-active。 */}
+<MainGridLayout title={`${title} - 3D可视化`} description={description}>
+	<main class="music-route-stub" aria-hidden="true"></main>
+</MainGridLayout>

@@ -125,6 +125,34 @@ const managerConfigStr = JSON.stringify({
     else if (config.playMode === 'one') state.playMode = 1;
     else state.playMode = 0;
 
+    // ── Resume across page reloads (F5) ──────────────────────
+    // 刷新会重建整个 document，播放器单例随之销毁。卸载前把曲目/进度/是否在播存一份到
+    // localStorage，重载后 init() 读回来接着放。软导航不触发 pagehide，不受影响。
+    var RESUME_KEY = 'firefly-music-resume';
+    var lastResumeSave = 0;
+    function saveResume(force) {
+        try {
+            var now = Date.now();
+            if (!force && now - lastResumeSave < 1500) return; // 节流
+            lastResumeSave = now;
+            localStorage.setItem(RESUME_KEY, JSON.stringify({
+                currentIndex: state.currentIndex,
+                currentTime: audio.currentTime || 0,
+                isPlaying: state.isPlaying,
+                isMuted: state.isMuted,
+                mode: config.mode
+            }));
+        } catch (e) {}
+    }
+    function loadResume() {
+        try {
+            var raw = localStorage.getItem(RESUME_KEY);
+            if (!raw) return null;
+            var d = JSON.parse(raw);
+            return d && typeof d.currentIndex === 'number' ? d : null;
+        } catch (e) { return null; }
+    }
+
     // ── Event helpers ────────────────────────────────────────
     function emit(name, detail) {
         window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
@@ -287,6 +315,7 @@ const managerConfigStr = JSON.stringify({
             audio.pause();
             state.isPlaying = false;
             emit('fm:play-state', { isPlaying: false });
+            saveResume(true);
         }
     }
 
@@ -373,6 +402,8 @@ const managerConfigStr = JSON.stringify({
             durationStr: formatTime(dur)
         });
 
+        saveResume();
+
         // Lyrics sync
         if (state.lyrics.length > 0) {
             var idx = -1;
@@ -426,8 +457,23 @@ const managerConfigStr = JSON.stringify({
                 // Apply volume
                 audio.volume = state.volume;
 
+                // 刷新续播优先：回到刷新前那首与那个进度；没有可续的记录时，
+                // 随机模式随机起一首、其余从第一首（只加载，不自动播）
                 var startIndex = 0;
-                if (state.playMode === 2) {
+                var resumeTime = 0;
+                var resumePlay = false;
+                var resume = loadResume();
+                if (resume && resume.currentIndex >= 0
+                    && resume.currentIndex < state.playlist.length
+                    && resume.mode === config.mode) {
+                    startIndex = resume.currentIndex;
+                    resumeTime = resume.currentTime || 0;
+                    resumePlay = !!resume.isPlaying;
+                    if (resume.isMuted) {
+                        state.isMuted = true;
+                        audio.muted = true;
+                    }
+                } else if (state.playMode === 2) {
                     startIndex = Math.floor(Math.random() * state.playlist.length);
                 }
 
@@ -441,6 +487,27 @@ const managerConfigStr = JSON.stringify({
                 });
 
                 loadTrack(startIndex, false);
+
+                // 恢复进度；刷新前是播放态就尽力续播（浏览器可能拦自动播放，见 resumePlayback）
+                if (resumeTime > 0.5 || resumePlay) {
+                    // <audio> 建的时候设了 preload='none'（历史上为阻止自动预加载），
+                    // 光设 src 不会去取数据，metadata 永远不来 —— 所以这段要显式提 preload 并 load()，
+                    // 拿到 metadata 后再 seek；否则进度恢复不了、play() 也无从谈起。
+                    audio.preload = 'metadata';
+                    var applyResume = function () {
+                        audio.preload = 'none';
+                        if (resumeTime > 0.5) {
+                            try { audio.currentTime = resumeTime; } catch (e) {}
+                        }
+                        if (resumePlay) resumePlayback();
+                    };
+                    if (audio.readyState >= 1) {
+                        applyResume();
+                    } else {
+                        audio.addEventListener('loadedmetadata', applyResume, { once: true });
+                        audio.load();
+                    }
+                }
             } else {
                 state.initialized = true;
                 emit('fm:init', {
@@ -465,6 +532,65 @@ const managerConfigStr = JSON.stringify({
             state.initializing = false;
         }
     }
+
+    // ── 刷新后尽力续播 ───────────────────────────────────────
+    // 整页重载会重置浏览器的用户手势，自动播放可能被拦。兜底链：
+    // ① 直接 play（站点 MEI 够就成）
+    // ② 静音 play —— Chrome 默认放行"静音自动播放"，先把播放接上，再把声音还回来
+    // ③ 都被拦：停在断点不动，首个手势马上续播（进度已经就位，一点即接）
+    function markPlaying() {
+        state.isPlaying = true;
+        emit('fm:play-state', { isPlaying: true });
+    }
+    // ② 成功后的收尾：把声音还回来。个别浏览器（Safari）无手势时 unmute 会把播放掐掉，
+    // 所以 unmute 之后校验一次 —— 被掐就退回静音继续播，改由首个手势补声音。
+    function restoreSound() {
+        if (state.isMuted) return; // 用户刷新前就是静音，不用还
+        audio.muted = false;
+        setTimeout(function () {
+            if (!audio.paused) return;
+            audio.muted = true;
+            audio.play().catch(function () {});
+            document.addEventListener('pointerdown', unmuteOnGesture, true);
+            document.addEventListener('keydown', unmuteOnGesture, true);
+        }, 120);
+    }
+    function unmuteOnGesture() {
+        document.removeEventListener('pointerdown', unmuteOnGesture, true);
+        document.removeEventListener('keydown', unmuteOnGesture, true);
+        if (!state.isMuted) audio.muted = false;
+    }
+    // ③ 连静音都被拦：等首个手势（进度、曲目都已就位）
+    function resumeOnGesture() {
+        var onGesture = function () {
+            document.removeEventListener('pointerdown', onGesture, true);
+            document.removeEventListener('keydown', onGesture, true);
+            if (!state.isMuted) audio.muted = false;
+            audio.play().then(markPlaying).catch(function () {});
+        };
+        document.addEventListener('pointerdown', onGesture, true);
+        document.addEventListener('keydown', onGesture, true);
+    }
+    function resumePlayback() {
+        audio.play().then(markPlaying).catch(function (e) {
+            if (e.name === 'AbortError') return; // 被新的 load 打断，交给那次接管
+            audio.muted = true;
+            audio.play().then(function () {
+                markPlaying();
+                restoreSound();
+            }).catch(function (e2) {
+                audio.muted = !!state.isMuted;
+                resumeOnGesture();
+                console.warn('[MusicManager] 刷新后自动播放被浏览器拦截（' + (e2 && e2.name) + '），等待首个手势续播');
+            });
+        });
+    }
+
+    // 卸载前（刷新/关标签）存一份状态，供下次刷新续播
+    window.addEventListener('pagehide', function () { saveResume(true); });
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') saveResume(true);
+    });
 
     // ── Public API ───────────────────────────────────────────
     window.__fireflyMusic = {

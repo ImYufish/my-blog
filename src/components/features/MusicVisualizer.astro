@@ -9,6 +9,9 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
+<!-- 常驻覆盖层：挂在 Layout 里、#swup-container 之外，软导航不销毁它；
+     显示由 body.music-active 控制（见 music-visualizer.css）。 -->
+<div id="music-overlay" class="music-overlay">
 <div class:list={["music-visualizer", className]} id="music-visualizer">
 	<div class="mv-three-container" id="mv-three-container"></div>
 
@@ -40,7 +43,7 @@ const { class: className } = Astro.props;
 	<div class="music-visualizer__controls" id="mv-controls">
 		<div class="music-visualizer__track-summary">
 			<div class="music-visualizer__current-cover" id="mv-cover">
-				<img id="mv-cover-img" src="" alt="" style="display:none;" />
+				<img id="mv-cover-img" alt="" style="display:none;" />
 				<span class="music-visualizer__icon" id="mv-cover-ph">
 					<svg viewBox="0 0 24 24" width="22" height="22"
 						><path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"></path></svg
@@ -218,13 +221,18 @@ const { class: className } = Astro.props;
 			>
 			</div>
 		</div>
-	</aside>
+		</aside>
+</div>
 </div>
 
 <script>
 // @ts-nocheck — 此客户端脚本为已上线的 three.js 音乐可视化逻辑，运行时正常；为避免 astro check 因大量 THREE/AudioContext 类型推断误报而阻断 CI，整体跳过类型检查。
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// Three.js 改为懒加载：MusicVisualizer 现已常驻 Layout（所有页面都会加载其脚本），
+// 若在此静态 import 会把 ~600KB 的 three 包塞进每个页面的首屏 bundle。
+// 改为首次进入音乐页时再动态 import，首屏只付出很小的壳。
+let THREE = null;
+let OrbitControls = null;
+let threeReady = false;
 import { i18n } from "@/i18n/translation";
 import I18nKey from "@/i18n/i18nKey";
 
@@ -297,61 +305,49 @@ class AudioAnalyzer {
 	setEvents(events) {
 		this.events = events;
 	}
-	connect(audioEl) {
-		if (this.connected && this.audioElement === audioEl) return;
-		this.audioElement = audioEl;
-		if (this.audioCtx) {
-			if (this.audioCtx.state === "suspended") this.audioCtx.resume();
-			return;
-		}
+	// 只建 AudioContext 和各节点，不碰 <audio>（真正"接管"音频的是 createMediaElementSource）
+	ensureContext() {
+		if (this.audioCtx) return this.audioCtx;
 		const AC = window.AudioContext || window.webkitAudioContext;
-		if (!AC) return;
+		if (!AC) return null;
 		this.audioCtx = new AC();
 		this.analyser = this.audioCtx.createAnalyser();
 		this.analyser.fftSize = 1024;
 		this.analyser.smoothingTimeConstant = 0.8;
 		this.gainNode = this.audioCtx.createGain();
 		this.gainNode.gain.value = 1;
+		this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+		return this.audioCtx;
+	}
+	// 把 AudioContext 拉起来，返回它是否已经 running
+	async ensureRunning() {
+		const ctx = this.ensureContext();
+		if (!ctx) return false;
+		if (ctx.state === "running") return true;
 		try {
-			this.source = this.audioCtx.createMediaElementSource(audioEl);
+			await ctx.resume();
+		} catch (e) {}
+		return ctx.state === "running";
+	}
+	isRunning() {
+		return !!this.audioCtx && this.audioCtx.state === "running";
+	}
+	// 接管 <audio>：这一步会把音频输出改道进 Web Audio，务必在 ctx 已经 running 之后再调。
+	// 移动端在没有用户手势时新建的 AudioContext 是 suspended，此时接管会把正在播的声音直接闷掉。
+	connect(audioEl) {
+		if (this.connected && this.audioElement === audioEl) return;
+		const ctx = this.ensureContext();
+		if (!ctx) return;
+		try {
+			this.source = ctx.createMediaElementSource(audioEl);
 			this.source.connect(this.gainNode);
-			this.gainNode.connect(this.audioCtx.destination);
+			this.gainNode.connect(ctx.destination);
 			this.gainNode.connect(this.analyser);
+			this.audioElement = audioEl;
 			this.connected = true;
 		} catch (e) {
 			console.warn("[MusicVisualizer] AudioAnalyzer connect failed:", e);
 		}
-		if (this.analyser) {
-			this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-		}
-	}
-	disconnect() {
-		if (this.source) {
-			try {
-				this.source.disconnect();
-			} catch (e) {}
-			this.source = null;
-		}
-		if (this.gainNode) {
-			try {
-				this.gainNode.disconnect();
-			} catch (e) {}
-			this.gainNode = null;
-		}
-		if (this.analyser) {
-			try {
-				this.analyser.disconnect();
-			} catch (e) {}
-			this.analyser = null;
-		}
-		if (this.audioCtx) {
-			this.audioCtx.close();
-			this.audioCtx = null;
-		}
-		this.connected = false;
-	}
-	isConnected() {
-		return this.connected;
 	}
 	resume() {
 		if (this.audioCtx && this.audioCtx.state === "suspended") this.audioCtx.resume();
@@ -503,7 +499,7 @@ class AudioAnalyzer {
 /* ───────────────────────── Three.js 场景（移植自 ThreeScene.svelte） ───────────────────────── */
 let scene, camera, renderer, controls, terrainMesh, meteorMesh, particleMesh, terrainMaterial;
 let animationId, clock, onResize, sceneReady = false;
-let backgroundTargetColor = new THREE.Color(VIS.background.dark);
+let backgroundTargetColor = null; // 懒加载 three 后由 setupThreeGlobals 赋值
 const container = () => document.getElementById("mv-three-container");
 
 const GRID_SIZE = 128;
@@ -512,17 +508,19 @@ const INSTANCE_COUNT = GRID_SIZE * GRID_SIZE;
 const MAX_METEORS = 12;
 const MAX_PARTICLES = 100;
 
-const ripples = AudioAnalyzer.getRipplesArray();
+let ripples = null; // 懒加载 three 后由 setupThreeGlobals 赋值
 let rippleIndex = 0;
 const meteors = new Array(MAX_METEORS).fill(null).map(() => ({ active: false, x: 0, y: -1000, z: 0, speed: 0, strength: 0 }));
 let meteorIndex = 0;
 const particles = new Array(MAX_PARTICLES).fill(null).map(() => ({ active: false, x: 0, y: -1000, z: 0, vx: 0, vy: 0, vz: 0, life: 0, maxLife: 1, scale: 1 }));
 let particleIndex = 0;
 
-const dummyMatrix = new THREE.Matrix4();
-const dummyPosition = new THREE.Vector3();
-const dummyQuaternion = new THREE.Quaternion();
-const dummyScale = new THREE.Vector3();
+// 这些临时对象原本在模块顶层 new THREE.*，但 three 改为懒加载后 THREE 此时为 null，
+// 必须延迟到 ensureThree 之后在 setupThreeGlobals 里初始化。
+let dummyMatrix = null;
+let dummyPosition = null;
+let dummyQuaternion = null;
+let dummyScale = null;
 
 function getThemeColors() {
 	return {
@@ -536,7 +534,7 @@ function getThemeColors() {
 		glowIntensity: VIS.theme.glowIntensity ?? 1.2,
 	};
 }
-const themeColors = getThemeColors();
+let themeColors = null; // 懒加载 three 后由 setupThreeGlobals 赋值
 const heightConfig = VIS.height;
 
 function addRipple(x, z, strength, isWhite) {
@@ -906,6 +904,35 @@ function createTerrainMaterial() {
 }
 
 let audioAnalyzer = null;
+let pendingAudioEl = null; // ctx 起不来时待接管的 <audio>，等首个手势
+let audioConnectArmed = false;
+
+/* 懒加载 three 与其控制器（仅首次进入音乐页时执行一次） */
+async function ensureThree() {
+	if (threeReady) return;
+	const t = await import("three");
+	THREE = t;
+	try {
+		const o = await import("three/examples/jsm/controls/OrbitControls.js");
+		OrbitControls = o.OrbitControls;
+	} catch (e) {
+		console.warn("[MusicVisualizer] OrbitControls 懒加载失败：", e);
+		OrbitControls = null;
+	}
+	threeReady = true;
+}
+
+/* three 就位后，把模块顶层那些依赖 THREE 的变量一次性补全 */
+function setupThreeGlobals() {
+	if (!THREE) return;
+	backgroundTargetColor = new THREE.Color(VIS.background.dark);
+	ripples = AudioAnalyzer.getRipplesArray();
+	themeColors = getThemeColors();
+	dummyMatrix = new THREE.Matrix4();
+	dummyPosition = new THREE.Vector3();
+	dummyQuaternion = new THREE.Quaternion();
+	dummyScale = new THREE.Vector3();
+}
 
 function initScene() {
 	const el = container();
@@ -1024,6 +1051,8 @@ function initScene() {
 
 function animate() {
 	animationId = requestAnimationFrame(animate);
+	// 场景尚未建好（如初次进入音乐页、three 还在懒加载）时先空转，避免读到未初始化的 clock
+	if (!sceneReady) return;
 	const delta = clock.getDelta();
 	const elapsed = clock.getElapsedTime();
 
@@ -1128,33 +1157,17 @@ function animate() {
 	renderer.render(scene, camera);
 }
 
-function cleanupScene() {
-	if (animationId) cancelAnimationFrame(animationId);
-	animationId = null;
-	if (onResize) window.removeEventListener("resize", onResize);
-	onResize = null;
-	if (renderer) {
-		renderer.dispose();
-		const el = container();
-		if (el && renderer.domElement && renderer.domElement.parentNode === el) {
-			el.removeChild(renderer.domElement);
-		}
+/* 渲染循环的启停：隐藏音乐页时停掉 RAF 省 CPU，重新进入时再续上（场景不销毁） */
+function startVizLoop() {
+	if (vizHidden) return;
+	if (animationId) return;
+	animate();
+}
+function stopVizLoop() {
+	if (animationId) {
+		cancelAnimationFrame(animationId);
+		animationId = null;
 	}
-	if (terrainMesh) {
-		terrainMesh.geometry.dispose();
-		terrainMaterial.dispose();
-	}
-	if (meteorMesh) {
-		meteorMesh.geometry.dispose();
-		meteorMesh.material.dispose();
-	}
-	if (particleMesh) {
-		particleMesh.geometry.dispose();
-		particleMesh.material.dispose();
-	}
-	if (controls) controls.dispose();
-	scene = camera = renderer = controls = terrainMesh = meteorMesh = particleMesh = terrainMaterial = null;
-	sceneReady = false;
 }
 
 /* ───────────────────────── UI 同步（歌词 / 控制条 / 歌单，替代 Svelte 响应式） ───────────────────────── */
@@ -1226,6 +1239,25 @@ function onLyrics(e) {
 }
 function onLrcIndex(e) {
 	currentLyricIndex = e.detail.index;
+	renderLyrics();
+}
+
+/* 歌词是事件驱动（fm:lyrics / fm:lrc-index），但"在首页放歌 → 切进音乐页"这条路径下，
+   歌词早在首页就取好、fm:lyrics 也早发过了 —— 等可视化器这时才绑监听器，自然收不到，
+   歌词区就永远停在 loading（整页刷新 /music/ 时管理器后初始化，事件在绑定之后才发，所以正常）。
+   这里在初始化时主动从管理器状态补一次（getState 已暴露 lyrics / currentLrcIndex）。 */
+function hydrateLyrics() {
+	if (!mgr) return;
+	const state = mgr.getState();
+	currentLyrics = state.lyrics || [];
+	currentLyricIndex =
+		typeof state.currentLrcIndex === "number" ? state.currentLrcIndex : -1;
+	lyricsStatus =
+		currentLyrics.length > 0
+			? "loaded"
+			: state.track && state.track.lrc
+				? "loading"
+				: "none";
 	renderLyrics();
 }
 
@@ -1321,7 +1353,14 @@ function bindControls() {
 	$("mv-btn-next").addEventListener("click", () => mgr && mgr.playNext());
 	$("mv-btn-mode").addEventListener("click", () => mgr && mgr.cyclePlayMode());
 	$("mv-btn-mute").addEventListener("click", () => mgr && mgr.toggleMute());
-	$("mv-btn-back").addEventListener("click", () => (window.location.href = "/"));
+	$("mv-btn-back").addEventListener("click", () => {
+		// 走软导航回主页：overlay 由 astro:page-load 统一收起，播放器（常驻）不中断
+		if (window.swup && typeof window.swup.navigate === "function") {
+			window.swup.navigate("/");
+		} else {
+			window.location.href = "/";
+		}
+	});
 	$("mv-btn-playlist").addEventListener("click", () => {
 		const panel = $("mv-playlist");
 		const btn = $("mv-btn-playlist");
@@ -1383,16 +1422,34 @@ function onInit() {
 	syncState();
 }
 
-/* ───────────────────────── 初始化 / 销毁 ───────────────────────── */
+/* ───────────────────────── 初始化 ───────────────────────── */
 let vizStarted = false;
+let vizHidden = false;
 let themeObserver = null;
-const fmHandlers = {};
 
 function getBackgroundColor() {
 	return document.documentElement.classList.contains("dark") ||
 		document.documentElement.getAttribute("data-theme") === "dark"
 		? VIS.background.dark
 		: VIS.background.light;
+}
+
+/* 等首个用户手势再接管音频。移动端（尤其 iOS）新建的 AudioContext 要由手势唤醒，
+   所以起不来时先不接管，等用户碰一下屏幕 —— 那时 ctx 能 running，接管才安全。 */
+function armAudioConnectOnGesture() {
+	if (audioConnectArmed) return;
+	audioConnectArmed = true;
+	const onGesture = () => {
+		document.removeEventListener("pointerdown", onGesture, true);
+		document.removeEventListener("keydown", onGesture, true);
+		audioConnectArmed = false;
+		if (!audioAnalyzer || !pendingAudioEl) return;
+		audioAnalyzer.ensureRunning().then((ok) => {
+			if (ok && pendingAudioEl) audioAnalyzer.connect(pendingAudioEl);
+		});
+	};
+	document.addEventListener("pointerdown", onGesture, true);
+	document.addEventListener("keydown", onGesture, true);
 }
 
 function connectAudio() {
@@ -1402,22 +1459,32 @@ function connectAudio() {
 		return;
 	}
 	if (!audio.crossOrigin) audio.crossOrigin = "anonymous";
-	try {
-		if (!audioAnalyzer) audioAnalyzer = new AudioAnalyzer();
-		audioAnalyzer.connect(audio);
-	} catch (e) {
-		console.warn("[MusicVisualizer] connect failed:", e);
-	}
-	if (audioAnalyzer && audioAnalyzer.audioCtx && audioAnalyzer.audioCtx.state === "suspended") {
-		audioAnalyzer.resume();
-	}
+	if (!audioAnalyzer) audioAnalyzer = new AudioAnalyzer();
+	// 先把 AudioContext 拉起来，确认 running 之后再用 createMediaElementSource 接管 <audio>。
+	// 移动端无手势时 ctx 是 suspended，此时接管会把正在播的声音直接闷掉 —— 表现就是
+	// "从首页进音乐页，播放暂停了"。起不来就先不接管，等首个手势（见上）。
+	audioAnalyzer
+		.ensureRunning()
+		.then((ok) => {
+			if (ok) {
+				audioAnalyzer.connect(audio);
+			} else {
+				pendingAudioEl = audio;
+				armAudioConnectOnGesture();
+			}
+		})
+		.catch((e) => console.warn("[MusicVisualizer] connect failed:", e));
 }
 
-function initViz() {
+async function initViz() {
 	if (vizStarted) return;
 	const el = $("mv-three-container");
 	if (!el) return;
 	vizStarted = true;
+
+	// 先把 three 拉进来（首屏不会，因为本组件已常驻 Layout），再补全依赖它的模块级变量
+	await ensureThree();
+	setupThreeGlobals();
 
 	mgr = window.__fireflyMusic;
 	if (!mgr) {
@@ -1453,7 +1520,7 @@ function afterMgrReady() {
 
 	// 场景
 	initScene();
-	animate();
+	startVizLoop();
 
 	// 事件
 	bindControls();
@@ -1467,49 +1534,68 @@ function afterMgrReady() {
 	window.addEventListener("fm:mode", onMode);
 	window.addEventListener("fm:init", onInit);
 
-	fmHandlers.onLyrics = onLyrics;
-	fmHandlers.onLrcIndex = onLrcIndex;
-	fmHandlers.onTrack = onTrack;
-	fmHandlers.onPlayState = onPlayState;
-	fmHandlers.onTime = onTime;
-	fmHandlers.onVolume = onVolume;
-	fmHandlers.onMode = onMode;
-	fmHandlers.onInit = onInit;
+	// 监听器全部就位后，补一次"已经发生过"的歌词（软导航进页时 fm:lyrics 早发过了）
+	hydrateLyrics();
 }
 
-function destroyViz() {
-	if (!vizStarted) return;
-	vizStarted = false;
-	if (themeObserver) {
-		themeObserver.disconnect();
-		themeObserver = null;
+/* 覆盖层显隐：本组件常驻 Layout，软导航只切换 body.music-active，
+   播放器与可视化器都不销毁；离开音乐页仅暂停 RAF，回来立即续上。 */
+function isMusicRoute() {
+	return location.pathname.replace(/\/+$/, "") === "/music";
+}
+function toPath(u) {
+	try {
+		return new URL(u, location.href).pathname.replace(/\/+$/, "");
+	} catch (e) {
+		return "";
 	}
-	window.removeEventListener("fm:lyrics", onLyrics);
-	window.removeEventListener("fm:lrc-index", onLrcIndex);
-	window.removeEventListener("fm:track", onTrack);
-	window.removeEventListener("fm:play-state", onPlayState);
-	window.removeEventListener("fm:time", onTime);
-	window.removeEventListener("fm:volume", onVolume);
-	window.removeEventListener("fm:mode", onMode);
-	window.removeEventListener("fm:init", onInit);
-	if (audioAnalyzer) {
-		audioAnalyzer.disconnect();
-		audioAnalyzer = null;
-	}
-	cleanupScene();
-	mgr = null;
 }
 
-document.addEventListener("astro:page-load", () => {
-	if (document.querySelector(".music-visualizer-page")) {
-		initViz();
-	} else {
-		destroyViz();
+function showViz() {
+	document.body.classList.add("music-active");
+	if (!vizStarted) {
+		// 异步：内部先懒加载 three 再建场景；失败只告警，不会卡死路由
+		initViz().catch((e) => console.warn("[MusicVisualizer] 初始化失败：", e));
+	} else if (vizHidden) {
+		vizHidden = false;
+		startVizLoop();
+		// 隐藏期间覆盖层 display:none，之前量的歌词高度都是 0；恢复时重算一次滚动位置
+		// （fm:lrc-index 只在换行时才发，不能指望它立刻纠正）
+		syncLyricsOffset();
 	}
-});
-
-// 兜底：若脚本在 astro:page-load 之前就已就绪（整页加载时常见），直接尝试初始化
-if (document.querySelector(".music-visualizer-page")) {
-	setTimeout(initViz, 0);
 }
+
+function hideViz() {
+	if (vizStarted && !vizHidden) {
+		vizHidden = true;
+		stopVizLoop();
+	}
+	document.body.classList.remove("music-active");
+}
+
+function syncMusicOverlay() {
+	if (isMusicRoute()) showViz();
+	else hideViz();
+}
+
+/* 软导航提前切换：若等 astro:page-load 才切，过渡动画期间会先露出音乐页外壳（闪一下）。
+   在 visit:start 就按目标地址切好，页面落定时再按真实 URL 校准一次（覆盖前进/后退/直开）。 */
+function bindSwupRouteHooks() {
+	const swup = window.swup;
+	if (!swup || !swup.hooks) return false;
+	swup.hooks.on("visit:start", (visit) => {
+		const to = toPath((visit && visit.to && visit.to.url) || "");
+		if (to === "/music") showViz();
+		else if (isMusicRoute()) hideViz();
+	});
+	swup.hooks.on("visit:end", syncMusicOverlay);
+	return true;
+}
+if (!bindSwupRouteHooks()) {
+	document.addEventListener("swup:enable", bindSwupRouteHooks, { once: true });
+}
+
+document.addEventListener("astro:page-load", syncMusicOverlay);
+// 兜底：脚本若在 astro:page-load 之前就已就绪（整页直接打开 /music/ 时），立即同步一次
+syncMusicOverlay();
 </script>

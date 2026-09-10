@@ -1,80 +1,81 @@
-.music-visualizer-page {
+/* 常驻覆盖层外壳：挂在 #swup-container 之外，软导航不销毁；
+   显示完全由 body.music-active 控制（组件脚本在路由匹配 /music 时切换）。
+   z-index 取 70：高于墙纸/内容区（z-30 上下文），但低于导航栏（#navbar-wrapper z-80），
+   从而复刻原本"导航栏透明白字浮在音乐页之上"的观感，且音乐页能盖住首页内容。 */
+.music-overlay {
 	position: fixed;
 	inset: 0;
-	z-index: 100;
-	overflow: hidden;
+	z-index: 70;
+	display: none;
+	/* 不透明兜底底色：three 是懒加载，首帧就绪前不能让下面的页面内容透出来 */
+	background: #0a0a15;
+}
+body.music-active .music-overlay {
+	display: block;
 }
 
-.music-visualizer-swup {
-	min-height: 100vh !important;
-	padding: 0 !important;
-}
-
-.music-visualizer-top-row {
-	position: fixed;
-	top: 0;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 260;
-	margin-inline: auto;
-}
-
-html:has(.music-visualizer-page),
-body:has(.music-visualizer-page) {
+body.music-active {
 	overflow: hidden !important;
 }
 
-html:has(.music-visualizer-page) #left-sidebar-wrapper,
-html:has(.music-visualizer-page) #left-sidebar-dynamic,
-html:has(.music-visualizer-page) #right-sidebar-static,
-html:has(.music-visualizer-page) #right-sidebar-dynamic,
-html:has(.music-visualizer-page) #mobile-bottom-sidebar,
-html:has(.music-visualizer-page) #floating-dock,
-html:has(.music-visualizer-page) #live2d-widget,
-html:has(.music-visualizer-page) #spine-model-container,
-html:has(.music-visualizer-page) .floating-dock,
-html:has(.music-visualizer-page) #floating-lyrics-container {
+/* ── 全站锁定滚动条槽位（看似全局，但根因属于音乐页，故就近放这里） ──
+   音乐页会去掉页面滚动条（body.music-active 的 overflow:hidden），滚动条一消失，
+   布局宽度就多出整整一条滚动条（本机 15px）。#top-row 带 transition-all duration-700，
+   于是右侧/居中的导航项跟着整体位移 —— 进出音乐页时肉眼可见地"往左挪"。
+   给根元素锁住槽位后，布局宽度恒为 (视口宽 − 滚动条宽)，滚动条出现/消失都不再引起位移；
+   首页本来就有滚动条、槽位被它占着，位置完全不变。
+   注 1：scrollbar-gutter 必须挂在根元素 html 上才作用于视口，挂 body 实测无效
+        （body 的 overflow 会传播给视口，但 gutter 不跟着传播）。
+   注 2：只对音乐页加（html:has(body.music-active)）也不行 —— 离开音乐页时 body.music-active
+        在内容替换前就被摘掉，那一瞬页面仍没有滚动条，宽度会先弹回，反而抖一下。 */
+html {
+	scrollbar-gutter: stable;
+}
+
+/* 锁槽位后，槽位区域露出的是根元素背景。浅色主题的根背景是浅色，会在深色场景右侧
+   留下一条亮边 —— 音乐页把它刷成"被场景暗角压过的边缘色"（近黑）。
+   场景右侧被 .music-visualizer::before 的暗角叠到约 9 成黑，亮/暗主题都近乎全黑，
+   所以取近黑即可，看不出那条 15px 槽位。 */
+html:has(body.music-active) {
+	background-color: #05070b;
+}
+
+/* 音乐页清场：隐藏侧边栏/进度条/页脚，以及壁纸、横幅、分类栏、悬浮目录，
+   确保覆盖层之外不留任何页面残影（与 immersive-reading 的处理方式一致）。 */
+body.music-active #left-sidebar-wrapper,
+body.music-active #left-sidebar-dynamic,
+body.music-active #right-sidebar-static,
+body.music-active #right-sidebar-dynamic,
+body.music-active #mobile-bottom-sidebar,
+body.music-active #floating-dock,
+body.music-active #live2d-widget,
+body.music-active #spine-model-container,
+body.music-active .floating-dock,
+body.music-active #floating-lyrics-container,
+body.music-active #progress-bar,
+body.music-active .footer,
+body.music-active #sun-moon-theme-btn,
+body.music-active #wallpaper-wrapper,
+body.music-active #banner-overlay-container,
+body.music-active #banner-dim-container,
+body.music-active #category-bar-wrapper,
+body.music-active #floating-toc-wrapper {
 	display: none !important;
 }
 
-/* 导航到音乐页面时隐藏侧边栏等（由 capture phase click 和 link:click 添加，content:replace 移除）
-   注：进出音乐页面已通过 visit:start 强制整页加载，此规则作为 SSR 初始加载和安全兜底 */
-html.is-navigating-to-music #left-sidebar-wrapper,
-html.is-navigating-to-music #left-sidebar-dynamic,
-html.is-navigating-to-music #right-sidebar-static,
-html.is-navigating-to-music #right-sidebar-dynamic,
-html.is-navigating-to-music #mobile-bottom-sidebar,
-html.is-navigating-to-music #floating-dock,
-html.is-navigating-to-music #live2d-widget,
-html.is-navigating-to-music #spine-model-container,
-html.is-navigating-to-music .floating-dock,
-html.is-navigating-to-music #floating-lyrics-container,
-html.is-navigating-to-music #progress-bar,
-html.is-navigating-to-music .footer,
-html.is-navigating-to-music #sun-moon-theme-btn {
-	display: none !important;
-}
-html.is-navigating-to-music #navbar .navbar-logo-content,
-html.is-navigating-to-music #navbar .navbar-link-item,
-html.is-navigating-to-music #navbar .btn-plain,
-html.is-navigating-to-music #navbar .nav-hamburger-btn {
-	color: oklch(0.95 0 0 / 0.85) !important;
-}
-
-html:has(.music-visualizer-page) #swup-container {
+/* 导航栏文字转浅色的规则在文件下方"音乐页导航栏"一节（那里补了特异性，能压过 navbar.css） */
+body.music-active #swup-container {
 	padding: 0 !important;
-}
-
-html:has(.music-visualizer-page) #progress-bar,
-html:has(.music-visualizer-page) .footer {
-	display: none !important;
 }
 
 .music-visualizer {
 	position: fixed;
 	inset: 0;
 	width: 100vw;
+	/* 移动端 100vh 是"大视口"（含被地址栏盖住的那截）：地址栏一收一放高度就跳，
+	   播放控件还可能被顶到屏幕外。用 dvh 跟着可见区走，旧浏览器回落到 vh。 */
 	height: 100vh;
+	height: 100dvh;
 	overflow: hidden;
 	cursor: default;
 }
@@ -1040,10 +1041,6 @@ html:has(.music-visualizer-page) .footer {
 }
 
 @media (max-width: 768px) {
-	.music-visualizer-top-row {
-		width: 100%;
-	}
-
 	.music-visualizer__lyrics {
 		left: 14px;
 		right: 14px;
@@ -1312,37 +1309,68 @@ html:has(.music-visualizer-page) .footer {
 	}
 }
 
-/* ── 音乐页面导航栏透明 ── */
-html:has(.music-visualizer-page) #navbar,
-html:has(.music-visualizer-page) #navbar > div,
-html:has(.music-visualizer-page) #navbar > div > div,
-html:has(.music-visualizer-page) #navbar.scrolled > div {
+/* ── 音乐页导航栏：全透明 + 浅色文字（背景是深色 3D 场景） ──
+   关键：navbar.css 里 semi / semifull.scrolled 的毛玻璃背景是 !important 且特异性更高
+   （形如 html[data-has-wallpaper] #navbar[data-transparent-mode="…"]>div，约 (1,2,2)~(1,4,1)），
+   而 body.music-active #navbar>div 只有 (1,1,2) —— 两者都 !important 时按特异性比，我们输，
+   于是导航栏仍停在浅色毛玻璃上，白字叠上去就是"发白"。补 [data-transparent-mode] 抬特异性才压得住。 */
+html[data-has-wallpaper] body.music-active #navbar[data-transparent-mode] > div,
+:root.dark[data-has-wallpaper] body.music-active #navbar[data-transparent-mode] > div,
+body.music-active #navbar > div,
+body.music-active #navbar.scrolled > div {
+	--navbar-surface-blur: 0px !important;
 	background: transparent !important;
 	background-color: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
 }
-html:has(.music-visualizer-page) .dropdown-content,
-html:has(.music-visualizer-page) .float-panel {
-	background: rgba(0, 0, 0, 0.6) !important;
-	backdrop-filter: blur(16px) !important;
-	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+body.music-active #navbar,
+body.music-active #navbar.navbar-sticky-shadow {
+	box-shadow: none !important;
 }
-/* 音乐页面隐藏主题切换按钮 */
-html:has(.music-visualizer-page) #sun-moon-theme-btn,
-html.is-navigating-to-music #sun-moon-theme-btn {
-	display: none !important;
+
+/* 导航栏文字转浅色。
+   注：navbar-logo-content / navbar-link-item / nav-hamburger-btn 这些类名在当前 DOM 里已不存在
+   （历史遗留）；真正生效的是 .btn-plain（主页链接、各下拉触发器、下拉项）和 logo 的内层 div。
+   刻意不写 `#navbar *` —— 搜索/音乐面板（.float-panel）也挂在 #navbar 里，整体刷白会误伤它们。 */
+body.music-active #navbar .btn-plain,
+body.music-active #navbar .btn-plain > div,
+body.music-active #navbar .navbar-icon {
+	color: oklch(0.96 0 0 / 0.94) !important;
 }
-/* 音乐页面导航栏强制白色文字（背景是深色 3D 场景） */
-html:has(.music-visualizer-page) #navbar .navbar-logo-content,
-html:has(.music-visualizer-page) #navbar .navbar-link-item,
-html:has(.music-visualizer-page) #navbar .btn-plain,
-html:has(.music-visualizer-page) #navbar .nav-hamburger-btn {
-	color: oklch(0.95 0 0 / 0.85) !important;
-}
-html:has(.music-visualizer-page) #navbar .btn-plain:hover,
-html:has(.music-visualizer-page) #navbar .navbar-link-item:hover {
+body.music-active #navbar .btn-plain:hover {
 	color: var(--primary) !important;
+}
+
+/* hover / 聚焦 / 按下的高亮胶囊来自主题的 expand-animation —— 它画在 ::before 上，
+   底色是 --btn-plain-bg-hover = oklch(0.95 0.025 var(--hue))（亮色主题下近乎白），
+   在深色 3D 场景上非常刺眼（"选中的时候太亮"）。这里换成半透明白，弱化存在感。 */
+body.music-active #navbar .btn-plain:hover::before,
+body.music-active #navbar .btn-plain:focus-visible::before {
+	background-color: rgba(255, 255, 255, 0.16) !important;
+}
+body.music-active #navbar .btn-plain:active::before {
+	background-color: rgba(255, 255, 255, 0.26) !important;
+}
+
+/* ── 音乐页导航下拉面板：深色毛玻璃 + 浅色文字 ──
+   同样要压过 navbar.css 的浅色面板规则
+   （html:not([data-wallpaper-mode=none])[data-has-wallpaper] :is(.dropdown-content,.float-panel)）。
+   只动 .dropdown-content（导航下拉），不碰 .float-panel（搜索/翻译/目录/显示设置面板）。 */
+html[data-has-wallpaper] body.music-active .dropdown-content,
+:root.dark[data-has-wallpaper] body.music-active .dropdown-content,
+body.music-active .dropdown-content {
+	background: rgba(12, 14, 22, 0.72) !important;
+	backdrop-filter: blur(var(--navbar-panel-blur, 20px)) saturate(1.5) !important;
+	border: 1px solid rgba(255, 255, 255, 0.12) !important;
+	box-shadow:
+		0 10px 30px rgba(0, 0, 0, 0.45),
+		inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 音乐页面隐藏主题切换按钮 */
+body.music-active #sun-moon-theme-btn {
+	display: none !important;
 }
 
 /* ── 动态图标（play/pause、mode、volume）用内联 SVG，补尺寸与切换规则 ── */
