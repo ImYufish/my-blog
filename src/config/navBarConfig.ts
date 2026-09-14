@@ -121,7 +121,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				external: true,
 				icon: "material-symbols:mail-outline",
 			},
-			{
+				{
 				name: "友链检测",
 				url: "https://fc.yufish.cn/",
 				external: true,

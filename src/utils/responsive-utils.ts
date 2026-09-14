@@ -220,7 +220,10 @@ export function generateMainContentClasses(
 	}
 
 	classes.push("min-w-0");
-	classes.push("overflow-hidden");
+	// 只裁横向、纵向放开：评论区浮层（Waline 表情面板）需能溢出内容列；
+	// clip 不产生滚动容器，不影响列内吸顶。
+	classes.push("overflow-x-clip");
+	classes.push("overflow-y-visible");
 
 	return classes.join(" ");
 }
