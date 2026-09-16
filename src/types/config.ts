@@ -34,6 +34,7 @@ export type {
 	NavBarSearchMethod,
 } from "./navBarConfig";
 export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
+export type { PlacesConfig } from "./placesConfig";
 export type { PlantUMLConfig } from "./plantumlConfig";
 export type { ProfileConfig } from "./profileConfig";
 export type {

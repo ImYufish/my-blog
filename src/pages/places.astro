@@ -2,10 +2,15 @@
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Comment from "@/components/comment/index.astro";
+import { placesConfig } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import "@/styles/pages/footprint-map.css";
 
 const placesEntries = await getCollection("places");
+
+// 高德 key：优先环境变量 / .env（Vite 内联 import.meta.env），留空则回退到配置文件
+const amapKey =
+	(import.meta.env.PUBLIC_AMAP_KEY_PLACES || "").trim() || placesConfig.amapKey;
 
 const now = new Date();
 const currentYear = now.getFullYear();
@@ -166,7 +171,7 @@ if (document.readyState === 'loading') {
         <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-3">足迹地图</h2>
         {footprintLocations.length > 0 ? (
           <div class="map-wrapper" id="map-wrapper">
-            <div id='footprintMap' class='footprint-map' data-amap-key={import.meta.env.PUBLIC_AMAP_KEY_PLACES} style='height: 500px;'></div>
+            <div id='footprintMap' class='footprint-map' data-amap-key={amapKey} style='height: 500px;'></div>
             <!-- 地图锁定遮罩 -->
             <div class="map-lock-overlay" id="map-lock-overlay">
               <div class="map-lock-content">

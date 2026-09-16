@@ -51,6 +51,8 @@ package/
 .mimocode
 .vercel
 .env*
+# .env.example 是给人看的模板，要能提交（放在 .env* 之后才能生效）
+!.env.example
 .workbuddy
 
 public/hitokoto/hitokoto.json
