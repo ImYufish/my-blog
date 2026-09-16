@@ -1,0 +1,49 @@
+{
+"locations": [
+{
+	"name": "商丘 Shangqiu",
+	"coordinates": "115.6535,34.4429",
+	"date": "2026-01-30",
+	"description": "去睢县和宝宝见面了，玩的非常开心",
+	"categories": ["去过"],
+	"markerColor": "ocean",
+	"visitCount": 99
+},
+{
+	"name": "北京 Beijing",
+	"coordinates": "116.4074,39.9042",
+	"date": "2025-10-01",
+	"description": "国庆节游玩",
+	"categories": ["去过"],
+	"markerColor": "sunset",
+	"visitCount": 5
+},
+{
+	"name": "上海 Shanghai",
+	"coordinates": "121.4737,31.2304",
+	"date": "2025-05-01",
+	"description": "五一假期旅行",
+	"categories": ["去过"],
+	"markerColor": "violet",
+	"visitCount": 3
+},
+{
+	"name": "杭州 Hangzhou",
+	"coordinates": "120.1451,30.2425",
+	"date": "2024-11-15",
+	"description": "西湖美景",
+	"categories": ["去过"],
+	"markerColor": "forest",
+	"visitCount": 2
+},
+{
+	"name": "成都 Chengdu",
+	"coordinates": "104.0827,30.6312",
+	"date": "2026-06-01",
+	"description": "计划去成都看熊猫",
+	"categories": ["计划"],
+	"markerColor": "citrus",
+	"visitCount": 0
+}
+]
+}

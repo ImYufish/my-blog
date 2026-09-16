@@ -68,6 +68,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 项目
 			LinkPresets.Projects,
 
+			// 足迹地图
+			LinkPresets.Places,
+
 			// 相册
 			LinkPresets.Gallery,
 
@@ -219,6 +222,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/projects/",
 		icon: "material-symbols:rocket-launch",
 		pageKey: "projects",
+	},
+	Places: {
+		name: "足迹",
+		url: "/places/",
+		icon: "material-symbols:explore",
+		pageKey: "places",
 	},
 	Gallery: {
 		name: "相册",

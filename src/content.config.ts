@@ -130,14 +130,34 @@ const projectsCollection: ContentCollection<ProjectData> = defineCollection({
 	}),
 });
 
+// 足迹地图的地点数据（对应 src/content/places/*.md，见 /places/ 页面）
+const placesCollection = defineCollection({
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/places" }),
+	schema: z.object({
+		date: z.coerce.date().optional(),
+		province: z.string().optional().default(""),
+		city: z.string().optional().default(""),
+		experience: z.string().optional().default(""),
+		visitCount: z.number().optional().default(1),
+		lat: z.number().optional(),
+		lng: z.number().optional(),
+		url: z.string().optional().default(""),
+		urlLabel: z.string().optional().default(""),
+		photos: z.array(z.string()).optional().default([]),
+		tags: z.array(z.string()).optional().default([]),
+	}),
+});
+
 export const collections: {
 	dynamic: typeof dynamicCollection;
 	posts: typeof postsCollection;
 	spec: typeof specCollection;
 	projects: typeof projectsCollection;
+	places: typeof placesCollection;
 } = {
 	dynamic: dynamicCollection,
 	posts: postsCollection,
 	spec: specCollection,
 	projects: projectsCollection,
+	places: placesCollection,
 };

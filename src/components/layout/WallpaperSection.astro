@@ -4,7 +4,8 @@ import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
 import BannerHomeTextOverlay from "@/components/layout/BannerHomeTextOverlay.astro";
 import BannerPostMetaOverlay from "@/components/layout/BannerPostMetaOverlay.astro";
-import { backgroundWallpaper } from "@/config";
+import { backgroundWallpaper, wallpaperThemeConfig } from "@/config";
+import WallpaperHueApplier from "@/components/layout/WallpaperHueApplier.astro";
 import type {
 	BannerPostMeta,
 	BannerVisibilityState,
@@ -23,11 +24,15 @@ const wallpaperPosition = state.isFullscreenMode
 	? (backgroundWallpaper.fullscreen?.position ??
 		backgroundWallpaper.banner?.position)
 	: backgroundWallpaper.banner?.position;
+
+// 壁纸取色：把每张壁纸预先算好的主色相挂到节点上，客户端挑中哪张就把 --hue 设成哪张
+const hueOf = (src: string): number | undefined =>
+	wallpaperThemeConfig.hues[src];
 ---
 
 <!-- Wallpaper - 如果允许切换则始终渲染，否则只渲染当前模式 -->
 {(state.isWallpaperSwitchable || state.isBannerMode || state.isFullscreenMode || state.isOverlayMode) && (
-<div id="wallpaper-wrapper" class="absolute z-10 w-full overflow-hidden" style="--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;">
+<div id="wallpaper-wrapper" class="absolute z-10 w-full overflow-hidden" data-wallpaper-hue={wallpaperThemeConfig.enable ? "on" : "off"} style="--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;">
 <!-- 背景图片显示 -->
     {state.hasMultipleImages ? (
     /* 轮播模式：渲染所有图片为 slide-item */
@@ -39,7 +44,7 @@ const wallpaperPosition = state.isFullscreenMode
          data-carousel-effect={state.bannerCarouselEffect}>
         {/* 图片放在 <template> 里，浏览器不会发起请求；由轮播脚本挑中随机那张后克隆进 DOM */}
         {backgroundImages.mobile.map((src, index) => (
-            <div class:list={["slide-item block lg:hidden", index === 0 && "active"]} data-index={index}>
+            <div class:list={["slide-item block lg:hidden", index === 0 && "active"]} data-index={index} data-hue={hueOf(src)}>
                 <template>
                     <ImageWrapper
                         alt="Mobile background image of the blog"
@@ -56,7 +61,7 @@ const wallpaperPosition = state.isFullscreenMode
             </div>
         ))}
         {backgroundImages.desktop.map((src, index) => (
-            <div class:list={["slide-item hidden lg:block", index === 0 && "active"]} data-index={index}>
+            <div class:list={["slide-item hidden lg:block", index === 0 && "active"]} data-index={index} data-hue={hueOf(src)}>
                 <template>
                     <ImageWrapper
                         alt="Desktop background image of the blog"
@@ -115,7 +120,7 @@ const wallpaperPosition = state.isFullscreenMode
         {/* 两侧都放在 <template> 里，由下面的脚本按 matchMedia 只实例化匹配的那一侧，
             避免桌面端白下一张手机图（display:none 挡不住 loading="eager"） */}
         {backgroundImages.mobile.length > 0 && (
-            <div class="banner-image-slot absolute inset-0 block lg:hidden">
+            <div class="banner-image-slot absolute inset-0 block lg:hidden" data-hue={hueOf(backgroundImages.mobile[0])}>
                 <template>
                     <ImageWrapper
                         alt="Mobile background image of the blog"
@@ -132,7 +137,7 @@ const wallpaperPosition = state.isFullscreenMode
             </div>
         )}
         {backgroundImages.desktop.length > 0 && (
-            <div class="banner-image-slot absolute inset-0 hidden lg:block">
+            <div class="banner-image-slot absolute inset-0 hidden lg:block" data-hue={hueOf(backgroundImages.desktop[0])}>
                 <template>
                     <ImageWrapper
                         alt="Desktop background image of the blog"
@@ -186,6 +191,8 @@ const wallpaperPosition = state.isFullscreenMode
         </noscript>
     </div>
     )}
+
+    <WallpaperHueApplier />
 
     <!-- 壁纸轮播脚本（基于 CSS transition） -->
     {state.hasMultipleImages && (
@@ -329,6 +336,8 @@ const wallpaperPosition = state.isFullscreenMode
                 // 目标图可能还躺在 <template> 里，先实例化再切
                 materialize(slides[nextIndex], false);
                 materializeAhead(slides, nextIndex);
+
+                // 切到新壁纸 → 主题色相跟着换
 
                 // 直接切换（CSS 处理过渡动画）
                 applySlideChange(slides, nextIndex);

@@ -66,4 +66,5 @@ export type ImageFormat = "avif" | "webp" | "png" | "jpg" | "jpeg" | "gif";
 // 天气组件，一言、自动收录
 export type { HitokotoCategory, HitokotoConfig } from "./hitokotoConfig";
 export type { IndexNowConfig } from "./indexNowConfig";
+export type { WallpaperThemeConfig } from "./wallpaperThemeConfig";
 export type { WeatherConfig } from "./weatherConfig";

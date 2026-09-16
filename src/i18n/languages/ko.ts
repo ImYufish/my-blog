@@ -415,6 +415,7 @@ export const ko: Translation = {
 	[Key.cardSettings]: "카드 스타일",
 	[Key.cardBorder]: "카드 테두리와 그림자",
 	[Key.cardFollowTheme]: "카드 테마 색상 따르기",
+	[Key.wallpaperHueFollow]: "배경화면 색상 따라가기",
 
 	// Post List Layout
 	[Key.postListLayout]: "게시글 목록 레이아웃",

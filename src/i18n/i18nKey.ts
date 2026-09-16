@@ -403,6 +403,7 @@ enum I18nKey {
 	cardSettings = "cardSettings",
 	cardBorder = "cardBorder",
 	cardFollowTheme = "cardFollowTheme",
+	wallpaperHueFollow = "wallpaperHueFollow",
 
 	// 文章布局
 	postListLayout = "postListLayout",

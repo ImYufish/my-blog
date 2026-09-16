@@ -407,6 +407,7 @@ export const zh_CN: Translation = {
 	[Key.cardSettings]: "卡片样式",
 	[Key.cardBorder]: "卡片边框和阴影",
 	[Key.cardFollowTheme]: "卡片跟随主题色",
+	[Key.wallpaperHueFollow]: "壁纸取色",
 
 	// 文章布局
 	[Key.postListLayout]: "文章布局",

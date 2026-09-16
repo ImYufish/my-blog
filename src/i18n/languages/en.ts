@@ -417,6 +417,7 @@ export const en: Translation = {
 	[Key.cardSettings]: "Card Style",
 	[Key.cardBorder]: "Card Border & Shadow",
 	[Key.cardFollowTheme]: "Card Follow Theme Color",
+	[Key.wallpaperHueFollow]: "Follow Wallpaper Color",
 
 	// Post List Layout
 	[Key.postListLayout]: "Post List Layout",

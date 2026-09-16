@@ -1,0 +1,378 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Comment from "@/components/comment/index.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import "@/styles/pages/footprint-map.css";
+
+const placesEntries = await getCollection("places");
+
+const now = new Date();
+const currentYear = now.getFullYear();
+
+const isSameYear = (date?: Date | string) => {
+	if (!date) return false;
+	const d = date instanceof Date ? date : new Date(String(date));
+	if (Number.isNaN(d.getTime())) return false;
+	return d.getFullYear() === currentYear;
+};
+
+const sum = (arr: number[]) => arr.reduce((acc, num) => acc + num, 0);
+
+const visitedPlaces = placesEntries
+	.filter((entry) => !entry.id.toLowerCase().includes("readme"))
+	.map((entry) => entry.data);
+
+const sortedPlaces = [...visitedPlaces].sort((a, b) => {
+	const aTime = a.date instanceof Date ? a.date.getTime() : 0;
+	const bTime = b.date instanceof Date ? b.date.getTime() : 0;
+	return bTime - aTime;
+});
+
+const totalVisitCount = sum(sortedPlaces.map((p) => p.visitCount || 1));
+const thisYearVisitCount = sortedPlaces.filter((p) =>
+	isSameYear(p.date),
+).length;
+
+// 预设标记颜色循环
+const MARKER_PRESETS = [
+	"ocean",
+	"sunset",
+	"violet",
+	"forest",
+	"amber",
+	"citrus",
+];
+
+// 将 MD 数据转换为 FootprintMap 所需的 JSON 格式
+const footprintLocations = sortedPlaces
+	.filter((p) => p.lat && p.lng) // 只有没有经纬度的地点才会显示在地图上
+	.map((p, i) => ({
+		name: [p.province, p.city].filter(Boolean).join(" · ") || "未命名地点",
+		coordinates: `${p.lng},${p.lat}`,
+		date:
+			p.date instanceof Date
+				? p.date.toISOString().split("T")[0]
+				: typeof p.date === "string"
+					? p.date
+					: "",
+		description: p.experience || "",
+		url: p.url || "",
+		urlLabel: p.urlLabel || "查看相关内容",
+		photos: p.photos && p.photos.length > 0 ? p.photos : [],
+		categories: p.tags && p.tags.length > 0 ? p.tags : ["去过"],
+		markerColor: MARKER_PRESETS[i % MARKER_PRESETS.length],
+		visitCount: p.visitCount || 1,
+	}));
+
+const footprintData = JSON.stringify({ locations: footprintLocations });
+---
+
+<MainGridLayout title='去过的地方' description='足迹地图与旅行记录'>
+  <script is:inline slot="head" define:vars={{ footprintData }}>
+// 足迹地图初始化脚本
+// 放在 head 中，Swup 导航时 @swup/head-plugin 会重新执行此脚本
+var _footprintInit = false;
+
+function _fpLoadScript(src, globalCheck) {
+  return new Promise(function(resolve, reject) {
+    if (globalCheck && window[globalCheck]) { resolve(); return; }
+    var existing = document.querySelector('script[data-fp-src="' + src + '"]');
+    if (existing) { resolve(); return; }
+    var s = document.createElement('script');
+    s.src = src;
+    s.setAttribute('data-fp-src', src);
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+function _fpInit() {
+  var mapEl = document.getElementById('footprintMap');
+  if (!mapEl || _footprintInit) return;
+  _footprintInit = true;
+
+  var blob;
+  try {
+    blob = new Blob([footprintData], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    mapEl.setAttribute('data-json', url);
+  } catch(e) {
+    console.error('足迹数据初始化失败:', e);
+    return;
+  }
+
+  if (window.FootprintMap && window.FootprintMap.CONFIG) {
+    window.FootprintMap.CONFIG.HIGHLIGHT.mode = 'visited';
+  }
+
+  mapEl.classList.add('footprint-map--loading');
+
+  Promise.all([
+    _fpLoadScript('/footprint/static/js/utils.js', 'FootprintMap'),
+    _fpLoadScript('/footprint/static/js/theme.js'),
+    _fpLoadScript('/footprint/static/js/footprintmap.js', 'FootprintMap'),
+    _fpLoadScript('/footprint/static/js/plugin-visited.js'),
+    _fpLoadScript('/footprint/static/js/plugin-hover.js')
+  ]).then(function() {
+    if (window.FootprintMap && window.FootprintMap.bootstrapMap) {
+      window.FootprintMap.bootstrapMap(mapEl);
+    }
+  }).catch(function(err) {
+    console.error('足迹地图脚本加载失败:', err);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _fpInit);
+} else {
+  _fpInit();
+}
+  </script>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-4 py-6 md:px-9 relative w-full">
+
+      <!-- 头部 -->
+      <div class="mb-6">
+        <div class="flex items-center gap-3 mb-3">
+          <Icon name="material-symbols:explore" class="text-[1.875rem] text-neutral-900 dark:text-neutral-100" />
+          <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">去过的地方</div>
+        </div>
+        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">足迹地图与旅行记录</p>
+      </div>
+
+      <!-- 统计 -->
+      <div class="stat-pills mb-6">
+        <div class="stat-pill">
+          <Icon name="material-symbols:location-city" class="text-sm" />
+          <span class="font-semibold">{sortedPlaces.length}</span>
+          <span class="stat-pill__label">地点</span>
+        </div>
+        <div class="stat-pill">
+          <Icon name="material-symbols:pin-drop" class="text-sm" />
+          <span class="font-semibold">{totalVisitCount}</span>
+          <span class="stat-pill__label">到访次数</span>
+        </div>
+        <div class="stat-pill">
+          <Icon name="material-symbols:calendar-today" class="text-sm" />
+          <span class="font-semibold">{thisYearVisitCount}</span>
+          <span class="stat-pill__label">今年出行</span>
+        </div>
+      </div>
+
+      <!-- 地图 -->
+      <div class="mb-6">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-3">足迹地图</h2>
+        {footprintLocations.length > 0 ? (
+          <div class="map-wrapper" id="map-wrapper">
+            <div id='footprintMap' class='footprint-map' data-amap-key={import.meta.env.PUBLIC_AMAP_KEY_PLACES} style='height: 500px;'></div>
+            <!-- 地图锁定遮罩 -->
+            <div class="map-lock-overlay" id="map-lock-overlay">
+              <div class="map-lock-content">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a1.5 1.5 0 0 0 1.5-1.5h-3A1.5 1.5 0 0 0 12 17Zm4-6V9a4 4 0 0 0-8 0v2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2Zm-6-2a2 2 0 0 1 4 0v2h-4V9Zm4 4H8v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1Z" fill="currentColor"/></svg>
+                <span>点击解锁地图交互</span>
+              </div>
+            </div>
+            <!-- 锁定/解锁切换按钮 -->
+            <button class="map-lock-btn" id="map-lock-btn" type="button" aria-label="锁定地图">
+              <svg class="map-lock-icon-locked" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a1.5 1.5 0 0 0 1.5-1.5h-3A1.5 1.5 0 0 0 12 17Zm4-6V9a4 4 0 0 0-8 0v2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2Zm-6-2a2 2 0 0 1 4 0v2h-4V9Zm4 4H8v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1Z" fill="currentColor"/></svg>
+              <svg class="map-lock-icon-unlocked" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a1.5 1.5 0 0 0 1.5-1.5h-3A1.5 1.5 0 0 0 12 17Zm4-6V9a4 4 0 0 0-8 0v2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2Zm-6-2a2 2 0 0 1 4 0v2h-4V9Z" fill="currentColor"/></svg>
+            </button>
+          </div>
+        ) : (
+          <div class='h-[500px] w-full rounded-xl border-2 border-neutral-300 dark:border-neutral-600 flex flex-col items-center justify-center gap-2'>
+            <Icon name="material-symbols:location-off" class="text-4xl text-neutral-300 dark:text-neutral-600" />
+            <p class='text-neutral-500 dark:text-neutral-400 text-sm'>暂无地图数据</p>
+            <p class='text-xs text-neutral-400 dark:text-neutral-500'>请在地点 MD 文件中添加 lat 和 lng 字段</p>
+          </div>
+        )}
+        <p class='mt-2 text-xs text-neutral-400 dark:text-neutral-500 text-center'>地图由 高德地图 提供</p>
+      </div>
+
+      <!-- 地图锁定/解锁脚本 -->
+      <script is:inline>
+      (function() {
+        if (window.__mapLockInited) return;
+        window.__mapLockInited = true;
+
+        var wrapper = document.getElementById("map-wrapper");
+        var overlay = document.getElementById("map-lock-overlay");
+        var btn = document.getElementById("map-lock-btn");
+        if (!wrapper || !overlay || !btn) return;
+
+        var locked = true;
+
+        function setLock(state) {
+          locked = state;
+          if (locked) {
+            overlay.classList.remove("is-unlocked");
+            wrapper.classList.remove("is-unlocked");
+          } else {
+            overlay.classList.add("is-unlocked");
+            wrapper.classList.add("is-unlocked");
+          }
+        }
+
+        // 点击遮罩解锁
+        overlay.addEventListener("click", function() {
+          setLock(false);
+        });
+
+        // 点击按钮切换
+        btn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          setLock(!locked);
+        });
+
+        // 滚动离开地图区域时自动锁定
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (!entry.isIntersecting && !locked) {
+              setLock(true);
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(wrapper);
+      })();
+      </script>
+
+      <!-- 评论区 -->
+      <Comment customPath="/places/" />
+
+    </div>
+  </div>
+</MainGridLayout>
+
+<style>
+  .stat-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    overflow: hidden;
+  }
+
+  .stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border: 2px solid var(--deep-text);
+    border-radius: 50px;
+    font-size: 0.8125rem;
+    color: var(--deep-text);
+    white-space: nowrap;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .stat-pill__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 480px) {
+    .stat-pill {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      gap: 0.125rem;
+    }
+    .stat-pill :global(svg) {
+      display: none;
+    }
+  }
+
+  .stat-pill :global(svg) {
+    color: var(--primary);
+  }
+
+  /* 地图锁定遮罩 */
+  .map-wrapper {
+    position: relative;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .map-wrapper :global(.footprint-map) {
+    margin: 0;
+  }
+
+  .map-lock-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    cursor: pointer;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    border-radius: 0.75rem;
+  }
+
+  :root.dark .map-lock-overlay {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  .map-lock-overlay.is-unlocked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .map-lock-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--deep-text);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .map-lock-overlay:hover .map-lock-content {
+    opacity: 1;
+  }
+
+  /* 锁定/解锁按钮 */
+  .map-lock-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 11;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--line-divider);
+    background: color-mix(in srgb, var(--page-bg) 85%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--content-meta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .map-lock-btn:hover {
+    color: var(--deep-text);
+    border-color: var(--deep-text);
+  }
+
+  .map-lock-icon-unlocked {
+    display: none;
+  }
+
+  .map-wrapper.is-unlocked .map-lock-icon-locked {
+    display: none;
+  }
+
+  .map-wrapper.is-unlocked .map-lock-icon-unlocked {
+    display: block;
+  }
+</style>

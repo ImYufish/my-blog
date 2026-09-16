@@ -1,0 +1,63 @@
+---
+// 壁纸取色：把"当前可见那张壁纸"预先算好的色相写到全站 --hue 上。
+//
+// 为什么单独成一个组件：逻辑全留在这里，上游的 WallpaperSection.astro 只需要多几个
+// data-hue 属性（纯数据），合并上游时几乎不会冲突。
+// 色相表来自 src/config/wallpaperHues.ts（由 scripts/gen-wallpaper-hues.mjs 生成）。
+---
+
+<script is:inline data-swup-ignore-script>
+    (function initWallpaperHue() {
+        var wrapper = document.getElementById('wallpaper-wrapper');
+        if (!wrapper || wrapper.dataset.wallpaperHue !== 'on') return;
+
+        // 按当前断点挑「真正在显示」的那张：桌面端跳过 lg:hidden，移动端跳过 hidden
+        function visibleNode() {
+            var isLg = window.innerWidth >= 1024;
+            var nodes = document.querySelectorAll('#banner-images-container .slide-item, #banner-images-container .banner-image-slot');
+            for (var i = 0; i < nodes.length; i++) {
+                var el = nodes[i];
+                var isMobileOnly = el.classList.contains('lg:hidden');
+                var isDesktopOnly = !isMobileOnly && el.classList.contains('hidden');
+                if (isLg && isMobileOnly) continue;
+                if (!isLg && isDesktopOnly) continue;
+                if (el.classList.contains('slide-item') && !el.classList.contains('active')) continue;
+                return el;
+            }
+            return null;
+        }
+
+        function apply() {
+            // 访客在显示设置里关掉了跟随，就别再改 --hue
+            if (localStorage.getItem('wallpaperHueFollow') === 'false') return;
+            var el = visibleNode();
+            var hue = el && el.dataset ? el.dataset.hue : '';
+            if (hue) document.documentElement.style.setProperty('--hue', hue);
+        }
+
+        function restoreManual() {
+            // 关掉跟随时把手动色相还回去（滑块存 localStorage.hue，config-carrier 是站点默认值）
+            var carrier = document.getElementById('config-carrier');
+            var manual = localStorage.getItem('hue') || (carrier && carrier.dataset.hue);
+            if (manual) document.documentElement.style.setProperty('--hue', manual);
+        }
+
+        apply();
+
+        // 轮播切图 / 断点切换都会改 class，观察即可，不需要在各处回调
+        var container = document.getElementById('banner-images-container');
+        if (container && window.MutationObserver) {
+            new MutationObserver(apply).observe(container, {
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+        window.addEventListener('resize', apply);
+        window.addEventListener('astro:page-load', apply);
+        window.addEventListener('wallpaperHueFollowChange', function (e) {
+            if (e && e.detail && e.detail.enabled === false) restoreManual();
+            else apply();
+        });
+    })();
+</script>

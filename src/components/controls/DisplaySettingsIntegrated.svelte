@@ -47,12 +47,18 @@ import {
 	setWallpaperMode,
 	setWavesEnabled,
 } from "@utils/setting-utils";
+import {
+	getDefaultWallpaperHueFollowEnabled,
+	getStoredWallpaperHueFollowEnabled,
+	setWallpaperHueFollowEnabled,
+} from "@utils/wallpaper-hue-utils";
 import { onMount } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
 import {
 	backgroundWallpaper,
 	displaySettingsConfig,
 	siteConfig,
+	wallpaperThemeConfig,
 } from "@/config";
 import type { FullscreenWallpaperLayout, WALLPAPER_MODE } from "@/types/config";
 
@@ -114,6 +120,8 @@ let cardBorderEnabled = $state(false);
 const defaultCardBorderEnabled = getDefaultCardBorderEnabled();
 let cardFollowThemeEnabled = $state(false);
 const defaultCardFollowThemeEnabled = getDefaultCardFollowThemeEnabled();
+let wallpaperHueFollowEnabled = $state(false);
+const defaultWallpaperHueFollowEnabled = getDefaultWallpaperHueFollowEnabled();
 
 const isWallpaperSwitchable = displaySettingsConfig.wallpaperModeSwitchable;
 const isFullscreenLayoutSwitchable = $derived(
@@ -138,6 +146,9 @@ const isSakuraSwitchable = displaySettingsConfig.sakuraSwitchable;
 const isCardBorderSwitchable = displaySettingsConfig.cardBorderSwitchable;
 const isCardFollowThemeSwitchable =
 	displaySettingsConfig.cardFollowThemeSwitchable;
+// 壁纸取色：总开关看 wallpaperThemeConfig.enable 与 switchable
+const isWallpaperHueFollowSwitchable =
+	wallpaperThemeConfig.enable && wallpaperThemeConfig.switchable;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
 const hasBannerSettings =
 	isWavesSwitchable ||
@@ -441,6 +452,11 @@ function toggleCardFollowThemeEnabled() {
 	setCardFollowThemeEnabled(cardFollowThemeEnabled);
 }
 
+function toggleWallpaperHueFollowEnabled() {
+	wallpaperHueFollowEnabled = !wallpaperHueFollowEnabled;
+	setWallpaperHueFollowEnabled(wallpaperHueFollowEnabled);
+}
+
 function resetCardSettings() {
 	if (
 		isCardBorderSwitchable &&
@@ -553,6 +569,7 @@ onMount(() => {
 	// 从localStorage读取卡片样式状态
 	cardBorderEnabled = getStoredCardBorderEnabled();
 	cardFollowThemeEnabled = getStoredCardFollowThemeEnabled();
+	wallpaperHueFollowEnabled = getStoredWallpaperHueFollowEnabled();
 
 	// 从localStorage读取全屏透明设置状态
 	overlayOpacity = getStoredOverlayOpacity();
@@ -626,6 +643,8 @@ onMount(() => {
 });
 
 $effect(() => {
+	// 壁纸取色开启时 --hue 由壁纸侧接管，别用手动值把它盖回去
+	if (wallpaperHueFollowEnabled) return;
 	if (hue || hue === 0) {
 		setHue(hue);
 	}
@@ -688,6 +707,7 @@ $effect(() => {
 		<div class="">
 			<div class="section-title">
 				{i18n(I18nKey.themeColor)}
+				{#if !wallpaperHueFollowEnabled}
 				<button aria-label="Reset to Default" class="btn-regular rounded-md active:scale-90"
 						class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue}
 						disabled={hue === defaultHue} aria-hidden={hue === defaultHue ? "true" : undefined} onclick={resetHue}>
@@ -699,11 +719,34 @@ $effect(() => {
 				font-bold items-center text-(--btn-content)">
 					{hue}
 				</div>
+				{/if}
 			</div>
+			{#if !wallpaperHueFollowEnabled}
 			<div class="hue-slider-shell w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded-md select-none">
 				<input aria-label={i18n(I18nKey.themeColor)} type="range" min="0" max="360" bind:value={hue}
 					   class="slider" id="colorSlider" step="5" style="width: 100%">
 			</div>
+			{/if}
+			{#if isWallpaperHueFollowSwitchable}
+			<button
+				type="button"
+				aria-label={i18n(I18nKey.wallpaperHueFollow)}
+				aria-pressed={wallpaperHueFollowEnabled}
+				title={i18n(I18nKey.wallpaperHueFollow)}
+				class="w-full btn-regular rounded-md py-2 px-3 mt-2 flex items-center gap-2 active:scale-95 transition-all"
+				class:bg-(--btn-regular-bg-hover)={wallpaperHueFollowEnabled}
+				onclick={toggleWallpaperHueFollowEnabled}
+			>
+				<span class="text-sm flex-1 text-left">{i18n(I18nKey.wallpaperHueFollow)}</span>
+				<div class="w-10 h-5 rounded-full transition-colors relative shrink-0"
+					 class:bg-(--primary)={wallpaperHueFollowEnabled}
+					 class:bg-(--btn-regular-bg-active)={!wallpaperHueFollowEnabled}>
+					<div class="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all"
+						 class:left-0.5={!wallpaperHueFollowEnabled}
+						 class:left-5={wallpaperHueFollowEnabled}></div>
+				</div>
+			</button>
+			{/if}
 		</div>
 		{/if}
 
