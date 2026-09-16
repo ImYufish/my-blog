@@ -33,7 +33,9 @@ export interface EffectiveSidebarState {
 
 /** 纯 footer 类构建器（从 MainGridLayout 的 frontmatter 迁出，逐字保留分支） */
 export function buildFooterClass(config: ResponsiveSidebarConfig): string {
-	const footerClass = ["footer", "col-span-1", "onload-animation"];
+	// 不给页脚挂 onload-animation：它是 fade-in-up + forwards，transform 会长期保留	
+	// 让页脚成为 z-index:0 的层叠上下文，从而盖住纵向溢出内容列的浮层（Waline 表情面板）
+	const footerClass = ["footer", "col-span-1"];
 
 	if (
 		config.isBothSidebars &&

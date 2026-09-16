@@ -308,13 +308,13 @@ const description =
                 class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative"
               >
                 {/* 顶部封面（纯装饰截图，不放站点名） */}
-                <div class="relative h-24 w-full overflow-hidden">
+                <div class="img-skeleton relative h-24 w-full overflow-hidden">
                   <img
                     src={cover}
                     alt={item.title}
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
-                    onerror={`this.onerror=null;this.src='${coverFallback}'`}
+                    data-fallback={coverFallback}
                   />
                   {/* 封面底部渐变融入卡片背景 */}
                   <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent" />
@@ -333,7 +333,7 @@ const description =
 
                 {/* 主体：圆形头像 + 站点名（加粗变黑） */}
                 <div class="p-2.5 flex items-center gap-2.5">
-                  <div class="relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
+                  <div class="img-skeleton relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
                     <img
                       src={item.imgurl}
                       alt={item.title}
@@ -483,6 +483,51 @@ const description =
   </script>
 
   <style is:global>
+    /* 图片加载占位：未加载完成时容器里转圈，加载/出错后停掉 */
+    .img-skeleton {
+      position: relative;
+    }
+    .img-skeleton::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1.1rem;
+      height: 1.1rem;
+      margin: -0.55rem 0 0 -0.55rem;
+      border-radius: 9999px;
+      border: 2px solid color-mix(in oklab, var(--primary) 22%, transparent);
+      border-top-color: var(--primary);
+      animation: img-skeleton-spin 0.7s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+      /* 图片淡入时转圈稍晚淡出，交接更自然 */
+      transition: opacity 0.3s ease 0.15s, visibility 0s linear 0.45s;
+    }
+    /* 图片压在转圈之上，但仍在封面渐变/延迟徽章之下 */
+    .img-skeleton > img {
+      position: relative;
+      z-index: 0;
+    }
+    /* 只在 JS 生效时先把图藏起来：无 JS 时图片照常显示，不至于一片空白。
+       渐进式图片会边下边显示，不藏的话就成「图还没下完就露出来了」 */
+    .img-skeleton--js > img {
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .img-skeleton--js.is-loaded > img {
+      opacity: 1;
+    }
+    .img-skeleton.is-loaded::before {
+      opacity: 0;
+      visibility: hidden;
+    }
+    @keyframes img-skeleton-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .friends-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -517,6 +562,64 @@ const description =
     // 新申请的友链无需重新构建博客即可出现。失败则沿用构建时 SSR 数据。
     // 数据源与反代域名由 src/config/friendsConfig.ts 提供（经 define:vars 注入）
     (function () {
+      // 图片加载占位：img 的 load/error 不冒泡，用捕获阶段做事件委托统一处理
+      // 客户端重渲染 cardHtml 后新增的图片也能覆盖，不用担心重复绑定
+      if (!window.__friendImgSkeletonBound) {
+        window.__friendImgSkeletonBound = true;
+        // 关键：光「撤转圈」不够——图片字节下完前浏览器已经在画渐进扫描了，
+        // 所以必须让 <img> 在加载完成前保持透明（见 .img-skeleton--js），
+        // 等 load + decode + 一帧之后再让它淡入。
+        var revealImg = function (img) {
+          var box = img.parentElement;
+          if (!box || !box.classList.contains("img-skeleton")) return;
+          var done = function () {
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                box.classList.add("is-loaded");
+              });
+            });
+          };
+          if (typeof img.decode === "function") {
+            img.decode().then(done, done);
+          } else {
+            done();
+          }
+        };
+        document.addEventListener(
+          "load",
+          function (e) {
+            if (e.target && e.target.tagName === "IMG") revealImg(e.target);
+          },
+          true,
+        );
+        document.addEventListener(
+          "error",
+          function (e) {
+            var t = e.target;
+            if (!t || t.tagName !== "IMG") return;
+            // 封面带了 data-fallback（通常是绕过反代的原始图）：先换一次备用图，
+            // 换图期间保持转圈，不能提前放行，否则备用图又会边下边显示
+            var fb = t.getAttribute("data-fallback");
+            if (fb && !t.dataset.fallbackTried) {
+              t.dataset.fallbackTried = "1";
+              t.src = fb;
+              return;
+            }
+            revealImg(t);
+          },
+          true,
+        );
+        // JS 生效时才把图藏起来；脚本执行时已缓存完成的图片不会再 fire load，补处理一遍
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".img-skeleton"),
+          function (box) {
+            box.classList.add("img-skeleton--js");
+            var img = box.querySelector("img");
+            if (img && img.complete) revealImg(img);
+          },
+        );
+      }
+
       function normUrl(u) {
         return (u || "").trim().replace(/^https?:\/\//i, "").replace(/\/$/, "").toLowerCase();
       }
@@ -562,8 +665,8 @@ const description =
           : "";
         return (
           '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
-            '<div class="relative h-24 w-full overflow-hidden">' +
-              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.onerror=null;this.src=\'' + esc(coverRaw) + '\'" />' +
+            '<div class="img-skeleton img-skeleton--js relative h-24 w-full overflow-hidden">' +
+              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" data-fallback="' + esc(coverRaw) + '" />' +
               '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
               '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
                 '<span class="w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +
@@ -571,7 +674,7 @@ const description =
               "</div>" +
             "</div>" +
             '<div class="p-2.5 flex items-center gap-2.5">' +
-              '<div class="relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
+              '<div class="img-skeleton img-skeleton--js relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
                 '<img src="' + esc(f.imgurl) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover" loading="lazy" />' +
               "</div>" +
               '<div data-title class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">' + esc(f.title) + "</div>" +

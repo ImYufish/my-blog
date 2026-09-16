@@ -25,51 +25,312 @@ const widgetId = "hitokoto-widget";
   class={className}
   style={style}
 >
-  <div class="hitokoto-widget flex flex-col gap-2" data-widget>
-    <div class="hitokoto-body flex flex-col gap-1.5">
-      <blockquote class="hitokoto-text text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
-        <span class="hitokoto-mark select-none">"</span><span class="hitokoto-content"></span><span class="hitokoto-mark select-none">"</span>
-      </blockquote>
-      <div class="hitokoto-foot flex flex-col gap-1">
-        <span class="hitokoto-source text-xs italic text-neutral-400 dark:text-neutral-500 break-all"></span>
-        <button
-          type="button"
-          class="hitokoto-refresh self-end inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs text-neutral-500 transition-colors hover:bg-neutral-200/60 dark:text-neutral-400 dark:hover:bg-neutral-700/60"
-          aria-label="换一句"
+  {
+    showTitle && (
+      <button
+        slot="title-icon"
+        type="button"
+        class="hitokoto-refresh hitokoto-refresh--title"
+        aria-label="换一句"
+        title="换一句"
+      >
+        <svg
+          class="hitokoto-refresh-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-          </svg>
-          换一句
-        </button>
-      </div>
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
+    )
+  }
+  <div class="hitokoto-widget relative flex flex-col" data-widget>
+    <blockquote class="hitokoto-text">
+      <span class="hitokoto-content"></span>
+    </blockquote>
+    <div class="hitokoto-foot flex items-end justify-end gap-2">
+      <span class="hitokoto-meta-right flex items-end gap-2 shrink-0">
+        <span class="hitokoto-source"></span>
+        {
+          !showTitle && (
+            <button
+              type="button"
+              class="hitokoto-refresh hitokoto-refresh--foot"
+              aria-label="换一句"
+              title="换一句"
+            >
+              <svg
+                class="hitokoto-refresh-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              <span>换一句</span>
+            </button>
+          )
+        }
+        <span class="hitokoto-author"></span>
+      </span>
     </div>
   </div>
 </WidgetLayout>
 
 <style>
-  .hitokoto-mark {
-    color: var(--color-neutral-400, #a3a3a3);
+  .hitokoto-widget {
+    position: relative;
+    padding-top: 0.125rem;
   }
+
+  /* 正文：中文引言用衬线（宋体/思源宋体）更贴题，没装则顺次回退；
+     上下引号共用同一个尺寸变量，保证大小一致 */
   .hitokoto-text {
-    min-height: 2.5rem;
+    --hk-quote-size: 2.1rem;
+    position: relative;
+    margin: 0;
+    min-height: 3.5rem;
+    padding: 0.4rem 0.75rem 0.5rem 1.75rem;
+    font-family: "Noto Serif SC", "Songti SC", "Source Han Serif SC",
+      "STSong", SimSun, Georgia, "Times New Roman", serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+    color: var(--deep-text);
     word-break: break-word;
-    border-left: 3px solid var(--color-neutral-200, #e5e5e5);
-    padding-left: 0.75rem;
+  }
+
+  .hitokoto-text::before {
+    content: "“";
+    position: absolute;
+    left: 0;
+    top: -0.05rem;
+    font-family: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+    font-size: var(--hk-quote-size);
+    line-height: 1;
+    color: var(--primary);
+    opacity: 0.38;
+    pointer-events: none;
+  }
+
+  .hitokoto-content::after {
+    content: "”";
+    font-family: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+    font-size: var(--hk-quote-size);
+    line-height: 0;
+    vertical-align: -0.36em;
+    /* 跟上引号那一侧的留白相称，别紧贴最后一个字 */
+    margin-left: 0.4rem;
+    color: var(--primary);
+    opacity: 0.38;
+    pointer-events: none;
+  }
+
+  /* 加载骨架：占住正文位置显示流光条，避免拉取期间的空白跳动 */
+  .hitokoto-widget.is-loading .hitokoto-text::before {
+    opacity: 0.18;
+  }
+
+  .hitokoto-widget.is-loading .hitokoto-content::after {
+    content: "";
+    margin: 0;
+  }
+
+  .hitokoto-widget.is-loading .hitokoto-content {
+    display: block;
+    width: 100%;
+    height: 2.4rem;
+    border-radius: 0.375rem;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--primary) 8%, transparent) 25%,
+      color-mix(in oklab, var(--primary) 20%, transparent) 37%,
+      color-mix(in oklab, var(--primary) 8%, transparent) 63%
+    );
+    background-size: 400% 100%;
+    animation: hitokoto-shimmer 1.4s ease infinite;
+  }
+
+  @keyframes hitokoto-shimmer {
+    0% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0 50%;
+    }
+  }
+
+  /* 出处行：出处与作者统一收进右侧归属组，任何开关组合下都贴最右，避免单归属时左右乱跳 */
+  .hitokoto-foot {
+    min-height: 1.25rem;
+  }
+
+  .hitokoto-source {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--content-meta);
+    min-width: 0;
+  }
+
+  /* innerHTML 注入的子节点不带 Astro 作用域属性，用 :global 命中 */
+  .hitokoto-source :global(.hitokoto-from) {
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  .hitokoto-source :global(.hitokoto-dash) {
+    opacity: 0.5;
+    margin-right: 0.1rem;
+  }
+
+  .hitokoto-source :global(.hitokoto-cat) {
+    opacity: 0.65;
+  }
+
+  /* 右侧归属组：出处 + 作者都收在这里，整组靠右（foot 用 justify-end），位置恒定 */
+  .hitokoto-meta-right {
+    margin-left: auto;
+  }
+
+  .hitokoto-author {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--deep-text);
+    opacity: 0.7;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* 换一句：留在标题行右端，但不贴边；平时很淡，hover 才显出来 */
+  .hitokoto-refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--content-meta);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+  }
+
+  .hitokoto-refresh--title {
+    /* 不贴着卡片右缘，留一档空位（标题行右侧没有内边距，得自己让出来） */
+    margin-right: 0.75rem;
+    opacity: 0.4;
+  }
+
+  .hitokoto-refresh:hover {
+    opacity: 1;
+    color: var(--primary);
+  }
+
+  .hitokoto-refresh:active {
+    transform: scale(0.95);
+  }
+
+  .hitokoto-refresh-icon {
+    transition: transform 0.45s ease;
+  }
+
+  .hitokoto-refresh:hover .hitokoto-refresh-icon {
+    transform: rotate(180deg);
   }
 </style>
 
 <script>
-  import { getRandomHitokoto, formatHitokoto } from "@/utils/hitokoto";
+  import { getRandomHitokoto, type HitokotoItem } from "@/utils/hitokoto";
   import { hitokotoConfig, HITOKOTO_CAT_NAMES } from "@/config/hitokotoConfig";
+
+  function setLoading(el: HTMLElement, on: boolean) {
+    el.classList.toggle("is-loading", on);
+  }
+
+  function esc(s: unknown) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => {
+      switch (c) {
+        case "&":
+          return "&amp;";
+        case "<":
+          return "&lt;";
+        case ">":
+          return "&gt;";
+        case '"':
+          return "&quot;";
+        default:
+          return "&#39;";
+      }
+    });
+  }
+
+  // 出处与作者分开返回：出处留在左侧，作者单独渲染到最右侧。
+  // 破折号只出现在「这条归属的开头」：有出处就放出处前；没出处只有作者就跟着作者走。
+  // 分类标签是标签不是归属，不带破折号。
+  function buildMeta(item: HitokotoItem) {
+    const parts: string[] = [];
+    const catName = item.type
+      ? ((HITOKOTO_CAT_NAMES as Record<string, string>)[item.type] ?? "")
+      : "";
+    if (hitokotoConfig.showCategory && catName) {
+      parts.push(`<span class="hitokoto-cat">【${esc(catName)}】</span>`);
+    }
+
+    // 作者与出处同名时不重复展示（与 formatHitokoto 保持一致）
+    const hasSource = Boolean(hitokotoConfig.showSource && item.from);
+    const dupe = hasSource && item.from === item.from_who;
+    const hasAuthor = Boolean(
+      hitokotoConfig.showAuthor && item.from_who && !dupe,
+    );
+
+    let meta = "";
+    if (hasSource) {
+      const dash = `<span class="hitokoto-dash">——</span>`;
+      const from = `<span class="hitokoto-from">《${esc(item.from)}》</span>`;
+      meta = parts.length
+        ? `${parts.join(" ")} ${dash} ${from}`
+        : `${dash} ${from}`;
+    } else {
+      meta = parts.join(" ");
+    }
+
+    // 出处没显示时，作者就是归属的开头，破折号跟着它
+    let author = "";
+    if (hasAuthor) {
+      author = hasSource ? item.from_who : `—— ${item.from_who}`;
+    }
+
+    return { meta, author };
+  }
 
   // 拉一条随机一言并填进组件：正文 + 出处行（分类 / 出处 / 作者按配置中心开关拼）
   // 取数走共享模块，侧边栏和横幅共用同一份内存池，不会重复拉取
   function fillOne(el: HTMLElement) {
     const contentEl = el.querySelector<HTMLElement>(".hitokoto-content");
     const srcEl = el.querySelector<HTMLElement>(".hitokoto-source");
-    if (!contentEl || !srcEl) return Promise.resolve();
+    const authorEl = el.querySelector<HTMLElement>(".hitokoto-author");
+    if (!contentEl || !srcEl || !authorEl) return Promise.resolve();
+    setLoading(el, true);
     return getRandomHitokoto({
       bundleSource: hitokotoConfig.bundleSource,
       remoteUrl: hitokotoConfig.remoteUrl,
@@ -77,25 +338,26 @@ const widgetId = "hitokoto-widget";
       enableCategories: hitokotoConfig.enableCategories,
       minLength: hitokotoConfig.minLength,
       maxLength: hitokotoConfig.maxLength,
-    }).then((item) => {
-      contentEl.textContent = item.hitokoto || "";
-      const s = formatHitokoto(item, {
-        showSource: hitokotoConfig.showSource,
-        showAuthor: hitokotoConfig.showAuthor,
-        showCategory: hitokotoConfig.showCategory,
-        catNames: HITOKOTO_CAT_NAMES,
-      });
-      srcEl.textContent = s;
-      // 啥都不显示就把出处行藏起来，免得留个空行
-      srcEl.style.display = s ? "" : "none";
-    });
+    })
+      .then((item) => {
+        contentEl.textContent = item.hitokoto || "";
+        const { meta, author } = buildMeta(item);
+        srcEl.innerHTML = meta;
+        authorEl.textContent = author;
+        // 空就把整块藏起来，免得留个空行
+        srcEl.style.display = meta ? "" : "none";
+        authorEl.style.display = author ? "" : "none";
+      })
+      .finally(() => setLoading(el, false));
   }
 
   function initHitokoto(root: ParentNode) {
     const el = root.querySelector<HTMLElement>(".hitokoto-widget");
     if (!el || el.dataset.bound === "1") return;
     el.dataset.bound = "1";
-    const btn = el.querySelector<HTMLElement>(".hitokoto-refresh");
+    // 按钮可能在标题栏（title-icon 插槽）里，不在 .hitokoto-widget 内，所以要往外找一层
+    const scope = el.closest<HTMLElement>("widget-layout") || el;
+    const btn = scope.querySelector<HTMLElement>(".hitokoto-refresh");
     if (btn) btn.addEventListener("click", () => fillOne(el).catch(() => {}));
     fillOne(el).catch((e) => {
       console.warn("[hitokoto] 加载失败：", e);

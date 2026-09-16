@@ -66,7 +66,7 @@ export const hitokotoConfig: HitokotoConfig = {
 		l: true,
 	},
 	// 默认带出处和作者，分类标签关掉（句子本身够看了）
-	showSource: true,
+	showSource: false,
 	showAuthor: true,
 	showCategory: false,
 	// 本地每类抽 200 条，整包大概数百 KB（gzip 后仍可控）；想更全就调大或者设 0 全量
