@@ -504,6 +504,7 @@ export const zh_TW: Translation = {
 	[Key.galleryAlbums]: "本相簿",
 	[Key.galleryNoAlbums]: "暫無相簿",
 	[Key.galleryBackToAlbums]: "返回相簿列表",
+	[Key.galleryEnterAlbum]: "進入相簿",
 	[Key.searchAlbums]: "搜尋相簿...",
 
 	// 密碼保護
