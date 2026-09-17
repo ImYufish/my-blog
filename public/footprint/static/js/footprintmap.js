@@ -137,7 +137,7 @@
     };
 
     const PhotoViewer = (() => {
-        let el, imgEl, prevBtn, nextBtn, state = { images: [], index: 0 }, isInit = false;
+        let el, imgEl, prevBtn, nextBtn, state = { images: [], index: 0 }, isInit = false, detachTimer = null;
         function init() {
             if (isInit) return;
             el = document.createElement('div'); el.className = 'footprint-photo-viewer';
@@ -164,7 +164,16 @@
             if (fs && el.parentElement !== fs) fs.appendChild(el); else if (!fs && el.parentElement !== document.body) document.body.appendChild(el);
             el.classList.add('is-visible'); document.documentElement.classList.add('footprint-photo-viewer-open');
         }
-        function close() { el.classList.remove('is-visible'); document.documentElement.classList.remove('footprint-photo-viewer-open'); }
+        // [补丁] 查看器是 append 到 <body> 的（在 Swup 容器之外）。关闭时只切 class 的话，
+        // 切页后本页 CSS 会被 @swup/head-plugin 换走，它会退化成裸 <img> 留在页面上。
+        // 所以淡出结束后把它从 DOM 摘掉 —— open() 里有重新 append 的逻辑，不影响下次打开。
+        function detachSoon() {
+            clearTimeout(detachTimer);
+            detachTimer = setTimeout(() => {
+                if (!el.classList.contains('is-visible') && el.parentElement) el.parentElement.removeChild(el);
+            }, 300);
+        }
+        function close() { el.classList.remove('is-visible'); document.documentElement.classList.remove('footprint-photo-viewer-open'); detachSoon(); }
         function prev() { state.index = (state.index - 1 + state.images.length) % state.images.length; update(); }
         function next() { state.index = (state.index + 1) % state.images.length; update(); }
         return { open };
@@ -417,6 +426,23 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('.footprint-map').forEach(initMap));
+    // [补丁] 切页兜底：若查看器在打开状态下被切走（或被其它路径留下），统一清掉，
+    // 顺带解开 <html> 上的滚动锁，避免切页后页面滚不动。
+    function cleanupPhotoViewer() {
+        document.documentElement.classList.remove('footprint-photo-viewer-open');
+        const nodes = document.querySelectorAll('.footprint-photo-viewer');
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].parentElement) nodes[i].parentElement.removeChild(nodes[i]);
+        }
+    }
+    if (!window.__footprintViewerCleanupBound) {
+        window.__footprintViewerCleanupBound = true;
+        document.addEventListener('astro:page-load', cleanupPhotoViewer);
+        try {
+            if (window.swup && window.swup.hooks) window.swup.hooks.on('visit:start', cleanupPhotoViewer);
+        } catch (e) {}
+    }
+
     window.FootprintMap.bootstrapMap = function (el) { const container = (typeof el === 'string') ? document.querySelector(el) : el; if (!container) return Promise.reject(new Error('container not found')); return initMap(container); };
     window.FootprintMap.init = function () { document.querySelectorAll('.footprint-map').forEach(initMap); };
 })();
