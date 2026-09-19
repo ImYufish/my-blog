@@ -33,6 +33,11 @@ export const friendsPageConfig: FriendsPageConfig = {
 		fromHost: "imgbed.yufish.cn",
 		toHost: "x1anyu.cn",
 	},
+
+	// 兜底头像：友链封面图 / 头像全部加载失败时的终极兜底。
+	// 封面失败会先回退到该友链自己的头像（imgurl），头像也失败才落到这里。
+	// 注意：此处默认用 .jpeg，若站点实际只存在 .png 请改成对应后缀，否则兜底图本身会 404。
+	defaultAvatar: "https://x1anyu.cn/assets/images/avatar.jpeg",
 };
 
 // 友链配置

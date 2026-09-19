@@ -20,6 +20,9 @@ export type FriendsPageConfig = {
 	useRemote?: boolean; // 友链数据源开关：是否使用远程 fc.yufish.cn/friends.json，默认 true；设为 false 则仅用本地 friendsConfig.ts
 	remoteBaseUrl?: string; // 远程数据源根地址（Friend-Circle-Lite 部署域名），页面会从其下取 friends.json / link.json
 	imgProxy?: ImgProxyConfig; // 封面图同域反代配置，把图床域名换成博客自己的反代域名
+	// 兜底头像：友链封面/头像全部加载失败时的终极兜底图（建议用站内稳定资源）。
+	// 封面加载失败会先回退到该友链自己的头像（imgurl），头像也失败才落到这里。
+	defaultAvatar?: string; // 默认 https://x1anyu.cn/assets/images/avatar.jpeg
 };
 
 // 图片同域反代：把图床（如 imgbed.yufish.cn）的图片域名换成博客自己的反代域名，

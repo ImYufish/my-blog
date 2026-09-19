@@ -39,6 +39,27 @@ function proxyImg(raw: string | undefined) {
 	return raw;
 }
 
+// 兜底头像：友链封面/头像全部加载失败时的最终兜底（配置优先，否则内置默认）
+const DEFAULT_AVATAR =
+	friendsPageConfig.defaultAvatar || "https://x1anyu.cn/assets/images/avatar.jpeg";
+
+// 构建多级兜底链：primary 是已设置在 <img src> 上的主图，candidates 是依次回退的候选。
+// 自动去重并剔除主图本身，返回以 | 分隔的字符串，供前端 error 事件按顺序逐张尝试。
+function buildFallbackChain(
+	primary: string | undefined,
+	candidates: (string | undefined)[],
+): string {
+	const seen = new Set<string>();
+	if (primary) seen.add(primary);
+	const out: string[] = [];
+	for (const c of candidates) {
+		if (!c || seen.has(c)) continue;
+		seen.add(c);
+		out.push(c);
+	}
+	return out.join("|");
+}
+
 // 检查页面是否启用
 if (!siteConfig.pages.friends) {
 	return Astro.redirect("/404/");
@@ -287,6 +308,16 @@ const description =
             const status = getSiteStatus(item);
             const cover = proxyImg(status?.siteshot) || item.imgurl;
             const coverFallback = status?.siteshot || item.imgurl;
+            // 封面兜底链：封面失败 → 友链头像(imgurl) → 兜底头像(配置)
+            const coverFallbackChain = buildFallbackChain(cover, [
+              coverFallback,
+              item.imgurl,
+              DEFAULT_AVATAR,
+            ]);
+            // 头像兜底链：头像失败 → 兜底头像(配置)
+            const avatarFallbackChain = buildFallbackChain(item.imgurl, [
+              DEFAULT_AVATAR,
+            ]);
             // 展示延迟优先用 latency_display（main.py 已按"国内/国外源站取更快者"自动选取），
             // 回退 latency（兼容未部署 EO 或旧 result.json 无该字段的情况）
             const dispLatency =
@@ -314,7 +345,7 @@ const description =
                     alt={item.title}
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
-                    data-fallback={coverFallback}
+                    data-fallback={coverFallbackChain}
                   />
                   {/* 封面底部渐变融入卡片背景 */}
                   <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent" />
@@ -339,6 +370,7 @@ const description =
                       alt={item.title}
                       class="w-full h-full object-cover"
                       loading="lazy"
+                      data-fallback={avatarFallbackChain}
                     />
                   </div>
                   <div
@@ -556,6 +588,7 @@ const description =
 				fromHost: IMG_PROXY_FROM,
 				toHost: IMG_PROXY_TO,
 			},
+			DEFAULT_AVATAR: DEFAULT_AVATAR,
 		}}
 	>
 		// 客户端实时刷新友链：页面加载即 fetch 远程 friends.json / result.json 重渲染，
@@ -597,12 +630,15 @@ const description =
           function (e) {
             var t = e.target;
             if (!t || t.tagName !== "IMG") return;
-            // 封面带了 data-fallback（通常是绕过反代的原始图）：先换一次备用图，
-            // 换图期间保持转圈，不能提前放行，否则备用图又会边下边显示
-            var fb = t.getAttribute("data-fallback");
-            if (fb && !t.dataset.fallbackTried) {
-              t.dataset.fallbackTried = "1";
-              t.src = fb;
+            // data-fallback 是 | 分隔的多级兜底链：封面失败→头像→兜底头像，逐张尝试。
+            // 换图期间保持转圈，不提前放行（否则备用图会边下边显示）。全部失败才展示破图。
+            var chain = (t.getAttribute("data-fallback") || "")
+              .split("|")
+              .filter(Boolean);
+            var idx = parseInt(t.dataset.fbIndex || "0", 10);
+            if (idx < chain.length) {
+              t.dataset.fbIndex = String(idx + 1);
+              t.src = chain[idx];
               return;
             }
             revealImg(t);
@@ -647,10 +683,27 @@ const description =
         } catch (e) {}
         return raw;
       }
+      // 构建 | 分隔的多级兜底链（与 SSR 端 buildFallbackChain 一致）：primary 是主图，
+      // candidates 依次回退；自动去重并剔除主图本身。
+      function buildFb(primary, candidates) {
+        var seen = {};
+        if (primary) seen[primary] = 1;
+        var out = [];
+        (candidates || []).forEach(function (c) {
+          if (!c || seen[c]) return;
+          seen[c] = 1;
+          out.push(c);
+        });
+        return out.join("|");
+      }
       function cardHtml(f, rm) {
         const status = rm.get(normUrl(f.siteurl)) || null;
         const coverRaw = status && status.siteshot ? status.siteshot : f.imgurl;
         const cover = proxyImg(coverRaw);
+        // 封面兜底链：封面失败 → 友链头像(imgurl) → 兜底头像(配置)
+        const coverFb = buildFb(cover, [coverRaw, f.imgurl, DEFAULT_AVATAR]);
+        // 头像兜底链：头像失败 → 兜底头像(配置)
+        const avatarFb = buildFb(f.imgurl, [DEFAULT_AVATAR]);
         const dispLatency = status && status.latency_display != null && status.latency_display > 0 ? status.latency_display : (status && status.latency != null ? status.latency : null);
         const latencyMs = dispLatency != null && dispLatency > 0 ? Math.round(dispLatency * 1000) : null;
         const color = latencyColor(status && status.status, dispLatency != null && dispLatency > 0 ? dispLatency : null);
@@ -666,7 +719,7 @@ const description =
         return (
           '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
             '<div class="img-skeleton img-skeleton--js relative h-24 w-full overflow-hidden">' +
-              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" data-fallback="' + esc(coverRaw) + '" />' +
+              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" data-fallback="' + esc(coverFb) + '" />' +
               '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
               '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
                 '<span class="w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +
@@ -675,7 +728,7 @@ const description =
             "</div>" +
             '<div class="p-2.5 flex items-center gap-2.5">' +
               '<div class="img-skeleton img-skeleton--js relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
-                '<img src="' + esc(f.imgurl) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover" loading="lazy" />' +
+                '<img src="' + esc(f.imgurl) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover" loading="lazy" data-fallback="' + esc(avatarFb) + '" />' +
               "</div>" +
               '<div data-title class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">' + esc(f.title) + "</div>" +
             "</div>" +
