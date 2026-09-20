@@ -343,9 +343,10 @@ const description =
                   <img
                     src={cover}
                     alt={item.title}
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    class="w-full h-full object-cover group-hover:scale-105"
                     loading="lazy"
                     data-fallback={coverFallbackChain}
+                    style="transition: opacity 0.35s ease, scale 0.8s cubic-bezier(0.22, 1, 0.36, 1)"
                   />
                   {/* 封面底部渐变融入卡片背景 */}
                   <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent" />
@@ -545,6 +546,8 @@ const description =
        渐进式图片会边下边显示，不藏的话就成「图还没下完就露出来了」 */
     .img-skeleton--js > img {
       opacity: 0;
+      /* 只负责图片淡入(opacity)。封面 hover 缩放(Tailwind v4 走 CSS `scale` 属性)的过渡
+         已直接在 <img> 上用内联 style 写死：transition: scale .8s ...，优先级最高，稳妥。 */
       transition: opacity 0.35s ease;
     }
     .img-skeleton--js.is-loaded > img {
@@ -719,7 +722,7 @@ const description =
         return (
           '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
             '<div class="img-skeleton img-skeleton--js relative h-24 w-full overflow-hidden">' +
-              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" data-fallback="' + esc(coverFb) + '" />' +
+              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover group-hover:scale-105" loading="lazy" style="transition: opacity 0.35s ease, scale 0.8s cubic-bezier(0.22, 1, 0.36, 1)" data-fallback="' + esc(coverFb) + '" />' +
               '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
               '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
                 '<span class="w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +
