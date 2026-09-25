@@ -272,6 +272,17 @@ export const friendsConfig: FriendLink[] = [
 		weight: 5,
 		enabled: true,
 	},
+	{
+		title: "张萌萌",
+		imgurl: "https://blog.nw177.cn/assets/avatar.webp",
+		desc: "春风得意马蹄疾 一日看尽长安花",
+		siteurl: "https://blog.nw177.cn",
+		linkpage: "https://blog.nw177.cn/social/links",
+		rss: "https://blog.nw177.cn/rss.xml",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
 ];
 export const getEnabledFriends = (): FriendLink[] => {
 	const friends = friendsConfig.filter((friend) => friend.enabled);
