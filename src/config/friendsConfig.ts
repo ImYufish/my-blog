@@ -283,6 +283,17 @@ export const friendsConfig: FriendLink[] = [
 		weight: 5,
 		enabled: true,
 	},
+	{
+		title: "super-mortal",
+		imgurl: "https://q1.qlogo.cn/g?b=qq&nk=2169702639&s=640",
+		desc: "记录一个凡人程序员在 AI Agent、全栈开发与 DevOps 中的踩坑实录与开源实践，欢迎一起交流进步.",
+		siteurl: "https://supermortal.cn",
+		linkpage: "https://supermortal.cn/links",
+		rss: "https://supermortal.cn/rss.xml",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
 ];
 export const getEnabledFriends = (): FriendLink[] => {
 	const friends = friendsConfig.filter((friend) => friend.enabled);
