@@ -10,9 +10,9 @@ export const analyticsConfig: AnalyticsConfig = {
 		// Umami Website ID
 		websiteId: "7112c18c-1aa6-4fd5-96ab-c40cc41049af",
 		// Umami JS地址，支持使用自建
-		scriptUrl: "http://umami.x1anyu.cn/script.js",
+		scriptUrl: "http://umami.yufish.cn/script.js",
 		// Umami 会话回放脚本地址，支持使用自建
-		replaysScriptUrl: "http://umami.x1anyu.cn/recorder.js",
+		replaysScriptUrl: "http://umami.yufish.cn/recorder.js",
 		// 是否追踪出站链接
 		trackOutboundLinks: true,
 		// 是否收集浏览器性能指标
