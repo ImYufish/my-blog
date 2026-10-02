@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { weatherConfig } from "@/config/weatherConfig";
 import I18nKey from "@/i18n/i18nKey";
@@ -32,6 +33,29 @@ const cfg = JSON.stringify({
 	enableOpenMeteo: weatherConfig.enableOpenMeteo,
 	enableWttr: weatherConfig.enableWttr,
 });
+
+// 天气图标：用 material-symbols 替代原来的 emoji（该图标集是站点主导图标集，全站已加载，
+// 圆润实心、在 2rem/0.8rem 两个尺寸下都清晰）。
+// 天气数据是客户端 fetch 的，单个 <Icon> 没法运行时换名字，所以这里预渲染全部条件图标，
+// 客户端 render() 只切换 .weather-icon 的 data-cond，由 CSS 决定显示哪一个。
+// 多云 / 阴 用实心与线框区分；日出日落用 wb-twilight / wb-twilight-2。
+const WEATHER_ICONS = [
+	{ cond: "sunny", icon: "material-symbols:sunny" },
+	{ cond: "night", icon: "material-symbols:dark-mode" },
+	{ cond: "partly", icon: "material-symbols:partly-cloudy-day" },
+	{ cond: "cloudy", icon: "material-symbols:cloud-outline" },
+	{ cond: "overcast", icon: "material-symbols:cloud" },
+	{ cond: "fog", icon: "material-symbols:foggy" },
+	{ cond: "drizzle", icon: "material-symbols:rainy-light" },
+	{ cond: "rain", icon: "material-symbols:rainy" },
+	{ cond: "sleet", icon: "material-symbols:rainy-snow" },
+	{ cond: "snow", icon: "material-symbols:weather-snowy" },
+	{ cond: "snow-heavy", icon: "material-symbols:snowing-heavy" },
+	{ cond: "thunder", icon: "material-symbols:thunderstorm" },
+	{ cond: "hot", icon: "material-symbols:thermostat-arrow-up" },
+	{ cond: "cold", icon: "material-symbols:thermostat-arrow-down" },
+	{ cond: "unknown", icon: "material-symbols:question-mark" },
+];
 ---
 
 <WidgetLayout
@@ -45,7 +69,11 @@ const cfg = JSON.stringify({
     <!-- 收起态：图标 + 温度(含高低) + 城市(到区) | 天气描述 | 箭头 -->
     <div class="weather-header flex items-center justify-between">
       <div class="flex items-center gap-2.5">
-        <span class="weather-icon text-[2rem] leading-none">🌤️</span>
+        <span class="weather-icon" data-cond="partly" aria-hidden="true">
+          {WEATHER_ICONS.map((w) => (
+            <span class="w-ic" data-ic={w.cond}><Icon name={w.icon} /></span>
+          ))}
+        </span>
         <div class="flex flex-col">
           <div class="flex items-baseline gap-2">
             <span class="weather-temp text-2xl font-bold text-neutral-900 dark:text-neutral-100 leading-none">--°</span>
@@ -73,30 +101,30 @@ const cfg = JSON.stringify({
     <div class="weather-details">
       <div class="weather-grid">
         <!-- 风力 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">💨</span><span class="detail-label">风力</span></div><span class="detail-val weather-wind-detail"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-wind"><Icon name="material-symbols:air" /></span><span class="detail-label">风力</span></div><span class="detail-val weather-wind-detail"></span></div>
         <!-- 能见度 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">👁️</span><span class="detail-label">能见度</span></div><span class="detail-val weather-vis"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-vis"><Icon name="material-symbols:visibility" /></span><span class="detail-label">能见度</span></div><span class="detail-val weather-vis"></span></div>
         <!-- 体感温度 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌡️</span><span class="detail-label">体感温度</span></div><span class="detail-val weather-feel"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-feel"><Icon name="material-symbols:device-thermostat" /></span><span class="detail-label">体感温度</span></div><span class="detail-val weather-feel"></span></div>
         <!-- 湿度 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">💧</span><span class="detail-label">湿度</span></div><span class="detail-val weather-humidity"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-humidity"><Icon name="material-symbols:water-drop" /></span><span class="detail-label">湿度</span></div><span class="detail-val weather-humidity"></span></div>
         <!-- 气压 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌡️</span><span class="detail-label">气压</span></div><span class="detail-val weather-pressure"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-pressure"><Icon name="material-symbols:speed" /></span><span class="detail-label">气压</span></div><span class="detail-val weather-pressure"></span></div>
         <!-- 空气质量（大数字 + 彩色标签） -->
-        <div class="detail-card detail-aqi-card"><div class="detail-top"><span class="detail-icon">🍃</span><span class="detail-label">空气质量</span></div><div class="aqi-display"><span class="aqi-num weather-aqi-num"></span><span class="aqi-badge weather-aqi-badge"></span></div></div>
+        <div class="detail-card detail-aqi-card"><div class="detail-top"><span class="detail-icon di-aqi"><Icon name="material-symbols:eco" /></span><span class="detail-label">空气质量</span></div><div class="aqi-display"><span class="aqi-num weather-aqi-num"></span><span class="aqi-badge weather-aqi-badge"></span></div></div>
         <!-- 云量 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">☁️</span><span class="detail-label">云量</span></div><span class="detail-val weather-cloud"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-cloud"><Icon name="material-symbols:cloud" /></span><span class="detail-label">云量</span></div><span class="detail-val weather-cloud"></span></div>
         <!-- 紫外线 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">☀️</span><span class="detail-label">紫外线</span></div><span class="detail-val weather-uv"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-uv"><Icon name="material-symbols:wb-sunny" /></span><span class="detail-label">紫外线</span></div><span class="detail-val weather-uv"></span></div>
         <!-- 降水量 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌧️</span><span class="detail-label">降水量</span></div><span class="detail-val weather-precip"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-precip"><Icon name="material-symbols:rainy" /></span><span class="detail-label">降水量</span></div><span class="detail-val weather-precip"></span></div>
         <!-- 降水概率 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">💦</span><span class="detail-label">降水概率</span></div><span class="detail-val weather-precip-prob"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-precip-prob"><Icon name="material-symbols:umbrella" /></span><span class="detail-label">降水概率</span></div><span class="detail-val weather-precip-prob"></span></div>
         <!-- 日出 / 日落 -->
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌅</span><span class="detail-label">日出</span></div><span class="detail-val weather-sunrise"></span></div>
-        <div class="detail-card"><div class="detail-top"><span class="detail-icon">🌇</span><span class="detail-label">日落</span></div><span class="detail-val weather-sunset"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-sunrise"><Icon name="material-symbols:wb-twilight" /></span><span class="detail-label">日出</span></div><span class="detail-val weather-sunrise"></span></div>
+        <div class="detail-card"><div class="detail-top"><span class="detail-icon di-sunset"><Icon name="material-symbols:wb-twilight-2" /></span><span class="detail-label">日落</span></div><span class="detail-val weather-sunset"></span></div>
         <!-- 污染物浓度（跨两列，内联文本格式） -->
-        <div class="detail-card detail-full"><div class="detail-top"><span class="detail-icon">🧪</span><span class="detail-label">污染物浓度</span></div><div class="weather-pollutants"></div></div>
+        <div class="detail-card detail-full"><div class="detail-top"><span class="detail-icon di-pollutant"><Icon name="material-symbols:science" /></span><span class="detail-label">污染物浓度</span></div><div class="weather-pollutants"></div></div>
       </div>
 
       <!-- 底部：更新时间（居中） -->
@@ -108,9 +136,88 @@ const cfg = JSON.stringify({
 </WidgetLayout>
 
 <style>
+  /* ===== 主天气图标：全部预渲染，按 data-cond 只显示对应那一个 ===== */
   .weather-widget .weather-icon {
     min-width: 2rem;
-    text-align: center;
+    height: 2rem;
+    font-size: 2rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .weather-widget .weather-icon .w-ic {
+    display: none;
+    line-height: 1;
+  }
+  /* 图标 svg 由 <Icon> 子组件渲染，Astro 作用域样式管不到它，
+     所以不直接给 svg 写规则：尺寸交给 <Icon> 自带的 width/height="1em"（1em 继承外层字号），
+     居中交给这里 flex 对齐（.w-ic / .detail-icon 都是本组件自己的元素） */
+  .weather-widget .weather-icon[data-cond="sunny"] [data-ic="sunny"],
+  .weather-widget .weather-icon[data-cond="night"] [data-ic="night"],
+  .weather-widget .weather-icon[data-cond="partly"] [data-ic="partly"],
+  .weather-widget .weather-icon[data-cond="cloudy"] [data-ic="cloudy"],
+  .weather-widget .weather-icon[data-cond="overcast"] [data-ic="overcast"],
+  .weather-widget .weather-icon[data-cond="fog"] [data-ic="fog"],
+  .weather-widget .weather-icon[data-cond="drizzle"] [data-ic="drizzle"],
+  .weather-widget .weather-icon[data-cond="rain"] [data-ic="rain"],
+  .weather-widget .weather-icon[data-cond="sleet"] [data-ic="sleet"],
+  .weather-widget .weather-icon[data-cond="snow"] [data-ic="snow"],
+  .weather-widget .weather-icon[data-cond="snow-heavy"] [data-ic="snow-heavy"],
+  .weather-widget .weather-icon[data-cond="thunder"] [data-ic="thunder"],
+  .weather-widget .weather-icon[data-cond="hot"] [data-ic="hot"],
+  .weather-widget .weather-icon[data-cond="cold"] [data-ic="cold"],
+  .weather-widget .weather-icon[data-cond="unknown"] [data-ic="unknown"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 按天气族给图标上色，补回 emoji 的彩色感；选的都是中间调，明暗主题下都压得住。
+     灰调那三个（多云/阴/雾）刻意拉开：多云=冷灰蓝、阴=更深的冷灰、雾=偏暖的灰（雾霾/沙尘本就偏暖），
+     免得像"全都一个样"；未知用中性深灰，跟雾的暖灰也能分开 */
+  .weather-widget .weather-icon[data-cond="sunny"],
+  .weather-widget .weather-icon[data-cond="partly"] {
+    color: #f59e0b;
+  }
+  .weather-widget .weather-icon[data-cond="night"] {
+    color: #6366f1;
+  }
+  .weather-widget .weather-icon[data-cond="cloudy"] {
+    color: #94a3b8;
+  }
+  .weather-widget .weather-icon[data-cond="overcast"] {
+    color: #475569;
+  }
+  .weather-widget .weather-icon[data-cond="fog"] {
+    color: #a8a29e;
+  }
+  .weather-widget .weather-icon[data-cond="drizzle"] {
+    color: #38bdf8;
+  }
+  .weather-widget .weather-icon[data-cond="rain"] {
+    color: #3b82f6;
+  }
+  .weather-widget .weather-icon[data-cond="sleet"] {
+    color: #60a5fa;
+  }
+  .weather-widget .weather-icon[data-cond="snow"] {
+    color: #0ea5e9;
+  }
+  .weather-widget .weather-icon[data-cond="snow-heavy"] {
+    color: #0284c7;
+  }
+  .weather-widget .weather-icon[data-cond="thunder"] {
+    color: #8b5cf6;
+  }
+  .weather-widget .weather-icon[data-cond="hot"] {
+    color: #ef4444;
+  }
+  .weather-widget .weather-icon[data-cond="cold"] {
+    color: #06b6d4;
+  }
+  .weather-widget .weather-icon[data-cond="unknown"] {
+    color: #6b7280;
   }
 
   /* ===== 折叠动画 ===== */
@@ -182,10 +289,56 @@ const cfg = JSON.stringify({
   :global(.dark) .detail-top {
     color: var(--color-neutral-400, #a3a3a3);
   }
+  /* 详情卡图标：外面这层 span 是本组件自己的元素，作用域样式管得到；
+     里面的 svg 由 <Icon> 渲染，靠 color / font-size 继承拿色和尺寸（<Icon> 自带 1em） */
   .detail-icon {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
   }
+  /* 13 个详情图标各自配色：语义相近的归到同一色族，但彼此都能区分 */
+  .detail-icon.di-wind {
+    color: #06b6d4;
+  } /* 风 · 青 */
+  .detail-icon.di-vis {
+    color: #6366f1;
+  } /* 能见度 · 靛 */
+  .detail-icon.di-feel {
+    color: #f97316;
+  } /* 体感温度 · 橙 */
+  .detail-icon.di-humidity {
+    color: #3b82f6;
+  } /* 湿度 · 蓝 */
+  .detail-icon.di-pressure {
+    color: #64748b;
+  } /* 气压 · 石板灰 */
+  .detail-icon.di-aqi {
+    color: #22c55e;
+  } /* 空气质量 · 绿 */
+  .detail-icon.di-cloud {
+    color: #94a3b8;
+  } /* 云量 · 灰蓝 */
+  .detail-icon.di-uv {
+    color: #eab308;
+  } /* 紫外线 · 黄 */
+  .detail-icon.di-precip {
+    color: #0ea5e9;
+  } /* 降水量 · 天蓝 */
+  .detail-icon.di-precip-prob {
+    color: #60a5fa;
+  } /* 降水概率 · 浅蓝 */
+  .detail-icon.di-sunrise {
+    color: #f59e0b;
+  } /* 日出 · 琥珀 */
+  .detail-icon.di-sunset {
+    color: #fb7185;
+  } /* 日落 · 玫红 */
+  .detail-icon.di-pollutant {
+    color: #a855f7;
+  } /* 污染物 · 紫 */
 
   /* 下行：数值（加粗、深色） */
   .detail-val {
@@ -277,49 +430,50 @@ const cfg = JSON.stringify({
 <script define:vars={{ cfg, widgetId }} is:inline>
   const C = JSON.parse(cfg);
 
-  // WMO weather_code -> [图标, 中文描述]
+  // WMO weather_code -> [图标条件, 中文描述]
+  // 图标条件就是 .weather-icon 的 data-cond（对应 WEATHER_ICONS 里的 cond），由 CSS 决定显示哪个图标
   const CODE = {
-    0: ["☀️", "晴"],
-    1: ["🌤️", "大致晴朗"],
-    2: ["⛅", "局部多云"],
-    3: ["☁️", "阴"],
-    45: ["🌫️", "雾"],
-    48: ["🌫️", "雾凇"],
-    51: ["🌦️", "毛毛雨"],
-    53: ["🌦️", "小雨"],
-    55: ["🌧️", "中雨"],
-    56: ["🌧️", "冻毛雨"],
-    57: ["🌧️", "冻雨"],
-    61: ["🌧️", "小雨"],
-    63: ["🌧️", "中雨"],
-    65: ["🌧️", "大雨"],
-    66: ["🌧️", "冻雨"],
-    67: ["🌧️", "强冻雨"],
-    71: ["🌨️", "小雪"],
-    73: ["🌨️", "中雪"],
-    75: ["❄️", "大雪"],
-    77: ["🌨️", "雪粒"],
-    80: ["🌦️", "阵雨"],
-    81: ["🌦️", "强阵雨"],
-    82: ["⛈️", "暴雨"],
-    85: ["🌨️", "阵雪"],
-    86: ["🌨️", "强阵雪"],
-    95: ["⛈️", "雷阵雨"],
-    96: ["⛈️", "雷暴伴雹"],
-    99: ["⛈️", "强雷暴伴雹"],
+    0: ["sunny", "晴"],
+    1: ["partly", "大致晴朗"],
+    2: ["cloudy", "局部多云"],
+    3: ["overcast", "阴"],
+    45: ["fog", "雾"],
+    48: ["fog", "雾凇"],
+    51: ["drizzle", "毛毛雨"],
+    53: ["drizzle", "小雨"],
+    55: ["rain", "中雨"],
+    56: ["rain", "冻毛雨"],
+    57: ["rain", "冻雨"],
+    61: ["rain", "小雨"],
+    63: ["rain", "中雨"],
+    65: ["rain", "大雨"],
+    66: ["rain", "冻雨"],
+    67: ["rain", "强冻雨"],
+    71: ["snow", "小雪"],
+    73: ["snow", "中雪"],
+    75: ["snow-heavy", "大雪"],
+    77: ["snow", "雪粒"],
+    80: ["drizzle", "阵雨"],
+    81: ["drizzle", "强阵雨"],
+    82: ["thunder", "暴雨"],
+    85: ["snow", "阵雪"],
+    86: ["snow", "强阵雪"],
+    95: ["thunder", "雷阵雨"],
+    96: ["thunder", "雷暴伴雹"],
+    99: ["thunder", "强雷暴伴雹"],
   };
 
-  // 和风天气天气现象代码 -> [图标, 中文描述]（代码段 100+，与 WMO 0-99 不冲突）
+  // 和风天气天气现象代码 -> [图标条件, 中文描述]（代码段 100+，与 WMO 0-99 不冲突）
   const QW = {
-    100: ["☀️", "晴"], 101: ["⛅", "多云"], 102: ["🌤️", "少云"], 103: ["🌤️", "晴间多云"], 104: ["☁️", "阴"],
-    150: ["🌙", "晴"], 151: ["⛅", "多云"], 152: ["🌤️", "少云"], 153: ["🌤️", "晴间多云"],
-    300: ["🌦️", "阵雨"], 301: ["🌦️", "强阵雨"], 302: ["⛈️", "雷阵雨"], 303: ["⛈️", "强雷阵雨"], 304: ["⛈️", "雷阵雨伴冰雹"],
-    305: ["🌧️", "小雨"], 306: ["🌧️", "中雨"], 307: ["🌧️", "大雨"], 308: ["🌧️", "极端降雨"], 309: ["🌦️", "细雨"], 310: ["🌦️", "毛毛雨"],
-    311: ["🌧️", "暴雨"], 312: ["🌧️", "大暴雨"], 313: ["🌧️", "特大暴雨"], 314: ["🌧️", "小到中雨"], 315: ["🌧️", "中到大雨"], 316: ["🌧️", "大到暴雨"], 317: ["🌧️", "暴雨到大暴雨"], 318: ["🌧️", "大暴雨到特大暴雨"],
-    350: ["🌦️", "阵雨"], 351: ["🌦️", "强阵雨"], 399: ["🌧️", "雨"],
-    400: ["🌨️", "小雪"], 401: ["🌨️", "中雪"], 402: ["❄️", "大雪"], 403: ["❄️", "暴雪"], 404: ["🌨️", "雨夹雪"], 405: ["🌨️", "雨雪天气"], 406: ["🌨️", "阵雨夹雪"], 407: ["🌨️", "阵雪"], 408: ["🌨️", "小到中雪"], 409: ["🌨️", "中到大雪"], 410: ["🌨️", "大到暴雪"], 456: ["🌨️", "阵雪"], 457: ["🌨️", "小雪"], 499: ["❄️", "雪"],
-    500: ["🌫️", "薄雾"], 501: ["🌫️", "雾"], 502: ["🌫️", "霾"], 503: ["🌫️", "扬沙"], 504: ["🌫️", "浮尘"], 507: ["🌫️", "沙尘暴"], 508: ["🌫️", "强沙尘暴"], 509: ["🌫️", "浓雾"], 510: ["🌫️", "强浓雾"], 511: ["🌫️", "中度霾"], 512: ["🌫️", "重度霾"], 513: ["🌫️", "严重霾"], 514: ["🌫️", "大雾"], 515: ["🌫️", "特强浓雾"],
-    900: ["🔥", "热"], 901: ["🥶", "冷"], 999: ["🌡️", "未知"],
+    100: ["sunny", "晴"], 101: ["cloudy", "多云"], 102: ["partly", "少云"], 103: ["partly", "晴间多云"], 104: ["overcast", "阴"],
+    150: ["night", "晴"], 151: ["cloudy", "多云"], 152: ["partly", "少云"], 153: ["partly", "晴间多云"],
+    300: ["drizzle", "阵雨"], 301: ["drizzle", "强阵雨"], 302: ["thunder", "雷阵雨"], 303: ["thunder", "强雷阵雨"], 304: ["thunder", "雷阵雨伴冰雹"],
+    305: ["rain", "小雨"], 306: ["rain", "中雨"], 307: ["rain", "大雨"], 308: ["rain", "极端降雨"], 309: ["drizzle", "细雨"], 310: ["drizzle", "毛毛雨"],
+    311: ["rain", "暴雨"], 312: ["rain", "大暴雨"], 313: ["rain", "特大暴雨"], 314: ["rain", "小到中雨"], 315: ["rain", "中到大雨"], 316: ["rain", "大到暴雨"], 317: ["rain", "暴雨到大暴雨"], 318: ["rain", "大暴雨到特大暴雨"],
+    350: ["drizzle", "阵雨"], 351: ["drizzle", "强阵雨"], 399: ["rain", "雨"],
+    400: ["snow", "小雪"], 401: ["snow", "中雪"], 402: ["snow-heavy", "大雪"], 403: ["snow-heavy", "暴雪"], 404: ["sleet", "雨夹雪"], 405: ["sleet", "雨雪天气"], 406: ["sleet", "阵雨夹雪"], 407: ["snow", "阵雪"], 408: ["snow", "小到中雪"], 409: ["snow", "中到大雪"], 410: ["snow", "大到暴雪"], 456: ["snow", "阵雪"], 457: ["snow", "小雪"], 499: ["snow-heavy", "雪"],
+    500: ["fog", "薄雾"], 501: ["fog", "雾"], 502: ["fog", "霾"], 503: ["fog", "扬沙"], 504: ["fog", "浮尘"], 507: ["fog", "沙尘暴"], 508: ["fog", "强沙尘暴"], 509: ["fog", "浓雾"], 510: ["fog", "强浓雾"], 511: ["fog", "中度霾"], 512: ["fog", "重度霾"], 513: ["fog", "严重霾"], 514: ["fog", "大雾"], 515: ["fog", "特强浓雾"],
+    900: ["hot", "热"], 901: ["cold", "冷"], 999: ["unknown", "未知"],
   };
 
   const CACHE_KEY = "firefly-weather-cache";
@@ -589,6 +743,8 @@ const cfg = JSON.stringify({
       visibility: Number(curJ.visibility?.value), // 米
       precipitation: Number(curJ.precipitation?.amount?.value) || 0,
       uv_index: curJ.uvIndex != null ? Number(curJ.uvIndex) : null,
+      // 更新时间取 7d 接口的 updateTime（v1 current 的 metadata 里没有时间字段）
+      timeText: hhmmFromStamp(d7 && d7.updateTime),
     };
 
     // 从 hourly 24h 里筛出"今天"，取最高/最低温与最大降水概率
@@ -701,6 +857,8 @@ const cfg = JSON.stringify({
       visibility: Number(j.visibility) * 1000, // km → m 对齐 render
       precipitation: Number(j.precipitation) || 0,
       uv_index: j.uv != null ? Number(j.uv) : null,
+      // 更新时间：接口自带 report_time，就是观测地本地时间
+      timeText: hhmmFromStamp(j.report_time),
     };
 
     const f0 = j.forecast && j.forecast[0] ? j.forecast[0] : {};
@@ -759,9 +917,15 @@ const cfg = JSON.stringify({
     if (n) n.textContent = val;
   }
 
+  // 切换主天气图标：只改 data-cond，由 CSS 决定显示哪个预渲染图标（见 WEATHER_ICONS）
+  function setCond(parent, sel, cond) {
+    const n = parent.querySelector(sel);
+    if (n) n.setAttribute("data-cond", cond);
+  }
+
   function render(el, cur, daily, aqi, city) {
-    const pair = QW[cur.weather_code] || CODE[cur.weather_code] || ["🌡️", "未知"];
-    setText(el, ".weather-icon", pair[0]);
+    const pair = QW[cur.weather_code] || CODE[cur.weather_code] || ["unknown", "未知"];
+    setCond(el, ".weather-icon", pair[0]);
     setText(el, ".weather-temp", Math.round(cur.temperature_2m) + tempSign);
     setText(el, ".weather-city", city);
     setText(el, ".weather-desc", pair[1]);
@@ -876,11 +1040,13 @@ const cfg = JSON.stringify({
       }
     }
 
-    // 更新时间
-    const t = new Date();
-    const hh = t.getHours().toString().padStart(2, "0");
-    const mm = t.getMinutes().toString().padStart(2, "0");
-    setText(el, ".weather-update", "更新于 " + hh + ":" + mm);
+    // 更新时间：用数据源自己的观测/上报时间，而不是设备当前时间
+    // （cur.timeText 由各源解析时填好，已经是观测地本地时间的 HH:MM）
+    // 拿不到时间就把整行藏掉，别只留一条空的分隔线
+    const updEl = el.querySelector(".weather-update");
+    const footEl = el.querySelector(".weather-footer");
+    if (updEl) updEl.textContent = cur.timeText ? "更新于 " + cur.timeText : "";
+    if (footEl) footEl.style.display = cur.timeText ? "" : "none";
   }
 
   // Open-Meteo 国外源：天气 + 空气质量 + 反向地理编码，打包成一个归一化结果
@@ -902,7 +1068,8 @@ const cfg = JSON.stringify({
         city = c || l || stripAdm(g.principalSubdivision) || C.defaultCity;
       }
     }
-    return { cur: d.current, daily: d.daily, aqi, city };
+    // Open-Meteo 的 current.time 已经是观测地本地时间（请求带了 timezone=auto），直接取 HH:MM
+    return { cur: { ...d.current, timeText: hhmmFromStamp(d.current.time) }, daily: d.daily, aqi, city };
   }
 
   // wttr.in：免费免 Key，还带 CORS 头，浏览器直接能 fetch。按经纬度出 JSON
@@ -923,6 +1090,29 @@ const cfg = JSON.stringify({
     if (m[3].toUpperCase() === "PM" && h !== 12) h += 12;
     if (m[3].toUpperCase() === "AM" && h === 12) h = 0;
     return String(h).padStart(2, "0") + ":" + min;
+  }
+
+  // 从接口给的时间串里取 "HH:MM"，兼容：
+  //   Open-Meteo  "2026-10-02T07:30"
+  //   uapis       "2026-10-02 07:25:08"
+  //   和风         "2026-10-02T07:25+08:00"（7d 的 updateTime）
+  // 这三种都已经（或带着偏移地）是观测地本地时间，直接截第 11~16 位最省事。
+  // ⚠ 不要丢给 new Date() 再格式化 —— 那会被设备时区重新解释，正是要修的问题。
+  function hhmmFromStamp(s) {
+    if (typeof s !== "string" || s.length < 16) return null;
+    const hm = s.slice(11, 16);
+    return /^\d{2}:\d{2}$/.test(hm) ? hm : null;
+  }
+
+  // wttr 的 observation_time 是 UTC（形如 "11:33 PM"），j1 里没有当地时间字段，
+  // 只能用「设备当前的 UTC 偏移」把它换算到当地时间（设备与城市同处一个时区时正确）。
+  function wttrObsToLocalText(s) {
+    const hhmm = ampmToHHmm(s);
+    if (!hhmm) return null;
+    const parts = hhmm.split(":");
+    const d = new Date();
+    d.setUTCHours(Number(parts[0]), Number(parts[1]), 0, 0);
+    return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
   }
   async function fetchWttr(lat, lon) {
     // ⚠ 路径前不能加冒号：wttr.in 把 /:xxx 视为内部特殊页，会忽略坐标返回固定地点的天气
@@ -953,6 +1143,8 @@ const cfg = JSON.stringify({
       cloud_cover: Number(c.cloudcover),
       uv_index: Number(c.uvIndex),
       precipitation: Number(c.precipMM) || 0,
+      // wttr 只给 UTC 的 observation_time（j1 里没有当地时间字段），换算到当地时间
+      timeText: wttrObsToLocalText(c.observation_time),
     };
     const daily = {
       temperature_2m_max: w0 ? [Number(w0.maxtempC)] : [],
@@ -1057,8 +1249,12 @@ const cfg = JSON.stringify({
     if (cached) {
       try {
         const o = JSON.parse(cached);
-        if (Date.now() - o.t < 10 * 60 * 1000) {
-          render(el, o.cur || o.current, o.daily, o.aqi, o.city);
+        const cc = o.cur || o.current;
+        // 顺手校验 timeText 这个字段"存在"：加"更新于"之前的旧缓存里没有它，
+        // 直接渲染会得到一行空的更新时间。这种旧缓存当过期处理，走一次真实请求补上。
+        // 注意判的是 key 存在（新缓存里 timeText 可能是 null，那也算有效，别再重复请求）。
+        if (Date.now() - o.t < 10 * 60 * 1000 && cc && "timeText" in cc) {
+          render(el, cc, o.daily, o.aqi, o.city);
           return;
         }
       } catch {}
