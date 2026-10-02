@@ -12,7 +12,7 @@ import type { WallpaperThemeConfig } from "@/types/wallpaperThemeConfig";
  */
 export const wallpaperThemeConfig: WallpaperThemeConfig = {
 	// 总开关。false 时功能完全不生效，显示设置里也不会出现这个开关
-	enable: true,
+	enable: false,
 	// 是否在「显示设置」里给访客一个开关。false = 强制跟随，访客关不掉
 	switchable: true,
 	// >>> hues（由 scripts/gen-wallpaper-hues.mjs 生成，勿手改）
