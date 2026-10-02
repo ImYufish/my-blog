@@ -1,31 +1,46 @@
-import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { basename, join, dirname } from "node:path";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { basename, dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /**
- * 搜索引擎即时收录集成（Bing IndexNow + 百度主动推送 + 头条/字节可选推送）
+ * 搜索引擎即时收录集成：构建时推送 Bing IndexNow + 百度
  * 构建完成后读取 dist 下的 sitemap，把其中的 URL 推送给各引擎，加速新文章被发现。
  *
- * 配置来自 src/config/indexNowConfig.ts：
- *   - enabled      总开关
- *   - key / host   Bing IndexNow 的 key 与 host（见下文）
- *   - baidu        百度主动推送（data.zz.baidu.com/urls），需 site + token
- *   - toutiao      头条/字节，官方无稳定公开 push API；endpoint 留空则仅打印提交 sitemap 的提示
+ * 配置全部来自 src/config/indexNowConfig.ts（收录相关配置的唯一来源）：
+ *   - enabled               总开关
+ *   - bing.key / bing.host  Bing IndexNow 的 key 与 host（见下文）
+ *   - baidu                 百度主动推送（data.zz.baidu.com/urls），需 site + token
+ * 头条/字节不在本插件内：官方无稳定公开 push API，走客户端 push.js
+ * （组件 src/components/analytics/ToutiaoAutoPush.astro，读取 indexNowConfig.toutiao）。
+ *
+ * 两个引擎的提交范围不同：
+ *   - Bing：每次提交 sitemap 全量 URL（IndexNow 单次可带 1 万条，没有日配额压力，重复提交无害）
+ *   - 百度：**只推「新增 / 内容变化」的 URL**。百度有日配额（实测约 10 条/天），
+ *     而 sitemap 里排在前面的是首页、归档这些旧页，若每次全量推，旧 URL 会把配额吃光、
+ *     真正的新文章反而推不上去。改动检测靠比对 dist 里各页 HTML 的哈希
+ *     （sitemap 本身没有 <lastmod>，而给全站写构建时间的 lastmod 会每次都变、反而误导爬虫）。
+ *
+ * 基线文件（存于 node_modules/.cache/，不进仓库、不进部署产物）：
+ *   - indexnow-baseline.json        Bing 用，记录出现过的 URL（仅用于打印「本次新增」）
+ *   - indexnow-baseline-baidu.json  百度用，记录 { URL: 页面内容哈希 }
+ *     · 文件不存在 → 视为首次运行：只建立基线、不推送，避免一次灌满配额
+ *     · 想让百度全量重推：把该文件内容改成 {} 后重新构建
+ *   （deploy-eo.ps1 是本地构建，基线会持久化；若换成每次全新检出的 CI 构建，
+ *     基线不持久化，百度会退化成每次「首次运行」而不推送。）
  *
  * 调试开关（环境变量）：
  *   - INDEXNOW_VERBOSE=1  额外打印本次提交的全部 URL 列表，方便核对新文章是否纳入
- *
- * 基线文件 node_modules/.cache/indexnow-baseline.json 记录已成功提交的 URL，
- * 用于区分「本次新增」与「已提交过」；不污染仓库、不进部署产物。
- * （EdgeOne 构建环境每次为全新检出，基线不持久化，会退化为每次打印全部 URL。）
  *
  * @param {Object} config
  * @returns {Object} AstroIntegration
  */
 export function indexNow(config = {}) {
 	const enabled = config.enabled !== false;
-	const key = config.key || process.env.INDEXNOW_KEY || "";
-	const hostOverride = config.host || "";
+	const bing = config.bing || {};
+	const key = bing.key || process.env.INDEXNOW_KEY || "";
+	const hostOverride = bing.host || "";
 	const verbose = process.env.INDEXNOW_VERBOSE === "1" || process.env.INDEXNOW_VERBOSE === "true";
 
 	return {
@@ -37,9 +52,14 @@ export function indexNow(config = {}) {
 					return;
 				}
 
+				// Windows 下 dir.pathname 形如 "/F:/.../dist/"，直接 join 出来的路径 existsSync 读不到，
+				// 必须用 fileURLToPath 转成真正的文件系统路径
+				const distDir = toFsPath(dir);
+				const cacheDir = join(distDir, "..", "node_modules", ".cache");
+
 				let urls;
 				try {
-					urls = await collectUrlsFromSitemaps(dir.pathname);
+					urls = await collectUrlsFromSitemaps(distDir);
 				} catch (e) {
 					console.warn("[search-submit] 读取 sitemap 失败：", e.message);
 					return;
@@ -50,16 +70,25 @@ export function indexNow(config = {}) {
 				}
 
 				// ---- Bing IndexNow ----
-				await bingIndexNow(urls, { key, hostOverride, dir, verbose });
+				await bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbose });
 
-			// ---- 百度主动推送 ----
-			await baiduPush(urls, config.baidu);
-		},
+				// ---- 百度主动推送（只推新增/变化）----
+				await baiduPush(urls, config.baidu, { distDir, cacheDir, verbose });
+			},
 		},
 	};
 }
 
-async function bingIndexNow(urls, { key, hostOverride, dir, verbose }) {
+/** Astro 的 hook 给的是 URL；统一转成文件系统路径（见文件顶部 Windows 说明） */
+function toFsPath(dir) {
+	try {
+		return typeof dir === "string" ? dir : fileURLToPath(dir);
+	} catch {
+		return String(dir);
+	}
+}
+
+async function bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbose }) {
 	if (!key) {
 		console.warn("[bing] 未配置 key，跳过 IndexNow 提交");
 		return;
@@ -80,7 +109,7 @@ async function bingIndexNow(urls, { key, hostOverride, dir, verbose }) {
 	}
 
 	const keyLocation = `https://${host}/${key}.txt`;
-	const keyFilePath = join(dir.pathname, `${key}.txt`);
+	const keyFilePath = join(distDir, `${key}.txt`);
 	if (!existsSync(keyFilePath)) {
 		console.warn(
 			`[bing] 验证文件未生成：${keyFilePath}，请确认 public/${key}.txt 存在并已部署。`,
@@ -139,8 +168,8 @@ async function bingIndexNow(urls, { key, hostOverride, dir, verbose }) {
 		}
 	}
 
-	// 读取基线，区分「本次新增」与「已提交过」
-	const baselinePath = join(dir.pathname, "..", "node_modules", ".cache", "indexnow-baseline.json");
+	// 读取基线，区分「本次新增」与「已提交过」（仅用于日志）
+	const baselinePath = join(cacheDir, "indexnow-baseline.json");
 	let baseline = new Set();
 	try {
 		if (existsSync(baselinePath)) {
@@ -166,13 +195,8 @@ async function bingIndexNow(urls, { key, hostOverride, dir, verbose }) {
 		for (const u of urls) console.log(`[bing]   - ${u}`);
 	}
 
-	// 持久化基线（best-effort，写成功过的全集）
-	try {
-		await mkdir(dirname(baselinePath), { recursive: true });
-		await writeFile(baselinePath, JSON.stringify({ urls }, null, 2));
-	} catch {
-		/* 写基线失败不影响提交 */
-	}
+	// 持久化基线（best-effort）
+	await writeJson(baselinePath, { urls });
 }
 
 /**
@@ -180,8 +204,11 @@ async function bingIndexNow(urls, { key, hostOverride, dir, verbose }) {
  * 接口：https://data.zz.baidu.com/urls?site=<domain>&token=<token>
  * 方式：POST，Content-Type: text/plain，body 为 URL 列表（每行一条）
  * 返回示例：{"success":N,"remain":M,"not_same_site":[],"errmsg":"ok"} 或 {"error":N,"message":"..."}
+ *
+ * 只推「新增 / 内容变化」的 URL：见文件顶部说明。
+ * 只有本次真正提交成功才把它们记进基线；失败不记，下次构建会自动重试。
  */
-async function baiduPush(urls, cfg) {
+async function baiduPush(urls, cfg, { distDir, cacheDir, verbose }) {
 	if (!cfg || cfg.enabled === false) {
 		console.log("[baidu] 未启用，跳过");
 		return;
@@ -194,15 +221,40 @@ async function baiduPush(urls, cfg) {
 		);
 		return;
 	}
+
+	const baselinePath = join(cacheDir, "indexnow-baseline-baidu.json");
+	const baseline = await readJson(baselinePath);
+
+	// 各页内容指纹（sitemap 没有 lastmod，用 dist 里 HTML 的哈希判断内容有没有变）
+	const fingerprints = {};
+	for (const u of urls) {
+		fingerprints[u] = await pageFingerprint(distDir, u);
+	}
+
+	// 首次运行（基线文件不存在）：只建立基线，不推送，避免一次把 sitemap 全量灌进去吃掉配额
+	if (baseline === null) {
+		await writeJson(baselinePath, fingerprints);
+		console.log(
+			`[baidu] 首次运行：已把 ${urls.length} 条记为基线，本次不推送；以后只推「新增 / 内容变化」的 URL。`,
+		);
+		console.log(`[baidu] （想让百度全量重推：把 ${baselinePath} 内容改成 {} 后重新构建）`);
+		return;
+	}
+
+	const changed = urls.filter((u) => baseline[u] === undefined || baseline[u] !== fingerprints[u]);
+	if (changed.length === 0) {
+		console.log(`[baidu] 无新增/变化 URL，跳过推送（基线 ${Object.keys(baseline).length} 条）`);
+		return;
+	}
+
 	const endpoint = "https://data.zz.baidu.com/urls";
-	const body = urls.join("\n");
 	try {
 		const res = await fetch(
 			`${endpoint}?site=${encodeURIComponent(site)}&token=${encodeURIComponent(token)}`,
 			{
 				method: "POST",
 				headers: { "Content-Type": "text/plain" },
-				body,
+				body: changed.join("\n"),
 			},
 		);
 		const text = await res.text();
@@ -217,15 +269,83 @@ async function baiduPush(urls, cfg) {
 		} catch {
 			/* 非 JSON，按状态码判断 */
 		}
+
 		if (res.ok && !errmsg) {
+			// 提交成功才并入基线；失败不写，下次构建会重试这批 URL
+			const merged = { ...baseline };
+			for (const u of changed) merged[u] = fingerprints[u];
+			await writeJson(baselinePath, merged);
+
 			console.log(
-				`[baidu] 提交完成：成功 ${ok} 条（当日剩余配额 ${remain ?? "未知"}）site=${site}`,
+				`[baidu] 提交完成：推 ${changed.length} 条新增/变化，成功 ${ok} 条（当日剩余配额 ${remain ?? "未知"}）site=${site}`,
 			);
+			for (const u of changed) console.log(`[baidu]   + ${u}`);
 		} else {
-			console.warn(`[baidu] 提交失败：HTTP ${res.status}${errmsg ? `，${errmsg}` : `，响应：${text.slice(0, 200)}`}`);
+			console.warn(
+				`[baidu] 提交失败：HTTP ${res.status}${errmsg ? `，${errmsg}` : `，响应：${text.slice(0, 200)}`}`,
+			);
+			console.warn(`[baidu] 未更新基线，下次构建会重试这 ${changed.length} 条`);
 		}
 	} catch (e) {
 		console.warn("[baidu] 请求异常：", e.message);
+		console.warn(`[baidu] 未更新基线，下次构建会重试这 ${changed.length} 条`);
+	}
+}
+
+/**
+ * 页面内容指纹：URL → dist 里对应 HTML 的 sha1 前 16 位。
+ * Astro 静态输出形如 /about/ → dist/about/index.html、/foo.html → dist/foo.html。
+ * 返回 null 表示找不到对应文件（此时只能退化为「URL 有没有出现过」）。
+ */
+async function pageFingerprint(distDir, url) {
+	let pathname;
+	try {
+		pathname = decodeURIComponent(new URL(url).pathname);
+	} catch {
+		return null;
+	}
+	const rel = pathname.replace(/^\/+/, "");
+	const candidates = [];
+	if (rel === "") {
+		candidates.push("index.html");
+	} else if (pathname.endsWith("/")) {
+		candidates.push(join(rel, "index.html"));
+	} else {
+		candidates.push(rel, join(rel, "index.html"));
+	}
+	for (const c of candidates) {
+		const p = join(distDir, c);
+		try {
+			if (existsSync(p)) {
+				const buf = await readFile(p);
+				return createHash("sha1").update(buf).digest("hex").slice(0, 16);
+			}
+		} catch {
+			/* 试下一个候选路径 */
+		}
+	}
+	return null;
+}
+
+/** 读 JSON 基线；文件不存在返回 null（= 首次运行），损坏也返回 null（避免误判为全量变化而灌满配额） */
+async function readJson(path) {
+	try {
+		if (!existsSync(path)) return null;
+		const raw = JSON.parse(await readFile(path, "utf-8"));
+		if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+		return raw;
+	} catch {
+		console.warn(`[search-submit] 基线文件损坏，按首次运行处理：${path}`);
+		return null;
+	}
+}
+
+async function writeJson(path, obj) {
+	try {
+		await mkdir(dirname(path), { recursive: true });
+		await writeFile(path, JSON.stringify(obj, null, 2));
+	} catch {
+		/* 写基线失败不影响提交 */
 	}
 }
 

@@ -20,6 +20,7 @@ import {
 	backgroundWallpaper,
 	displaySettingsConfig,
 	expressiveCodeConfig,
+	indexNowConfig,
 	musicPlayerConfig,
 	navbarMode,
 	profileConfig,
@@ -189,8 +190,8 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
             screenRecord={analyticsConfig.la51Analytics?.screenRecord}
             />
     )}
-        {analyticsConfig?.toutiaoPushToken && (
-            <ToutiaoAutoPush token={analyticsConfig.toutiaoPushToken} />
+        {indexNowConfig.enabled && indexNowConfig.toutiao.enabled && indexNowConfig.toutiao.token && (
+            <ToutiaoAutoPush token={indexNowConfig.toutiao.token} />
         )}
 
     <title>{pageTitle}</title>
