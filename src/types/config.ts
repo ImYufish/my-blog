@@ -38,6 +38,11 @@ export type { PlacesConfig } from "./placesConfig";
 export type { PlantUMLConfig } from "./plantumlConfig";
 export type { ProfileConfig } from "./profileConfig";
 export type {
+	SeoConfig,
+	SeoRouteDescriptions,
+	SeoRoutePattern,
+} from "./seoConfig";
+export type {
 	AdConfig,
 	CalendarConfig,
 	MobileBottomComponentConfig,

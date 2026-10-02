@@ -27,8 +27,6 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import {
-	commentConfig,
-	dynamicConfig,
 	expressiveCodeConfig,
 	fontConfig,
 	fontsList,
@@ -268,13 +266,9 @@ export default defineConfig({
 				if (pathname === "/myanimelist/" && !siteConfig.pages.mal) {
 					return false;
 				}
-				// 动态页评论嵌入页：评论关闭时重定向到 /404/，不应进 sitemap
-				if (
-					pathname === "/dynamic/comments/" &&
-					(dynamicConfig.showComment === false ||
-						!commentConfig.type ||
-						commentConfig.type === "none")
-				) {
+				// 动态页评论嵌入页：它是给 /dynamic/ 的评论区做 iframe 内嵌的，本身已标
+				// noindex（见 src/pages/dynamic/comments.astro），一律不进 sitemap。
+				if (pathname === "/dynamic/comments/") {
 					return false;
 				}
 				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {

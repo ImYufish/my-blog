@@ -85,6 +85,7 @@ export { live2dWidgetConfig, spineModelConfig } from "./pioConfig"; // 看板娘
 export { placesConfig } from "./placesConfig"; // 足迹地图配置
 export { plantumlConfig } from "./plantumlConfig"; // PlantUML 图表配置
 export { profileConfig } from "./profileConfig"; // 用户资料配置
+export { getRouteMetaDescription, seoConfig } from "./seoConfig"; // SEO：路由级 meta description 覆写
 // 布局配置
 export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
 // 核心配置

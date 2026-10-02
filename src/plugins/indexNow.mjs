@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -41,7 +41,9 @@ export function indexNow(config = {}) {
 	const bing = config.bing || {};
 	const key = bing.key || process.env.INDEXNOW_KEY || "";
 	const hostOverride = bing.host || "";
-	const verbose = process.env.INDEXNOW_VERBOSE === "1" || process.env.INDEXNOW_VERBOSE === "true";
+	const verbose =
+		process.env.INDEXNOW_VERBOSE === "1" ||
+		process.env.INDEXNOW_VERBOSE === "true";
 
 	return {
 		name: "search-submit",
@@ -70,10 +72,16 @@ export function indexNow(config = {}) {
 				}
 
 				// ---- Bing IndexNow ----
-				await bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbose });
+				await bingIndexNow(urls, {
+					key,
+					hostOverride,
+					distDir,
+					cacheDir,
+					verbose,
+				});
 
 				// ---- 百度主动推送（只推新增/变化）----
-				await baiduPush(urls, config.baidu, { distDir, cacheDir, verbose });
+				await baiduPush(urls, config.baidu, { distDir, cacheDir });
 			},
 		},
 	};
@@ -88,14 +96,33 @@ function toFsPath(dir) {
 	}
 }
 
-async function bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbose }) {
+/**
+ * 把各种写法的主机名统一成裸主机名。
+ * IndexNow 的 host 字段只接受裸主机名（如 x1anyu.cn），传完整 URL 会被拒（实测返回 422）；
+ * 而 Bing Webmaster Tools 里显示的 property 往往是 "https://x1anyu.cn/" 这种完整 URL，
+ * 直接照抄进配置就会拼出 https://https://x1anyu.cn///<key>.txt 这种坏地址。
+ */
+function normalizeHost(value) {
+	const raw = String(value || "").trim();
+	if (!raw) return "";
+	try {
+		return new URL(raw.includes("://") ? raw : `https://${raw}`).host;
+	} catch {
+		return "";
+	}
+}
+
+async function bingIndexNow(
+	urls,
+	{ key, hostOverride, distDir, cacheDir, verbose },
+) {
 	if (!key) {
 		console.warn("[bing] 未配置 key，跳过 IndexNow 提交");
 		return;
 	}
 
 	const host =
-		hostOverride ||
+		normalizeHost(hostOverride) ||
 		(() => {
 			try {
 				return new URL(urls[0]).host;
@@ -125,7 +152,10 @@ async function bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbos
 			keyCheck = `HTTP ${probe.status}（Bing 抓取时也可能拿不到）`;
 		} else {
 			const probeBody = (await probe.text()).trim();
-			keyCheck = probeBody === key ? "通过" : `内容不匹配（期望 ${key}，实际 ${probeBody.slice(0, 40)}）`;
+			keyCheck =
+				probeBody === key
+					? "通过"
+					: `内容不匹配（期望 ${key}，实际 ${probeBody.slice(0, 40)}）`;
 		}
 	} catch (e) {
 		keyCheck = `请求异常：${e.message}`;
@@ -148,7 +178,9 @@ async function bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbos
 			if (res.ok) {
 				ok += batch.length;
 				if (verbose) {
-					console.log(`[bing] HTTP ${res.status} OK（本批次 ${batch.length} 条）`);
+					console.log(
+						`[bing] HTTP ${res.status} OK（本批次 ${batch.length} 条）`,
+					);
 				}
 			} else {
 				fail += batch.length;
@@ -208,7 +240,7 @@ async function bingIndexNow(urls, { key, hostOverride, distDir, cacheDir, verbos
  * 只推「新增 / 内容变化」的 URL：见文件顶部说明。
  * 只有本次真正提交成功才把它们记进基线；失败不记，下次构建会自动重试。
  */
-async function baiduPush(urls, cfg, { distDir, cacheDir, verbose }) {
+async function baiduPush(urls, cfg, { distDir, cacheDir }) {
 	if (!cfg || cfg.enabled === false) {
 		console.log("[baidu] 未启用，跳过");
 		return;
@@ -237,13 +269,19 @@ async function baiduPush(urls, cfg, { distDir, cacheDir, verbose }) {
 		console.log(
 			`[baidu] 首次运行：已把 ${urls.length} 条记为基线，本次不推送；以后只推「新增 / 内容变化」的 URL。`,
 		);
-		console.log(`[baidu] （想让百度全量重推：把 ${baselinePath} 内容改成 {} 后重新构建）`);
+		console.log(
+			`[baidu] （想让百度全量重推：把 ${baselinePath} 内容改成 {} 后重新构建）`,
+		);
 		return;
 	}
 
-	const changed = urls.filter((u) => baseline[u] === undefined || baseline[u] !== fingerprints[u]);
+	const changed = urls.filter(
+		(u) => baseline[u] === undefined || baseline[u] !== fingerprints[u],
+	);
 	if (changed.length === 0) {
-		console.log(`[baidu] 无新增/变化 URL，跳过推送（基线 ${Object.keys(baseline).length} 条）`);
+		console.log(
+			`[baidu] 无新增/变化 URL，跳过推送（基线 ${Object.keys(baseline).length} 条）`,
+		);
 		return;
 	}
 
@@ -351,7 +389,9 @@ async function writeJson(path, obj) {
 
 async function collectUrlsFromSitemaps(distDir) {
 	const files = await readdir(distDir);
-	const sitemaps = files.filter((f) => f.startsWith("sitemap") && f.endsWith(".xml"));
+	const sitemaps = files.filter(
+		(f) => f.startsWith("sitemap") && f.endsWith(".xml"),
+	);
 	const seen = new Set();
 	const out = [];
 	const add = (u) => {
@@ -363,14 +403,18 @@ async function collectUrlsFromSitemaps(distDir) {
 
 	for (const file of sitemaps) {
 		const content = await readFile(join(distDir, file), "utf-8");
-		const locs = [...content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].trim());
+		const locs = [...content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) =>
+			m[1].trim(),
+		);
 		if (file === "sitemap-index.xml") {
 			// index 里的 <loc> 指向子 sitemap，需要再展开
 			for (const sub of locs) {
 				try {
 					const subPath = join(distDir, basename(new URL(sub).pathname));
 					const subContent = await readFile(subPath, "utf-8");
-					const subLocs = [...subContent.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].trim());
+					const subLocs = [...subContent.matchAll(/<loc>(.*?)<\/loc>/g)].map(
+						(m) => m[1].trim(),
+					);
 					subLocs.forEach(add);
 				} catch {
 					/* 子 sitemap 缺失则忽略 */

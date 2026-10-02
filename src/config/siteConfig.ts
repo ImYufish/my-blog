@@ -52,12 +52,14 @@ export const siteConfig: SiteConfig = {
 	// 站点 URL
 	site_url: "https://x1anyu.cn",
 
-	// 站点描述
-	description: "这是一个分享日常的博客~",
+	// 站点描述（首页与所有未单独指定描述的页面的 meta description 兜底，
+	// 也是搜索引擎和分享卡片上显示的站点介绍。建议 70~120 字）
+	description:
+		"临渊羡鱼（x1anyu）的个人博客，一条爱折腾前端的咸鱼。记录 Astro 与 Firefly 主题改造笔记、Web 开发踩坑，也写 ACGN 与日常。",
 
 	// 站点关键词
 	keywords: [
-		"yufish",
+		"Yufish",
 		"x1anyu",
 		"Firefly",
 		"Fuwari",

@@ -15,6 +15,10 @@ if (
 ---
 
 <Layout title="">
+	<!-- 这是给 /dynamic/ 的评论区做 iframe 内嵌的页面，不是给人直接访问的内容页：
+	     单独被搜到只会显示一列没有上下文的评论。标 noindex，并从 sitemap 里排除
+	     （见 astro.config.mjs 的 sitemap filter）。 -->
+	<meta slot="head" name="robots" content="noindex, follow" />
 	<main class="page-comment-embed">
 		<Comment customPath="/dynamic/" />
 	</main>

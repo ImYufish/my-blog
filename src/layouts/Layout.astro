@@ -2,8 +2,8 @@
 import GoogleAnalytics from "@components/analytics/GoogleAnalytics.astro";
 import La51Analytics from "@components/analytics/La51Analytics.astro";
 import MicrosoftClarity from "@components/analytics/MicrosoftClarity.astro";
-import UmamiAnalytics from "@components/analytics/UmamiAnalytics.astro";
 import ToutiaoAutoPush from "@components/analytics/ToutiaoAutoPush.astro";
+import UmamiAnalytics from "@components/analytics/UmamiAnalytics.astro";
 import CodeGroupManager from "@components/features/CodeGroupManager.astro";
 import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontSetup from "@components/features/FontSetup.astro";
@@ -20,6 +20,7 @@ import {
 	backgroundWallpaper,
 	displaySettingsConfig,
 	expressiveCodeConfig,
+	getRouteMetaDescription,
 	indexNowConfig,
 	musicPlayerConfig,
 	navbarMode,
@@ -38,6 +39,7 @@ import type { Favicon } from "@/types/config";
 import { isHomePage } from "@/utils/layout-utils";
 import { getAuthorAvatarUrl, getSiteLogo } from "@/utils/schema-image";
 import { buildSiteGraph, toAbsoluteUrl } from "@/utils/schema-utils";
+import { resolveMetaDescription } from "@/utils/seo-utils";
 import { getOgLocale } from "@/utils/site-config-utils";
 import { getCanonicalUrl, url } from "@/utils/url-utils";
 
@@ -110,6 +112,17 @@ if (title) {
 		? `${siteConfig.title} - ${siteConfig.subtitle}`
 		: siteConfig.title;
 }
+
+// meta description 的候选顺序：路由级覆写（config/seoConfig.ts，不碰页面和 i18n，
+// 避免上游合并冲突；表里定义了就以它为准）→ 页面自己传的（可能是空串、跟标题重复、
+// 或一句过短的标语，都算无效）→ 站点描述兜底。
+const metaDescription = resolveMetaDescription(
+	[getRouteMetaDescription(Astro.url.pathname), description],
+	{
+		title,
+		fallback: siteConfig.description,
+	},
+);
 
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
@@ -197,7 +210,7 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
     <title>{pageTitle}</title>
     <meta
       name="description"
-      content={description || siteConfig.description || pageTitle}
+      content={metaDescription}
     />
     {
       siteConfig.keywords && siteConfig.keywords.length > 0 && (
@@ -213,7 +226,7 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
     <meta property="og:title" content={pageTitle} />
     <meta
       property="og:description"
-      content={description || siteConfig.description || pageTitle}
+      content={metaDescription}
     />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
     {ogImageUrl && ogImageWidth && <meta property="og:image:width" content={String(ogImageWidth)} />}
@@ -234,7 +247,7 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
     <meta name="twitter:title" content={pageTitle} />
     <meta
       name="twitter:description"
-      content={description || siteConfig.description || pageTitle}
+      content={metaDescription}
     />
 
     {

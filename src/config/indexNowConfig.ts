@@ -30,7 +30,7 @@ export const indexNowConfig: IndexNowConfig = {
 		key: "1b5679bd6a1841a69073d3dfe9cd86eb",
 		// 提交用的 host。留空 "" 则从 sitemap 第一条 URL 自动推导，一般不用填。
 		// 必须与 Bing Webmaster Tools 里已验证的 property 一致，否则会 403（详见文件顶部说明）。
-		host: "x1anyu.cn",
+		host: "https://x1anyu.cn/",
 	},
 
 	// ---- 百度主动推送（普通收录 / API 推送）----
