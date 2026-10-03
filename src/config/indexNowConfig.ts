@@ -27,10 +27,10 @@ export const indexNowConfig: IndexNowConfig = {
 		// IndexNow key，同时是 public/<key>.txt 验证文件的文件名与内容。
 		// 上线前请替换为你在 Bing IndexNow 注册的真实 key（记得同步改 public 下的验证文件）。
 		// 也可用环境变量 INDEXNOW_KEY 覆盖（优先级高于这里）。
-		key: "1b5679bd6a1841a69073d3dfe9cd86eb",
+		key: "f1ab434508be48c8a2950b491b72146c",
 		// 提交用的 host。留空 "" 则从 sitemap 第一条 URL 自动推导，一般不用填。
 		// 必须与 Bing Webmaster Tools 里已验证的 property 一致，否则会 403（详见文件顶部说明）。
-		host: "https://x1anyu.cn/",
+		host: "x1anyu.cn/",
 	},
 
 	// ---- 百度主动推送（普通收录 / API 推送）----

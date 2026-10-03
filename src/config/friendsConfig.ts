@@ -36,7 +36,6 @@ export const friendsPageConfig: FriendsPageConfig = {
 
 	// 兜底头像：友链封面图 / 头像全部加载失败时的终极兜底。
 	// 封面失败会先回退到该友链自己的头像（imgurl），头像也失败才落到这里。
-	// 注意：public/assets/images/ 下实际文件名就是 avater.jpeg（非 avatar），写错后缀/文件名会导致兜底图本身 404。
 	defaultAvatar: "https://x1anyu.cn/assets/images/avater.jpeg",
 };
 
