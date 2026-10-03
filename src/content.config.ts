@@ -54,6 +54,20 @@ type ProjectData = {
 	lang: string;
 };
 
+type PlaceData = {
+	date?: Date;
+	province: string;
+	city: string;
+	experience: string;
+	visitCount: number;
+	lat?: number;
+	lng?: number;
+	url: string;
+	urlLabel: string;
+	photos: string[];
+	tags: string[];
+};
+
 type ContentCollection<T> = CollectionConfig<
 	ZodType<T>,
 	ReturnType<typeof glob>
@@ -131,7 +145,7 @@ const projectsCollection: ContentCollection<ProjectData> = defineCollection({
 });
 
 // 足迹地图的地点数据（对应 src/content/places/*.md，见 /places/ 页面）
-const placesCollection = defineCollection({
+const placesCollection: ContentCollection<PlaceData> = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/places" }),
 	schema: z.object({
 		date: z.coerce.date().optional(),

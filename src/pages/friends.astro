@@ -43,7 +43,7 @@ function proxyImg(raw: string | undefined) {
 
 // 兜底头像：友链封面/头像全部加载失败时的最终兜底（配置优先，否则内置默认）
 const DEFAULT_AVATAR =
-	friendsPageConfig.defaultAvatar || "https://x1anyu.cn/assets/images/avatar.jpeg";
+	friendsPageConfig.defaultAvatar || "https://x1anyu.cn/assets/images/avater.jpeg";
 
 // 构建多级兜底链：primary 是已设置在 <img src> 上的主图，candidates 是依次回退的候选。
 // 自动去重并剔除主图本身，返回以 | 分隔的字符串，供前端 error 事件按顺序逐张尝试。
