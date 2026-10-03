@@ -535,6 +535,9 @@ const description =
     .img-skeleton > img {
       position: relative;
       z-index: 0;
+      /* 常驻合成层：等 hover 的 scale 才提升图层的话，细密纹理的封面（如 Sakura
+         主题的点阵截图）缩小显示会以摩尔纹黑点呈现；提前提升让浏览器始终用高质量采样 */
+      will-change: transform;
     }
     /* 只在 JS 生效时先把图藏起来：无 JS 时图片照常显示，不至于一片空白。
        渐进式图片会边下边显示，不藏的话就成「图还没下完就露出来了」 */
