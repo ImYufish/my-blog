@@ -56,3 +56,7 @@ package/
 .workbuddy
 
 public/hitokoto/hitokoto.json
+
+# 博客内容（文章 / 动态 / 足迹 / 项目 / about 等）放在私有仓库 my-blog-content，
+# dev 与 build 前由 scripts/sync-content.mjs 拉取到 src/content（见 README「内容与私有仓库」）
+src/content/

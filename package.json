@@ -7,10 +7,11 @@
   },
   "packageManager": "pnpm@11.22.0",
   "scripts": {
-    "dev": "node scripts/sync-friends.mjs && astro dev",
+    "dev": "node scripts/sync-content.mjs && node scripts/sync-friends.mjs && astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "node scripts/sync-friends.mjs && npx tsx scripts/build-hitokoto.ts || true && npx tsx scripts/generate-github-card-data.ts && npx tsx scripts/generate-lqips.ts && npx tsx scripts/generate-vndb-covers.ts && astro build && npx tsx scripts/prune-pio-assets.ts && npx tsx scripts/subset-fonts.ts && npx tsx scripts/minify-inline-scripts.ts && npx tsx scripts/run-pagefind.ts",
+    "sync:content": "node scripts/sync-content.mjs",
+    "build": "node scripts/sync-content.mjs && (node scripts/sync-friends.mjs && npx tsx scripts/build-hitokoto.ts || true) && npx tsx scripts/generate-github-card-data.ts && npx tsx scripts/generate-lqips.ts && npx tsx scripts/generate-vndb-covers.ts && astro build && npx tsx scripts/prune-pio-assets.ts && npx tsx scripts/subset-fonts.ts && npx tsx scripts/minify-inline-scripts.ts && npx tsx scripts/run-pagefind.ts",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",

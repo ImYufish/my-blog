@@ -148,6 +148,44 @@
    [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/CuteLeaf/Firefly&project-name=Firefly&repository-name=Firefly)
    [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/CuteLeaf/Firefly)
 
+## 🔒 内容与私有仓库
+
+本仓库**只放主题与代码，不含博客内容**。文章、动态、足迹、项目、about 等都在私有仓库
+`my-blog-content` 里，`src/content/` 已被 `.gitignore` 忽略。
+
+`pnpm dev` 与 `pnpm build` 的**第一步**都会先同步内容：
+
+```bash
+node scripts/sync-content.mjs    # 等价于 pnpm sync:content
+```
+
+| 情况 | 行为 |
+| --- | --- |
+| `src/content` 不存在 | 克隆内容仓库（分支 `main`） |
+| 已是工作副本且无未提交改动 | `git pull --ff-only` 更新到最新 |
+| 工作副本有未提交改动 | **跳过更新**，保留你的改动 |
+| 目录存在但不是 git 仓库 | 默认不动它（加 `--force` 会先改名备份再克隆） |
+| 拉取失败但本地已有内容 | 只警告，继续用现有内容 |
+| 拉取失败且本地**没有**内容 | **中止构建**（避免部署出空站） |
+
+私有仓库需要凭据，在部署平台的环境变量里配（本地可放 `.env`，变量说明见 `.env.example`）：
+
+| 变量 | 说明 |
+| --- | --- |
+| `CONTENT_REPO_URL` | 内容仓库地址，默认已内置 |
+| `CONTENT_REPO_TOKEN` | GitHub 细粒度 PAT（`Contents: Read-only`）；本地 git 已记住凭据时可留空 |
+| `CONTENT_REPO_BRANCH` | 分支名，默认 `main` |
+| `CONTENT_SYNC=skip` | 临时跳过同步，直接用现有 `src/content` |
+
+**本地写文章**：建议把内容仓库克隆到 `src/content` 当工作副本，之后就在那儿写、在那儿提交：
+
+```bash
+git clone git@github.com:ImYufish/my-blog-content.git src/content
+```
+
+> ⚠️ `pnpm new-post`（以及编辑器直接建文件）写入的都是 `src/content/posts/`，也就是这份工作副本 ——
+> 写完记得在 `src/content` 里 `git commit && git push`，否则线上构建拉不到新文章。
+
 ## 📖 配置说明
 
 > 📚 **详细配置文档**: 查看 [Firefly 使用文档](https://docs-firefly.cuteleaf.cn/) 获取完整的配置指南
