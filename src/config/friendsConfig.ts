@@ -293,6 +293,28 @@ export const friendsConfig: FriendLink[] = [
 		weight: 5,
 		enabled: true,
 	},
+	{
+		title: "YuJing的记忆终端",
+		imgurl: "https://yujingblog.top/assets/home/avatar.webp",
+		desc: "记一些无用的日常，和有光的时刻。",
+		siteurl: "https://yujingblog.top",
+		linkpage: "https://yujingblog.top/friends/",
+		rss: "",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
+	{
+		title: "HZH",
+		imgurl: "https://clannad.top/favicon.png",
+		desc: "Welcome to HZH",
+		siteurl: "https://clannad.top/",
+		linkpage: "https://clannad.top/friends",
+		rss: "https://clannad.top/feed.xml",
+		tags: ["Blog"],
+		weight: 5,
+		enabled: true,
+	},
 ];
 export const getEnabledFriends = (): FriendLink[] => {
 	const friends = friendsConfig.filter((friend) => friend.enabled);
