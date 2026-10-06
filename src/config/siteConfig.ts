@@ -335,7 +335,8 @@ export const siteConfig: SiteConfig = {
 		// MyAnimeList 用户名（列表需为公开状态，私密列表无法读取）
 		username: "cuteleaf",
 		// MyAnimeList Client ID，在 https://myanimelist.net/apiconfig 注册免费应用后获取
-		clientId: "	***REMOVED***",
+		// ⚠ 不写进仓库：改用环境变量 PUBLIC_MAL_CLIENT_ID（myanimelist.astro 读取）
+		clientId: "",
 		// MAL API 地址
 		apiUrl: "https://api.myanimelist.net/v2",
 		// 动画条目详情页地址，末尾需要带 /

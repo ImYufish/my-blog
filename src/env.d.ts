@@ -6,6 +6,11 @@ declare global {
 		readonly MEILI_MASTER_KEY: string;
 		// 视图设置面板总开关，可在部署平台配置（true / 1 / on / yes 开启）
 		readonly PUBLIC_DISPLAY_SETTINGS?: string;
+		// 开源后从 src/config/*.ts 移到环境变量的密钥（部署平台 / .env 均可）
+		readonly PUBLIC_QWEATHER_KEY?: string;
+		readonly PUBLIC_AMAP_KEY_PLACES?: string;
+		readonly PUBLIC_TOUTIAO_TOKEN?: string;
+		readonly PUBLIC_MAL_CLIENT_ID?: string;
 	}
 
 	interface ITOCManager {

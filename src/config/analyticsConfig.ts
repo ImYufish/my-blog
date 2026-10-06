@@ -13,6 +13,17 @@ export const analyticsConfig: AnalyticsConfig = {
 		scriptUrl: "https://umami.x1anyu.cn/script.js",
 		// Umami 会话回放脚本地址，支持使用自建
 		replaysScriptUrl: "https://umami.x1anyu.cn/recorder.js",
+		// 「站点统计」页（/analytics/）读取的公开分享数据。
+		// 在 Umami 后台「分享」里创建一条公开链接，把链接最后一段填到 shareId。
+		// 这里只用来读公开的只读统计，**不要**填管理员 Token。
+		shareId: "LcSFhDvSiC0hb5W4",
+		// 公开统计的 API 根地址：自建实例填实例根地址（不要带 /api）
+		shareApiBase: "https://umami.x1anyu.cn",
+		// 迁移前的历史累计（换统计服务前的旧数据），只做展示合并，不会写进 Umami。不用就保持 0
+		historicalStats: {
+			visitors: 0,
+			pageviews: 0,
+		},
 		// 是否追踪出站链接
 		trackOutboundLinks: true,
 		// 是否收集浏览器性能指标

@@ -45,14 +45,14 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 友链
 			LinkPresets.Friends,
 
-		// 朋友圈
-		LinkPresets.Circle,
+			// 朋友圈
+			LinkPresets.Circle,
 
-		// 音乐
-		LinkPresets.Music,
+			// 音乐
+			LinkPresets.Music,
 
-		// 留言
-		LinkPresets.Guestbook,
+			// 留言
+			LinkPresets.Guestbook,
 		],
 	});
 
@@ -102,6 +102,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 关于页面
 			LinkPresets.About,
+
+			// 站点统计
+			LinkPresets.Analytics,
 		],
 	});
 
@@ -124,7 +127,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				external: true,
 				icon: "material-symbols:mail-outline",
 			},
-				{
+			{
 				name: "友链检测",
 				url: "https://fc.yufish.cn/",
 				external: true,
@@ -275,6 +278,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "关于我",
 		url: "/about/",
 		icon: "material-symbols:person",
+	},
+	// 站点统计（/analytics/）：数据来自 Umami 公开分享，配置见 analyticsConfig 的 shareId / shareApiBase
+	Analytics: {
+		name: "站点统计",
+		url: "/analytics/",
+		icon: "material-symbols:query-stats-rounded",
 	},
 };
 

@@ -25,7 +25,10 @@ const cfg = JSON.stringify({
 	defaultLon: weatherConfig.defaultLon,
 	autoLocate: weatherConfig.autoLocate,
 	unit: weatherConfig.unit ?? "celsius",
-	qweatherKey: weatherConfig.qweatherKey,
+	// 优先环境变量 PUBLIC_QWEATHER_KEY（不写进仓库），退回配置文件
+	qweatherKey:
+		(import.meta.env.PUBLIC_QWEATHER_KEY || "").trim() ||
+		weatherConfig.qweatherKey,
 	qweatherHost: weatherConfig.qweatherHost,
 	qweatherGeoHost: weatherConfig.qweatherGeoHost,
 	enableUapis: weatherConfig.enableUapis,

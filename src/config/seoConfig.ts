@@ -14,6 +14,8 @@ import { siteConfig } from "./siteConfig";
 // 动态路由（带参数的）用 patterns 写正则。
 export const seoConfig: SeoConfig = {
 	descriptions: {
+		"/analytics/":
+			"临渊羡鱼博客的站点统计，基于 Umami 公开分享数据：累计访客、总浏览量、访客活跃时段与热门页面排行，只汇总不涉及个人身份的匿名数字。",
 		"/about/":
 			"关于羡鱼：一条爱折腾前端的咸鱼，也是这个博客的站长。这里写着本站用到的技术栈、搭站历程、踩过的坑，以及怎么联系我。",
 		"/archive/":

@@ -32,10 +32,33 @@ import { fileURLToPath } from "node:url";
  *
  * 调试开关（环境变量）：
  *   - INDEXNOW_VERBOSE=1  额外打印本次提交的全部 URL 列表，方便核对新文章是否纳入
+ *   - BAIDU_PUSH_TOKEN    百度 API 推送 token（开源后不再写进 indexNowConfig.ts）
  *
  * @param {Object} config
  * @returns {Object} AstroIntegration
  */
+/**
+ * 取环境变量的值：先看真实进程环境变量，读不到再回退仓库根目录的 .env。
+ * 为什么要这一层：Astro/Vite 只把 .env 的值灌进 import.meta.env，**不会写进 process.env**；
+ * 而本插件跑在 Node 里（astro:build:done），只看得到 process.env。加这个兜底是为了让
+ * 本地 `pnpm build` 也能用 .env 里配的 token，不必每次在命令行注入。部署平台上配的
+ * 环境变量属于真实 process.env，会走第一条分支。
+ */
+async function envOrFile(name) {
+	const fromEnv = (process.env[name] || "").trim();
+	if (fromEnv) return fromEnv;
+	try {
+		const txt = await readFile(join(process.cwd(), ".env"), "utf8");
+		for (const line of txt.split(/\r?\n/)) {
+			const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
+			if (m && m[1] === name) return m[2].replace(/^["']|["']$/g, "").trim();
+		}
+	} catch {
+		// 没有 .env 文件就跳过（例如在 CI 里靠平台环境变量）
+	}
+	return "";
+}
+
 export function indexNow(config = {}) {
 	const enabled = config.enabled !== false;
 	const bing = config.bing || {};
@@ -246,10 +269,12 @@ async function baiduPush(urls, cfg, { distDir, cacheDir }) {
 		return;
 	}
 	const site = cfg.site || "";
-	const token = cfg.token || "";
+	// token 不再写进仓库：优先环境变量 BAIDU_PUSH_TOKEN（平台环境变量直接读得到，
+	// 本地 .env 由 envOrFile 兜底）；两处都没有则跳过百度推送
+	const token = cfg.token || (await envOrFile("BAIDU_PUSH_TOKEN"));
 	if (!site || !token) {
 		console.warn(
-			"[baidu] 未配置 site/token，跳过（去百度搜索资源平台 → 数据提交 → API推送 获取 16 位 token 填入 indexNowConfig.baidu）",
+			"[baidu] 未配置 site/token，跳过（百度搜索资源平台 → 数据提交 → API推送 取 16 位 token，配到环境变量 BAIDU_PUSH_TOKEN）",
 		);
 		return;
 	}

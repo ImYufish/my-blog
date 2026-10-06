@@ -27,7 +27,11 @@ const buildTime = formatDateI18n(new Date());
 ////////////// MyAnimeList 配置 ////////////////////////
 const malConfig = {
 	username: siteConfig.mal?.username || "",
-	clientId: siteConfig.mal?.clientId || "",
+	// 优先环境变量 PUBLIC_MAL_CLIENT_ID（不写进仓库），退回配置文件
+	clientId:
+		(import.meta.env.PUBLIC_MAL_CLIENT_ID || "").trim() ||
+		siteConfig.mal?.clientId ||
+		"",
 	apiUrl: siteConfig.mal?.apiUrl || "https://api.myanimelist.net/v2",
 	animeBaseUrl:
 		siteConfig.mal?.animeBaseUrl || "https://myanimelist.net/anime/",

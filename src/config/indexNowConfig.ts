@@ -19,6 +19,9 @@
 import type { IndexNowConfig } from "../types/indexNowConfig";
 
 export const indexNowConfig: IndexNowConfig = {
+	// ⚠ 开源注意：本文件会进入公开仓库，**不要在这里写密钥**。
+	//   · bing.key 是例外 —— 它必须等于 public/<key>.txt 的文件名，公开是设计如此。
+	//   · baidu.token / toutiao.token 已改为读环境变量（BAIDU_PUSH_TOKEN / PUBLIC_TOUTIAO_TOKEN）。
 	// 总开关：关闭后构建时不做任何推送，头条脚本也不注入
 	enabled: true,
 
@@ -38,15 +41,19 @@ export const indexNowConfig: IndexNowConfig = {
 		enabled: true,
 		// 百度站长平台验证的域名（不带协议），必须与百度登记的站点一致
 		site: "x1anyu.cn",
-		// 「数据提交 → API 推送」复制来的 16 位 token；留空则构建时提示未配置并跳过
-		token: "***REMOVED***",
+		// 「数据提交 → API 推送」复制来的 16 位 token。
+		// ⚠ 不写进仓库：改读构建环境变量 BAIDU_PUSH_TOKEN（indexNow.mjs 在 astro:build:done 时读取，
+		//   只在构建期用、不进前端产物）；两处都不配则跳过百度推送。本地可放进 .env。
+		token: "",
 	},
 
 	// ---- 头条 / 字节自动收录（客户端 push.js）----
 	toutiao: {
 		enabled: true,
-		// 站长平台「自动收录」脚本的查询参数 token；留空则不注入脚本。
+		// 站长平台「自动收录」脚本的查询参数 token。
+		// ⚠ 不写进仓库：改读 PUBLIC_TOUTIAO_TOKEN（Layout.astro 构建时内联；该值本来就会出现在
+		//   页面里，属于「半公开」，但仍不放在仓库）。不配则不注入脚本。
 		// 需配合 public/ByteDanceVerify.html 完成站点所有权验证。
-		token: "***REMOVED***",
+		token: "",
 	},
 };

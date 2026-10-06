@@ -124,6 +124,11 @@ const metaDescription = resolveMetaDescription(
 	},
 );
 
+// 头条自动收录 token：优先环境变量 PUBLIC_TOUTIAO_TOKEN（不写进仓库），退回配置文件
+const toutiaoToken =
+	(import.meta.env.PUBLIC_TOUTIAO_TOKEN || "").trim() ||
+	indexNowConfig.toutiao.token;
+
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
 // apple-touch-icon：优先取 favicon 中的 png，否则取第一个
@@ -203,8 +208,8 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
             screenRecord={analyticsConfig.la51Analytics?.screenRecord}
             />
     )}
-        {indexNowConfig.enabled && indexNowConfig.toutiao.enabled && indexNowConfig.toutiao.token && (
-            <ToutiaoAutoPush token={indexNowConfig.toutiao.token} />
+        {indexNowConfig.enabled && indexNowConfig.toutiao.enabled && toutiaoToken && (
+            <ToutiaoAutoPush token={toutiaoToken} />
         )}
 
     <title>{pageTitle}</title>

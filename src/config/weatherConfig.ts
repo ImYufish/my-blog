@@ -10,7 +10,8 @@ export const weatherConfig: WeatherConfig = {
 	defaultLon: 116.4074,
 	autoLocate: true,
 	unit: "celsius",
-	qweatherKey: "***REMOVED***",
+	// ⚠ 不写进仓库：改用环境变量 PUBLIC_QWEATHER_KEY（Weather.astro 构建时读取并内联）
+	qweatherKey: "",
 	qweatherHost: "https://mh6k5rby4b.re.qweatherapi.com/v7",
 	qweatherGeoHost: "https://mh6k5rby4b.re.qweatherapi.com/geo/v2",
 	enableUapis: true,

@@ -5,6 +5,13 @@ export type AnalyticsConfig = {
 		websiteId?: string; // Umami Website ID
 		scriptUrl?: string; // Umami JS地址，支持使用自建
 		replaysScriptUrl?: string; // Umami 会话回放脚本地址
+		shareId?: string; // Umami 公开分享链接的 slug（在后台「分享」里创建）。仅用于读取公开统计，切勿填管理员 Token
+		shareApiBase?: string; // 读取公开统计的 API 根地址：自建填实例根地址（如 https://umami.x1anyu.cn），Umami Cloud 填 https://cloud.umami.is/analytics/us
+		historicalStats?: {
+			// 迁移前的历史累计，只在「站点统计」里合并展示，不写入 Umami
+			visitors?: number;
+			pageviews?: number;
+		};
 		trackOutboundLinks?: boolean; // 是否追踪出站链接点击事件，默认 true
 		collectWebVitals?: boolean; // 是否自动收集访客浏览器核心网页指标，默认 false
 		replays?: {
