@@ -1161,6 +1161,8 @@ function animate() {
 function startVizLoop() {
 	if (vizHidden) return;
 	if (animationId) return;
+	// 把暂停期间的时间从 clock 里丢掉，否则恢复的第一帧 delta 会很大
+	clock.oldTime = performance.now();
 	animate();
 }
 function stopVizLoop() {
@@ -1169,6 +1171,12 @@ function stopVizLoop() {
 		animationId = null;
 	}
 }
+
+/* 切到后台标签页或最小化时停渲染：音乐照放，但没必要在看不见的时候每帧画 16384 个方块 */
+document.addEventListener("visibilitychange", () => {
+	if (document.hidden) stopVizLoop();
+	else if (isMusicRoute()) startVizLoop();
+});
 
 /* ───────────────────────── UI 同步（歌词 / 控制条 / 歌单，替代 Svelte 响应式） ───────────────────────── */
 let mgr = null;
