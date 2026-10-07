@@ -186,6 +186,27 @@ git clone git@github.com:ImYufish/my-blog-content.git src/content
 > ⚠️ `pnpm new-post`（以及编辑器直接建文件）写入的都是 `src/content/posts/`，也就是这份工作副本 ——
 > 写完记得在 `src/content` 里 `git commit && git push`，否则线上构建拉不到新文章。
 
+## 🔑 部署环境变量清单
+
+仓库里的密钥**一律留空**，构建时从环境变量读。用 EdgeOne Pages 等平台自动构建时，要先把它们配在
+「项目设置 → 环境变量」（EdgeOne 支持把整个 `.env` 的内容粘进变量名输入框批量导入；也可用 CLI：
+`edgeone pages env set <KEY> <VALUE>`）。
+
+| 变量 | 不配的后果 | 申请入口 |
+| --- | --- | --- |
+| `CONTENT_REPO_TOKEN` | **构建直接中止**（私有内容仓库拉不到，本地有 `src/content` 副本时看不出来） | GitHub 细粒度 PAT：仅 `my-blog-content` 仓库、`Contents: Read-only` |
+| `PUBLIC_AMAP_KEY_PLACES` | 足迹地图区域空白 | 高德开放平台 → Web端 (JS API) |
+| `PUBLIC_QWEATHER_KEY` | 天气组件退回免 Key 的源 | 和风天气控制台 |
+| `PUBLIC_TOUTIAO_TOKEN` | 不注入头条/字节自动收录脚本 | 字节跳动站长平台 |
+| `BAIDU_PUSH_TOKEN` | 构建时不向百度推送 URL | 百度搜索资源平台 → API 提交 |
+| `PUBLIC_MAL_CLIENT_ID` | 追番页不请求数据 | MAL API 配置页 |
+| `GITHUB_PUSHES_TOKEN` | 统计页「推送节奏」退回读本地 `git log` | GitHub 细粒度 PAT：`Contents: Read-only` |
+
+逐项说明（含变量通道、留空行为）见 [`.env.example`](./.env.example)。
+
+> **Node 版本**：本仓库 `engines` 要求 `>=22.23.0`，而 EdgeOne Pages 预装的版本里没有这一档（最高 `24.5.0`），
+> 默认环境会打印 `Unsupported engine` 警告。在「项目设置 → Node.js 版本」选 **24.5.0** 即可消除。
+
 ## 📖 配置说明
 
 > 📚 **详细配置文档**: 查看 [Firefly 使用文档](https://docs-firefly.cuteleaf.cn/) 获取完整的配置指南

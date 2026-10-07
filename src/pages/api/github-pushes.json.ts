@@ -1,27 +1,30 @@
 import { execFileSync } from "node:child_process";
 
-// 「推送节奏」卡片的数据源（对应 src/pages/analytics.astro 里的 data-push-rhythm）。
-// 移植自 Jarvis0227/Aemeath（MIT）的 src/pages/api/github-pushes.json.ts。
-//
-// 本地适配：
-//   1. repository / branch 改成本站（ImYufish/my-blog · master）；
-//   2. 本站仓库是**私有**的 → 走 GitHub API 必须带 token。在**构建环境**里配置
-//      环境变量 GITHUB_PUSHES_TOKEN（细粒度 token 只需 Contents: Read 权限）即可；
-//      这个 endpoint 是 `prerender = true`，token 只在构建期使用、不会进前端产物。
-//   3. 没配 token 时回退本地 git（构建环境若保留完整 .git 也能用）。
+// 「推送节奏」卡片的数据源，移植自 Jarvis0227/Aemeath（MIT）。与本地相关的三处差异：
+// 仓库改成本站、只统计自己的提交（fork 仓库里大部分提交是上游作者写的）、回退本地 git 前先补深历史。
 export const prerender = true;
 
 const repository = "ImYufish/my-blog";
 const branch = "master";
 const SINCE = "53 weeks ago";
 const WINDOW_MS = 53 * 7 * 24 * 60 * 60 * 1000;
-const MAX_PAGES = 5;
-
+const MAX_PAGES = 20; // 53 周约 1500 条 = 16 页（接口不支持按作者过滤，只能拉全量再筛）
 const token = process.env.GITHUB_PUSHES_TOKEN || process.env.GITHUB_TOKEN || "";
 
-/** 主路径：GitHub API 读仓库提交历史（私有仓库必须带 token） */
+// 只保留自己的提交。邮箱是两条路径的公共判据：API 有 author.login，本地 git log 只有邮箱。
+// 换邮箱或 GitHub 账号时改这两个集合（大小写不敏感）。
+const OWNER_EMAILS = new Set([
+	"z1yum@foxmail.com",
+	"106833435+imyufish@users.noreply.github.com",
+]);
+const OWNER_LOGINS = new Set(["imyufish"]);
+
+const isOwner = (email?: string | null, login?: string | null): boolean =>
+	OWNER_EMAILS.has((email || "").trim().toLowerCase()) ||
+	OWNER_LOGINS.has((login || "").trim().toLowerCase());
+
+/** GitHub API；公开仓库匿名即可，私有仓库需 GITHUB_PUSHES_TOKEN */
 const fromGitHubApi = async (): Promise<string[]> => {
-	if (!token) return [];
 	const since = new Date(Date.now() - WINDOW_MS).toISOString();
 	const dates: string[] = [];
 	try {
@@ -32,18 +35,22 @@ const fromGitHubApi = async (): Promise<string[]> => {
 					headers: {
 						Accept: "application/vnd.github+json",
 						"User-Agent": "firefly-analytics",
-						Authorization: `Bearer ${token}`,
+						...(token ? { Authorization: `Bearer ${token}` } : {}),
 					},
 				},
 			);
 			if (!response.ok) break;
 			const rows = (await response.json()) as Array<{
-				commit?: { committer?: { date?: string } };
+				author?: { login?: string } | null;
+				commit?: {
+					author?: { email?: string; name?: string } | null;
+					committer?: { date?: string } | null;
+				};
 			}>;
 			if (!Array.isArray(rows) || !rows.length) break;
 			for (const row of rows) {
 				const date = row.commit?.committer?.date;
-				if (date) dates.push(date);
+				if (date && isOwner(row.commit?.author?.email, row.author?.login)) dates.push(date);
 			}
 			if (rows.length < 100) break;
 		}
@@ -53,17 +60,35 @@ const fromGitHubApi = async (): Promise<string[]> => {
 	return dates;
 };
 
-/** 兜底：构建环境若保留完整 .git，直接用本地提交历史（无限流） */
+/** 兜底：本地 git 历史（浅克隆先补深，失败就继续用现有的） */
 const fromLocalGit = (): string[] => {
+	const cwd = process.cwd();
 	try {
-		return execFileSync(
-			"git",
-			["log", "HEAD", `--since=${SINCE}`, "--format=%cI"],
-			{ cwd: process.cwd(), encoding: "utf8" },
-		)
-			.split(/\r?\n/)
-			.map((value) => value.trim())
-			.filter(Boolean);
+		const shallow = execFileSync("git", ["rev-parse", "--is-shallow-repository"], {
+			cwd,
+			encoding: "utf8",
+		}).trim();
+		if (shallow === "true") {
+			execFileSync("git", ["fetch", "--deepen=2000", "--quiet"], {
+				cwd,
+				encoding: "utf8",
+				stdio: ["ignore", "pipe", "pipe"],
+			});
+		}
+	} catch {
+		// 补深失败不致命
+	}
+	try {
+		const raw = execFileSync("git", ["log", "HEAD", `--since=${SINCE}`, "--format=%cI%x09%ae"], {
+			cwd,
+			encoding: "utf8",
+		});
+		const out: string[] = [];
+		for (const line of raw.split(/\r?\n/)) {
+			const [date, email = ""] = line.split("\t");
+			if (date && isOwner(email)) out.push(date.trim());
+		}
+		return out;
 	} catch {
 		return [];
 	}
