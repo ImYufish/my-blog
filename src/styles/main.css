@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+
+/* ⚠ src/content 在 .gitignore 里（内容已抽到私有仓库），而 Tailwind v4 的自动扫描会跳过
+   被 git 忽略的文件 —— 结果内容文件里的工具类全都不生成（friends.mdx 的 w-4.5 没了尺寸，
+   svg 撑满整个容器）。显式 @source 注册，绕过 .gitignore。 */
+@source '../content';
+
 @import './layout-styles.css';
 @import './navbar.css';
 @import './banner-title.css';

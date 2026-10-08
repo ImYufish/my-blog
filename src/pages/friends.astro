@@ -330,73 +330,78 @@ const description =
                 target="_blank"
                 rel="noopener noreferrer"
                 data-tags={item.tags?.join(",")}
-                class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative"
+                data-m-url={item.siteurl}
+                data-m-shot={cover}
+                data-m-shot-fb={coverFallbackChain}
+                class="friend-card group flex items-center gap-3 p-2.5 rounded-xl border border-(--line-divider) hover:border-(--primary) hover:bg-(--card-bg) transition-all duration-300 hover:shadow-lg relative overflow-hidden"
               >
-                {/* 顶部封面（纯装饰截图，不放站点名） */}
-                <div class="img-skeleton relative h-24 w-full overflow-hidden">
-                  <img
-                    src={cover}
-                    alt={item.title}
-                    class="w-full h-full object-cover group-hover:scale-105"
-                    loading="lazy"
-                    data-fallback={coverFallbackChain}
-                    style="transition: opacity 0.35s ease, scale 0.8s cubic-bezier(0.22, 1, 0.36, 1)"
+                {/* 背景装饰 - 仅悬停显示（原版效果：主题色淡淡铺一层） */}
+                <div class="absolute inset-0 bg-(--primary) opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none" />
+
+                {/* 延迟徽章：原版卡片没有，本站按 FCL 数据加，放右上角避开三行文字 */}
+                <div class="friend-latency absolute top-2 right-2 z-10 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-[0.65rem] font-medium">
+                  <span
+                    class="friend-latency-dot w-1.5 h-1.5 rounded-full"
+                    style={`background:${color}`}
                   />
-                  {/* 封面底部渐变融入卡片背景 */}
-                  <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent" />
-                  {/* 延迟徽章：数字与原点颜色随状态变化 */}
-                  <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">
-                    <span class="w-1.5 h-1.5 rounded-full" style={`background:${color}`} />
-                    <span style={`color:${color}`}>{latencyMs != null ? `${latencyMs} MS` : "OFFLINE"}</span>
-                  </div>
+                  <span style={`color:${color}`} class="friend-latency-text">
+                    {latencyMs != null ? `${latencyMs} MS` : "OFFLINE"}
+                  </span>
                 </div>
 
-                {/* 外部链接图标 - 卡片右下角（上游增强，避开右上角延迟徽章） */}
-                <Icon is:inline
-                  name="material-symbols:arrow-outward-rounded"
-                  class="absolute bottom-3 right-3 text-(--primary) text-lg opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
-                />
+                {/* 外部链接图标：悬停滑入（原版在右上角，这里下移避开延迟徽章）。
+                    直接内联路径而不用 <Icon>：卡片会被 cardHtml() 整块重渲染，
+                    走图标组件的话 svg 只存在于 SSR，刷新后就被覆盖掉、线上永远看不到 */}
+                <svg
+                  class="absolute bottom-2 right-2 w-5 h-5 text-(--primary) opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m16 8.4l-8.9 8.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7L14.6 7H7q-.425 0-.712-.288T6 6t.288-.712T7 5h10q.425 0 .713.288T18 6v10q0 .425-.288.713T17 17t-.712-.288T16 16z"
+                  ></path>
+                </svg>
 
-                {/* 主体：圆形头像 + 站点名（加粗变黑） */}
-                <div class="p-2.5 flex items-center gap-2.5">
-                  <div class="img-skeleton relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
-                    <img
-                      src={item.imgurl}
-                      alt={item.title}
-                      class="w-full h-full object-cover"
-                      loading="lazy"
-                      data-fallback={avatarFallbackChain}
-                    />
-                  </div>
+                {/* 头像 */}
+                <div class="img-skeleton relative w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">
+                  <img
+                    src={item.imgurl}
+                    alt=""
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    data-fallback={avatarFallbackChain}
+                  />
+                </div>
+
+                {/* 内容 - 三行：站名 / 描述 / 标签 */}
+                <div class="grow min-w-0 flex flex-col justify-center gap-0.5">
                   <div
                     data-title
-                    class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate"
+                    class="font-bold text-base text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors truncate pr-16"
                   >
                     {item.title}
                   </div>
-                </div>
 
-                {/* 描述：固定两行高度，超两行省略 */}
-                {item.desc && (
                   <div
                     data-desc
-                    class="px-2.5 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.25rem]"
+                    class="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-1"
                     title={item.desc}
                   >
                     {item.desc}
                   </div>
-                )}
 
-                {/* 标签：固定底部，保证多行描述也对齐 */}
-                {item.tags && item.tags.length > 0 && (
-                  <div class="mt-auto px-2.5 pb-2.5 pt-1.5 flex flex-wrap gap-1">
-                    {item.tags.slice(0, 3).map((tag) => (
-                      <span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">
-                        {tag}
-                      </span>
-                    ))}
+                  {/* 标签 */}
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    {item.tags && item.tags.length > 0
+                      ? item.tags.slice(0, 3).map((tag) => (
+                          <span class="text-[0.65rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+                            {tag}
+                          </span>
+                        ))
+                      : null}
                   </div>
-                )}
+                </div>
               </a>
             );
           })
@@ -425,6 +430,97 @@ const description =
       <Comment post={friendsPost} customPath="/friends/" />
     </div>
   )}
+
+  <!--
+    友链详情弹窗：点卡片打开，SSR 与客户端重渲染共用这一份 DOM（内容由脚本按卡片属性填充）。
+    脚本会把本节点移到 <body> 下 —— #content-wrapper 的 onload-animation 动画带 forwards
+    填充，transform 会一直留着并成为 fixed 的包含块，留在原地弹窗就铺不满视口。
+  -->
+  <div id="friend-modal" class="friend-modal" hidden>
+    <div class="friend-modal__backdrop" data-m-close></div>
+    <div
+      class="friend-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="friend-modal-title"
+    >
+      <button type="button" class="friend-modal__close" data-m-close aria-label="关闭">
+        <Icon is:inline name="material-symbols:close-rounded" class="text-xl" />
+      </button>
+
+      {/* 站点截图：object-fit: contain，完整显示不裁切 */}
+      <div class="friend-modal__shot js-detail-shot img-skeleton img-skeleton--js">
+        <img data-m-img alt="" loading="eager" decoding="async" />
+      </div>
+
+      <div class="friend-modal__body">
+        <div class="flex items-start gap-3">
+          <div class="js-detail-avatar img-skeleton img-skeleton--js relative w-11 h-11 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5">
+            <img data-m-avatar alt="" loading="lazy" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <div
+              id="friend-modal-title"
+              data-m-title
+              class="text-base font-bold text-neutral-900 dark:text-neutral-100 truncate"
+            >
+            </div>
+            <div
+              data-m-host
+              class="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400 truncate"
+            >
+            </div>
+          </div>
+          <div class="friend-latency shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 text-xs font-medium">
+            <span class="friend-latency-dot w-1.5 h-1.5 rounded-full"></span>
+            <span class="friend-latency-text"></span>
+          </div>
+        </div>
+
+        <p
+          data-m-desc
+          class="mt-3 text-sm text-neutral-600 dark:text-neutral-300 leading-6"
+        >
+        </p>
+
+        <div data-m-tags class="mt-3 flex flex-wrap gap-1.5"></div>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a
+            data-m-visit
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-regular rounded-lg px-3.5 py-2 text-sm font-medium gap-1.5"
+          >
+            <Icon is:inline name="material-symbols:arrow-outward-rounded" class="text-base" />
+            访问站点
+          </a>
+          <a
+            data-m-raw
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-regular rounded-lg px-3.5 py-2 text-sm font-medium gap-1.5"
+          >
+            <Icon is:inline name="material-symbols:image-search-rounded" class="text-base" />
+            查看原图
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    桌面端悬停预览：鼠标停在卡片上时在卡片上/下方浮出站点截图（只有图，卡片本身已经有
+    站名/描述/标签了）。只读（pointer-events: none）——鼠标"穿过"它落到下面卡片上，
+    所以不需要 hover 桥接。同样由脚本移到 <body> 下。
+  -->
+  <div id="friend-peek" class="friend-peek" hidden aria-hidden="true">
+    <div class="friend-peek__shot js-detail-shot img-skeleton img-skeleton--js">
+      <img data-m-img alt="" loading="eager" decoding="async" />
+    </div>
+  </div>
 
   <script slot="head" is:inline>
     if (!customElements.get("friend-filter")) {
@@ -510,6 +606,156 @@ const description =
   </script>
 
   <style is:global>
+    /* 站点详情弹窗：点卡片打开（脚本会把 #friend-modal 移到 <body> 下） */
+    .friend-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .friend-modal[hidden] {
+      display: none;
+    }
+    .friend-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgb(0 0 0 / 0.55);
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+    .friend-modal__panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: min(54rem, 100%);
+      max-height: min(88vh, 46rem);
+      overflow: auto;
+      overscroll-behavior: contain;
+      border-radius: var(--radius-large);
+      border: 1px solid var(--line-divider);
+      background: var(--card-bg);
+      box-shadow: 0 24px 60px rgb(0 0 0 / 0.35);
+      opacity: 0;
+      transform: translateY(10px) scale(0.985);
+      transition:
+        opacity 0.22s ease,
+        transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .friend-modal.is-open .friend-modal__backdrop {
+      opacity: 1;
+    }
+    .friend-modal.is-open .friend-modal__panel {
+      opacity: 1;
+      transform: none;
+    }
+    .friend-modal__close {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      color: #fff;
+      background: rgb(0 0 0 / 0.45);
+      backdrop-filter: blur(4px);
+      transition: background-color 0.15s ease;
+    }
+    .friend-modal__close:hover {
+      background: rgb(0 0 0 / 0.68);
+    }
+    /* 截图容器：宽高比默认按截图源（1280×657），图片加载完按真实尺寸校正，
+       所以打开时容器高度就是对的，不会「先塌再弹」 */
+    .friend-modal__shot {
+      position: relative;
+      flex: none;
+      aspect-ratio: var(--shot-ratio, 1280 / 657);
+      background: var(--btn-regular-bg);
+      overflow: hidden;
+    }
+    .friend-modal__shot > img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* 提升合成层：细密截图缩放显示时容易被降采样成摩尔纹黑点 */
+      transform: translateZ(0);
+    }
+    .friend-modal__body {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+    html.friend-modal-open,
+    html.friend-modal-open body {
+      overflow: hidden;
+    }
+
+    /* 桌面端悬停预览：只有截图，位置由脚本按卡片位置算（fixed，坐标即视口坐标）。
+       宽度就是这个浮层的观感大小 —— 卡片是 206px 宽，这里取 ~1.5 倍卡片宽 */
+    .friend-peek {
+      position: fixed;
+      z-index: 999;
+      width: min(20rem, 76vw);
+      overflow: hidden;
+      border-radius: 0.85rem;
+      border: 1px solid var(--line-divider);
+      background: var(--card-bg);
+      box-shadow: 0 18px 42px rgb(0 0 0 / 0.24);
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity 0.18s ease,
+        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      /* 关键：不接收指针事件，鼠标可以"穿过"它，不必做 hover 桥接 */
+      pointer-events: none;
+    }
+    .friend-peek[hidden] {
+      display: none;
+    }
+    .friend-peek.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+    .friend-peek__shot {
+      position: relative;
+      aspect-ratio: var(--shot-ratio, 1280 / 657);
+      background: var(--btn-regular-bg);
+      overflow: hidden;
+    }
+    .friend-peek__shot > img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: translateZ(0);
+    }
+    /* 触屏没有 hover 语义，预览一律不出现（那里走点卡片开弹窗） */
+    .friend-peek {
+      display: none;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .friend-peek {
+        display: block;
+      }
+    }
+    @media (max-width: 560px) {
+      .friend-modal {
+        padding: 0.5rem;
+      }
+      .friend-modal__panel {
+        max-height: 92vh;
+      }
+      .friend-modal__body {
+        padding: 0.85rem 1rem 1rem;
+      }
+    }
+
     /* 图片加载占位：未加载完成时容器里转圈，加载/出错后停掉 */
     .img-skeleton {
       position: relative;
@@ -562,17 +808,19 @@ const description =
 
     .friends-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      /* 桌面每行 3 个（卡片是横向的：头像 + 站名/描述/标签三行，需要这个宽度） */
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.5rem;
     }
     @media (max-width: 900px) {
       .friends-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     @media (max-width: 560px) {
       .friends-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        /* 窄屏放 2 列会把横向卡片挤到只剩 ~90px 文字，改单列 */
+        grid-template-columns: minmax(0, 1fr);
       }
     }
   </style>
@@ -656,8 +904,309 @@ const description =
         );
       }
 
-      function normUrl(u) {
-        return (u || "").trim().replace(/^https?:\/\//i, "").replace(/\/$/, "").toLowerCase();
+      // ---- 站点详情：桌面靠悬停浮出预览，触屏点卡片开弹窗 ----
+      // 脚本会被 Swup 软导航重跑，用 window 标记保证 document 级监听只绑一次
+      if (!window.__friendModalBound) {
+        window.__friendModalBound = true;
+
+        // 有真指针（鼠标）才算"桌面"；触屏没有 hover 语义，只能点
+        var hoverCapable = function () {
+          return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        };
+
+        var modalEl = function () {
+          return document.getElementById("friend-modal");
+        };
+        var peekEl = function () {
+          return document.getElementById("friend-peek");
+        };
+
+        // 把弹窗/预览挪到 <body>：#content-wrapper 的 onload-animation 动画带 forwards 填充，
+        // transform 会一直留着，成为 fixed 的包含块，留在原地就铺不满视口
+        var hoistLayers = function () {
+          [modalEl(), peekEl()].forEach(function (el) {
+            if (el && el.parentElement !== document.body) document.body.appendChild(el);
+          });
+        };
+
+        // 换图：先藏起来，等 load + decode 后再淡入（避免「边下边显示」的渐进跳变）
+        var setDetailImg = function (box, img, src, fb) {
+          if (!box || !img) return;
+          box.classList.remove("is-loaded");
+          img.dataset.fbIndex = "0";
+          if (fb) img.setAttribute("data-fallback", fb);
+          else img.removeAttribute("data-fallback");
+          if (!src) {
+            img.removeAttribute("src");
+            box.classList.add("is-loaded");
+            return;
+          }
+          // 同一张图再来一次不会重新触发 load，直接放行
+          if (img.getAttribute("src") === src && img.complete && img.naturalWidth) {
+            box.classList.add("is-loaded");
+            return;
+          }
+          img.setAttribute("src", src);
+        };
+
+        // 弹窗与预览共用截图容器（.js-detail-shot），填充逻辑共用；
+        // 因此所有查询必须以 root 为范围，不能用 document
+        var fillShot = function (root, card) {
+          var box = root.querySelector(".js-detail-shot");
+          if (!box) return;
+          var img = box.querySelector("img");
+          box.style.removeProperty("--shot-ratio");
+          setDetailImg(
+            box,
+            img,
+            card.getAttribute("data-m-shot") || "",
+            card.getAttribute("data-m-shot-fb") || "",
+          );
+          // 加载完按真实宽高比校正容器（比例不同的图不会被拉出空档），预览还要重算位置
+          if (img) {
+            var applyRatio = function () {
+              if (!img.naturalWidth || !img.naturalHeight) return;
+              box.style.setProperty(
+                "--shot-ratio",
+                img.naturalWidth + " / " + img.naturalHeight,
+              );
+              repositionPeek();
+            };
+            img.onload = applyRatio;
+            // 缓存命中时不会再触发 load，当场补一次
+            if (img.complete && img.naturalWidth) applyRatio();
+          }
+        };
+
+        // 详情弹窗用：截图 + 头像 + 文案 + 两个链接
+        var fillDetail = function (root, card) {
+          var url = card.getAttribute("data-m-url") || "";
+          fillShot(root, card);
+
+          var avatarBox = root.querySelector(".js-detail-avatar");
+          var avatarImg = card.querySelector(".img-skeleton img");
+          if (avatarBox) {
+            setDetailImg(
+              avatarBox,
+              avatarBox.querySelector("img"),
+              avatarImg ? avatarImg.getAttribute("src") : "",
+              avatarImg ? avatarImg.getAttribute("data-fallback") : "",
+            );
+          }
+
+          var titleEl = card.querySelector("[data-title]");
+          var t = root.querySelector("[data-m-title]");
+          if (t) t.textContent = titleEl ? titleEl.textContent.trim() : "";
+          var hostEl = root.querySelector("[data-m-host]");
+          if (hostEl) hostEl.textContent = url.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+          var descEl = card.querySelector("[data-desc]");
+          var descBox = root.querySelector("[data-m-desc]");
+          if (descBox) descBox.textContent = descEl ? descEl.textContent.trim() : "";
+
+          var tagBox = root.querySelector("[data-m-tags]");
+          if (tagBox) {
+            tagBox.innerHTML = "";
+            (card.getAttribute("data-tags") || "").split(",").filter(Boolean).forEach(function (tag) {
+              var s = document.createElement("span");
+              s.className = "text-[0.7rem] px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400";
+              s.textContent = tag;
+              tagBox.appendChild(s);
+            });
+          }
+
+          // 延迟徽章沿用卡片上那颗的颜色与文案
+          var cDot = card.querySelector(".friend-latency-dot");
+          var cText = card.querySelector(".friend-latency-text");
+          var color = cDot && cDot.style.background ? cDot.style.background : "#6b7280";
+          var dot = root.querySelector(".friend-latency-dot");
+          if (dot) dot.style.background = color;
+          var txt = root.querySelector(".friend-latency-text");
+          if (txt) {
+            txt.textContent = cText ? cText.textContent.trim() : "OFFLINE";
+            txt.style.color = color;
+          }
+          return url;
+        };
+
+        // ---- 悬停预览 ----
+        var activeCard = null;
+        var showTimer = null;
+        var hideTimer = null;
+
+        // 位置：默认贴在卡片上方居中；上方放不下（比如滚到第一行）就翻到下方
+        var placePeek = function (card) {
+          var p = peekEl();
+          if (!p || p.hidden || !card) return;
+          var r = card.getBoundingClientRect();
+          var w = p.offsetWidth;
+          var h = p.offsetHeight;
+          var vw = window.innerWidth;
+          var vh = window.innerHeight;
+          var nav = document.querySelector("#navbar");
+          var ceiling = (nav ? nav.getBoundingClientRect().bottom : 0) + 8;
+          var left = Math.round(r.left + r.width / 2 - w / 2);
+          left = Math.max(8, Math.min(left, vw - w - 8));
+          var top = Math.round(r.top - h - 10);
+          if (top < ceiling) {
+            var below = Math.round(r.bottom + 10);
+            top = below + h <= vh - 8 ? below : Math.max(ceiling, Math.min(top, vh - h - 8));
+          }
+          p.style.left = left + "px";
+          p.style.top = top + "px";
+        };
+        var repositionPeek = function () {
+          if (activeCard) placePeek(activeCard);
+        };
+
+        var showPeek = function (card) {
+          var p = peekEl();
+          if (!p || !card || !hoverCapable()) return;
+          var m = modalEl();
+          if (m && !m.hidden) return; // 弹窗开着时不叠预览
+          hoistLayers();
+          activeCard = card;
+          fillShot(p, card);
+          p.hidden = false;
+          placePeek(card);
+          // 强制一次回流让"显示前的初始样式"先落地，再同步加类 —— 用 rAF 的话，
+          // 页面处于后台/被遮挡时 rAF 会被节流不触发，浮层就永远停在 opacity:0
+          void p.offsetHeight;
+          p.classList.add("is-visible");
+        };
+
+        var hidePeek = function () {
+          var p = peekEl();
+          activeCard = null;
+          if (!p || p.hidden) return;
+          p.classList.remove("is-visible");
+          setTimeout(function () {
+            if (!activeCard) p.hidden = true;
+          }, 240);
+        };
+
+        var schedulePeek = function (card) {
+          clearTimeout(hideTimer);
+          clearTimeout(showTimer);
+          if (activeCard === card) return;
+          // 已经开着时快速换内容，第一张才等延迟（鼠标扫过网格不该连锁下载截图）
+          showTimer = setTimeout(
+            function () {
+              showPeek(card);
+            },
+            activeCard ? 60 : 180,
+          );
+        };
+
+        var scheduleHidePeek = function () {
+          clearTimeout(showTimer);
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hidePeek, 140);
+        };
+
+        var closeModal = function () {
+          var m = modalEl();
+          if (!m || m.hidden) return;
+          m.classList.remove("is-open");
+          document.documentElement.classList.remove("friend-modal-open");
+          var done = function () {
+            m.hidden = true;
+            m.removeEventListener("transitionend", done);
+          };
+          m.addEventListener("transitionend", done);
+          // 兜底：过度动画被系统设置关掉时 transitionend 不会触发
+          setTimeout(done, 320);
+        };
+
+        var openModal = function (card) {
+          var m = modalEl();
+          if (!m) return;
+          hoistLayers();
+          hidePeek();
+
+          var url = fillDetail(m, card);
+          m.querySelector("[data-m-visit]").href = url || "#";
+          m.querySelector("[data-m-raw]").href = card.getAttribute("data-m-shot") || url || "#";
+
+          var panel = m.querySelector(".friend-modal__panel");
+          if (panel) panel.scrollTop = 0;
+          m.hidden = false;
+          document.documentElement.classList.add("friend-modal-open");
+          // 同 peek：强制回流后同步加类，别依赖 rAF（后台/被遮挡时它会不触发）
+          void m.offsetHeight;
+          m.classList.add("is-open");
+        };
+
+        document.addEventListener("click", function (e) {
+          var t = e.target;
+          if (!t || t.nodeType !== 1) return;
+          if (t.closest("[data-m-close]")) {
+            closeModal();
+            return;
+          }
+          var card = t.closest(".friend-card");
+          if (!card) return;
+          // 卡片本身就是 <a href>，桌面（真指针）整卡都能点/中键新标签开 → 交给浏览器
+          if (hoverCapable() && e.pointerType !== "touch") return;
+          // 触屏点站名那一小块，也走原生跳转
+          if (t.closest("[data-title]")) return;
+          // 触屏点卡片其它位置：拦下跳转，改开详情弹窗
+          e.preventDefault();
+          openModal(card);
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Escape") return;
+          closeModal();
+          hidePeek();
+        });
+
+        // 悬停：鼠标进出卡片。卡片内部元素之间移动不算离开（靠 relatedTarget 判断）
+        document.addEventListener("mouseover", function (e) {
+          if (!hoverCapable()) return;
+          var t = e.target;
+          if (!t || t.nodeType !== 1) return;
+          var card = t.closest(".friend-card");
+          if (!card) return;
+          if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+          schedulePeek(card);
+        });
+        document.addEventListener("mouseout", function (e) {
+          if (!hoverCapable()) return;
+          var t = e.target;
+          if (!t || t.nodeType !== 1) return;
+          var card = t.closest(".friend-card");
+          if (!card) return;
+          if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+          scheduleHidePeek();
+        });
+        window.addEventListener("scroll", repositionPeek, { passive: true });
+        window.addEventListener("resize", repositionPeek);
+
+        // 软导航：弹窗/预览随旧页面一起被替换，滚动锁和预览状态要自己清掉
+        document.addEventListener("astro:page-load", function () {
+          document.documentElement.classList.remove("friend-modal-open");
+          activeCard = null;
+          var p = peekEl();
+          if (p) {
+            p.classList.remove("is-visible");
+            p.hidden = true;
+          }
+          hoistLayers();
+        });
+        if (window.swup && window.swup.hooks) {
+          window.swup.hooks.on("visit:start", function () {
+            document.documentElement.classList.remove("friend-modal-open");
+            hidePeek();
+          });
+        }
+        // 首次加载：astro:page-load 可能已经先于本脚本触发过，这里补一次
+        hoistLayers();
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", hoistLayers);
+        }
+      }
+
+      function normUrl(u) {        return (u || "").trim().replace(/^https?:\/\//i, "").replace(/\/$/, "").toLowerCase();
       }
       function latencyColor(status, latency) {
         if (status == null || latency == null) return "#6b7280";
@@ -696,6 +1245,11 @@ const description =
         });
         return out.join("|");
       }
+      // 外链箭头图标（内联路径，和 SSR 卡片里那份保持一致）
+      // 不用 <Icon>：卡片由本函数整块重渲染，走图标组件的话 svg 只存在于 SSR，刷新后就没了
+      var ARROW_SVG =
+        '<svg class="absolute bottom-2 right-2 w-5 h-5 text-(--primary) opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path fill="currentColor" d="m16 8.4l-8.9 8.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7L14.6 7H7q-.425 0-.712-.288T6 6t.288-.712T7 5h10q.425 0 .713.288T18 6v10q0 .425-.288.713T17 17t-.712-.288T16 16z"></path></svg>';
       function cardHtml(f, rm) {
         const status = rm.get(normUrl(f.siteurl)) || null;
         const coverRaw = status && status.siteshot ? status.siteshot : f.imgurl;
@@ -708,32 +1262,35 @@ const description =
         const latencyMs = dispLatency != null && dispLatency > 0 ? Math.round(dispLatency * 1000) : null;
         const color = latencyColor(status && status.status, dispLatency != null && dispLatency > 0 ? dispLatency : null);
         const tags = (f.tags || []).slice(0, 3).map(function (t) {
-          return '<span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">' + esc(t) + "</span>";
+          return '<span class="text-[0.65rem] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 transition-colors duration-300">' + esc(t) + "</span>";
         }).join("");
         const desc = f.desc
-          ? '<div data-desc class="px-2.5 text-xs text-neutral-500 dark:text-neutral-400 leading-5 line-clamp-2 min-h-[2.25rem]" title="' + esc(f.desc) + '">' + esc(f.desc) + "</div>"
+          ? '<div data-desc class="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-1" title="' + esc(f.desc) + '">' + esc(f.desc) + "</div>"
           : "";
         const tagBox = f.tags && f.tags.length > 0
-          ? '<div class="mt-auto px-2.5 pb-2.5 pt-1.5 flex flex-wrap gap-1">' + tags + "</div>"
+          ? '<div class="flex flex-wrap gap-1 mt-1">' + tags + "</div>"
           : "";
         return (
-          '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer" data-tags="' + (f.tags || []).join(",") + '" class="friend-card group flex flex-col rounded-xl border border-(--line-divider) hover:border-(--primary) hover:shadow-lg transition-all duration-300 overflow-hidden bg-(--card-bg) relative">' +
-            '<div class="img-skeleton img-skeleton--js relative h-24 w-full overflow-hidden">' +
-              '<img src="' + esc(cover) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover group-hover:scale-105" loading="lazy" style="transition: opacity 0.35s ease, scale 0.8s cubic-bezier(0.22, 1, 0.36, 1)" data-fallback="' + esc(coverFb) + '" />' +
-              '<div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[var(--card-bg)] to-transparent"></div>' +
-              '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium">' +
-                '<span class="w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +
-                '<span style="color:' + color + '">' + (latencyMs != null ? latencyMs + " MS" : "OFFLINE") + "</span>" +
-              "</div>" +
+          '<a href="' + esc(f.siteurl) + '" target="_blank" rel="noopener noreferrer"' +
+            ' data-tags="' + esc((f.tags || []).join(",")) + '"' +
+            ' data-m-url="' + esc(f.siteurl) + '"' +
+            ' data-m-shot="' + esc(cover) + '"' +
+            ' data-m-shot-fb="' + esc(coverFb) + '"' +
+            ' class="friend-card group flex items-center gap-3 p-2.5 rounded-xl border border-(--line-divider) hover:border-(--primary) hover:bg-(--card-bg) transition-all duration-300 hover:shadow-lg relative overflow-hidden">' +
+            '<div class="absolute inset-0 bg-(--primary) opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none"></div>' +
+            ARROW_SVG +
+            '<div class="friend-latency absolute top-2 right-2 z-10 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-[0.65rem] font-medium">' +
+              '<span class="friend-latency-dot w-1.5 h-1.5 rounded-full" style="background:' + color + '"></span>' +
+              '<span class="friend-latency-text" style="color:' + color + '">' + (latencyMs != null ? latencyMs + " MS" : "OFFLINE") + "</span>" +
             "</div>" +
-            '<div class="p-2.5 flex items-center gap-2.5">' +
-              '<div class="img-skeleton img-skeleton--js relative w-9 h-9 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
-                '<img src="' + esc(f.imgurl) + '" alt="' + esc(f.title) + '" class="w-full h-full object-cover" loading="lazy" data-fallback="' + esc(avatarFb) + '" />' +
-              "</div>" +
-              '<div data-title class="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">' + esc(f.title) + "</div>" +
+            '<div class="img-skeleton img-skeleton--js relative w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 group-hover:scale-105 transition-transform duration-300">' +
+              '<img src="' + esc(f.imgurl) + '" alt="" class="w-full h-full object-cover" loading="lazy" data-fallback="' + esc(avatarFb) + '" />' +
             "</div>" +
-            desc +
-            tagBox +
+            '<div class="grow min-w-0 flex flex-col justify-center gap-0.5">' +
+              '<div data-title class="font-bold text-base text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors truncate pr-16">' + esc(f.title) + "</div>" +
+              desc +
+              tagBox +
+            "</div>" +
           "</a>"
         );
       }
