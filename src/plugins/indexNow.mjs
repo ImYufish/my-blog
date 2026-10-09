@@ -4,46 +4,14 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/**
- * 搜索引擎即时收录集成：构建时推送 Bing IndexNow + 百度
- * 构建完成后读取 dist 下的 sitemap，把其中的 URL 推送给各引擎，加速新文章被发现。
- *
- * 配置全部来自 src/config/indexNowConfig.ts（收录相关配置的唯一来源）：
- *   - enabled               总开关
- *   - bing.key / bing.host  Bing IndexNow 的 key 与 host（见下文）
- *   - baidu                 百度主动推送（data.zz.baidu.com/urls），需 site + token
- * 头条/字节不在本插件内：官方无稳定公开 push API，走客户端 push.js
- * （组件 src/components/analytics/ToutiaoAutoPush.astro，读取 indexNowConfig.toutiao）。
- *
- * 两个引擎的提交范围不同：
- *   - Bing：每次提交 sitemap 全量 URL（IndexNow 单次可带 1 万条，没有日配额压力，重复提交无害）
- *   - 百度：**只推「新增 / 内容变化」的 URL**。百度有日配额（实测约 10 条/天），
- *     而 sitemap 里排在前面的是首页、归档这些旧页，若每次全量推，旧 URL 会把配额吃光、
- *     真正的新文章反而推不上去。改动检测靠比对 dist 里各页 HTML 的哈希
- *     （sitemap 本身没有 <lastmod>，而给全站写构建时间的 lastmod 会每次都变、反而误导爬虫）。
- *
- * 基线文件（存于 node_modules/.cache/，不进仓库、不进部署产物）：
- *   - indexnow-baseline.json        Bing 用，记录出现过的 URL（仅用于打印「本次新增」）
- *   - indexnow-baseline-baidu.json  百度用，记录 { URL: 页面内容哈希 }
- *     · 文件不存在 → 视为首次运行：只建立基线、不推送，避免一次灌满配额
- *     · 想让百度全量重推：把该文件内容改成 {} 后重新构建
- *   （deploy-eo.ps1 是本地构建，基线会持久化；若换成每次全新检出的 CI 构建，
- *     基线不持久化，百度会退化成每次「首次运行」而不推送。）
- *
- * 调试开关（环境变量）：
- *   - INDEXNOW_VERBOSE=1  额外打印本次提交的全部 URL 列表，方便核对新文章是否纳入
- *   - BAIDU_PUSH_TOKEN    百度 API 推送 token（开源后不再写进 indexNowConfig.ts）
- *
- * @param {Object} config
- * @returns {Object} AstroIntegration
+/*
+ * 搜索引擎即时收录：读 dist 的 sitemap，把 URL 推给 Bing IndexNow 与百度（配置见 src/config/indexNowConfig.ts）。
+ * Bing 每次全量推；百度只推「新增 / 内容变化」（官方明确反复推旧链接会被下调配额），判定 = 各页 HTML 的 sha1。
+ * 百度基线随部署发布、下次构建从线上读回（dist/indexnow-baseline.json）。⚠ 别放 node_modules/.cache：
+ * EO 每次构建都是全新工作区，会被重置成「首次运行」（曾因此一条都没推出去）。
+ * 环境变量：INDEXNOW_VERBOSE=1 / INDEXNOW_FORCE_FULL=1（忽略基线全量推一次）/ BAIDU_PUSH_TOKEN
  */
-/**
- * 取环境变量的值：先看真实进程环境变量，读不到再回退仓库根目录的 .env。
- * 为什么要这一层：Astro/Vite 只把 .env 的值灌进 import.meta.env，**不会写进 process.env**；
- * 而本插件跑在 Node 里（astro:build:done），只看得到 process.env。加这个兜底是为了让
- * 本地 `pnpm build` 也能用 .env 里配的 token，不必每次在命令行注入。部署平台上配的
- * 环境变量属于真实 process.env，会走第一条分支。
- */
+/** 读环境变量：进程环境变量优先，回退 .env（Astro 只把 .env 灌进 import.meta.env，不写 process.env） */
 async function envOrFile(name) {
 	const fromEnv = (process.env[name] || "").trim();
 	if (fromEnv) return fromEnv;
@@ -77,8 +45,6 @@ export function indexNow(config = {}) {
 					return;
 				}
 
-				// Windows 下 dir.pathname 形如 "/F:/.../dist/"，直接 join 出来的路径 existsSync 读不到，
-				// 必须用 fileURLToPath 转成真正的文件系统路径
 				const distDir = toFsPath(dir);
 				const cacheDir = join(distDir, "..", "node_modules", ".cache");
 
@@ -94,23 +60,40 @@ export function indexNow(config = {}) {
 					return;
 				}
 
-				// ---- Bing IndexNow ----
+				// 统一推导 host：bing.host 优先，否则取 sitemap 第一条
+				const host = normalizeHost(hostOverride) || hostFromUrl(urls[0]);
+				const published = await loadPublishedBaseline(host);
+
+				// ---- Bing IndexNow（全量）----
 				await bingIndexNow(urls, {
 					key,
-					hostOverride,
+					hostOverride: host,
 					distDir,
 					cacheDir,
 					verbose,
 				});
 
-				// ---- 百度主动推送（只推新增/变化）----
-				await baiduPush(urls, config.baidu, { distDir, cacheDir });
+				// ---- 百度主动推送（只推新增/变化）；返回新基线就写进部署产物，null = 不动线上那份 ----
+				const nextBaseline = await baiduPush(urls, config.baidu, {
+					distDir,
+					published,
+				});
+				if (nextBaseline) {
+					await writeJson(join(distDir, "indexnow-baseline.json"), {
+						generatedAt: new Date().toISOString(),
+						host,
+						pages: nextBaseline,
+					});
+					console.log(
+						`[search-submit] 基线已随部署发布（${Object.keys(nextBaseline).length} 条），下次构建从这里读回：https://${host}/indexnow-baseline.json`,
+					);
+				}
 			},
 		},
 	};
 }
 
-/** Astro 的 hook 给的是 URL；统一转成文件系统路径（见文件顶部 Windows 说明） */
+/** Astro hook 给的是 URL，转成文件系统路径（Windows 下 dir.pathname 形如 "/F:/.../dist/"） */
 function toFsPath(dir) {
 	try {
 		return typeof dir === "string" ? dir : fileURLToPath(dir);
@@ -119,12 +102,7 @@ function toFsPath(dir) {
 	}
 }
 
-/**
- * 把各种写法的主机名统一成裸主机名。
- * IndexNow 的 host 字段只接受裸主机名（如 x1anyu.cn），传完整 URL 会被拒（实测返回 422）；
- * 而 Bing Webmaster Tools 里显示的 property 往往是 "https://x1anyu.cn/" 这种完整 URL，
- * 直接照抄进配置就会拼出 https://https://x1anyu.cn///<key>.txt 这种坏地址。
- */
+/** 统一成裸主机名 —— IndexNow 只接受裸主机名，传完整 URL 会被拒（实测 422） */
 function normalizeHost(value) {
 	const raw = String(value || "").trim();
 	if (!raw) return "";
@@ -132,6 +110,47 @@ function normalizeHost(value) {
 		return new URL(raw.includes("://") ? raw : `https://${raw}`).host;
 	} catch {
 		return "";
+	}
+}
+
+/** 从 URL 取 host；失败返回空串 */
+function hostFromUrl(raw) {
+	try {
+		return new URL(raw).host;
+	} catch {
+		return "";
+	}
+}
+
+/**
+ * 读上一版部署发布出去的基线。missing=true = 线上确实没有这个文件；
+ * pages=null 且 missing=false = 网络异常等「状态未知」。
+ */
+async function loadPublishedBaseline(host) {
+	if (!host) return { pages: null, missing: false, reason: "没有 host" };
+	const url = `https://${host}/indexnow-baseline.json?ts=${Date.now()}`;
+	try {
+		const res = await fetch(url, {
+			headers: { "cache-control": "no-cache", pragma: "no-cache" },
+		});
+		if (res.status === 404)
+			return { pages: null, missing: true, reason: "HTTP 404" };
+		if (!res.ok)
+			return { pages: null, missing: false, reason: `HTTP ${res.status}` };
+		let body = null;
+		try {
+			body = await res.json();
+		} catch {
+			// 拿到的多半是 404 页面（有些平台用 200 兜底返回 HTML）
+			return { pages: null, missing: true, reason: "响应不是 JSON" };
+		}
+		const pages = body?.pages;
+		if (!pages || typeof pages !== "object" || Array.isArray(pages)) {
+			return { pages: null, missing: true, reason: "JSON 里没有合法的 pages" };
+		}
+		return { pages, missing: false, reason: "ok" };
+	} catch (e) {
+		return { pages: null, missing: false, reason: `请求异常：${e.message}` };
 	}
 }
 
@@ -167,7 +186,7 @@ async function bingIndexNow(
 		return;
 	}
 
-	// 提交前自检：hook 自己能否从公网取到 key 文件（内容与 key 一致）
+	// 提交前自检：能否从公网取到 key 文件
 	let keyCheck = "未自检";
 	try {
 		const probe = await fetch(keyLocation, { method: "GET" });
@@ -223,8 +242,8 @@ async function bingIndexNow(
 		}
 	}
 
-	// 读取基线，区分「本次新增」与「已提交过」（仅用于日志）
-	const baselinePath = join(cacheDir, "indexnow-baseline.json");
+	// 仅用于日志区分「本次新增」（Bing 每次全量推，与百度那份基线无关）
+	const baselinePath = join(cacheDir, "indexnow-seen-urls.json");
 	let baseline = new Set();
 	try {
 		if (existsSync(baselinePath)) {
@@ -255,59 +274,90 @@ async function bingIndexNow(
 }
 
 /**
- * 百度主动推送（普通收录 / API 推送）
- * 接口：https://data.zz.baidu.com/urls?site=<domain>&token=<token>
- * 方式：POST，Content-Type: text/plain，body 为 URL 列表（每行一条）
- * 返回示例：{"success":N,"remain":M,"not_same_site":[],"errmsg":"ok"} 或 {"error":N,"message":"..."}
- *
- * 只推「新增 / 内容变化」的 URL：见文件顶部说明。
- * 只有本次真正提交成功才把它们记进基线；失败不记，下次构建会自动重试。
+ * 百度主动推送：POST https://data.zz.baidu.com/urls?site=<domain>&token=<token>（body 每行一条 URL）。
+ * @returns {Promise<Object|null>} 本次要随部署发布的新基线（URL→哈希）；null = 别动线上那份
  */
-async function baiduPush(urls, cfg, { distDir, cacheDir }) {
+async function baiduPush(urls, cfg, { distDir, published }) {
 	if (!cfg || cfg.enabled === false) {
 		console.log("[baidu] 未启用，跳过");
-		return;
+		return null;
 	}
 	const site = cfg.site || "";
-	// token 不再写进仓库：优先环境变量 BAIDU_PUSH_TOKEN（平台环境变量直接读得到，
-	// 本地 .env 由 envOrFile 兜底）；两处都没有则跳过百度推送
+	// token 不写进仓库：环境变量优先，.env 由 envOrFile 兜底
 	const token = cfg.token || (await envOrFile("BAIDU_PUSH_TOKEN"));
 	if (!site || !token) {
 		console.warn(
 			"[baidu] 未配置 site/token，跳过（百度搜索资源平台 → 数据提交 → API推送 取 16 位 token，配到环境变量 BAIDU_PUSH_TOKEN）",
 		);
-		return;
+		return null;
 	}
 
-	const baselinePath = join(cacheDir, "indexnow-baseline-baidu.json");
-	const baseline = await readJson(baselinePath);
-
-	// 各页内容指纹（sitemap 没有 lastmod，用 dist 里 HTML 的哈希判断内容有没有变）
+	// 各页内容指纹（sitemap 没有 lastmod，只能比 HTML 哈希）
 	const fingerprints = {};
 	for (const u of urls) {
-		fingerprints[u] = await pageFingerprint(distDir, u);
+		const fp = await pageFingerprint(distDir, u);
+		if (fp) fingerprints[u] = fp;
 	}
 
-	// 首次运行（基线文件不存在）：只建立基线，不推送，避免一次把 sitemap 全量灌进去吃掉配额
-	if (baseline === null) {
-		await writeJson(baselinePath, fingerprints);
-		console.log(
-			`[baidu] 首次运行：已把 ${urls.length} 条记为基线，本次不推送；以后只推「新增 / 内容变化」的 URL。`,
-		);
-		console.log(
-			`[baidu] （想让百度全量重推：把 ${baselinePath} 内容改成 {} 后重新构建）`,
-		);
-		return;
-	}
-
-	const changed = urls.filter(
-		(u) => baseline[u] === undefined || baseline[u] !== fingerprints[u],
+	const forceFull = /^(1|true|yes)$/i.test(
+		(process.env.INDEXNOW_FORCE_FULL || "").trim(),
 	);
+	if (Object.keys(fingerprints).length === 0 && !forceFull) {
+		// 一条都算不出来（dist 路径对不上？）→ 绝不能推，否则每次都会被判成全量变化
+		console.warn(
+			`[baidu] ${urls.length} 条 URL 在 dist 里都找不到对应 HTML，无法判断内容变化 → 跳过本次推送`,
+		);
+		return null;
+	}
+	if (Object.keys(fingerprints).length < urls.length) {
+		console.warn(
+			`[baidu] 有 ${urls.length - Object.keys(fingerprints).length} 条 URL 找不到对应 HTML，这些沿用上一版指纹、不当成变化`,
+		);
+	}
+
+	// 算不出的沿用上一版指纹，免得被误判成变化
+	const current = {};
+	for (const u of urls) {
+		const fp = fingerprints[u] ?? published.pages?.[u];
+		if (fp) current[u] = fp;
+	}
+
+	const hasBaseline = published.pages !== null;
+
+	if (!hasBaseline && !forceFull) {
+		if (published.missing) {
+			console.log(
+				`[baidu] 线上还没有上一版基线（${published.reason}）→ 本次只记录基线、不推送，避免一次把 sitemap 全量灌进去吃掉配额`,
+			);
+			console.log(
+				"[baidu] 想现在就把现有 URL 全推给百度：构建时加环境变量 INDEXNOW_FORCE_FULL=1，跑一次后去掉即可",
+			);
+			return current;
+		}
+		console.warn(
+			`[baidu] 读取线上基线失败（${published.reason}）→ 本次跳过推送，并保留线上基线不动，下次构建再试`,
+		);
+		return null;
+	}
+
+	if (forceFull) {
+		console.log(
+			`[baidu] INDEXNOW_FORCE_FULL=1：本次忽略基线，全量提交 ${urls.length} 条`,
+		);
+	}
+
+	const changed = forceFull
+		? urls
+		: urls.filter((u) => {
+				const fp = fingerprints[u]; // 只对算得出指纹的做比对
+				if (!fp) return false;
+				return published.pages[u] === undefined || published.pages[u] !== fp;
+			});
 	if (changed.length === 0) {
 		console.log(
-			`[baidu] 无新增/变化 URL，跳过推送（基线 ${Object.keys(baseline).length} 条）`,
+			`[baidu] 无新增/变化 URL，跳过推送（基线 ${Object.keys(published.pages).length} 条）`,
 		);
-		return;
+		return current;
 	}
 
 	const endpoint = "https://data.zz.baidu.com/urls";
@@ -334,32 +384,30 @@ async function baiduPush(urls, cfg, { distDir, cacheDir }) {
 		}
 
 		if (res.ok && !errmsg) {
-			// 提交成功才并入基线；失败不写，下次构建会重试这批 URL
-			const merged = { ...baseline };
-			for (const u of changed) merged[u] = fingerprints[u];
-			await writeJson(baselinePath, merged);
-
 			console.log(
 				`[baidu] 提交完成：推 ${changed.length} 条新增/变化，成功 ${ok} 条（当日剩余配额 ${remain ?? "未知"}）site=${site}`,
 			);
 			for (const u of changed) console.log(`[baidu]   + ${u}`);
-		} else {
-			console.warn(
-				`[baidu] 提交失败：HTTP ${res.status}${errmsg ? `，${errmsg}` : `，响应：${text.slice(0, 200)}`}`,
-			);
-			console.warn(`[baidu] 未更新基线，下次构建会重试这 ${changed.length} 条`);
+			// 提交成功 → current 即「已告知」状态（没变的本就在基线里）
+			return current;
 		}
+		console.warn(
+			`[baidu] 提交失败：HTTP ${res.status}${errmsg ? `，${errmsg}` : `，响应：${text.slice(0, 200)}`}`,
+		);
+		console.warn(
+			`[baidu] 不更新基线（沿用线上那份），下次构建会重试这 ${changed.length} 条`,
+		);
+		return null;
 	} catch (e) {
 		console.warn("[baidu] 请求异常：", e.message);
-		console.warn(`[baidu] 未更新基线，下次构建会重试这 ${changed.length} 条`);
+		console.warn(
+			`[baidu] 不更新基线（沿用线上那份），下次构建会重试这 ${changed.length} 条`,
+		);
+		return null;
 	}
 }
 
-/**
- * 页面内容指纹：URL → dist 里对应 HTML 的 sha1 前 16 位。
- * Astro 静态输出形如 /about/ → dist/about/index.html、/foo.html → dist/foo.html。
- * 返回 null 表示找不到对应文件（此时只能退化为「URL 有没有出现过」）。
- */
+/** 页面内容指纹：URL → dist 里对应 HTML 的 sha1 前 16 位；找不到对应文件返回 null */
 async function pageFingerprint(distDir, url) {
 	let pathname;
 	try {
@@ -388,19 +436,6 @@ async function pageFingerprint(distDir, url) {
 		}
 	}
 	return null;
-}
-
-/** 读 JSON 基线；文件不存在返回 null（= 首次运行），损坏也返回 null（避免误判为全量变化而灌满配额） */
-async function readJson(path) {
-	try {
-		if (!existsSync(path)) return null;
-		const raw = JSON.parse(await readFile(path, "utf-8"));
-		if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
-		return raw;
-	} catch {
-		console.warn(`[search-submit] 基线文件损坏，按首次运行处理：${path}`);
-		return null;
-	}
 }
 
 async function writeJson(path, obj) {
