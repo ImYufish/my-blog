@@ -696,19 +696,18 @@ const description =
       overflow: hidden;
     }
 
-    /* 桌面端悬停预览：只有截图，位置由脚本按卡片位置算（fixed，坐标即视口坐标）。
-       宽度就是这个浮层的观感大小 —— 卡片是 206px 宽，这里取 ~1.5 倍卡片宽 */
+    /* 桌面端悬停预览：只有截图，位置由脚本按卡片位置算（fixed，坐标即视口坐标）。*/
     .friend-peek {
       position: fixed;
       z-index: 999;
-      width: min(20rem, 76vw);
+      width: min(360px, 42vw);
       overflow: hidden;
-      border-radius: 0.85rem;
-      border: 1px solid var(--line-divider);
+      border-radius: 1rem;
+      border: 2px solid var(--card-bg);
       background: var(--card-bg);
-      box-shadow: 0 18px 42px rgb(0 0 0 / 0.24);
+      box-shadow: 0 12px 32px rgb(0 0 0 / 0.18), 0 2px 8px rgb(0 0 0 / 0.12);
       opacity: 0;
-      transform: translateY(6px);
+      transform: scale(0.96);
       transition:
         opacity 0.18s ease,
         transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
@@ -720,7 +719,7 @@ const description =
     }
     .friend-peek.is-visible {
       opacity: 1;
-      transform: none;
+      transform: scale(1);
     }
     .friend-peek__shot {
       position: relative;
@@ -1072,6 +1071,11 @@ const description =
           // 页面处于后台/被遮挡时 rAF 会被节流不触发，浮层就永远停在 opacity:0
           void p.offsetHeight;
           p.classList.add("is-visible");
+          // 兜一次定位：若悬停发生在平滑滚动进行中，上面量到的是滚动中途的卡片位置，
+          // 之后滚动结束若无新事件就不会重算 → 浮层停在偏掉的位置。这里补一次幂等重算。
+          setTimeout(function () {
+            if (activeCard === card) placePeek(card);
+          }, 260);
         };
 
         var hidePeek = function () {
@@ -1338,8 +1342,58 @@ const description =
           console.warn("[friends] 客户端实时刷新失败，沿用构建时数据:", e);
         }
       }
-      if (document.readyState !== "loading") refreshFriends();
-      else document.addEventListener("DOMContentLoaded", refreshFriends);
+      // 截图预取：进页面后空闲时按顺序把站点截图拉进浏览器缓存。
+      // 之前只在 hover/点开那一下才 new Image()，第一次看必然干等下载 → 悬停一顿。
+      // 源图是 webp、单张 11~78KB、25 张合计约 2MB，且 Cache-Control 一天，代价可接受；
+      // 省流模式或 2G 网络下跳过，切到后台时暂停。
+      function prefetchShots() {
+        if (window.__friendShotPrefetched) return;
+        var conn =
+          navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+        if (conn.saveData) return;
+        if (conn.effectiveType === "slow-2g" || conn.effectiveType === "2g") return;
+        var queue = [];
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".friend-card"),
+          function (card) {
+            var src = card.getAttribute("data-m-shot");
+            if (src) queue.push(src);
+          },
+        );
+        if (!queue.length) return;
+        window.__friendShotPrefetched = true;
+
+        var MAX_PARALLEL = 2;
+        var active = 0;
+        var idx = 0;
+        function pump() {
+          if (idx >= queue.length && active === 0) return;
+          if (document.hidden) {
+            setTimeout(pump, 1500);
+            return;
+          }
+          while (active < MAX_PARALLEL && idx < queue.length) {
+            var img = new Image();
+            img.decoding = "async";
+            active++;
+            img.onload = img.onerror = function () {
+              active--;
+              pump();
+            };
+            img.src = queue[idx++];
+          }
+        }
+        pump();
+      }
+      // 等友链渲染完再预取：refreshFriends 会整块重渲染 grid；再让首屏资源先抢一会儿带宽
+      function scheduleShotPrefetch() {
+        setTimeout(prefetchShots, 800);
+      }
+      if (document.readyState !== "loading") refreshFriends().then(scheduleShotPrefetch);
+      else
+        document.addEventListener("DOMContentLoaded", function () {
+          refreshFriends().then(scheduleShotPrefetch);
+        });
     })();
   </script>
 </MainGridLayout>
