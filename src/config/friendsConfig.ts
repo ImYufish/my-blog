@@ -64,6 +64,17 @@ export const friendsConfig: FriendLink[] = [
 		enabled: true,
 	},
 	{
+		title: "清羽飞扬",
+		imgurl: "https://blog.liushen.fun/info/avatar.ico",
+		desc: "柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜",
+		siteurl: "https://blog.liushen.fun/",
+		linkpage: "",
+		rss: "https://blog.liushen.fun/atom.xml",
+		tags: ["Blog"],
+		weight: 6,
+		enabled: true,
+	},
+	{
 		title: "fqzlr",
 		imgurl: "https://q1.qlogo.cn/g?b=qq&nk=20447289&s=640",
 		desc: "躬身入局，心为主理，行有尺度，自持本心.",
